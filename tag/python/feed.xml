@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/tag/python/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-09-06T00:29:55+09:00</updated>
+  <updated>2021-09-06T00:47:25+09:00</updated>
   <id>http://localhost:4000/tag/python/feed.xml</id>
 
   
@@ -98,7 +98,7 @@
   &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abc.zip&lt;/code&gt; 내에 압축된 파일들의 용량이 매우 크고, 다운로드해야할 파일은 zip파일 내부의 딱 1개인 경우&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;위와 같은 상황의 공통점은 압축 파일 전체를 다운로드할 필요는 없다는 것입니다. 불필요한 파일들(1개를 제외한 나머지 파일)에 대해서도 IO 작업이 수행되므로, 리소스 측면에서도 시간 측면에서도 손해입니다. 즉, 이러한 두 가지 상황에서는  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abc.zip&lt;/code&gt;파일을 다운로드 받는 위의 코드는 매우 비효율적이며 시간을 낭비하게 됩니다.&lt;/p&gt;
+&lt;p&gt;위와 같은 상황의 공통점은 압축 파일 전체를 다운로드할 필요는 없다는 것입니다. 불필요한 파일들(1개를 제외한 나머지 파일)에 대해서도  DISK IO 작업이 수행되므로, 리소스 측면에서도 시간 측면에서도 손해입니다. 즉, 이러한 두 가지 상황에서는  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;abc.zip&lt;/code&gt;파일을 다운로드 받는 위의 코드는 매우 비효율적이며 시간을 낭비하게 됩니다.&lt;/p&gt;
 
 &lt;p&gt;그렇다면, &lt;strong&gt;zip파일을 다운로드 받지 않고, 내부의 압축된 파일 중 특정 파일만 다운로드 받을 수 있는 방법은 무엇일까요?&lt;/strong&gt;&lt;/p&gt;
 
@@ -123,9 +123,9 @@
 # 그럼 어디부터 어디까지 읽어야하는 걸까요? &amp;lt;- 우리가 구현하고자 하는 핵심입니다.
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;Storage로부터 파일에 접근했지만, 아시다시피 네트워크는 많은 헤더들을 포함하고 있습니다. 헤더를 제외한 실제 내용물(이 경우에는 압축 파일 내부)만을 찾아서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt;에게 전달할 수 있어야합니다!&lt;/p&gt;
+&lt;p&gt;Storage로부터 파일에 접근했습니다. 현재 접근한 object에는 HTTP Header가 포함되어 있습니다. 헤더를 제외한 실제 내용물(이 경우에는 압축 파일 내부)만을 찾아서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt;에게 전달할 수 있어야합니다!&lt;/p&gt;
 
-&lt;p&gt;여기서 우리가 주목해야할 값은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;'Body':StreamingBody()&lt;/code&gt; 입니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StreamingBody()&lt;/code&gt;객체에 실제  AWS S3 Storage에 저장된 object 파일의 정보가 담겨있습니다.&lt;/p&gt;
+&lt;p&gt;여기서 우리가 주목해야할 값은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;'Body':StreamingBody()&lt;/code&gt; 입니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StreamingBody()&lt;/code&gt;객체에 실제  AWS S3 Storage에 저장된 object 파일의 정보가 담겨있습니다. 문제는 HTTP Header와 HTTP Body가 구분되지 않는다는 점이죠.&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StreamingBody()&lt;/code&gt;는 다음과 같은 객체입니다.&lt;/p&gt;
 
@@ -150,19 +150,20 @@ Auto validation of content length, if the amount of bytes we read does not match
   &lt;span class=&quot;s&quot;&gt;'''Set the timeout seconds on the socket.'''&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;즉, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s3.Object.get()&lt;/code&gt;를 통해  얻어진 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StreamingBody&lt;/code&gt;객체는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s3.Object&lt;/code&gt;의 실제 내용을 담고 있다고 보면 됩니다. 물론 통신 상에서 발생한 헤더들까지 포함하고 있겠죠. 해당 객체는 file-like object로서 필요로 되는  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read()&lt;/code&gt;함수가 정의되어 있음도 확인할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;즉, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s3.Object.get()&lt;/code&gt;를 통해  얻어진 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StreamingBody&lt;/code&gt;객체는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s3.Object&lt;/code&gt; 를 호출한 결과물입니다. 그리고 해당 객체는 file-like object로 보여집니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read()&lt;/code&gt; 함수를 정의하고 있기 때문입니다.&lt;/p&gt;
 
-&lt;p&gt;또한, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt;의 정의를 살펴보면,&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt;의 정의를 살펴보면, Disk에 존재하는 파일(파일 경로)뿐 아니라, 파일류 객체(file-like object)를 전달할 수 있다고 말하고 있습니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;zipfile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ZipFile&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'r'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;compression&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ZIP_STORED&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;allowZip64&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;compresslevel&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;strict_timestamps&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
 &lt;span class=&quot;s&quot;&gt;'''ZIP 파일을 엽니다, 여기서 file은 파일에 대한 경로 (문자열), 파일류 객체 또는 경로류 객체일 수 있습니다.'''&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;파일류 객체란 file-like object를 의미합니다. 헤더를 제외하고 자동으로 내용물을 찾아주길 기대하며, 우리는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StreamingBody&lt;/code&gt;를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;zipFile&lt;/code&gt;에 인자로 전달하여 압축 파일을 해제할 수 있을 것만 같습니다.&lt;/p&gt;
+&lt;p&gt;헤더를 제외하고 자동으로 Body를 찾아주길 기대하며, 우리는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StreamingBody&lt;/code&gt;를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;zipFile&lt;/code&gt;에 인자로 전달해봅니다!&lt;/p&gt;
 
 &lt;p&gt;그러나, 시도해보면 아래와 같은 에러가 나옵니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;boto3&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;zipfile&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ZipFile&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'s3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
                  &lt;span class=&quot;n&quot;&gt;region_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'us-east-1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
                  &lt;span class=&quot;n&quot;&gt;aws_acess_key_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AWS_KEY_ID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
@@ -176,7 +177,7 @@ Auto validation of content length, if the amount of bytes we read does not match
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Traceback (most recent call last):
   File &quot;test.py&quot;, line 9, in &amp;lt;module&amp;gt;
-    with zipfile.ZipFile(s3_object[&quot;Body&quot;]) as zf:
+    with ZipFile(s3_object[&quot;Body&quot;]) as z:
   File &quot;/usr/local/Cellar/python/3.6.4_4/Frameworks/Python.framework/Versions/3.6/lib/python3.6/zipfile.py&quot;, line 1108, in __init__
     self._RealGetContents()
   File &quot;/usr/local/Cellar/python/3.6.4_4/Frameworks/Python.framework/Versions/3.6/lib/python3.6/zipfile.py&quot;, line 1171, in _RealGetContents
@@ -235,7 +236,7 @@ seekable()
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;이제, StreamingBody를 읽어올 수 있을까요? 아래 코드를 실행해보았지만 아쉽게도 에러가 발생했습니다.&lt;/p&gt;
+&lt;p&gt;이제, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StreamingBody&lt;/code&gt;를 읽어올 수 있을까요? 아래 코드를 실행해보았지만 아쉽게도 에러가 발생했습니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;boto3&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;s3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;boto3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resource&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'s3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
@@ -269,7 +270,7 @@ NotImplementedError
 기본 구현은 readall()과 readinto()로 위임합니다.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;이제 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile &lt;/code&gt; 에서 파일을 읽기 위해 필요한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read&lt;/code&gt;함수를 구현해봅니다.&lt;/p&gt;
+&lt;p&gt;이제 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt; 에서 파일을 읽기 위해 필요한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read&lt;/code&gt;함수를 구현해봅니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;S3File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RawIOBase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
     &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
@@ -299,7 +300,7 @@ NotImplementedError
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt; read&lt;/code&gt;가 구현되었므로, 이제 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt;을 실행하게 되면, 사용하는 환경에 따라 일정 Byte를 읽어들여오고 해당 Byte에서 실제 파일이 존재하는 부분을 추출합니다. 몇 번의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read&lt;/code&gt;를 통해 현재 위치(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;self.position&lt;/code&gt;)을 바꿔가며&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s3.Object&lt;/code&gt;에서 헤더는 제외하고 압축된 파일 내용만을  읽어들일 것입니다. 우리는 이러한 부분까지는 구현할 필요가 없습니다. 지금까지 작업한 내용을 통해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt;이 위의 과정을 하기 위해 필요한 함수를 정의했기 때문이죠!&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read&lt;/code&gt;가 구현되었므로, 이제 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt;을 실행하게 되면, 사용하는 환경에 따라 일정 Byte를 읽어들여오고 해당 Byte에서 실제 파일이 존재하는 부분을 추출합니다. 몇 번의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read&lt;/code&gt;를 통해 현재 위치(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;self.position&lt;/code&gt;)을 바꿔가며&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s3.Object&lt;/code&gt;에서 헤더는 제외하고 압축된 파일 내용인  Body만을  읽어들일 것입니다. 우리는 이러한 부분까지는 구현할 필요가 없습니다. 지금까지 작업한 내용을 통해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt;이 위의 과정(헤더 스킵하기 위해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;seek&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read&lt;/code&gt;)을 하기 위해 필요한 함수를 정의했기 때문이죠!&lt;/p&gt;
 
 &lt;p&gt;이제 다시 코드를 실행해보겠습니다.&lt;/p&gt;
 
@@ -316,7 +317,7 @@ NotImplementedError
 &lt;span class=&quot;c1&quot;&gt;# [a.csv, b.csv, c.csv]
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;이제 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt; 은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s3.Object&lt;/code&gt;에서 압축된 파일만을 읽어들일 수 있습니다!!&lt;/p&gt;
+&lt;p&gt;이제 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt; 은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s3.Object&lt;/code&gt;에서 압축된 파일만을 읽어들일 수 있습니다!&lt;/p&gt;
 
 &lt;p&gt;나아가, 압축 파일 내에 어떤 파일이 있는지 알고 있다면 바로 파일을 다운로드 받을 수도 있습니다.&lt;/p&gt;
 
@@ -367,7 +368,7 @@ NotImplementedError
 &lt;span class=&quot;c1&quot;&gt;# 475ms 소요 (약 0.5초)
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;거의 20배 가까이 속도 차이가 납니다! 나머지 399개 파일에 대한 IO가 발생하지 않았기 때문이죠.&lt;/p&gt;
+&lt;p&gt;거의 20배 가까이 속도 차이가 납니다! 나머지 399개 파일에 대한 DISK IO가 발생하지 않았기 때문이죠.&lt;/p&gt;
 
 &lt;p&gt;파일 개수가 많을수록, 그리고 용량이 클수록 이러한 시간 차이는 더 커질 것입니다.&lt;/p&gt;
 
