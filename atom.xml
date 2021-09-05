@@ -36,9 +36,10 @@
     
       
       <item>
-        <title>python</title>
+        <title>AWS S3, object zip</title>
         
-          <description>&lt;p&gt;First Python Posting&lt;/p&gt;
+          <description>&lt;p&gt;AWS S3 내 zip파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
+
 </description>
         
         <pubDate>Wed, 01 Sep 2021 22:30:00 +0900</pubDate>
