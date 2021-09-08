@@ -135,6 +135,9 @@ into the {body} of the default.hbs template -->
     <li class="nav-scala" role="menuitem">
         <a href="/tag/scala/">scala</a>
     </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
     <li class="nav-archive" role="menuitem">
         <a href="/archive.html">All Posts</a>
     </li>
@@ -285,20 +288,20 @@ into the {body} of the default.hbs template -->
 This provides a few additional conveniences that do not exist in the urllib3 model:
 Set the timeout on the socket (i.e read() timeouts)
 Auto validation of content length, if the amount of bytes we read does not match the content length, an exception is raised.'''</span>
-  <span class="n">close</span><span class="p">()</span>
-  <span class="s">'''Close the underlying http response stream.'''</span>
-  <span class="n">iter_chunks</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
-  <span class="s">'''Return an iterator to yield chunks of chunk_size bytes from the raw stream.'''</span>
-  <span class="n">iter_lines</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">keepends</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-  <span class="s">'''Return an iterator to yield lines from the raw stream.
-  This is achieved by reading chunk of bytes (of size chunk_size) at a time from the raw stream, and then yielding lines from there.'''</span>
-  <span class="nb">next</span><span class="p">()</span>
-  <span class="s">'''Return the next 1k chunk from the raw stream.'''</span>
-  <span class="n">read</span><span class="p">(</span><span class="n">amt</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-  <span class="s">'''Read at most amt bytes from the stream.
-  If the amt argument is omitted, read all data.'''</span>
-  <span class="n">set_socket_timeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
-  <span class="s">'''Set the timeout seconds on the socket.'''</span>
+<span class="n">close</span><span class="p">()</span>
+<span class="s">'''Close the underlying http response stream.'''</span>
+<span class="n">iter_chunks</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">)</span>
+<span class="s">'''Return an iterator to yield chunks of chunk_size bytes from the raw stream.'''</span>
+<span class="n">iter_lines</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">keepends</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="s">'''Return an iterator to yield lines from the raw stream.
+This is achieved by reading chunk of bytes (of size chunk_size) at a time from the raw stream, and then yielding lines from there.'''</span>
+<span class="nb">next</span><span class="p">()</span>
+<span class="s">'''Return the next 1k chunk from the raw stream.'''</span>
+<span class="n">read</span><span class="p">(</span><span class="n">amt</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+<span class="s">'''Read at most amt bytes from the stream.
+If the amt argument is omitted, read all data.'''</span>
+<span class="n">set_socket_timeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+<span class="s">'''Set the timeout seconds on the socket.'''</span>
 </code></pre></div></div>
 
 <p>즉, <code class="language-plaintext highlighter-rouge">s3.Object.get()</code>를 통해  얻어진 <code class="language-plaintext highlighter-rouge">StreamingBody</code>객체는 <code class="language-plaintext highlighter-rouge">s3.Object</code> 를 호출한 결과물입니다. 그리고 해당 객체는 file-like object로 보여집니다. <code class="language-plaintext highlighter-rouge">read()</code> 함수를 정의하고 있기 때문입니다.</p>
@@ -346,18 +349,19 @@ AttributeError: 'StreamingBody' object has no attribute 'seek'
 
 <p><code class="language-plaintext highlighter-rouge">class.io.IOBase</code>에서 이를 확인할 수 있습니다.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>seek(offset, whence=SEEK_SET)
-스트림 위치를 지정된 바이트 offset으로 변경합니다. offset은 whence가 가리키는 위치를 기준으로 해석됩니다. whence의 기본값은 SEEK_SET입니다. whence의 값은 다음과 같습니다:
+<blockquote>
+  <p>seek(offset, whence=SEEK_SET)
+스트림 위치를 지정된 바이트 offset으로 변경합니다. offset은 whence가 가리키는 위치를 기준으로 해석됩니다. whence의 기본값은 SEEK_SET입니다. whence의 값은 다음과 같습니다:</p>
 
-SEEK_SET 또는 0 – 스트림의 시작(기본값); offset은 0이거나 양수여야 합니다
+  <p>SEEK_SET 또는 0 – 스트림의 시작(기본값); offset은 0이거나 양수여야 합니다</p>
 
-SEEK_CUR 또는 1 – 현재 스트림 위치; offset은 음수일 수 있습니다
+  <p>SEEK_CUR 또는 1 – 현재 스트림 위치; offset은 음수일 수 있습니다</p>
 
-SEEK_END 또는 2 – 스트림의 끝; offset은 일반적으로 음수입니다
+  <p>SEEK_END 또는 2 – 스트림의 끝; offset은 일반적으로 음수입니다</p>
 
-seekable()
-스트림이 무작위 액세스를 지원하면 True를 반환합니다. False이면, seek(), tell() 및 truncate()가 OSError를 발생시킵니다.
-</code></pre></div></div>
+  <p>seekable()
+스트림이 무작위 액세스를 지원하면 True를 반환합니다. False이면, seek(), tell() 및 truncate()가 OSError를 발생시킵니다.</p>
+</blockquote>
 
 <p>이를 참고하여, 새로운 클래스를 정의해봅니다</p>
 
@@ -415,11 +419,12 @@ NotImplementedError
 
 <p><code class="language-plaintext highlighter-rouge">read</code> 를 구현해주어야할 것 같습니다. <code class="language-plaintext highlighter-rouge">io.RawIOBase</code> 를 보면 이 함수의 역할은 다음과 같다고 합니다.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>read(size=-1)
+<blockquote>
+  <p>read(size=-1)
 객체에서 최대 size 바이트를 읽고 반환합니다. 편의상, size가 지정되지 않거나 -1이면, EOF까지의 모든 바이트가 반환됩니다. 그렇지 않으면, 하나의 시스템 호출만 수행됩니다. 운영 체제 시스템 호출이 size 바이트 미만을 반환하면 size 바이트 미만이 반환될 수 있습니다.
 0바이트가 반환되고, size가 0이 아니면, 파일의 끝을 나타냅니다. 객체가 비 블로킹 모드이고 사용 가능한 바이트가 없으면 None이 반환됩니다.
-기본 구현은 readall()과 readinto()로 위임합니다.
-</code></pre></div></div>
+기본 구현은 readall()과 readinto()로 위임합니다.</p>
+</blockquote>
 
 <p>이제 <code class="language-plaintext highlighter-rouge">ZipFile</code> 에서 파일을 읽기 위해 필요한 <code class="language-plaintext highlighter-rouge">read</code>함수를 구현해봅니다.</p>
 

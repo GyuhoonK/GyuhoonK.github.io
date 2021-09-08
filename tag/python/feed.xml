@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/tag/python/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-09-06T00:55:12+09:00</updated>
+  <updated>2021-09-09T00:41:04+09:00</updated>
   <id>http://localhost:4000/tag/python/feed.xml</id>
 
   
@@ -134,20 +134,20 @@
 This provides a few additional conveniences that do not exist in the urllib3 model:
 Set the timeout on the socket (i.e read() timeouts)
 Auto validation of content length, if the amount of bytes we read does not match the content length, an exception is raised.'''&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;'''Close the underlying http response stream.'''&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;iter_chunks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chunk_size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;'''Return an iterator to yield chunks of chunk_size bytes from the raw stream.'''&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;iter_lines&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chunk_size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;keepends&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;'''Return an iterator to yield lines from the raw stream.
-  This is achieved by reading chunk of bytes (of size chunk_size) at a time from the raw stream, and then yielding lines from there.'''&lt;/span&gt;
-  &lt;span class=&quot;nb&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;'''Return the next 1k chunk from the raw stream.'''&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;amt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;'''Read at most amt bytes from the stream.
-  If the amt argument is omitted, read all data.'''&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;set_socket_timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;s&quot;&gt;'''Set the timeout seconds on the socket.'''&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'''Close the underlying http response stream.'''&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;iter_chunks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chunk_size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'''Return an iterator to yield chunks of chunk_size bytes from the raw stream.'''&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;iter_lines&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;chunk_size&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;keepends&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'''Return an iterator to yield lines from the raw stream.
+This is achieved by reading chunk of bytes (of size chunk_size) at a time from the raw stream, and then yielding lines from there.'''&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'''Return the next 1k chunk from the raw stream.'''&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;amt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'''Read at most amt bytes from the stream.
+If the amt argument is omitted, read all data.'''&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;set_socket_timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'''Set the timeout seconds on the socket.'''&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;즉, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s3.Object.get()&lt;/code&gt;를 통해  얻어진 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StreamingBody&lt;/code&gt;객체는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s3.Object&lt;/code&gt; 를 호출한 결과물입니다. 그리고 해당 객체는 file-like object로 보여집니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read()&lt;/code&gt; 함수를 정의하고 있기 때문입니다.&lt;/p&gt;
@@ -195,18 +195,19 @@ AttributeError: 'StreamingBody' object has no attribute 'seek'
 
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;class.io.IOBase&lt;/code&gt;에서 이를 확인할 수 있습니다.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;seek(offset, whence=SEEK_SET)
-스트림 위치를 지정된 바이트 offset으로 변경합니다. offset은 whence가 가리키는 위치를 기준으로 해석됩니다. whence의 기본값은 SEEK_SET입니다. whence의 값은 다음과 같습니다:
+&lt;blockquote&gt;
+  &lt;p&gt;seek(offset, whence=SEEK_SET)
+스트림 위치를 지정된 바이트 offset으로 변경합니다. offset은 whence가 가리키는 위치를 기준으로 해석됩니다. whence의 기본값은 SEEK_SET입니다. whence의 값은 다음과 같습니다:&lt;/p&gt;
 
-SEEK_SET 또는 0 – 스트림의 시작(기본값); offset은 0이거나 양수여야 합니다
+  &lt;p&gt;SEEK_SET 또는 0 – 스트림의 시작(기본값); offset은 0이거나 양수여야 합니다&lt;/p&gt;
 
-SEEK_CUR 또는 1 – 현재 스트림 위치; offset은 음수일 수 있습니다
+  &lt;p&gt;SEEK_CUR 또는 1 – 현재 스트림 위치; offset은 음수일 수 있습니다&lt;/p&gt;
 
-SEEK_END 또는 2 – 스트림의 끝; offset은 일반적으로 음수입니다
+  &lt;p&gt;SEEK_END 또는 2 – 스트림의 끝; offset은 일반적으로 음수입니다&lt;/p&gt;
 
-seekable()
-스트림이 무작위 액세스를 지원하면 True를 반환합니다. False이면, seek(), tell() 및 truncate()가 OSError를 발생시킵니다.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;p&gt;seekable()
+스트림이 무작위 액세스를 지원하면 True를 반환합니다. False이면, seek(), tell() 및 truncate()가 OSError를 발생시킵니다.&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;p&gt;이를 참고하여, 새로운 클래스를 정의해봅니다&lt;/p&gt;
 
@@ -264,11 +265,12 @@ NotImplementedError
 
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read&lt;/code&gt; 를 구현해주어야할 것 같습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;io.RawIOBase&lt;/code&gt; 를 보면 이 함수의 역할은 다음과 같다고 합니다.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;read(size=-1)
+&lt;blockquote&gt;
+  &lt;p&gt;read(size=-1)
 객체에서 최대 size 바이트를 읽고 반환합니다. 편의상, size가 지정되지 않거나 -1이면, EOF까지의 모든 바이트가 반환됩니다. 그렇지 않으면, 하나의 시스템 호출만 수행됩니다. 운영 체제 시스템 호출이 size 바이트 미만을 반환하면 size 바이트 미만이 반환될 수 있습니다.
 0바이트가 반환되고, size가 0이 아니면, 파일의 끝을 나타냅니다. 객체가 비 블로킹 모드이고 사용 가능한 바이트가 없으면 None이 반환됩니다.
-기본 구현은 readall()과 readinto()로 위임합니다.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+기본 구현은 readall()과 readinto()로 위임합니다.&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;p&gt;이제 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt; 에서 파일을 읽기 위해 필요한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read&lt;/code&gt;함수를 구현해봅니다.&lt;/p&gt;
 
