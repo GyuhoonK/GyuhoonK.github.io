@@ -8,6 +8,20 @@
     
       
       <item>
+        <title>HiveQL</title>
+        
+          <description>
+</description>
+        
+        <pubDate>Thu, 16 Sep 2021 22:30:00 +0900</pubDate>
+        <link>
+        http://localhost:4000/hive-query</link>
+        <guid isPermaLink="true">http://localhost:4000/hive-query</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Connection to DataBase in Python, R</title>
         
           <description>&lt;p&gt;python, R에서 Database Server와 연결하기&lt;/p&gt;
@@ -18,20 +32,6 @@
         <link>
         http://localhost:4000/pyodbc-and-pyhive</link>
         <guid isPermaLink="true">http://localhost:4000/pyodbc-and-pyhive</guid>
-      </item>
-      
-    
-      
-      <item>
-        <title>spark</title>
-        
-          <description>&lt;p&gt;First Spark Posting&lt;/p&gt;
-</description>
-        
-        <pubDate>Wed, 01 Sep 2021 22:30:00 +0900</pubDate>
-        <link>
-        http://localhost:4000/spark</link>
-        <guid isPermaLink="true">http://localhost:4000/spark</guid>
       </item>
       
     
@@ -61,6 +61,20 @@
         <link>
         http://localhost:4000/python</link>
         <guid isPermaLink="true">http://localhost:4000/python</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>spark</title>
+        
+          <description>&lt;p&gt;First Spark Posting&lt;/p&gt;
+</description>
+        
+        <pubDate>Wed, 01 Sep 2021 22:30:00 +0900</pubDate>
+        <link>
+        http://localhost:4000/spark</link>
+        <guid isPermaLink="true">http://localhost:4000/spark</guid>
       </item>
       
     

@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-09-09T00:41:04+09:00</updated>
+  <updated>2021-09-25T19:24:04+09:00</updated>
   <id>http://localhost:4000/author/GyuhoonK/feed.xml</id>
 
   
@@ -30,6 +30,40 @@
   
   
 
+  
+    <entry>
+      <title type="html">HiveQL</title>
+      <link href="http://localhost:4000/hive-query" rel="alternate" type="text/html" title="HiveQL" />
+      <published>2021-09-16T22:30:00+09:00</published>
+      <updated>2021-09-16T22:30:00+09:00</updated>
+      <id>http://localhost:4000/hive-query</id>
+      <content type="html" xml:base="http://localhost:4000/hive-query"></content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html"></summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">Connection to DataBase in Python, R</title>
@@ -533,6 +567,40 @@ SQLSETPOSIROW Size.: 8
     </entry>
   
     <entry>
+      <title type="html">spark</title>
+      <link href="http://localhost:4000/spark" rel="alternate" type="text/html" title="spark" />
+      <published>2021-09-01T22:30:00+09:00</published>
+      <updated>2021-09-01T22:30:00+09:00</updated>
+      <id>http://localhost:4000/spark</id>
+      <content type="html" xml:base="http://localhost:4000/spark">&lt;p&gt;First Spark Posting&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html">First Spark Posting</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
       <title type="html">AWS S3, object zip</title>
       <link href="http://localhost:4000/python" rel="alternate" type="text/html" title="AWS S3, object zip" />
       <published>2021-09-01T22:30:00+09:00</published>
@@ -931,40 +999,6 @@ NotImplementedError
 
       
         <summary type="html">First Scala Posting</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">spark</title>
-      <link href="http://localhost:4000/spark" rel="alternate" type="text/html" title="spark" />
-      <published>2021-09-01T22:30:00+09:00</published>
-      <updated>2021-09-01T22:30:00+09:00</updated>
-      <id>http://localhost:4000/spark</id>
-      <content type="html" xml:base="http://localhost:4000/spark">&lt;p&gt;First Spark Posting&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="spark" />
-      
-
-      
-        <summary type="html">First Spark Posting</summary>
       
 
       
