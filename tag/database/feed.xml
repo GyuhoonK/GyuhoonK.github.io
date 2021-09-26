@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom" >
+  <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
+  <link href="http://localhost:4000/tag/database/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2021-09-27T00:38:11+09:00</updated>
+  <id>http://localhost:4000/tag/database/feed.xml</id>
+
+  
+  
+  
+
+  
+    <title type="html">Gyuhoon Kim | </title>
+  
+
+  
+    <subtitle>about Data</subtitle>
+  
+
+  
+
+  
+    
+      
+    
+  
+
+  
+  
+
+  
+    <entry>
+      <title type="html">Connection to DataBase in Python, R</title>
+      <link href="http://localhost:4000/connect-to-database" rel="alternate" type="text/html" title="Connection to DataBase in Python, R" />
+      <published>2021-09-06T22:30:00+09:00</published>
+      <updated>2021-09-06T22:30:00+09:00</updated>
+      <id>http://localhost:4000/connect-to-database</id>
+      <content type="html" xml:base="http://localhost:4000/connect-to-database">&lt;p&gt;python, R에서 Database Server와 연결하기&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/odbc-architecture.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;위 그림처럼 Database Server와 연결하기 위해서는 1. Driver Manager 혹은 2. DSN(Data Source Name)을 알아야합니다.&lt;/p&gt;
+
+&lt;p&gt;Driver Manager와 DSN이 무엇인지 하나씩 알아보겠습니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;driver-manager--driver&quot;&gt;Driver Manager &amp;amp; Driver&lt;/h1&gt;
+
+&lt;p&gt;oracle에서는  Driver Manager를 다음과 같이 정의하고 있습니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The Driver Manager is a library that manages communication between application and driver or drivers. It performs the following tasks:&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;p&gt;Resolves Data Source Names (DSN). The DSN is a configuration string that identifies a given database driver, database, database host and optionally authentication information that enables an ODBC application to connect to a database using a standardized reference.&lt;/p&gt;
+
+      &lt;p&gt;Because the database connectivity information is identified by the DSN, any ODBC-compliant application can connect to the data source using the same DSN reference. This eliminates the need to separately configure each application that needs access to a given database; instead you instruct the application to use a pre-configured DSN.&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;p&gt;Loading and unloading of the driver required to access a specific database as defined within the DSN. For example, if you have configured a DSN that connects to a MySQL database then the driver manager will load the Connector/ODBC driver to enable the ODBC API to communicate with the MySQL host.&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;p&gt;Processes ODBC function calls or passes them to the driver for processing.&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;나아가  ODBC Driver Manager에 대한 정의는 다음과 같습니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;An ODBC Driver Manager is a library that manages communication between the ODBC-aware application and any drivers. Its main functionality includes:&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;Resolving Data Source Names (DSN).&lt;/li&gt;
+    &lt;li&gt;Driver loading and unloading.&lt;/li&gt;
+    &lt;li&gt;Processing ODBC function calls or passing them to the driver.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;p&gt;Most ODBC Driver Manager implementations also include an administration application that makes the configuration of DSN and drivers easier. Examples and information on ODBC Driver Managers for different operating systems are listed below:&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;Windows: Microsoft Windows ODBC Driver Manager (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;odbc32.dll&lt;/code&gt;). It is included in the Windows operating system. See http://support.microsoft.com/kb/110093 for more information.&lt;/li&gt;
+    &lt;li&gt;macOS: ODBC Administrator is a GUI application for macOS. It provides a simplified configuration mechanism for the iODBC Driver Manager. You can configure DSN and driver information either through ODBC Administrator or through the iODBC configuration files. This also means that you can test ODBC Administrator configurations using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;iodbctest&lt;/code&gt; command. See http://support.apple.com/kb/DL895 for more information.&lt;/li&gt;
+    &lt;li&gt;Unix:
+      &lt;ul&gt;
+        &lt;li&gt;unix ODBC Driver Manager for Unix (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;libodbc.so&lt;/code&gt;). See &lt;a href=&quot;http://www.unixodbc.org/&quot;&gt;http://www.unixodbc.org&lt;/a&gt;, for more information.&lt;/li&gt;
+        &lt;li&gt;iODBC Driver Manager for Unix (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;libiodbc.so&lt;/code&gt;). See &lt;a href=&quot;http://www.iodbc.org/&quot;&gt;http://www.iodbc.org&lt;/a&gt;, for more information.&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;조금 긴 설명이지만 핵심만 요약하자면, Driver Manager는 크게 세 가지 역할을 하고 있습니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;DSN을 다룬다(resolve)&lt;/li&gt;
+  &lt;li&gt;특정 DB에 접근하기 위해 필요한 Driver를 로딩/언로딩한다&lt;/li&gt;
+  &lt;li&gt;ODBC 함수를 처리하거나, Driver에게 전달한다&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;그리고 운영체제별로 서로 다른 Driver Manager를 사용합니다(Windows - MicroSoft Windows ODBC Driver Manager, macOS - ODBC Administrator/iODBC Driver Manager, Unix - UnixODBC Driver Manager for Unix/iODBC Driver Manager for Unix).&lt;/p&gt;
+
+&lt;p&gt;DSN은 나중에 알아보기로 하고, 여기서 말하는 Driver란 무엇일까요?&lt;/p&gt;
+
+&lt;p&gt;IBM에서 ODBC Driver에 대한 정의를 찾아보았습니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;ODBC drivers&lt;/p&gt;
+
+  &lt;p&gt;An ODBC driver uses a layer of code that translates the ODBC standard API calls that the application issues into vendor-specific functions. IBM Netezza supplies an ODBC driver for many supported platforms (32 bit and 64 bit) and for many different versions of the Netezza database.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;ODBC driver는 Application에서 요청한  API를 지정된 함수로 치환해주는 역할을 합니다.&lt;/p&gt;
+
+&lt;p&gt;위 내용을 도식화해보면 아래와 같습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/odbcmodel.gif&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;즉, Driver Manager는 적절한 Driver를 로딩하고, 로딩된 Driver는 Application에서 요구한 API를 적절한 함수로 치환하여 DB가 작업을 처리할 수 있게끔 전달합니다. 참고로, Driver Manager, ODBC Driver까지 Client가 설치하고 셋팅을 마친 상태여야합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/client-server.jpeg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;dsndata-source-name&quot;&gt;DSN(Data Source Name)&lt;/h1&gt;
+
+&lt;p&gt;그렇다면 DSN이란 무엇일까요. 이전 항목에서 DSN은 Driver Manager가 다루고 있다고만 설명했습니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;a data source name (DSN, sometimes known as a database source name, though “data sources” can comprise other repositories apart from databases) is a string that has an associated data structure used to describe a connection to a data source. Most commonly used in connection with ODBC, DSNs also exist for JDBC and for other data access mechanisms. The term often overlaps with “connection string”. Most systems do not make a distinction between DSNs or connection strings and the term can often be used interchangeably.&lt;/p&gt;
+
+  &lt;p&gt;DSN attributes may include, but are not limited to:&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;the name of the data source&lt;/li&gt;
+    &lt;li&gt;the location of the data source&lt;/li&gt;
+    &lt;li&gt;the name of a database driver which can access the data source&lt;/li&gt;
+    &lt;li&gt;a user ID for data access (if required)&lt;/li&gt;
+    &lt;li&gt;a user password for data access (if required)&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;DSN이란  data source(database)와의 연결을 정의하는 문자열이라는 설명입니다. 즉, 이를 통해 Driver Manager는 Driver, UID/PWD, read-only와 같은 연결에 필요한 정보들을 확인할 수 있습니다. 하지만, DSN은 DB 연결에 필요한 정보들이 정의되어있는 자료구조로서 connection string과는 구분되어야한다고 생각합니다.&lt;/p&gt;
+
+&lt;p&gt;DSN의 구분을 보면, connection string과 구분됨을 확실히 알 수 있습니다. DSN은 세 가지로 분류됩니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;p&gt;&lt;strong&gt;File DSNs&lt;/strong&gt; – stored in the filesystem with one DSN per file&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;System DSNs&lt;/strong&gt; – accessible by any and all processes and users of the system, stored in a centralized location (e.g., /etc/odbc.ini, /etc/odbc_file_dsns/&lt;filename&gt;)&lt;/filename&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;strong&gt;User DSNs&lt;/strong&gt; – accessible only by the user who created the DSN, stored in a user-specific location (e.g., ~/.odbc.ini, ~/odbc_file_dsns/&lt;filename&gt;)&lt;/filename&gt;&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;User DSN은 로컬에서 사용되고, System DSN은 하나의 서버에서 사용되며, File DSN은 파일로 저장된 DSN이라고 해석해도 무방할 것 같습니다.&lt;/p&gt;
+
+&lt;p&gt;System DSN, User DSN은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ini&lt;/code&gt; 확장자를 사용하여 관리됩니다.  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ini&lt;/code&gt;는 설정 파일에 사용되는 확장자입니다. File DSN은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DSN&lt;/code&gt; 확장자로 저장됩니다.&lt;/p&gt;
+
+&lt;p&gt;아래는 unix, maxOS에서 DSN(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;odbc.ini&lt;/code&gt;)의 예시입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# [DSN name]
+[MSSQLTest]
+Driver = ODBC Driver 17 for SQL Server
+# Server = [protocol:]server[,port]  
+Server = tcp:localhost,1433
+
+# Note:  
+# Port is not a valid keyword in the odbc.ini file  
+# for the Microsoft ODBC driver on Linux or macOS
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;각 운영체제에 맞는 Driver Manager를 이용하여 위와 같은 DSN을 설정할 수 있습니다. 해당 내용은 링크로 대체하겠습니다.&lt;/p&gt;
+
+&lt;p&gt;[Windows]&lt;a href=&quot;https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-windows.html&quot;&gt;https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-windows.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[Linux]&lt;a href=&quot;https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-linux.html&quot;&gt;https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-linux.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[macOS]&lt;a href=&quot;https://docs.oracle.com/cd/E17952_01/connector-odbc-en/connector-odbc-configuration-dsn-macos.html&quot;&gt;https://docs.oracle.com/cd/E17952_01/connector-odbc-en/connector-odbc-configuration-dsn-macos.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Linux, maxOS의 경우에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;odbc.ini&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;odbcinst.ini&lt;/code&gt; 가 존재합니다. 이 둘은 서로 다른 역할을 가지고 있습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://www.ibm.com/docs/en/SSGU8G_14.1.0/com.ibm.odbc.doc/ids_odbc_059.htm&quot;&gt;The odbcinst.ini file&lt;/a&gt;&lt;/strong&gt;
+The odbcinst.ini file has entries for all the installed drivers on your computer.&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Section&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Description&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Status&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;ODBC drivers&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;List of names of all the installed ODBC drivers&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Optional&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;ODBC driver specifications&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;List of driver attributes and values&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Optional&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;blockquote&gt;
+      &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://www.ibm.com/docs/en/SSGU8G_14.1.0/com.ibm.odbc.doc/ids_odbc_062.htm&quot;&gt;The odbc.ini file&lt;/a&gt;&lt;/strong&gt;
+The odbc.ini file is a sample data-source configuration information file.&lt;/p&gt;
+    &lt;/blockquote&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Section&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Description&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Statu&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;ODBC Data Sources&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;This section lists the DSNs and associates them with the name of the driver.&lt;br /&gt; You need to provide this section only if you use an ODBC driver manager from a third-party vendor.&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Required&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Data Source Specification&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Each DSN listed in the ODBC Data Sources section has a Data-Source Specification section that describes the DSN.&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Required&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;ODBC&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;This section lists ODBC tracing options.&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Optional&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;odbcinst.ini&lt;/code&gt; 파일은 ODBC driver에 대한 명세를 담고 있습니다. 아래와 같은 포맷으로 저장됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[ODBC Drivers]
+DataDirect 8.0 Oracle Wire Protocol=Installed
+
+[DataDirect 8.0 Oracle Wire Protocol]
+Driver=ODBCHOME/lib/ivora28.so
+APILevel=1
+ConnectFunctions=YYY
+DriverODBCVer=3.52
+FileUsage=0
+HelpRootDirectory=ODBCHOME/help/OracleHelp
+Setup=ODBCHOME/lib/ivora28.so
+SQLLevel=1
+
+[ODBC]
+#This section must contain values for DSN-less connections
+#if no odbc.ini file exists. If an odbc.ini file exists,
+#the values from that [ODBC] section are used.
+
+IANAAppCodePage=4
+InstallDir=ODBCHOME
+Trace=0
+TraceFile=odbctrace.out
+TraceDll=ODBCHOME/lib/ivtrc28.so
+ODBCTraceMaxFileSize=102400
+ODBCTraceMaxNumFiles=10
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이제 이 정보들을 이용해 python, R에서 데이터베이스와 연결하는 방법을 살펴봅니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;connection-to-database-in-python&quot;&gt;Connection to Database in Python&lt;/h1&gt;
+
+&lt;h2 id=&quot;pyodbc&quot;&gt;pyodbc&lt;/h2&gt;
+
+&lt;p&gt;데이터베이스와의 연결을 위해 가장 많이 사용되는 패키지입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pyodbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connstring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;autocommit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;readonly&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+               &lt;span class=&quot;n&quot;&gt;attrs_before&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;encoding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'utf-16le'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ansi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pyodbc.connect()&lt;/code&gt;는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;connstring&lt;/code&gt;, 즉 “ODBC connection string”을 local driver manager에게 전달합니다. connection string은 driver, udi, password와 같이 데이터베이스 연결에 필요한 정보들을 포함하고 있습니다.&lt;/p&gt;
+
+&lt;p&gt;위에서 살펴보았듯이, 1. Driver를 명시하여 연결하거나 2. 사전에 정의된 DSN을 이용하는 방법이 있습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Driver를 명시하여 연결&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;먼저 사용하고자 하는 Driver가 설치되어있는지 확인해야합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-powershell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Windows&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PS&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;C:\&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Get-OdbcDriver&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;# 설치되어있는 Driver 목록 출력&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Linux, MacOs&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@GyuhooncBookAir ~ % odbcinst &lt;span class=&quot;nt&quot;&gt;-j&lt;/span&gt;
+unixODBC 2.3.9
+DRIVERS............: /etc/odbcinst.ini
+SYSTEM DATA SOURCES: /etc/odbc.ini
+FILE DATA SOURCES..: /etc/ODBCDataSources
+USER DATA SOURCES..: /Users/gyuhoonkim/.odbc.ini
+SQLULEN Size.......: 8
+SQLLEN Size........: 8
+SQLSETPOSIROW Size.: 8
+&lt;span class=&quot;c&quot;&gt;# /etc/odbcinst.ini 를 조회하여 Driver 설치 목록 확인&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;ODBC Driver 17 for SQL Server가 설치되어있다고 가정하면, 아래와 같은 connection string을 인자로 전달하여 데이터베이스와 연결합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyodbc&lt;/span&gt; 
+&lt;span class=&quot;c1&quot;&gt;# Some other example server values are
+# server = 'localhost\sqlexpress' # for a named instance
+# server = 'myserver,port' # to specify an alternate port
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'tcp:myserver.database.windows.net'&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'mydb'&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'myusername'&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'mypassword'&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pyodbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DRIVER={ODBC Driver 17 for SQL Server};SERVER='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';DATABASE='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';UID='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';PWD='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                     &lt;span class=&quot;n&quot;&gt;autucommit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#쿼리 실행 결과
+&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pandas&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SHOW TABLES&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;#쿼리 실행
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
+INSERT INTO SalesLT.Product (Name, ProductNumber, StandardCost, ListPrice, SellStartDate) 
+VALUES (?,?,?,?,?)&quot;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;'SQL Server Express New 20'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'SQLEXPRESS New 20'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CURRENT_TIMESTAMP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rowcount&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;사전 정의된 DSN을 이용하여 연결&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Driver Manager를 통해 정의한 DSN을 전달하여 데이터베이스와 연결할 수 있습니다. 먼저, 정의된 DSN을 확인합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-powershell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Windows&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PS&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;C:\&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Get-OdbcDsn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;# DSN 목록을 출력&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Linux, MacOs&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@GyuhooncBookAir ~ % odbcinst &lt;span class=&quot;nt&quot;&gt;-j&lt;/span&gt;
+unixODBC 2.3.9
+DRIVERS............: /etc/odbcinst.ini
+SYSTEM DATA SOURCES: /etc/odbc.ini
+FILE DATA SOURCES..: /etc/ODBCDataSources
+USER DATA SOURCES..: /Users/gyuhoonkim/.odbc.ini
+SQLULEN Size.......: 8
+SQLLEN Size........: 8
+SQLSETPOSIROW Size.: 8
+&lt;span class=&quot;c&quot;&gt;# /etc/odbc.ini 를 조회하여 DSN 목록 확인&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;MYMSSQL1이라는 DSN이 존재한다고 가정해봅시다. 그리고 해당 DSN은 이미 uid, password 정보까지 포함하고 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pyodbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DSN=MYMSSQL1;schema=test'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;autocommit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# test schema에 연결
+# DSN 생성 시에 UserName, Password가 지정되어서 따로 적지 않아도 실행됨(설정에 따라 달라질 수 있음)
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이외에도 database에 특화된 PyMongo, PyMssql, PyHive 와 같은 패키지가 존재합니다. 사용 방법은 pyodbc와 크게 다르지 않기 때문에 각 패키지에 대한 예시는 생략하겠습니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;connection-to-database-in-r&quot;&gt;Connection to Database in R&lt;/h1&gt;
+
+&lt;p&gt;R은 몇 가지 패키지를 사용해서 데이터베이스와의 연결을 구현합니다. connection string을 조합하여 인자로 전달해야한다는 것은 python과 똑같습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-R highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Connection using Driver&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'tcp:myserver.database.windows.net'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'mydb'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'myusername'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'mypassword'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DBI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dbConnect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drv&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ODBC Driver 17 for SQL Server&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Connection using DSN&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'MYMSSQL1'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DBI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dbConnect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drv&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;R 패키지의 장점은 pyodbc가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cursor.execute(query)&lt;/code&gt; 만으로 테이블 적재, 드랍, 삽입을 수행해야하는 것에 비해, 쿼리를 작성하지 않아도  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;data.frame&lt;/code&gt; 을 데이터베이스에 적재하거나, 테이블을 삭제하는 등의 기능을 기본적으로 제공한다는 점입니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;func&lt;/th&gt;
+      &lt;th&gt;details&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbReadTable()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Copy data frames from database tables&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbWriteTable()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Copy data frames to database tables&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbCreateTable()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Create a table in the database&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbAppendTable()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Insert rows into a table&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbRemoveTable()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Remove a table from the database&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbListTables()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;List remote tables&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbListFields()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;List field names of a remote table&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbExistsTable()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Does a table exist?&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbListObjects()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;List remote objects&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sqlRownamesToColumn()&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sqlColumnToRownames()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;Convert row names back and forth between columns&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyodbc&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pandas&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# insert data from csv file into dataframe.
+# working directory for csv file: type &quot;pwd&quot; in Azure Data Studio or Linux
+# working directory in Windows c:\users\username
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_csv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;c:&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;username\department.csv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Some other example server values are
+# server = 'localhost\sqlexpress' # for a named instance
+# server = 'myserver,port' # to specify an alternate port
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'yourservername'&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'AdventureWorks'&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'yourpassword'&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pyodbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DRIVER={SQL Server};SERVER='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';DATABASE='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';UID='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';PWD='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Insert Dataframe into SQL Server:
+# 반복문을 통해 각 row를 INSERT
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iterrows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;INSERT INTO HumanResources.DepartmentTest (DepartmentID,Name,GroupName) values(?,?,?)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DepartmentID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GroupName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;commit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위와 같이 반복문을 이용해 각 row를 삽입하는 코드를 작성해야하는  pyodbc와 달리,&lt;/p&gt;
+
+&lt;div class=&quot;language-R highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'yourservername'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'AdventureWorks'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'yourpassword'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DBI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dbConnect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drv&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;SQL Server&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read.csv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;c:/user/username/department.csv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dbAppendTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'HumanResources.DepartmentTest'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;R에서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbAppendTable()&lt;/code&gt; 하나만으로 위 작업을 수행하게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;다음에는 hive, pyhive에 대해서 적어보겠습니다.&lt;/p&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://docs.oracle.com/database/&quot;&gt;https://docs.oracle.com/database/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.ibm.com/docs&quot;&gt;https://www.ibm.com/docs&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://docs.microsoft.com/ko-kr/sql/?view=sql-server-ver15&quot;&gt;https://docs.microsoft.com/ko-kr/sql/?view=sql-server-ver15&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/powershell/&quot;&gt;https://docs.microsoft.com/en-us/powershell/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://dbi.r-dbi.org/reference&quot;&gt;https://dbi.r-dbi.org/reference&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="database" />
+      
+
+      
+        <summary type="html">python, R에서 Database Server와 연결하기</summary>
+      
+
+      
+      
+    </entry>
+  
+</feed>

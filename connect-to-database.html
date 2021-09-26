@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>Connection to DataBase in Python, R</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    <meta name="description" content="about Data" />
+    <link rel="shortcut icon" href="http://localhost:4000/assets/built/images/favicon.jpg" type="image/png" />
+    <link rel="canonical" href="http://localhost:4000/connect-to-database" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Connection to DataBase in Python, R" />
+    <meta property="og:description" content="python, R에서 Database Server와 연결하기 위 그림처럼 Database Server와 연결하기 위해서는 1. Driver Manager 혹은 2. DSN(Data Source Name)을 알아야합니다. Driver Manager와 DSN이 무엇인지 하나씩 알아보겠습니다. Driver Manager &amp; Driver oracle에서는 Driver Manager를 다음과 같이 정의하고 있습니다. The Driver Manager is a library that manages communication between application and driver" />
+    <meta property="og:url" content="http://localhost:4000/connect-to-database" />
+    <meta property="og:image" content="http://localhost:4000/assets/built/images/python-sql.png" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2021-09-06T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2021-09-06T22:30:00+09:00" />
+    <meta property="article:tag" content="Database" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Connection to DataBase in Python, R" />
+    <meta name="twitter:description" content="python, R에서 Database Server와 연결하기 위 그림처럼 Database Server와 연결하기 위해서는 1. Driver Manager 혹은 2. DSN(Data Source Name)을 알아야합니다. Driver Manager와 DSN이 무엇인지 하나씩 알아보겠습니다. Driver Manager &amp; Driver oracle에서는 Driver Manager를 다음과 같이 정의하고 있습니다. The Driver Manager is a library that manages communication between application and driver" />
+    <meta name="twitter:url" content="http://localhost:4000/" />
+    <meta name="twitter:image" content="http://localhost:4000/assets/built/images/python-sql.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Database" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "http://localhost:4000/"
+    },
+    "url": "http://localhost:4000/connect-to-database",
+    "image": {
+        "@type": "ImageObject",
+        "url": "http://localhost:4000/assets/built/images/python-sql.png",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "http://localhost:4000/connect-to-database"
+    },
+    "description": "python, R에서 Database Server와 연결하기 위 그림처럼 Database Server와 연결하기 위해서는 1. Driver Manager 혹은 2. DSN(Data Source Name)을 알아야합니다. Driver Manager와 DSN이 무엇인지 하나씩 알아보겠습니다. Driver Manager &amp; Driver oracle에서는 Driver Manager를 다음과 같이 정의하고 있습니다. The Driver Manager is a library that manages communication between application and driver"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="Connection to DataBase in Python, R" href="/feed.xml" />
+
+
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="http://localhost:4000/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-database post tag-database ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime=" 6 September 2021"> 6 September 2021</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/database/'>DATABASE</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">Connection to DataBase in Python, R</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/python-sql.png)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>python, R에서 Database Server와 연결하기</p>
+
+<p><img src="../../assets/built/images/odbc-architecture.png" alt="image" /></p>
+
+<p>위 그림처럼 Database Server와 연결하기 위해서는 1. Driver Manager 혹은 2. DSN(Data Source Name)을 알아야합니다.</p>
+
+<p>Driver Manager와 DSN이 무엇인지 하나씩 알아보겠습니다.</p>
+
+<h1 id="driver-manager--driver">Driver Manager &amp; Driver</h1>
+
+<p>oracle에서는  Driver Manager를 다음과 같이 정의하고 있습니다.</p>
+
+<blockquote>
+  <p>The Driver Manager is a library that manages communication between application and driver or drivers. It performs the following tasks:</p>
+
+  <ul>
+    <li>
+      <p>Resolves Data Source Names (DSN). The DSN is a configuration string that identifies a given database driver, database, database host and optionally authentication information that enables an ODBC application to connect to a database using a standardized reference.</p>
+
+      <p>Because the database connectivity information is identified by the DSN, any ODBC-compliant application can connect to the data source using the same DSN reference. This eliminates the need to separately configure each application that needs access to a given database; instead you instruct the application to use a pre-configured DSN.</p>
+    </li>
+    <li>
+      <p>Loading and unloading of the driver required to access a specific database as defined within the DSN. For example, if you have configured a DSN that connects to a MySQL database then the driver manager will load the Connector/ODBC driver to enable the ODBC API to communicate with the MySQL host.</p>
+    </li>
+    <li>
+      <p>Processes ODBC function calls or passes them to the driver for processing.</p>
+    </li>
+  </ul>
+</blockquote>
+
+<p>나아가  ODBC Driver Manager에 대한 정의는 다음과 같습니다.</p>
+
+<blockquote>
+  <p>An ODBC Driver Manager is a library that manages communication between the ODBC-aware application and any drivers. Its main functionality includes:</p>
+
+  <ul>
+    <li>Resolving Data Source Names (DSN).</li>
+    <li>Driver loading and unloading.</li>
+    <li>Processing ODBC function calls or passing them to the driver.</li>
+  </ul>
+
+  <p>Most ODBC Driver Manager implementations also include an administration application that makes the configuration of DSN and drivers easier. Examples and information on ODBC Driver Managers for different operating systems are listed below:</p>
+
+  <ul>
+    <li>Windows: Microsoft Windows ODBC Driver Manager (<code class="language-plaintext highlighter-rouge">odbc32.dll</code>). It is included in the Windows operating system. See http://support.microsoft.com/kb/110093 for more information.</li>
+    <li>macOS: ODBC Administrator is a GUI application for macOS. It provides a simplified configuration mechanism for the iODBC Driver Manager. You can configure DSN and driver information either through ODBC Administrator or through the iODBC configuration files. This also means that you can test ODBC Administrator configurations using the <code class="language-plaintext highlighter-rouge">iodbctest</code> command. See http://support.apple.com/kb/DL895 for more information.</li>
+    <li>Unix:
+      <ul>
+        <li>unix ODBC Driver Manager for Unix (<code class="language-plaintext highlighter-rouge">libodbc.so</code>). See <a href="http://www.unixodbc.org/">http://www.unixodbc.org</a>, for more information.</li>
+        <li>iODBC Driver Manager for Unix (<code class="language-plaintext highlighter-rouge">libiodbc.so</code>). See <a href="http://www.iodbc.org/">http://www.iodbc.org</a>, for more information.</li>
+      </ul>
+    </li>
+  </ul>
+</blockquote>
+
+<p>조금 긴 설명이지만 핵심만 요약하자면, Driver Manager는 크게 세 가지 역할을 하고 있습니다.</p>
+
+<ol>
+  <li>DSN을 다룬다(resolve)</li>
+  <li>특정 DB에 접근하기 위해 필요한 Driver를 로딩/언로딩한다</li>
+  <li>ODBC 함수를 처리하거나, Driver에게 전달한다</li>
+</ol>
+
+<p>그리고 운영체제별로 서로 다른 Driver Manager를 사용합니다(Windows - MicroSoft Windows ODBC Driver Manager, macOS - ODBC Administrator/iODBC Driver Manager, Unix - UnixODBC Driver Manager for Unix/iODBC Driver Manager for Unix).</p>
+
+<p>DSN은 나중에 알아보기로 하고, 여기서 말하는 Driver란 무엇일까요?</p>
+
+<p>IBM에서 ODBC Driver에 대한 정의를 찾아보았습니다.</p>
+
+<blockquote>
+  <p>ODBC drivers</p>
+
+  <p>An ODBC driver uses a layer of code that translates the ODBC standard API calls that the application issues into vendor-specific functions. IBM Netezza supplies an ODBC driver for many supported platforms (32 bit and 64 bit) and for many different versions of the Netezza database.</p>
+</blockquote>
+
+<p>ODBC driver는 Application에서 요청한  API를 지정된 함수로 치환해주는 역할을 합니다.</p>
+
+<p>위 내용을 도식화해보면 아래와 같습니다.</p>
+
+<p><img src="../../assets/built/images/odbcmodel.gif" alt="image" /></p>
+
+<p>즉, Driver Manager는 적절한 Driver를 로딩하고, 로딩된 Driver는 Application에서 요구한 API를 적절한 함수로 치환하여 DB가 작업을 처리할 수 있게끔 전달합니다. 참고로, Driver Manager, ODBC Driver까지 Client가 설치하고 셋팅을 마친 상태여야합니다.</p>
+
+<p><img src="../../assets/built/images/client-server.jpeg" alt="image" /></p>
+
+<h1 id="dsndata-source-name">DSN(Data Source Name)</h1>
+
+<p>그렇다면 DSN이란 무엇일까요. 이전 항목에서 DSN은 Driver Manager가 다루고 있다고만 설명했습니다.</p>
+
+<blockquote>
+  <p>a data source name (DSN, sometimes known as a database source name, though “data sources” can comprise other repositories apart from databases) is a string that has an associated data structure used to describe a connection to a data source. Most commonly used in connection with ODBC, DSNs also exist for JDBC and for other data access mechanisms. The term often overlaps with “connection string”. Most systems do not make a distinction between DSNs or connection strings and the term can often be used interchangeably.</p>
+
+  <p>DSN attributes may include, but are not limited to:</p>
+
+  <ul>
+    <li>the name of the data source</li>
+    <li>the location of the data source</li>
+    <li>the name of a database driver which can access the data source</li>
+    <li>a user ID for data access (if required)</li>
+    <li>a user password for data access (if required)</li>
+  </ul>
+</blockquote>
+
+<p>DSN이란  data source(database)와의 연결을 정의하는 문자열이라는 설명입니다. 즉, 이를 통해 Driver Manager는 Driver, UID/PWD, read-only와 같은 연결에 필요한 정보들을 확인할 수 있습니다. 하지만, DSN은 DB 연결에 필요한 정보들이 정의되어있는 자료구조로서 connection string과는 구분되어야한다고 생각합니다.</p>
+
+<p>DSN의 구분을 보면, connection string과 구분됨을 확실히 알 수 있습니다. DSN은 세 가지로 분류됩니다.</p>
+
+<blockquote>
+  <ul>
+    <li>
+      <p><strong>File DSNs</strong> – stored in the filesystem with one DSN per file</p>
+    </li>
+    <li><strong>System DSNs</strong> – accessible by any and all processes and users of the system, stored in a centralized location (e.g., /etc/odbc.ini, /etc/odbc_file_dsns/<filename>)</filename></li>
+    <li><strong>User DSNs</strong> – accessible only by the user who created the DSN, stored in a user-specific location (e.g., ~/.odbc.ini, ~/odbc_file_dsns/<filename>)</filename></li>
+  </ul>
+</blockquote>
+
+<p>User DSN은 로컬에서 사용되고, System DSN은 하나의 서버에서 사용되며, File DSN은 파일로 저장된 DSN이라고 해석해도 무방할 것 같습니다.</p>
+
+<p>System DSN, User DSN은 <code class="language-plaintext highlighter-rouge">ini</code> 확장자를 사용하여 관리됩니다.  <code class="language-plaintext highlighter-rouge">ini</code>는 설정 파일에 사용되는 확장자입니다. File DSN은 <code class="language-plaintext highlighter-rouge">DSN</code> 확장자로 저장됩니다.</p>
+
+<p>아래는 unix, maxOS에서 DSN(<code class="language-plaintext highlighter-rouge">odbc.ini</code>)의 예시입니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># [DSN name]
+[MSSQLTest]
+Driver = ODBC Driver 17 for SQL Server
+# Server = [protocol:]server[,port]  
+Server = tcp:localhost,1433
+
+# Note:  
+# Port is not a valid keyword in the odbc.ini file  
+# for the Microsoft ODBC driver on Linux or macOS
+</code></pre></div></div>
+
+<p>각 운영체제에 맞는 Driver Manager를 이용하여 위와 같은 DSN을 설정할 수 있습니다. 해당 내용은 링크로 대체하겠습니다.</p>
+
+<p>[Windows]<a href="https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-windows.html">https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-windows.html</a></p>
+
+<p>[Linux]<a href="https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-linux.html">https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-linux.html</a></p>
+
+<p>[macOS]<a href="https://docs.oracle.com/cd/E17952_01/connector-odbc-en/connector-odbc-configuration-dsn-macos.html">https://docs.oracle.com/cd/E17952_01/connector-odbc-en/connector-odbc-configuration-dsn-macos.html</a></p>
+
+<p>Linux, maxOS의 경우에 <code class="language-plaintext highlighter-rouge">odbc.ini</code>, <code class="language-plaintext highlighter-rouge">odbcinst.ini</code> 가 존재합니다. 이 둘은 서로 다른 역할을 가지고 있습니다.</p>
+
+<ul>
+  <li>
+    <blockquote>
+      <p><strong><a href="https://www.ibm.com/docs/en/SSGU8G_14.1.0/com.ibm.odbc.doc/ids_odbc_059.htm">The odbcinst.ini file</a></strong>
+The odbcinst.ini file has entries for all the installed drivers on your computer.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Section</th>
+      <th style="text-align: left">Description</th>
+      <th style="text-align: left">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">ODBC drivers</td>
+      <td style="text-align: left">List of names of all the installed ODBC drivers</td>
+      <td style="text-align: left">Optional</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ODBC driver specifications</td>
+      <td style="text-align: left">List of driver attributes and values</td>
+      <td style="text-align: left">Optional</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>
+    <blockquote>
+      <p><strong><a href="https://www.ibm.com/docs/en/SSGU8G_14.1.0/com.ibm.odbc.doc/ids_odbc_062.htm">The odbc.ini file</a></strong>
+The odbc.ini file is a sample data-source configuration information file.</p>
+    </blockquote>
+  </li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Section</th>
+      <th style="text-align: left">Description</th>
+      <th style="text-align: left">Statu</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">ODBC Data Sources</td>
+      <td style="text-align: left">This section lists the DSNs and associates them with the name of the driver.<br /> You need to provide this section only if you use an ODBC driver manager from a third-party vendor.</td>
+      <td style="text-align: left">Required</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Data Source Specification</td>
+      <td style="text-align: left">Each DSN listed in the ODBC Data Sources section has a Data-Source Specification section that describes the DSN.</td>
+      <td style="text-align: left">Required</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">ODBC</td>
+      <td style="text-align: left">This section lists ODBC tracing options.</td>
+      <td style="text-align: left">Optional</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><code class="language-plaintext highlighter-rouge">odbcinst.ini</code> 파일은 ODBC driver에 대한 명세를 담고 있습니다. 아래와 같은 포맷으로 저장됩니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[ODBC Drivers]
+DataDirect 8.0 Oracle Wire Protocol=Installed
+
+[DataDirect 8.0 Oracle Wire Protocol]
+Driver=ODBCHOME/lib/ivora28.so
+APILevel=1
+ConnectFunctions=YYY
+DriverODBCVer=3.52
+FileUsage=0
+HelpRootDirectory=ODBCHOME/help/OracleHelp
+Setup=ODBCHOME/lib/ivora28.so
+SQLLevel=1
+
+[ODBC]
+#This section must contain values for DSN-less connections
+#if no odbc.ini file exists. If an odbc.ini file exists,
+#the values from that [ODBC] section are used.
+
+IANAAppCodePage=4
+InstallDir=ODBCHOME
+Trace=0
+TraceFile=odbctrace.out
+TraceDll=ODBCHOME/lib/ivtrc28.so
+ODBCTraceMaxFileSize=102400
+ODBCTraceMaxNumFiles=10
+</code></pre></div></div>
+
+<p>이제 이 정보들을 이용해 python, R에서 데이터베이스와 연결하는 방법을 살펴봅니다.</p>
+
+<h1 id="connection-to-database-in-python">Connection to Database in Python</h1>
+
+<h2 id="pyodbc">pyodbc</h2>
+
+<p>데이터베이스와의 연결을 위해 가장 많이 사용되는 패키지입니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pyodbc</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="o">*</span><span class="n">connstring</span><span class="p">,</span> <span class="n">autocommit</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">readonly</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+               <span class="n">attrs_before</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">'utf-16le'</span><span class="p">,</span> <span class="n">ansi</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">pyodbc.connect()</code>는 <code class="language-plaintext highlighter-rouge">connstring</code>, 즉 “ODBC connection string”을 local driver manager에게 전달합니다. connection string은 driver, udi, password와 같이 데이터베이스 연결에 필요한 정보들을 포함하고 있습니다.</p>
+
+<p>위에서 살펴보았듯이, 1. Driver를 명시하여 연결하거나 2. 사전에 정의된 DSN을 이용하는 방법이 있습니다.</p>
+
+<ul>
+  <li>Driver를 명시하여 연결</li>
+</ul>
+
+<p>먼저 사용하고자 하는 Driver가 설치되어있는지 확인해야합니다.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Windows</span><span class="w">
+</span><span class="n">PS</span><span class="w"> </span><span class="nx">C:\</span><span class="err">&gt;</span><span class="w"> </span><span class="nx">Get-OdbcDriver</span><span class="w">
+</span><span class="c"># 설치되어있는 Driver 목록 출력</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Linux, MacOs</span>
+<span class="o">(</span>base<span class="o">)</span> gyuhoonkim@GyuhooncBookAir ~ % odbcinst <span class="nt">-j</span>
+unixODBC 2.3.9
+DRIVERS............: /etc/odbcinst.ini
+SYSTEM DATA SOURCES: /etc/odbc.ini
+FILE DATA SOURCES..: /etc/ODBCDataSources
+USER DATA SOURCES..: /Users/gyuhoonkim/.odbc.ini
+SQLULEN Size.......: 8
+SQLLEN Size........: 8
+SQLSETPOSIROW Size.: 8
+<span class="c"># /etc/odbcinst.ini 를 조회하여 Driver 설치 목록 확인</span>
+</code></pre></div></div>
+
+<p>ODBC Driver 17 for SQL Server가 설치되어있다고 가정하면, 아래와 같은 connection string을 인자로 전달하여 데이터베이스와 연결합니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pyodbc</span> 
+<span class="c1"># Some other example server values are
+# server = 'localhost\sqlexpress' # for a named instance
+# server = 'myserver,port' # to specify an alternate port
+</span><span class="n">server</span> <span class="o">=</span> <span class="s">'tcp:myserver.database.windows.net'</span> 
+<span class="n">database</span> <span class="o">=</span> <span class="s">'mydb'</span> 
+<span class="n">username</span> <span class="o">=</span> <span class="s">'myusername'</span> 
+<span class="n">password</span> <span class="o">=</span> <span class="s">'mypassword'</span> 
+<span class="n">cnxn</span> <span class="o">=</span> <span class="n">pyodbc</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'DRIVER={ODBC Driver 17 for SQL Server};SERVER='</span><span class="o">+</span><span class="n">server</span><span class="o">+</span><span class="s">';DATABASE='</span><span class="o">+</span><span class="n">database</span><span class="o">+</span><span class="s">';UID='</span><span class="o">+</span><span class="n">username</span><span class="o">+</span><span class="s">';PWD='</span><span class="o">+</span> <span class="n">password</span><span class="p">,</span>
+                     <span class="n">autucommit</span> <span class="o">=</span> <span class="bp">True</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">cnxn</span><span class="p">.</span><span class="n">cursor</span><span class="p">()</span>
+
+<span class="c1">#쿼리 실행 결과
+</span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_sql</span><span class="p">(</span><span class="s">"SHOW TABLES"</span><span class="p">,</span> <span class="n">cnxn</span><span class="p">)</span>
+
+<span class="c1">#쿼리 실행
+</span><span class="n">count</span> <span class="o">=</span> <span class="n">cursor</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="s">"""
+INSERT INTO SalesLT.Product (Name, ProductNumber, StandardCost, ListPrice, SellStartDate) 
+VALUES (?,?,?,?,?)"""</span><span class="p">,</span>
+<span class="s">'SQL Server Express New 20'</span><span class="p">,</span> <span class="s">'SQLEXPRESS New 20'</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">CURRENT_TIMESTAMP</span><span class="p">).</span><span class="n">rowcount</span>
+<span class="k">print</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>사전 정의된 DSN을 이용하여 연결</li>
+</ul>
+
+<p>Driver Manager를 통해 정의한 DSN을 전달하여 데이터베이스와 연결할 수 있습니다. 먼저, 정의된 DSN을 확인합니다.</p>
+
+<div class="language-powershell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Windows</span><span class="w">
+</span><span class="n">PS</span><span class="w"> </span><span class="nx">C:\</span><span class="err">&gt;</span><span class="w"> </span><span class="nx">Get-OdbcDsn</span><span class="w">
+</span><span class="c"># DSN 목록을 출력</span><span class="w">
+</span></code></pre></div></div>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Linux, MacOs</span>
+<span class="o">(</span>base<span class="o">)</span> gyuhoonkim@GyuhooncBookAir ~ % odbcinst <span class="nt">-j</span>
+unixODBC 2.3.9
+DRIVERS............: /etc/odbcinst.ini
+SYSTEM DATA SOURCES: /etc/odbc.ini
+FILE DATA SOURCES..: /etc/ODBCDataSources
+USER DATA SOURCES..: /Users/gyuhoonkim/.odbc.ini
+SQLULEN Size.......: 8
+SQLLEN Size........: 8
+SQLSETPOSIROW Size.: 8
+<span class="c"># /etc/odbc.ini 를 조회하여 DSN 목록 확인</span>
+</code></pre></div></div>
+
+<p>MYMSSQL1이라는 DSN이 존재한다고 가정해봅시다. 그리고 해당 DSN은 이미 uid, password 정보까지 포함하고 있습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cnxn</span> <span class="o">=</span> <span class="n">pyodbc</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'DSN=MYMSSQL1;schema=test'</span><span class="p">,</span> <span class="n">autocommit</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="c1"># test schema에 연결
+# DSN 생성 시에 UserName, Password가 지정되어서 따로 적지 않아도 실행됨(설정에 따라 달라질 수 있음)
+</span></code></pre></div></div>
+
+<p>이외에도 database에 특화된 PyMongo, PyMssql, PyHive 와 같은 패키지가 존재합니다. 사용 방법은 pyodbc와 크게 다르지 않기 때문에 각 패키지에 대한 예시는 생략하겠습니다.</p>
+
+<h1 id="connection-to-database-in-r">Connection to Database in R</h1>
+
+<p>R은 몇 가지 패키지를 사용해서 데이터베이스와의 연결을 구현합니다. connection string을 조합하여 인자로 전달해야한다는 것은 python과 똑같습니다.</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Connection using Driver</span><span class="w">
+</span><span class="n">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'tcp:myserver.database.windows.net'</span><span class="w"> 
+</span><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'mydb'</span><span class="w"> 
+</span><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'myusername'</span><span class="w"> 
+</span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'mypassword'</span><span class="w">
+</span><span class="n">conn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DBI</span><span class="o">::</span><span class="n">dbConnect</span><span class="p">(</span><span class="n">drv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">odbc</span><span class="o">::</span><span class="n">odbc</span><span class="p">(),</span><span class="w">
+                      </span><span class="n">driver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ODBC Driver 17 for SQL Server"</span><span class="p">,</span><span class="w">
+                      </span><span class="n">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">server</span><span class="p">,</span><span class="w">
+                      </span><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">database</span><span class="p">,</span><span class="w">
+                      </span><span class="n">uid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">username</span><span class="p">,</span><span class="w">
+                      </span><span class="n">pwd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">password</span><span class="p">)</span><span class="w">
+
+</span><span class="c1"># Connection using DSN</span><span class="w">
+</span><span class="n">dsn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'MYMSSQL1'</span><span class="w">
+</span><span class="n">conn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DBI</span><span class="o">::</span><span class="n">dbConnect</span><span class="p">(</span><span class="n">drv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">odbc</span><span class="o">::</span><span class="n">odbc</span><span class="p">(),</span><span class="w">
+                      </span><span class="n">dsn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dsn</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>R 패키지의 장점은 pyodbc가 <code class="language-plaintext highlighter-rouge">cursor.execute(query)</code> 만으로 테이블 적재, 드랍, 삽입을 수행해야하는 것에 비해, 쿼리를 작성하지 않아도  <code class="language-plaintext highlighter-rouge">data.frame</code> 을 데이터베이스에 적재하거나, 테이블을 삭제하는 등의 기능을 기본적으로 제공한다는 점입니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">func</th>
+      <th>details</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">dbReadTable()</code></td>
+      <td>Copy data frames from database tables</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">dbWriteTable()</code></td>
+      <td>Copy data frames to database tables</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">dbCreateTable()</code></td>
+      <td>Create a table in the database</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">dbAppendTable()</code></td>
+      <td>Insert rows into a table</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">dbRemoveTable()</code></td>
+      <td>Remove a table from the database</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">dbListTables()</code></td>
+      <td>List remote tables</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">dbListFields()</code></td>
+      <td>List field names of a remote table</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">dbExistsTable()</code></td>
+      <td>Does a table exist?</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">dbListObjects()</code></td>
+      <td>List remote objects</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="language-plaintext highlighter-rouge">sqlRownamesToColumn()</code> <code class="language-plaintext highlighter-rouge">sqlColumnToRownames()</code></td>
+      <td>Convert row names back and forth between columns</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">pyodbc</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="c1"># insert data from csv file into dataframe.
+# working directory for csv file: type "pwd" in Azure Data Studio or Linux
+# working directory in Windows c:\users\username
+</span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s">"c:</span><span class="se">\\</span><span class="s">user</span><span class="se">\\</span><span class="s">username\department.csv"</span><span class="p">)</span>
+<span class="c1"># Some other example server values are
+# server = 'localhost\sqlexpress' # for a named instance
+# server = 'myserver,port' # to specify an alternate port
+</span><span class="n">server</span> <span class="o">=</span> <span class="s">'yourservername'</span> 
+<span class="n">database</span> <span class="o">=</span> <span class="s">'AdventureWorks'</span> 
+<span class="n">username</span> <span class="o">=</span> <span class="s">'username'</span> 
+<span class="n">password</span> <span class="o">=</span> <span class="s">'yourpassword'</span> 
+<span class="n">cnxn</span> <span class="o">=</span> <span class="n">pyodbc</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="s">'DRIVER={SQL Server};SERVER='</span><span class="o">+</span><span class="n">server</span><span class="o">+</span><span class="s">';DATABASE='</span><span class="o">+</span><span class="n">database</span><span class="o">+</span><span class="s">';UID='</span><span class="o">+</span><span class="n">username</span><span class="o">+</span><span class="s">';PWD='</span><span class="o">+</span> <span class="n">password</span><span class="p">)</span>
+<span class="n">cursor</span> <span class="o">=</span> <span class="n">cnxn</span><span class="p">.</span><span class="n">cursor</span><span class="p">()</span>
+<span class="c1"># Insert Dataframe into SQL Server:
+# 반복문을 통해 각 row를 INSERT
+</span><span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="p">.</span><span class="n">iterrows</span><span class="p">():</span>
+    <span class="n">cursor</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="s">"INSERT INTO HumanResources.DepartmentTest (DepartmentID,Name,GroupName) values(?,?,?)"</span><span class="p">,</span> <span class="n">row</span><span class="p">.</span><span class="n">DepartmentID</span><span class="p">,</span> <span class="n">row</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span> <span class="n">row</span><span class="p">.</span><span class="n">GroupName</span><span class="p">)</span>
+<span class="n">cnxn</span><span class="p">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="n">cursor</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>위와 같이 반복문을 이용해 각 row를 삽입하는 코드를 작성해야하는  pyodbc와 달리,</p>
+
+<div class="language-R highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'yourservername'</span><span class="w"> 
+</span><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'AdventureWorks'</span><span class="w"> 
+</span><span class="n">username</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'username'</span><span class="w"> 
+</span><span class="n">password</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">'yourpassword'</span><span class="w"> 
+</span><span class="n">conn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DBI</span><span class="o">::</span><span class="n">dbConnect</span><span class="p">(</span><span class="n">drv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">odbc</span><span class="o">::</span><span class="n">odbc</span><span class="p">(),</span><span class="w">
+                      </span><span class="n">driver</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"SQL Server"</span><span class="p">,</span><span class="w">
+                      </span><span class="n">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">server</span><span class="p">,</span><span class="w">
+                      </span><span class="n">database</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">database</span><span class="p">,</span><span class="w">
+                      </span><span class="n">uid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">username</span><span class="p">,</span><span class="w">
+                      </span><span class="n">pwd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">password</span><span class="p">)</span><span class="w">
+</span><span class="n">df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read.csv</span><span class="p">(</span><span class="s2">"c:/user/username/department.csv"</span><span class="p">)</span><span class="w">
+</span><span class="n">dbAppendTable</span><span class="p">(</span><span class="n">conn</span><span class="p">,</span><span class="w"> </span><span class="n">df</span><span class="p">,</span><span class="w"> </span><span class="s1">'HumanResources.DepartmentTest'</span><span class="p">)</span><span class="w">
+</span></code></pre></div></div>
+
+<p>R에서는 <code class="language-plaintext highlighter-rouge">dbAppendTable()</code> 하나만으로 위 작업을 수행하게 됩니다.</p>
+
+<p>다음에는 hive, pyhive에 대해서 적어보겠습니다.</p>
+
+<p>[참고]</p>
+
+<p><a href="https://docs.oracle.com/database/">https://docs.oracle.com/database/</a></p>
+
+<p><a href="https://www.ibm.com/docs">https://www.ibm.com/docs</a></p>
+
+<p><a href="https://docs.microsoft.com/ko-kr/sql/?view=sql-server-ver15">https://docs.microsoft.com/ko-kr/sql/?view=sql-server-ver15</a></p>
+
+<p><a href="https://docs.microsoft.com/en-us/powershell/">https://docs.microsoft.com/en-us/powershell/</a></p>
+
+<p><a href="https://dbi.r-dbi.org/reference">https://dbi.r-dbi.org/reference</a></p>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/abraham.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            
+                <section class="post-full-comments">
+                    <div id="disqus_thread"></div>
+                    <script>
+                        var disqus_config = function () {
+                            var this_page_url = 'http://localhost:4000/connect-to-database';
+                            var this_page_identifier = '/connect-to-database';
+                            var this_page_title = 'Connection to DataBase in Python, R';
+                        };
+                        (function() {
+                            var d = document, s = d.createElement('script');
+                            s.src = 'https://xxxxxxxx.disqus.com/embed.js';
+                            s.setAttribute('data-timestamp', +new Date());
+                            (d.head || d.body).appendChild(s);
+                        })();
+                    </script>
+                </section>
+            
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/hive-query">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/hive-banner.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/hive-query">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">hive table create</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>HiveQL - CREATE QUERY 구조에 대하여
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/abraham.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      13 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/scala">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/scala-banner-post.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/scala">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Scala</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">scala</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>First Scala Posting
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/abraham.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      1 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="http://localhost:4000/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">Connection to DataBase in Python, R</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Connection+to+DataBase+in+Python%2C+R&amp;url=https://gyuhoonk.github.ioconnect-to-database"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.ioconnect-to-database"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="http://localhost:4000/">Gyuhoon Kim</a> &copy; 2021</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+
+</body>
+</html>
