@@ -1,471 +1,527 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-09-25T19:24:04+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>about Data</subtitle><entry><title type="html">HiveQL</title><link href="http://localhost:4000/hive-query" rel="alternate" type="text/html" title="HiveQL" /><published>2021-09-16T22:30:00+09:00</published><updated>2021-09-16T22:30:00+09:00</updated><id>http://localhost:4000/hive-query</id><content type="html" xml:base="http://localhost:4000/hive-query"></content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html"></summary></entry><entry><title type="html">Connection to DataBase in Python, R</title><link href="http://localhost:4000/pyodbc-and-pyhive" rel="alternate" type="text/html" title="Connection to DataBase in Python, R" /><published>2021-09-06T22:30:00+09:00</published><updated>2021-09-06T22:30:00+09:00</updated><id>http://localhost:4000/pyodbc-and-pyhive</id><content type="html" xml:base="http://localhost:4000/pyodbc-and-pyhive">&lt;p&gt;python, R에서 Database Server와 연결하기&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-09-27T00:34:57+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>about Data</subtitle><entry><title type="html">hive table create</title><link href="http://localhost:4000/hive-query" rel="alternate" type="text/html" title="hive table create" /><published>2021-09-16T22:30:00+09:00</published><updated>2021-09-16T22:30:00+09:00</updated><id>http://localhost:4000/hive-query</id><content type="html" xml:base="http://localhost:4000/hive-query">&lt;p&gt;HiveQL - CREATE QUERY 구조에 대하여&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/odbc-architecture.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;TEMPORARY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IF&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.]&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;table_name&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_type&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;column_constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])]&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;table_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PARTITIONED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_type&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)]&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CLUSTERED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)&lt;/span&gt; 
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SORTED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;ASC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;DESC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num_buckets&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BUCKETS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SKEWED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)&lt;/span&gt;                  &lt;span class=&quot;c1&quot;&gt;-- (Note: Available in Hive 0.10.0 and later)]&lt;/span&gt;
+     &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DIRECTORIES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;ROW&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FORMAT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row_format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; 
+   &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;file_format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+     &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'storage.handler.class.name'&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;WITH&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SERDEPROPERTIES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(...)]&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;-- (Note: Available in Hive 0.6.0 and later)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;LOCATION&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hdfs_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TBLPROPERTIES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;property_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;property_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)]&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;-- (Note: Available in Hive 0.6.0 and later)&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;select_statement&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;-- (Note: Available in Hive 0.5.0 and later; not supported for external tables)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;위 그림처럼 Database Server와 연결하기 위해서는 1. Driver Manager 혹은 2. DSN(Data Source Name)을 알아야합니다.&lt;/p&gt;
+&lt;p&gt;테이블을 생성하는 HiveQL은 위와 같은 포맷을 가집니다. 한줄 한줄 의미를 해석해보고자 합니다.&lt;/p&gt;
 
-&lt;p&gt;Driver Manager와 DSN이 무엇인지 하나씩 알아보겠습니다.&lt;/p&gt;
+&lt;h1 id=&quot;internal--external--temporary&quot;&gt;INTERNAL / EXTERNAL / TEMPORARY&lt;/h1&gt;
 
-&lt;h1 id=&quot;driver-manager--driver&quot;&gt;Driver Manager &amp;amp; Driver&lt;/h1&gt;
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;TEMPORARY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IF&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.]&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;table_name&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;oracle에서는  Driver Manager를 다음과 같이 정의하고 있습니다.&lt;/p&gt;
+&lt;p&gt;HIVE 테이블은 크게 3가지로 생성될 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;1. MANAGED(Internal)
+2. EXTERNAL
+3. TEMPORARY
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;EXTERNAL, TEMPORARY는 위 쿼리에서 하나를 선택해서 입력해주면 되고, MANAGED는 아무것도 입력하지 않고 그냥 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CREATE TABLE&lt;/code&gt;만 입력하는 경우입니다. 세 가지 테이블 형태는 어떻게 다른 것일까요.&lt;/p&gt;
+
+&lt;p&gt;Managed Table은 테이블(Hive)에 의해 데이터가 관리되고, External Table은 유저에 의해 데이터가 관리되어야한다는 점입니다(Hive assumes that it &lt;em&gt;owns&lt;/em&gt; the data for managed tables. its properties and data layout will and can only be changed via Hive command. For external tables Hive assumes that it does &lt;em&gt;not&lt;/em&gt; manage the data.)&lt;/p&gt;
+
+&lt;p&gt;따라서, Managed Table을 삭제하면 해당 데이터도 함께 삭제되지만, External Table은 삭제해도 테이블에 해당하는 데이터가 삭제되지 않고 Location에 남아있게됩니다. 따라서 테이블/데이터의 안전을 위해서는 External Table이 선호됩니다.&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;The Driver Manager is a library that manages communication between application and driver or drivers. It performs the following tasks:&lt;/p&gt;
+  &lt;h2 id=&quot;managed-tables&quot;&gt;Managed tables&lt;/h2&gt;
 
-  &lt;ul&gt;
-    &lt;li&gt;
-      &lt;p&gt;Resolves Data Source Names (DSN). The DSN is a configuration string that identifies a given database driver, database, database host and optionally authentication information that enables an ODBC application to connect to a database using a standardized reference.&lt;/p&gt;
+  &lt;p&gt;A managed table is stored under the &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Configuration+Properties#ConfigurationProperties-hive.metastore.warehouse.dir&quot;&gt;hive.metastore.warehouse.dir&lt;/a&gt; path property, by default in a folder path similar to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/user/hive/warehouse/databasename.db/tablename/&lt;/code&gt;. The default location can be overridden by the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;location&lt;/code&gt; property during table creation. If a managed table or partition is dropped, the data and metadata associated with that table or partition are deleted. If the PURGE option is not specified, the data is moved to a trash folder for a defined duration.&lt;/p&gt;
 
-      &lt;p&gt;Because the database connectivity information is identified by the DSN, any ODBC-compliant application can connect to the data source using the same DSN reference. This eliminates the need to separately configure each application that needs access to a given database; instead you instruct the application to use a pre-configured DSN.&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li&gt;
-      &lt;p&gt;Loading and unloading of the driver required to access a specific database as defined within the DSN. For example, if you have configured a DSN that connects to a MySQL database then the driver manager will load the Connector/ODBC driver to enable the ODBC API to communicate with the MySQL host.&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li&gt;
-      &lt;p&gt;Processes ODBC function calls or passes them to the driver for processing.&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ul&gt;
+  &lt;p&gt;Use managed tables when Hive should manage the lifecycle of the table, or when generating temporary tables.&lt;/p&gt;
+
+  &lt;h2 id=&quot;external-tables&quot;&gt;External tables&lt;/h2&gt;
+
+  &lt;p&gt;An external table describes the metadata / schema on external files. External table files can be accessed and managed by processes outside of Hive. External tables can access data stored in sources such as Azure Storage Volumes (ASV) or remote HDFS locations. If the structure or partitioning of an external table is changed, an &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Managed+vs.+External+Tables#Managedvs.ExternalTables-RecoverPartitions(MSCKREPAIRTABLE)&quot;&gt;MSCK REPAIR TABLE table_name&lt;/a&gt; statement can be used to refresh metadata information.&lt;/p&gt;
+
+  &lt;p&gt;Use external tables when files are already present or in remote locations, and the files should remain even if the table is dropped.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;나아가  ODBC Driver Manager에 대한 정의는 다음과 같습니다.&lt;/p&gt;
+&lt;p&gt;Temporary Table은 View에 가깝다고 보시면 됩니다. 해당 테이블은 세션이 종료되면 함께 삭제됩니다.&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;An ODBC Driver Manager is a library that manages communication between the ODBC-aware application and any drivers. Its main functionality includes:&lt;/p&gt;
+  &lt;p&gt;A table that has been created as a temporary table will only be visible to the current session. Data will be stored in the user’s scratch directory, and deleted at the end of the session.&lt;/p&gt;
+&lt;/blockquote&gt;
 
+&lt;h1 id=&quot;partitioned-by&quot;&gt;PARTITIONED BY&lt;/h1&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PARTITIONED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_type&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;테이블을 파티션하여 저장합니다. 예를 들어,  파티션이 지정되지 않은 경우에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/user/hive/warehouse/databasename.db/tablename/&lt;/code&gt; 라는 하나의 디렉토리에 저장되지만, 파티션을 지정할 경우 파일들을 지정한 컬럼 기준에 따라 디렉토리에 나누어 저장하게됩니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Partitioned tables can be created using the PARTITIONED BY clause. A table can have one or more partition columns and a separate data directory is created for each distinct value combination in the partition columns.&lt;/p&gt;
+
+&lt;/blockquote&gt;
+
+&lt;p&gt;PARTITIONED BY를 적용하는 경우와 적용하는 경우는 아래와 같이 저장 경로가 달라지게 됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;-- PARTITIONED BY 사용 안함&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page_view&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;viewTime&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;INT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;userid&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;BIGINT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;n&quot;&gt;page_url&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;referrer_url&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'IP Address of the User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'This is the page view table'&lt;/span&gt;
+ &lt;span class=&quot;c1&quot;&gt;-- PARTITIONED BY(country STRING)&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SEQUENCEFILE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- 아래 경로에 모든 파일이 저장됩니다.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/page_view/&lt;/span&gt;
+ 
+&lt;span class=&quot;c1&quot;&gt;-- PARTITIONED BY 사용&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page_view&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;viewTime&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;INT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;userid&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;BIGINT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;n&quot;&gt;page_url&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;referrer_url&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'IP Address of the User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'This is the page view table'&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;PARTITIONED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;country&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SEQUENCEFILE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- 아래 경로에 나누어 파일들이 저장됩니다.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/page_view/country='KOR'&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/page_view/country='USA'&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- ...&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;파티션을 적용하게 되면 테이블 조회에서 성능 향상을 얻을 수 있습니다. 예를 들어 아래와 같은 쿼리를 실행한다고 가정해보면&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-SQL&quot;&gt;SELECT 
+	*
+FROM
+	page_view
+WHERE country = 'KOR';
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;파티션이 없는 경우에는 해당 디렉토리(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/user/hive/warehouse/default.db/page_view/&lt;/code&gt;) 내의 모든 파일을 조회하여야합니다. 그러나 파티션이 적용된 테이블의 경우에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/user/hive/warehouse/default.db/page_view/country='KOR'&lt;/code&gt; 디렉토리만을 조회하면 WHERE 조건을 만족하게 됩니다. 따라서 적절한 컬럼을 선택하여 파티션해주는 것은 쿼리 성능 향상에 중요합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;dynamic--static-partition&quot;&gt;DYNAMIC / STATIC PARTITION&lt;/h2&gt;
+
+&lt;p&gt;파티션 테이블에 데이터 입력 시 DYNAMIC, STATIC이라는 두 가지 방법이 존재합니다.&lt;/p&gt;
+
+&lt;p&gt;간단하게 설명하면, DYNAMIC은 파티션 컬럼만을 지정해주면 해당 컬럼의 value에 따라 알아서 디렉토리를 생성하는 방법이고, STATIC은 해당 데이터를 저장할 디렉토리를 구체적으로 명시해주는 것입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;-- STATIC PARTITION&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page_view&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'JPN'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;temp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- 아래 디렉토리가 새로 생성됩니다&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/page_view/country='JPN'&lt;/span&gt;
+ 
+&lt;span class=&quot;c1&quot;&gt;-- DYNAMIC PARTITION&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;dynamic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nonstrict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- dynamic partition 허용 &lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page_view&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;temp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- country value에 따라 자동으로 디렉토리를 생성합니다&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/page_view/country='JPN'&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/page_view/country='CHN'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;clustered-by--sorted-by&quot;&gt;CLUSTERED BY / SORTED BY&lt;/h1&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;CLUSTERED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SORTED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;ASC&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;DESC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num_buckets&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BUCKETS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Bucketing과 관련된 옵션입니다. 지정된 칼럼을 해쉬 처리하여 미리 지정된 수의 파일(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;num_buckets&lt;/code&gt;)로 나누어 저장합니다. 지정된 칼럼을 기준으로 Join을 수행하는 경우에 소트 머지 버켓(SMB)으로 처리되어 성능이 향상됩니다. 파티션이 파일을 디렉토리로 나누어 저장하는 방법이라면, &lt;strong&gt;버켓팅은 데이터를 파일로 나누어 저장&lt;/strong&gt;합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SORTED BY&lt;/code&gt; 에 의해 전달된 컬럼을 기준으로 데이터를 정렬하여 저장합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page_view&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;viewTime&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;INT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;userid&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;BIGINT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;n&quot;&gt;page_url&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;referrer_url&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+     &lt;span class=&quot;n&quot;&gt;ip&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'IP Address of the User'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'This is the page view table'&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;PARTITIONED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;country&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;CLUSTERED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;userid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SORTED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;viewTime&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BUCKETS&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;ROW&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FORMAT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DELIMITED&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;FIELDS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TERMINATED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\0&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;01'&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;COLLECTION&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ITEMS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TERMINATED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\0&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;02'&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;MAP&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;KEYS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TERMINATED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\0&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;03'&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SEQUENCEFILE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- 아래 처럼 각 파티션 디렉토리에 num_buckets=32개의 파일로 나뉘어, viewTime 기준으로 정렬되어 저장됩니다.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/page_view/country='KOR'/000000_0 ~ 000000_31&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/page_view/country='USA'/000000_0 ~ 000000_31 &lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;skewed-by&quot;&gt;SKEWED BY&lt;/h1&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SKEWED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)&lt;/span&gt;                  &lt;span class=&quot;c1&quot;&gt;-- (Note: Available in Hive 0.10.0 and later)]&lt;/span&gt;
+     &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DIRECTORIES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;skewed(편향된) 데이터에 대응할 수 있는 옵션입니다. 말그대로, 어떤 컬럼에 특정 value를 가진 데이터가 많이 들어올 때 사용합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;This feature can be used to improve performance for tables where one or more columns have &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Skewed+Join+Optimization&quot;&gt;skewed&lt;/a&gt; values. By specifying the values that appear very often (heavy skew) Hive will split those out into separate files (or directories in case of &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/ListBucketing&quot;&gt;list bucketing&lt;/a&gt;) automatically and take this fact into account during queries so that it can skip or include the whole file (or directory in case of &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/ListBucketing&quot;&gt;list bucketing&lt;/a&gt;) if possible.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;만약, col1이 1~100까지 값이 존재하지만, 99%의 값이 1이라면 SKEWED BY를 사용하는 것이 유리합니다. 이 경우에 PARTITIONED BY를 사용하게 되면 100개의 디렉토리를 만들지만 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;col1=2&lt;/code&gt;~&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;col1=100&lt;/code&gt;까지의 파티션은 1% 데이터를 분류하기 위해 99개의 디렉토리가 생성됩니다. 반면, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SKEWED BY col1 ON (1)&lt;/code&gt; 은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;col1=1&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;col1!=1&lt;/code&gt; 2개의 디렉토리로 분류됩니다. 따라서 편향된 데이터의 경우 관리가 더 효율적입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;STORED AS DIRECTORIES&lt;/code&gt; 옵션을 지정해주면, 아래처럼 디렉토리를 따로 생성하여 저장하고, 지정하지 않으면 파일로 구분하여 저장합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;-- 1개 컬럼에 대해 SKEWED BY&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;list_bucket_single&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;SKEWED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;6&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DIRECTORIES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- PARTITION BY와 비슷하지만, 지정된 value에 대해서만 디렉토리를 생성하여 저장합니다.&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/list_bucket_single/key=1&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/list_bucket_single/key=5&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/list_bucket_single/key=6&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/list_bucket_single/HIVE_DEFAULT_LIST_BUCKETING_DIR_NAME&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;-- 2개 컬럼에 대해 SKEWED BY&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;list_bucket_multiple&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;SKEWED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'s1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'s3'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'s13'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'s78'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;78&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DIRECTORIES&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/list_bucket_multiple/col1='s1'/col2=1&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/list_bucket_multiple/col1='s3'/col2=3&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/list_bucket_multiple/col1='s13'/col2=13&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/list_bucket_multiple/col1='s78'/col2=78&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- /user/hive/warehouse/default.db/list_bucket_multiple/HIVE_DEFAULT_LIST_BUCKETING_DIR_NAME&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;row-format&quot;&gt;ROW FORMAT&lt;/h1&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;ROW&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FORMAT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row_format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;구분자(delimeter), 데이터 해석 방법(SerDe)에 대한 정보를 지정합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;delimeter&quot;&gt;Delimeter&lt;/h2&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;-- data.txt&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- a,val1^val2^val3,key1:val1^key2:val2&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tbl&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ARRAY&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+   &lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;MAP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+&lt;span class=&quot;k&quot;&gt;ROW&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FORMAT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DELIMITED&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;FIELDS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TERMINATED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;','&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- Field 구분자는 ','&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;COLLECTION&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ITEMS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TERMINATED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'^'&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- Collection Items 구분자는 '^'&lt;/span&gt;
+   &lt;span class=&quot;k&quot;&gt;MAP&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;KEYS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TERMINATED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;':'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- MAP KEYS 구분자는 :&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;data.txt&lt;/code&gt; 에 대하여 위와 같은 쿼리로 테이블을 생성하면 아래와 같은 테이블이 적재됩니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;a&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;{val1, val2, val3}&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;{key1:val1, key2:val2}&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;serde&quot;&gt;SerDe&lt;/h2&gt;
+
+&lt;p&gt;SerDe란 데이터 해석 방법을 말합니다. Serializer/Deserialaizer의 약자로 Hive가 데이터를 해석하는 방법을 제공하기 위한 수단입니다.&lt;/p&gt;
+
+&lt;p&gt;파일 내 데이터(HDFS Files)에 접근한 이후, 해당 데이터를 테이블로 적재하기 위해 Deserialaizer를 이용하여 Row Format으로 변환합니다. 반대로, 쿼리 결과인 Row들은 Serializer를 이용하여 파일 포맷으로 변환하여 파일로 export합니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;HDFS files –&amp;gt; InputFileFormat –&amp;gt; [key, value] –&amp;gt; &lt;strong&gt;Deserializer&lt;/strong&gt; –&amp;gt; Row object&lt;/li&gt;
+  &lt;li&gt;Row object –&amp;gt; &lt;strong&gt;Serializer&lt;/strong&gt; –&amp;gt; [key, value] –&amp;gt; OutputFileFormat –&amp;gt; HDFS files&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;기본 제공되는 SerDe는 다음 7개 입니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Avro, ORC, RegEx, Thrift, Parquet, CSV, JsonSerDe&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;위 7가지 SerDe는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;STORED AS&lt;/code&gt; 옵션에서 지정한 파일 옵션에 따라 자동으로 선택됩니다.&lt;/p&gt;
+
+&lt;p&gt;다음 쿼리를 통해 테이블에 지정된 SerDe를 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-SQL&quot;&gt;DESC formatted orc_tbl;
+SerDe Library:          org.apache.hadoop.hive.ql.io.orc.OrcSerde    
+InputFormat:            org.apache.hadoop.hive.ql.io.orc.OrcInputFormat  
+OutputFormat:           org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat   
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;기본 제공되는 7가지 SerDe, 즉 위 파일 포맷 외에 다른 형식의 파일 포맷의 데이터를 Deseiralize하여 테이블을 만들기 위해서는 Custom SerDe를 정의해야합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 데이터 확인&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;sample.txt
+david   23!
+cole    3!5
+anna    &lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;92
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Custom SerDe `SampleSerDe` 정의&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.apache.hadoop.hive.serde2.SerDeException&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.apache.hadoop.io.Text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.apache.hadoop.io.Writable&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// LazySimpleSerDe를 상속하여 custom SerDe를 정의&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SampleSerDe&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;extends&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;LazySimpleSerDe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;SampleSerDe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SerDeException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Object&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;doDeserialize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Writable&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;field&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;throws&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SerDeException&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;c1&quot;&gt;// 느낌표는 제거  &lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;temp&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;field&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;toString&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;replaceAll&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;!&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;super&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;doDeserialize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Text&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;temp&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;));&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Custom SerDe는 아래와 같은 방식으로 사용합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 클래스가 들어 있는 jar 파일 추가 &lt;/span&gt;
+hive&amp;gt; ADD JAR ./hiveUDF.jar&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 테이블 생성 시에 서데 정보 및 프로퍼티 정보 전달 &lt;/span&gt;
+hive&amp;gt; CREATE TABLE serde_tbl
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+  col1 STRING
+  , col2 STRING
+&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
+ROW FORMAT SERDE &lt;span class=&quot;s1&quot;&gt;'com.sec.hive.serde.SampleSerDe'&lt;/span&gt;
+WITH SERDEPROPERTIES &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;field.delim&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\t&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 샘플 데이터를 입력 &lt;/span&gt;
+hive&amp;gt; LOAD DATA LOCAL INPATH &lt;span class=&quot;s1&quot;&gt;'./sample.txt'&lt;/span&gt; INTO TABLE serde_tbl&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 데이터 조회 &lt;/span&gt;
+hive&amp;gt; &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; from serde_tbl&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+OK
+david   23
+cole    35
+anna    92
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;WITH SERDEPROPERTIES&lt;/code&gt;는 SerDe에서 지정되지 않은 구분자를 추가해줍니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-SQL&quot;&gt;ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'
+WITH SERDEPROPERTIES (
+  'serialization.format' = ',',
+  'field.delim' = ',',
+  'collection.delim' = '|',
+  'mapkey.delim' = ':',
+  'escape.delim' = '\\'
+)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&quot;stored-as&quot;&gt;STORED AS&lt;/h1&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-SQL&quot;&gt;[STORED AS file_format]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;기본적으로 아래 7가지 format을 제공합니다. 아래 file format은 SerDe도 함께 제공됩니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Storage Format&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;STORED AS TEXTFILE&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Stored as plain text files. TEXTFILE is the default file format, unless the configuration parameter &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Configuration+Properties#ConfigurationProperties-hive.default.fileformat&quot;&gt;hive.default.fileformat&lt;/a&gt; has a different setting.Use the DELIMITED clause to read delimited files.Enable escaping for the delimiter characters by using the ‘ESCAPED BY’ clause (such as ESCAPED BY ‘') Escaping is needed if you want to work with data that can contain these delimiter characters.  A custom NULL format can also be specified using the ‘NULL DEFINED AS’ clause (default is ‘\N’). (Hive 4.0) All BINARY columns in the table are assumed to be base64 encoded. To read the data as raw bytes:TBLPROPERTIES (“hive.serialization.decode.binary.as.base64”=”false”)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;STORED AS SEQUENCEFILE&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Stored as compressed Sequence File.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;STORED AS ORC&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Stored as &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/LanguageManual+ORC#LanguageManualORC-HiveQLSyntax&quot;&gt;ORC file format&lt;/a&gt;. Supports ACID Transactions &amp;amp; Cost-based Optimizer (CBO). Stores column-level metadata.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;STORED AS PARQUET&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Stored as Parquet format for the &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Parquet&quot;&gt;Parquet&lt;/a&gt; columnar storage format in &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Parquet#Parquet-Hive0.13andlater&quot;&gt;Hive 0.13.0 and later&lt;/a&gt;; Use ROW FORMAT SERDE … STORED AS INPUTFORMAT … OUTPUTFORMAT syntax … in &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Parquet#Parquet-Hive0.10-0.12&quot;&gt;Hive 0.10, 0.11, or 0.12&lt;/a&gt;.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;STORED AS AVRO&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Stored as Avro format in &lt;a href=&quot;https://issues.apache.org/jira/browse/HIVE-6806&quot;&gt;Hive 0.14.0 and later&lt;/a&gt; (see &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/AvroSerDe&quot;&gt;Avro SerDe&lt;/a&gt;).&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;STORED AS RCFILE&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Stored as &lt;a href=&quot;https://en.wikipedia.org/wiki/RCFile&quot;&gt;Record Columnar File&lt;/a&gt; format.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;STORED AS JSONFILE&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Stored as Json file format in Hive 4.0.0 and later.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h2 id=&quot;stored-as-inputformatoutputformat&quot;&gt;STORED &lt;strong&gt;AS&lt;/strong&gt; INPUTFORMAT/OUTPUTFORMAT&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;in the file_format to specify the name of a corresponding InputFormat and OutputFormat class as a string literal.  For example, ‘org.apache.hadoop.hive.contrib.fileformat.base64.Base64TextInputFormat’.  For LZO compression, the values to use are ‘INPUTFORMAT “com.hadoop.mapred.DeprecatedLzoTextInputFormat” OUTPUTFORMAT “&lt;a href=&quot;http://org.apache.hadoop.hive.ql.io/&quot;&gt;org.apache.hadoop.hive.ql.io&lt;/a&gt;.HiveIgnoreKeyTextOutputFormat”’  (see &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/LanguageManual+LZO&quot;&gt;LZO Compression&lt;/a&gt;).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;INPUTFORMAT과 OUTPUTFORMAT을 따로 지정해줄 수도 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;-- INPUTFORMAT, OUTPUTFORMAT을 따로 지정하는 것도 가능 &lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tbl1&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STRING&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INPUTFORMAT&lt;/span&gt;  &lt;span class=&quot;nv&quot;&gt;&quot;com.hadoop.mapred.DeprecatedLzoTextInputFormat&quot;&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;OUTPUTFORMAT&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;stored-by&quot;&gt;STORED BY&lt;/h2&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'storage.handler.class.name'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Stored by a non-native table format. To create or link to a non-native table, for example a table backed by &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/HBaseIntegration&quot;&gt;HBase&lt;/a&gt; or &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Druid+Integration&quot;&gt;Druid&lt;/a&gt; or &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/AccumuloIntegration&quot;&gt;Accumulo&lt;/a&gt;. See &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/StorageHandlers&quot;&gt;StorageHandlers&lt;/a&gt; for more information on this option.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;strong&gt;non-native table&lt;/strong&gt; 은 Hive에 의해 저장되지 않은 데이터 소스로부터 생성된 테이블을 의미합니다. 이들은 각각의 data source에 알맞은 handler를 적용해야합니다 (Tables that use a storage handler, such as the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DruidStorageHandler&lt;/code&gt; or &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HBaseStorageHandler&lt;/code&gt;).&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hiveTableName&lt;/span&gt; 
+	&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;bigint&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'org.apache.hadoop.hive.dynamodb.DynamoDBStorageHandler'&lt;/span&gt; 
+&lt;span class=&quot;n&quot;&gt;TBLPROPERTIES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;&quot;dynamodb.table.name&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;dynamodbtable1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+               &lt;span class=&quot;nv&quot;&gt;&quot;dynamodb.column.mapping&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;col1:name,col2:year,col3:holidays&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위 쿼리는 DynamoDB에 저장된 데이터를 참조하는 Hive 테이블을 만듭니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;location&quot;&gt;LOCATION&lt;/h1&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;LOCATION&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hdfs_path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;LOCATION now refers to the default directory for external tables and MANAGEDLOCATION refers to the default directory for managed tables. Its recommended that MANAGEDLOCATION be within &lt;strong&gt;metastore.warehouse.dir&lt;/strong&gt; so all managed tables have a common root where common governance policies. It can be used with metastore.warehouse.tenant.colocation to have it point to a directory outside the warehouse root directory to have a tenant based common root where quotas and other policies can be set.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Managed Table은 default deirctory(MANAGEDLOCATION)에 데이터를 저장하므로 LOCATION을 명시하지 않습니다. 해당 옵션은 EXTERNAL Table에서 데이터의 위치를 전달하기 위해 사용됩니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The EXTERNAL keyword lets you create a table and provide a LOCATION so that Hive does not use a default location for this table. This comes in handy if you already have data generated.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;External Table은 DROP 시, 테이블은 삭제되지만 LOCATION의 데이터들은 삭제되지 않습니다. 테이블 삭제와 동시에 데이터도 삭제하기 위해서는 아래 따로 옵션을 지정해주어야합니다(setting table property &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;external.table.purge=true&lt;/code&gt;, will also delete the data).&lt;/p&gt;
+
+&lt;h1 id=&quot;tblproperties&quot;&gt;TBLPROPERTIES&lt;/h1&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;TBLPROPERTIES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;property_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;property_value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...)]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;테이블 속성(옵션)을 지정해줍니다. 아래와 같은 옵션들이 존재합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The TBLPROPERTIES clause allows you to tag the table definition with your own metadata key/value pairs. Some predefined table properties also exist, such as last_modified_user and last_modified_time which are automatically added and managed by Hive. Other predefined table properties include:&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
   &lt;ul&gt;
-    &lt;li&gt;Resolving Data Source Names (DSN).&lt;/li&gt;
-    &lt;li&gt;Driver loading and unloading.&lt;/li&gt;
-    &lt;li&gt;Processing ODBC function calls or passing them to the driver.&lt;/li&gt;
-  &lt;/ul&gt;
-
-  &lt;p&gt;Most ODBC Driver Manager implementations also include an administration application that makes the configuration of DSN and drivers easier. Examples and information on ODBC Driver Managers for different operating systems are listed below:&lt;/p&gt;
-
-  &lt;ul&gt;
-    &lt;li&gt;Windows: Microsoft Windows ODBC Driver Manager (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;odbc32.dll&lt;/code&gt;). It is included in the Windows operating system. See http://support.microsoft.com/kb/110093 for more information.&lt;/li&gt;
-    &lt;li&gt;macOS: ODBC Administrator is a GUI application for macOS. It provides a simplified configuration mechanism for the iODBC Driver Manager. You can configure DSN and driver information either through ODBC Administrator or through the iODBC configuration files. This also means that you can test ODBC Administrator configurations using the &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;iodbctest&lt;/code&gt; command. See http://support.apple.com/kb/DL895 for more information.&lt;/li&gt;
-    &lt;li&gt;Unix:
+    &lt;li&gt;TBLPROPERTIES (“comment”=”&lt;em&gt;table_comment&lt;/em&gt;”)&lt;/li&gt;
+    &lt;li&gt;TBLPROPERTIES (“hbase.table.name”=”&lt;em&gt;table_name&lt;/em&gt;”) – see &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/HBaseIntegration#HBaseIntegration-Usage&quot;&gt;HBase Integration&lt;/a&gt;.&lt;/li&gt;
+    &lt;li&gt;TBLPROPERTIES (“immutable”=”true”) or (“immutable”=”false”) in release 0.13.0+ (&lt;a href=&quot;https://issues.apache.org/jira/browse/HIVE-6406&quot;&gt;HIVE-6406&lt;/a&gt;) – see &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DML#LanguageManualDML-InsertingdataintoHiveTablesfromqueries&quot;&gt;Inserting Data into Hive Tables from Queries&lt;/a&gt;.&lt;/li&gt;
+    &lt;li&gt;TBLPROPERTIES (“orc.compress”=”ZLIB”) or (“orc.compress”=”SNAPPY”) or (“orc.compress”=”NONE”) and other ORC properties – see &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/LanguageManual+ORC#LanguageManualORC-HiveQLSyntax&quot;&gt;ORC Files&lt;/a&gt;.&lt;/li&gt;
+    &lt;li&gt;TBLPROPERTIES (“transactional”=”true”) or (“transactional”=”false”) in release 0.14.0+, the default is “false” – see &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Hive+Transactions#HiveTransactions-TableProperties&quot;&gt;Hive Transactions&lt;/a&gt;.&lt;/li&gt;
+    &lt;li&gt;TBLPROPERTIES (“NO_AUTO_COMPACTION”=”true”) or (“NO_AUTO_COMPACTION”=”false”), the default is “false” – see &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Hive+Transactions#HiveTransactions-TableProperties&quot;&gt;Hive Transactions&lt;/a&gt;.&lt;/li&gt;
+    &lt;li&gt;TBLPROPERTIES (“compactor.mapreduce.map.memory.mb”=”&lt;em&gt;mapper_memory”&lt;/em&gt;) – see &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Hive+Transactions#HiveTransactions-TableProperties&quot;&gt;Hive Transactions&lt;/a&gt;.&lt;/li&gt;
+    &lt;li&gt;TBLPROPERTIES (“compactorthreshold.hive.compactor.delta.num.threshold”=”&lt;em&gt;threshold_num&lt;/em&gt;”) – see &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Hive+Transactions#HiveTransactions-TableProperties&quot;&gt;Hive Transactions&lt;/a&gt;.&lt;/li&gt;
+    &lt;li&gt;TBLPROPERTIES (“compactorthreshold.hive.compactor.delta.pct.threshold”=”&lt;em&gt;threshold_pct&lt;/em&gt;”) – see &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/Hive+Transactions#HiveTransactions-TableProperties&quot;&gt;Hive Transactions&lt;/a&gt;.&lt;/li&gt;
+    &lt;li&gt;TBLPROPERTIES (“auto.purge”=”true”) or (“auto.purge”=”false”) in release 1.2.0+ (&lt;a href=&quot;https://issues.apache.org/jira/browse/HIVE-9118&quot;&gt;HIVE-9118&lt;/a&gt;) – see &lt;a href=&quot;https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=82706445#LanguageManualDDL-DropTable&quot;&gt;Drop Table&lt;/a&gt;, &lt;a href=&quot;https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=82706445#LanguageManualDDL-DropPartitions&quot;&gt;Drop Partitions&lt;/a&gt;, &lt;a href=&quot;https://cwiki.apache.org/confluence/pages/viewpage.action?pageId=82706445#LanguageManualDDL-TruncateTable&quot;&gt;Truncate Table&lt;/a&gt;, and &lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DML#LanguageManualDML-InsertOverwrite&quot;&gt;Insert Overwrite&lt;/a&gt;.&lt;/li&gt;
+    &lt;li&gt;TBLPROPERTIES (“EXTERNAL”=”TRUE”) in release 0.6.0+ (&lt;a href=&quot;https://issues.apache.org/jira/browse/HIVE-1329&quot;&gt;HIVE-1329&lt;/a&gt;) – Change a managed table to an external table and vice versa for “FALSE”.
       &lt;ul&gt;
-        &lt;li&gt;unix ODBC Driver Manager for Unix (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;libodbc.so&lt;/code&gt;). See &lt;a href=&quot;http://www.unixodbc.org/&quot;&gt;http://www.unixodbc.org&lt;/a&gt;, for more information.&lt;/li&gt;
-        &lt;li&gt;iODBC Driver Manager for Unix (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;libiodbc.so&lt;/code&gt;). See &lt;a href=&quot;http://www.iodbc.org/&quot;&gt;http://www.iodbc.org&lt;/a&gt;, for more information.&lt;/li&gt;
+        &lt;li&gt;As of Hive 2.4.0 (&lt;a href=&quot;https://issues.apache.org/jira/browse/HIVE-16324&quot;&gt;HIVE-16324&lt;/a&gt;) the value of the property ‘EXTERNAL’ is parsed as a boolean (case insensitive true or false) instead of a case sensitive string comparison.&lt;/li&gt;
       &lt;/ul&gt;
     &lt;/li&gt;
+    &lt;li&gt;TBLPROPERTIES (“external.table.purge”=”true”) in release 4.0.0+ (&lt;a href=&quot;https://issues.apache.org/jira/browse/HIVE-19981&quot;&gt;HIVE-19981&lt;/a&gt;) when set on external table would delete the data as well.&lt;/li&gt;
   &lt;/ul&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;조금 긴 설명이지만 핵심만 요약하자면, Driver Manager는 크게 세 가지 역할을 하고 있습니다.&lt;/p&gt;
+&lt;h1 id=&quot;as-select&quot;&gt;AS SELECT&lt;/h1&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-SQL&quot;&gt;[AS select_statement]
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;CTAS(&lt;strong&gt;C&lt;/strong&gt;REATE-&lt;strong&gt;T&lt;/strong&gt;ABLE-&lt;strong&gt;A&lt;/strong&gt;S-&lt;strong&gt;S&lt;/strong&gt;ELECT) 구문에서 사용됩니다. 해당 구문으로 생성하고자하는 테이블은 CTAS 쿼리가 완료되기 전까지는 다른 유저에 의해 조회가 불가능합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Tables can also be created and populated by the results of a query in one create-table-as-select (CTAS) statement. The table created by CTAS is atomic, meaning that &lt;strong&gt;the table is not seen by other users until all the query results are populated&lt;/strong&gt;. So other users will either see the table with the complete results of the query or will not see the table at all.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;아래와 같은 형식으로 사용됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;new_key_value_store&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;ROW&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FORMAT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SERDE&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;&quot;org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe&quot;&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;RCFile&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;new_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;concat&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key_value_pair&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key_value_store&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;SORT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;new_key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key_value_pair&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;CTAS 구문은 몇 가지 특징을 갖습니다. 하나씩 살펴보면 아래와 같습니다.&lt;/p&gt;
 
 &lt;ol&gt;
-  &lt;li&gt;DSN을 다룬다(resolve)&lt;/li&gt;
-  &lt;li&gt;특정 DB에 접근하기 위해 필요한 Driver를 로딩/언로딩한다&lt;/li&gt;
-  &lt;li&gt;ODBC 함수를 처리하거나, Driver에게 전달한다&lt;/li&gt;
+  &lt;li&gt;CTAS구문 사용 시, External Table을 생성할 수 없고, Bucket도 지정할 수 없습니다.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;그리고 운영체제별로 서로 다른 Driver Manager를 사용합니다(Windows - MicroSoft Windows ODBC Driver Manager, macOS - ODBC Administrator/iODBC Driver Manager, Unix - UnixODBC Driver Manager for Unix/iODBC Driver Manager for Unix).&lt;/p&gt;
-
-&lt;p&gt;DSN은 나중에 알아보기로 하고, 여기서 말하는 Driver란 무엇일까요?&lt;/p&gt;
-
-&lt;p&gt;IBM에서 ODBC Driver에 대한 정의를 찾아보았습니다.&lt;/p&gt;
-
 &lt;blockquote&gt;
-  &lt;p&gt;ODBC drivers&lt;/p&gt;
-
-  &lt;p&gt;An ODBC driver uses a layer of code that translates the ODBC standard API calls that the application issues into vendor-specific functions. IBM Netezza supplies an ODBC driver for many supported platforms (32 bit and 64 bit) and for many different versions of the Netezza database.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;ODBC driver는 Application에서 요청한  API를 지정된 함수로 치환해주는 역할을 합니다.&lt;/p&gt;
-
-&lt;p&gt;위 내용을 도식화해보면 아래와 같습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/odbcmodel.gif&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;즉, Driver Manager는 적절한 Driver를 로딩하고, 로딩된 Driver는 Application에서 요구한 API를 적절한 함수로 치환하여 DB가 작업을 처리할 수 있게끔 전달합니다. 참고로, Driver Manager, ODBC Driver까지 Client가 설치하고 셋팅을 마친 상태여야합니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/client-server.jpeg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;dsndata-source-name&quot;&gt;DSN(Data Source Name)&lt;/h1&gt;
-
-&lt;p&gt;그렇다면 DSN이란 무엇일까요. 이전 항목에서 DSN은 Driver Manager가 다루고 있다고만 설명했습니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;a data source name (DSN, sometimes known as a database source name, though “data sources” can comprise other repositories apart from databases) is a string that has an associated data structure used to describe a connection to a data source. Most commonly used in connection with ODBC, DSNs also exist for JDBC and for other data access mechanisms. The term often overlaps with “connection string”. Most systems do not make a distinction between DSNs or connection strings and the term can often be used interchangeably.&lt;/p&gt;
-
-  &lt;p&gt;DSN attributes may include, but are not limited to:&lt;/p&gt;
+  &lt;p&gt;CTAS has these restrictions:&lt;/p&gt;
 
   &lt;ul&gt;
-    &lt;li&gt;the name of the data source&lt;/li&gt;
-    &lt;li&gt;the location of the data source&lt;/li&gt;
-    &lt;li&gt;the name of a database driver which can access the data source&lt;/li&gt;
-    &lt;li&gt;a user ID for data access (if required)&lt;/li&gt;
-    &lt;li&gt;a user password for data access (if required)&lt;/li&gt;
+    &lt;li&gt;The target table cannot be an external table.&lt;/li&gt;
+    &lt;li&gt;The target table cannot be a list bucketing table.&lt;/li&gt;
   &lt;/ul&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;DSN이란  data source(database)와의 연결을 정의하는 문자열이라는 설명입니다. 즉, 이를 통해 Driver Manager는 Driver, UID/PWD, read-only와 같은 연결에 필요한 정보들을 확인할 수 있습니다. 하지만, DSN은 DB 연결에 필요한 정보들이 정의되어있는 자료구조로서 connection string과는 구분되어야한다고 생각합니다.&lt;/p&gt;
-
-&lt;p&gt;DSN의 구분을 보면, connection string과 구분됨을 확실히 알 수 있습니다. DSN은 세 가지로 분류됩니다.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;Source Table(SELECT 구문 안의 테이블)과 별개의 SerDe와 File Format을 지정할 수 있습니다. 즉, 위 쿼리에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;new_key_value_store&lt;/code&gt;의 File Format과 SerDe는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;key_value_store&lt;/code&gt;와 동일하지 않아도 됩니다.&lt;/li&gt;
+&lt;/ol&gt;
 
 &lt;blockquote&gt;
-  &lt;ul&gt;
-    &lt;li&gt;
-      &lt;p&gt;&lt;strong&gt;File DSNs&lt;/strong&gt; – stored in the filesystem with one DSN per file&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li&gt;&lt;strong&gt;System DSNs&lt;/strong&gt; – accessible by any and all processes and users of the system, stored in a centralized location (e.g., /etc/odbc.ini, /etc/odbc_file_dsns/&lt;filename&gt;)&lt;/filename&gt;&lt;/li&gt;
-    &lt;li&gt;&lt;strong&gt;User DSNs&lt;/strong&gt; – accessible only by the user who created the DSN, stored in a user-specific location (e.g., ~/.odbc.ini, ~/odbc_file_dsns/&lt;filename&gt;)&lt;/filename&gt;&lt;/li&gt;
-  &lt;/ul&gt;
+  &lt;p&gt;the new target table is created using a specific SerDe and a storage format independent of the source tables in the SELECT statement.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;User DSN은 로컬에서 사용되고, System DSN은 하나의 서버에서 사용되며, File DSN은 파일로 저장된 DSN이라고 해석해도 무방할 것 같습니다.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;CTAS 구문은 CTE(Common Table Expression)과 함께 사용될 수 있습니다.&lt;/li&gt;
+&lt;/ol&gt;
 
-&lt;p&gt;System DSN, User DSN은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ini&lt;/code&gt; 확장자를 사용하여 관리됩니다.  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ini&lt;/code&gt;는 설정 파일에 사용되는 확장자입니다. File DSN은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DSN&lt;/code&gt; 확장자로 저장됩니다.&lt;/p&gt;
-
-&lt;p&gt;아래는 unix, maxOS에서 DSN(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;odbc.ini&lt;/code&gt;)의 예시입니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# [DSN name]
-[MSSQLTest]
-Driver = ODBC Driver 17 for SQL Server
-# Server = [protocol:]server[,port]  
-Server = tcp:localhost,1433
-
-# Note:  
-# Port is not a valid keyword in the odbc.ini file  
-# for the Microsoft ODBC driver on Linux or macOS
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;s2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;WITH&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;q1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;src&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;where&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'4'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- CTE&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;q1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;각 운영체제에 맞는 Driver Manager를 이용하여 위와 같은 DSN을 설정할 수 있습니다. 해당 내용은 링크로 대체하겠습니다.&lt;/p&gt;
+&lt;p&gt; 여기까지, Hive CREATE TABLE에서 사용되는 쿼리에 대해서 모두 살펴보았습니다. 가장 중요한 부분은 Partition, Bucket , Skew 부분이 아닌가 싶습니다. 처음 HiveQL를 접하시는 분들께 이 포스팅이 도움이 되었으면 좋겠습니다.&lt;/p&gt;
 
-&lt;p&gt;[Windows]&lt;a href=&quot;https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-windows.html&quot;&gt;https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-windows.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[참조]&lt;/p&gt;
 
-&lt;p&gt;[Linux]&lt;a href=&quot;https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-linux.html&quot;&gt;https://docs.informatica.com/data-integration/powerexchange-adapters-for-informatica/10-4-1/powerexchange-for-amazon-redshift-user-guide/pushdown-optimization/configuring-a-system-dsn/configuring-a-system-dsn-on-linux.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-CreateTableCreate/Drop/TruncateTable&quot;&gt;https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDLCreateTableCreate/Drop/TruncateTable&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;[macOS]&lt;a href=&quot;https://docs.oracle.com/cd/E17952_01/connector-odbc-en/connector-odbc-configuration-dsn-macos.html&quot;&gt;https://docs.oracle.com/cd/E17952_01/connector-odbc-en/connector-odbc-configuration-dsn-macos.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://wikidocs.net/book/2203&quot;&gt;https://wikidocs.net/book/2203&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;Linux, maxOS의 경우에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;odbc.ini&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;odbcinst.ini&lt;/code&gt; 가 존재합니다. 이 둘은 서로 다른 역할을 가지고 있습니다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;blockquote&gt;
-      &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://www.ibm.com/docs/en/SSGU8G_14.1.0/com.ibm.odbc.doc/ids_odbc_059.htm&quot;&gt;The odbcinst.ini file&lt;/a&gt;&lt;/strong&gt;
-The odbcinst.ini file has entries for all the installed drivers on your computer.&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;Section&lt;/th&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;Description&lt;/th&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;Status&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;ODBC drivers&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;List of names of all the installed ODBC drivers&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Optional&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;ODBC driver specifications&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;List of driver attributes and values&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Optional&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;
-    &lt;blockquote&gt;
-      &lt;p&gt;&lt;strong&gt;&lt;a href=&quot;https://www.ibm.com/docs/en/SSGU8G_14.1.0/com.ibm.odbc.doc/ids_odbc_062.htm&quot;&gt;The odbc.ini file&lt;/a&gt;&lt;/strong&gt;
-The odbc.ini file is a sample data-source configuration information file.&lt;/p&gt;
-    &lt;/blockquote&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;Section&lt;/th&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;Description&lt;/th&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;Statu&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;ODBC Data Sources&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;This section lists the DSNs and associates them with the name of the driver.&lt;br /&gt; You need to provide this section only if you use an ODBC driver manager from a third-party vendor.&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Required&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Data Source Specification&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Each DSN listed in the ODBC Data Sources section has a Data-Source Specification section that describes the DSN.&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Required&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;ODBC&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;This section lists ODBC tracing options.&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Optional&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;odbcinst.ini&lt;/code&gt; 파일은 ODBC driver에 대한 명세를 담고 있습니다. 아래와 같은 포맷으로 저장됩니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[ODBC Drivers]
-DataDirect 8.0 Oracle Wire Protocol=Installed
-
-[DataDirect 8.0 Oracle Wire Protocol]
-Driver=ODBCHOME/lib/ivora28.so
-APILevel=1
-ConnectFunctions=YYY
-DriverODBCVer=3.52
-FileUsage=0
-HelpRootDirectory=ODBCHOME/help/OracleHelp
-Setup=ODBCHOME/lib/ivora28.so
-SQLLevel=1
-
-[ODBC]
-#This section must contain values for DSN-less connections
-#if no odbc.ini file exists. If an odbc.ini file exists,
-#the values from that [ODBC] section are used.
-
-IANAAppCodePage=4
-InstallDir=ODBCHOME
-Trace=0
-TraceFile=odbctrace.out
-TraceDll=ODBCHOME/lib/ivtrc28.so
-ODBCTraceMaxFileSize=102400
-ODBCTraceMaxNumFiles=10
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;이제 이 정보들을 이용해 python, R에서 데이터베이스와 연결하는 방법을 살펴봅니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;connection-to-database-in-python&quot;&gt;Connection to Database in Python&lt;/h1&gt;
-
-&lt;h2 id=&quot;pyodbc&quot;&gt;pyodbc&lt;/h2&gt;
-
-&lt;p&gt;데이터베이스와의 연결을 위해 가장 많이 사용되는 패키지입니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;pyodbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connstring&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;autocommit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;timeout&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;readonly&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-               &lt;span class=&quot;n&quot;&gt;attrs_before&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;encoding&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'utf-16le'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ansi&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pyodbc.connect()&lt;/code&gt;는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;connstring&lt;/code&gt;, 즉 “ODBC connection string”을 local driver manager에게 전달합니다. connection string은 driver, udi, password와 같이 데이터베이스 연결에 필요한 정보들을 포함하고 있습니다.&lt;/p&gt;
-
-&lt;p&gt;위에서 살펴보았듯이, 1. Driver를 명시하여 연결하거나 2. 사전에 정의된 DSN을 이용하는 방법이 있습니다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Driver를 명시하여 연결&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;먼저 사용하고자 하는 Driver가 설치되어있는지 확인해야합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-powershell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Windows&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PS&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;C:\&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Get-OdbcDriver&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;# 설치되어있는 Driver 목록 출력&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Linux, MacOs&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@GyuhooncBookAir ~ % odbcinst &lt;span class=&quot;nt&quot;&gt;-j&lt;/span&gt;
-unixODBC 2.3.9
-DRIVERS............: /etc/odbcinst.ini
-SYSTEM DATA SOURCES: /etc/odbc.ini
-FILE DATA SOURCES..: /etc/ODBCDataSources
-USER DATA SOURCES..: /Users/gyuhoonkim/.odbc.ini
-SQLULEN Size.......: 8
-SQLLEN Size........: 8
-SQLSETPOSIROW Size.: 8
-&lt;span class=&quot;c&quot;&gt;# /etc/odbcinst.ini 를 조회하여 Driver 설치 목록 확인&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;ODBC Driver 17 for SQL Server가 설치되어있다고 가정하면, 아래와 같은 connection string을 인자로 전달하여 데이터베이스와 연결합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyodbc&lt;/span&gt; 
-&lt;span class=&quot;c1&quot;&gt;# Some other example server values are
-# server = 'localhost\sqlexpress' # for a named instance
-# server = 'myserver,port' # to specify an alternate port
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'tcp:myserver.database.windows.net'&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'mydb'&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'myusername'&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'mypassword'&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pyodbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DRIVER={ODBC Driver 17 for SQL Server};SERVER='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';DATABASE='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';UID='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';PWD='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-                     &lt;span class=&quot;n&quot;&gt;autucommit&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;#쿼리 실행 결과
-&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pandas&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SHOW TABLES&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;#쿼리 실행
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
-INSERT INTO SalesLT.Product (Name, ProductNumber, StandardCost, ListPrice, SellStartDate) 
-VALUES (?,?,?,?,?)&quot;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-&lt;span class=&quot;s&quot;&gt;'SQL Server Express New 20'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'SQLEXPRESS New 20'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CURRENT_TIMESTAMP&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rowcount&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;사전 정의된 DSN을 이용하여 연결&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Driver Manager를 통해 정의한 DSN을 전달하여 데이터베이스와 연결할 수 있습니다. 먼저, 정의된 DSN을 확인합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-powershell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Windows&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PS&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;C:\&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nx&quot;&gt;Get-OdbcDsn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;# DSN 목록을 출력&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Linux, MacOs&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@GyuhooncBookAir ~ % odbcinst &lt;span class=&quot;nt&quot;&gt;-j&lt;/span&gt;
-unixODBC 2.3.9
-DRIVERS............: /etc/odbcinst.ini
-SYSTEM DATA SOURCES: /etc/odbc.ini
-FILE DATA SOURCES..: /etc/ODBCDataSources
-USER DATA SOURCES..: /Users/gyuhoonkim/.odbc.ini
-SQLULEN Size.......: 8
-SQLLEN Size........: 8
-SQLSETPOSIROW Size.: 8
-&lt;span class=&quot;c&quot;&gt;# /etc/odbc.ini 를 조회하여 DSN 목록 확인&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;MYMSSQL1이라는 DSN이 존재한다고 가정해봅시다. 그리고 해당 DSN은 이미 uid, password 정보까지 포함하고 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pyodbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DSN=MYMSSQL1;schema=test'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;autocommit&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# test schema에 연결
-# DSN 생성 시에 UserName, Password가 지정되어서 따로 적지 않아도 실행됨(설정에 따라 달라질 수 있음)
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;이외에도 database에 특화된 PyMongo, PyMssql, PyHive 와 같은 패키지가 존재합니다. 사용 방법은 pyodbc와 크게 다르지 않기 때문에 각 패키지에 대한 예시는 생략하겠습니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;connection-to-database-in-r&quot;&gt;Connection to Database in R&lt;/h1&gt;
-
-&lt;p&gt;R은 몇 가지 패키지를 사용해서 데이터베이스와의 연결을 구현합니다. connection string을 조합하여 인자로 전달해야한다는 것은 python과 똑같습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-R highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# Connection using Driver&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'tcp:myserver.database.windows.net'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'mydb'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'myusername'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'mypassword'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DBI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dbConnect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drv&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;ODBC Driver 17 for SQL Server&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-
-&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# Connection using DSN&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'MYMSSQL1'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DBI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dbConnect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drv&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;R 패키지의 장점은 pyodbc가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cursor.execute(query)&lt;/code&gt; 만으로 테이블 적재, 드랍, 삽입을 수행해야하는 것에 비해, 쿼리를 작성하지 않아도  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;data.frame&lt;/code&gt; 을 데이터베이스에 적재하거나, 테이블을 삭제하는 등의 기능을 기본적으로 제공한다는 점입니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;func&lt;/th&gt;
-      &lt;th&gt;details&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbReadTable()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Copy data frames from database tables&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbWriteTable()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Copy data frames to database tables&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbCreateTable()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Create a table in the database&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbAppendTable()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Insert rows into a table&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbRemoveTable()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Remove a table from the database&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbListTables()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;List remote tables&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbListFields()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;List field names of a remote table&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbExistsTable()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Does a table exist?&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbListObjects()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;List remote objects&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sqlRownamesToColumn()&lt;/code&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sqlColumnToRownames()&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;Convert row names back and forth between columns&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyodbc&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pandas&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# insert data from csv file into dataframe.
-# working directory for csv file: type &quot;pwd&quot; in Azure Data Studio or Linux
-# working directory in Windows c:\users\username
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_csv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;c:&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\\&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;username\department.csv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# Some other example server values are
-# server = 'localhost\sqlexpress' # for a named instance
-# server = 'myserver,port' # to specify an alternate port
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'yourservername'&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'AdventureWorks'&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'yourpassword'&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pyodbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'DRIVER={SQL Server};SERVER='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';DATABASE='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';UID='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;';PWD='&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# Insert Dataframe into SQL Server:
-# 반복문을 통해 각 row를 INSERT
-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;index&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;iterrows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;INSERT INTO HumanResources.DepartmentTest (DepartmentID,Name,GroupName) values(?,?,?)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DepartmentID&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;row&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GroupName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;cnxn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;commit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;위와 같이 반복문을 이용해 각 row를 삽입하는 코드를 작성해야하는  pyodbc와 달리,&lt;/p&gt;
-
-&lt;div class=&quot;language-R highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'yourservername'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'AdventureWorks'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'yourpassword'&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DBI&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dbConnect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;drv&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;odbc&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;SQL Server&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uid&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-                      &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read.csv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;c:/user/username/department.csv&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dbAppendTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'HumanResources.DepartmentTest'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;R에서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dbAppendTable()&lt;/code&gt; 하나만으로 위 작업을 수행하게 됩니다.&lt;/p&gt;
-
-&lt;p&gt;다음에는 hive, pyhive에 대해서 적어보겠습니다.&lt;/p&gt;
-
-&lt;p&gt;[참고]&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://docs.oracle.com/database/&quot;&gt;https://docs.oracle.com/database/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://www.ibm.com/docs&quot;&gt;https://www.ibm.com/docs&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://docs.microsoft.com/ko-kr/sql/?view=sql-server-ver15&quot;&gt;https://docs.microsoft.com/ko-kr/sql/?view=sql-server-ver15&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/powershell/&quot;&gt;https://docs.microsoft.com/en-us/powershell/&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://dbi.r-dbi.org/reference&quot;&gt;https://dbi.r-dbi.org/reference&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="database" /><summary type="html">python, R에서 Database Server와 연결하기</summary></entry><entry><title type="html">spark</title><link href="http://localhost:4000/spark" rel="alternate" type="text/html" title="spark" /><published>2021-09-01T22:30:00+09:00</published><updated>2021-09-01T22:30:00+09:00</updated><id>http://localhost:4000/spark</id><content type="html" xml:base="http://localhost:4000/spark">&lt;p&gt;First Spark Posting&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">First Spark Posting</summary></entry><entry><title type="html">AWS S3, object zip</title><link href="http://localhost:4000/python" rel="alternate" type="text/html" title="AWS S3, object zip" /><published>2021-09-01T22:30:00+09:00</published><updated>2021-09-01T22:30:00+09:00</updated><id>http://localhost:4000/python</id><content type="html" xml:base="http://localhost:4000/python">&lt;p&gt;AWS S3 내 zip파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/EMR_Hive_Commands.html&quot;&gt;https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/EMR_Hive_Commands.html&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">HiveQL - CREATE QUERY 구조에 대하여</summary></entry><entry><title type="html">spark</title><link href="http://localhost:4000/spark-test" rel="alternate" type="text/html" title="spark" /><published>2021-09-01T22:30:00+09:00</published><updated>2021-09-01T22:30:00+09:00</updated><id>http://localhost:4000/spark-test</id><content type="html" xml:base="http://localhost:4000/spark-test">&lt;p&gt;First Spark Posting&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">First Spark Posting</summary></entry><entry><title type="html">AWS S3, object zip</title><link href="http://localhost:4000/python" rel="alternate" type="text/html" title="AWS S3, object zip" /><published>2021-09-01T22:30:00+09:00</published><updated>2021-09-01T22:30:00+09:00</updated><id>http://localhost:4000/python</id><content type="html" xml:base="http://localhost:4000/python">&lt;p&gt;AWS S3 내 zip파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/aws-s3-structure.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
