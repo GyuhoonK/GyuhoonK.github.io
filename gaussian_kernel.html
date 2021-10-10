@@ -48,8 +48,8 @@
     <meta property="og:image" content="http://localhost:4000/assets/built/images/gaussian-kernel-formula.jpeg" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2021-09-01T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2021-09-01T22:30:00+09:00" />
+    <meta property="article:published_time" content="2021-10-08T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2021-10-08T22:30:00+09:00" />
     <meta property="article:tag" content="Datascience" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Gaussian Kernel" />
@@ -174,7 +174,7 @@ into the {body} of the default.hbs template -->
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime=" 1 September 2021"> 1 September 2021</time>
+                    <time class="post-full-meta-date" datetime=" 8 October 2021"> 8 October 2021</time>
                     
                         <span class="date-divider">/</span>
                         
@@ -353,26 +353,79 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/python">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/amazon-s3-banner.png)"></div>
+            <a class="post-card-image-link" href="/overflow-trick">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/python-sql.png)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/python">
+            <a class="post-card-content-link" href="/overflow-trick">
                 <header class="post-card-header">
                     
                         
                             
-                                <span class="post-card-tags">Python</span>
+                                <span class="post-card-tags">Database</span>
                             
                         
                     
 
-                    <h2 class="post-card-title">AWS S3, object zip</h2>
+                    <h2 class="post-card-title">OverFlow/UnderFlow Trick in Query</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>AWS S3 내 zip파일을 다운로드 받지 않고, 내용물만 다운로드 받기
+                        <p>
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/abraham.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      1 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/hive-query">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/hive-banner.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/hive-query">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">hive table create</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>HiveQL - CREATE QUERY 구조에 대하여
 
 </p>
                     
@@ -392,16 +445,13 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
                 <span class="reading-time">
                     
                     
-                      5 min read
+                      12 min read
                     
                 </span>
             </footer>
         </div>
     </article>
 
-            
-
-            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
             
 
         </div>
@@ -624,10 +674,10 @@ $(document).ready(function () {
     MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
           alert("Math Processing Error: "+message[1]);
         });
-    </script>
+</script>
     <script type="text/javascript" async
       src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-    </script>
+</script>
     
 </body>
 </html>
