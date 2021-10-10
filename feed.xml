@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-09-27T00:38:11+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>about Data</subtitle><entry><title type="html">hive table create</title><link href="http://localhost:4000/hive-query" rel="alternate" type="text/html" title="hive table create" /><published>2021-09-16T22:30:00+09:00</published><updated>2021-09-16T22:30:00+09:00</updated><id>http://localhost:4000/hive-query</id><content type="html" xml:base="http://localhost:4000/hive-query">&lt;p&gt;HiveQL - CREATE QUERY 구조에 대하여&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="http://localhost:4000/feed.xml" rel="self" type="application/atom+xml" /><link href="http://localhost:4000/" rel="alternate" type="text/html" /><updated>2021-10-10T23:01:06+09:00</updated><id>http://localhost:4000/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>about Data</subtitle><entry><title type="html">Regression in Query</title><link href="http://localhost:4000/regression-in-query" rel="alternate" type="text/html" title="Regression in Query" /><published>2021-10-09T22:30:00+09:00</published><updated>2021-10-09T22:30:00+09:00</updated><id>http://localhost:4000/regression-in-query</id><content type="html" xml:base="http://localhost:4000/regression-in-query"></content><author><name>GyuhoonK</name></author><category term="database" /><summary type="html"></summary></entry><entry><title type="html">OverFlow/UnderFlow Trick in Query</title><link href="http://localhost:4000/overflow-trick" rel="alternate" type="text/html" title="OverFlow/UnderFlow Trick in Query" /><published>2021-10-09T22:30:00+09:00</published><updated>2021-10-09T22:30:00+09:00</updated><id>http://localhost:4000/overflow-trick</id><content type="html" xml:base="http://localhost:4000/overflow-trick"></content><author><name>GyuhoonK</name></author><category term="database" /><summary type="html"></summary></entry><entry><title type="html">BUCKETTING HIVE on Tez, Spark on Yarn의 차이점</title><link href="http://localhost:4000/bucket-hive-spark" rel="alternate" type="text/html" title="BUCKETTING HIVE on Tez, Spark on Yarn의 차이점" /><published>2021-10-09T22:30:00+09:00</published><updated>2021-10-09T22:30:00+09:00</updated><id>http://localhost:4000/bucket-hive-spark</id><content type="html" xml:base="http://localhost:4000/bucket-hive-spark">&lt;p&gt;First Spark Posting&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">First Spark Posting</summary></entry><entry><title type="html">hive table create</title><link href="http://localhost:4000/hive-query" rel="alternate" type="text/html" title="hive table create" /><published>2021-09-16T22:30:00+09:00</published><updated>2021-09-16T22:30:00+09:00</updated><id>http://localhost:4000/hive-query</id><content type="html" xml:base="http://localhost:4000/hive-query">&lt;p&gt;HiveQL - CREATE QUERY 구조에 대하여&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;TEMPORARY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IF&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.]&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;table_name&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_type&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;column_constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])]&lt;/span&gt;
@@ -988,7 +988,7 @@ SQLSETPOSIROW Size.: 8
 
 &lt;p&gt;&lt;a href=&quot;https://docs.microsoft.com/en-us/powershell/&quot;&gt;https://docs.microsoft.com/en-us/powershell/&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://dbi.r-dbi.org/reference&quot;&gt;https://dbi.r-dbi.org/reference&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="database" /><summary type="html">python, R에서 Database Server와 연결하기</summary></entry><entry><title type="html">spark</title><link href="http://localhost:4000/spark-test" rel="alternate" type="text/html" title="spark" /><published>2021-09-01T22:30:00+09:00</published><updated>2021-09-01T22:30:00+09:00</updated><id>http://localhost:4000/spark-test</id><content type="html" xml:base="http://localhost:4000/spark-test">&lt;p&gt;First Spark Posting&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">First Spark Posting</summary></entry><entry><title type="html">AWS S3, object zip</title><link href="http://localhost:4000/python" rel="alternate" type="text/html" title="AWS S3, object zip" /><published>2021-09-01T22:30:00+09:00</published><updated>2021-09-01T22:30:00+09:00</updated><id>http://localhost:4000/python</id><content type="html" xml:base="http://localhost:4000/python">&lt;p&gt;AWS S3 내 zip파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://dbi.r-dbi.org/reference&quot;&gt;https://dbi.r-dbi.org/reference&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="database" /><summary type="html">python, R에서 Database Server와 연결하기</summary></entry><entry><title type="html">AWS S3, object zip</title><link href="http://localhost:4000/python" rel="alternate" type="text/html" title="AWS S3, object zip" /><published>2021-09-01T22:30:00+09:00</published><updated>2021-09-01T22:30:00+09:00</updated><id>http://localhost:4000/python</id><content type="html" xml:base="http://localhost:4000/python">&lt;p&gt;AWS S3 내 zip파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/aws-s3-structure.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
@@ -1325,4 +1325,72 @@ NotImplementedError
 
 &lt;p&gt;파일 개수가 많을수록, 그리고 용량이 클수록 이러한 시간 차이는 더 커질 것입니다.&lt;/p&gt;
 
-&lt;p&gt;[참고] https://alexwlchan.net/2019/02/working-with-large-s3-objects/&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="python" /><summary type="html">AWS S3 내 zip파일을 다운로드 받지 않고, 내용물만 다운로드 받기</summary></entry><entry><title type="html">scala</title><link href="http://localhost:4000/scala" rel="alternate" type="text/html" title="scala" /><published>2021-09-01T22:30:00+09:00</published><updated>2021-09-01T22:30:00+09:00</updated><id>http://localhost:4000/scala</id><content type="html" xml:base="http://localhost:4000/scala">&lt;p&gt;First Scala Posting&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><summary type="html">First Scala Posting</summary></entry></feed>
+&lt;p&gt;[참고] https://alexwlchan.net/2019/02/working-with-large-s3-objects/&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="python" /><summary type="html">AWS S3 내 zip파일을 다운로드 받지 않고, 내용물만 다운로드 받기</summary></entry><entry><title type="html">Gaussian Kernel</title><link href="http://localhost:4000/gaussian_kernel" rel="alternate" type="text/html" title="Gaussian Kernel" /><published>2021-09-01T22:30:00+09:00</published><updated>2021-09-01T22:30:00+09:00</updated><id>http://localhost:4000/gaussian_kernel</id><content type="html" xml:base="http://localhost:4000/gaussian_kernel">&lt;h1 id=&quot;gaussian-kernel-&quot;&gt;Gaussian Kernel ?&lt;/h1&gt;
+
+&lt;p&gt;Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;what-is-kernel-&quot;&gt;What is Kernel ?&lt;/h1&gt;
+
+&lt;p&gt;먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후 고차원에서 데이터의 위치를 확인하는 것이 목적이 아닙니다. 결과적으로 확인하고 싶은 값은 고차원으로 매핑된 이후 두 데이터의 내적값(inner product)입니다. 내적값은 스칼라값으로 반환되고 이를 통해 고차원에 매핑된 두 벡터 사이의 거리를 측정할수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/inner-product.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;그러나 고차원 매핑 이후 내적(inner product)를 계산하여 두 벡터 간의 거리를 측정하는 방법은 계산량이 매우 높아 비효율적입니다.&lt;/p&gt;
+
+&lt;p&gt;이러한 문제를 해결하기 위해 Kernel Trick이 이용됩니다. Kernel Trick은 고차원 매핑과 내적 계산을 한번에 수행합니다. 그리고 이러한 동시 연산을 가능하게 하는 것이 Kernel입니다.&lt;/p&gt;
+
+&lt;p&gt;저차원(m)에서 고차원(n)으로 매핑시켜주는 함수를 다음과 같이 정의합니다.
+\(\phi(x) = Ax \\
+A : n * m (n&amp;gt;m)\\
+x : m * 1\)
+위 함수는  m차원 벡터를 n차원으로 매핑시켜줍니다. 이 때, Φ는 선형변환(Linear Transformation)이고, 행렬 𝐴(n x m)는 선형변환에 사용되는 표준행렬입니다.&lt;/p&gt;
+
+&lt;p&gt;위에서 말했듯이, 이러한 매핑이후 우리가 계산하고 하는 것은 두 벡터의 변환 이후 내적값입니다. 아래와 같은 수식으로 𝐾(Kernel)을 정의할 수 있습니다.
+\(K(x_{i}, x_{j}) = \phi(x_{i})^T \phi(x_{j})
+							  =  (Ax_{i})^T (Ax_{j})
+							  = x_{i}^TA^TAx_{j}\)
+이 때, 위 식에서 사용되는 변수들의 차원은 아래와 같습니다.
+\(x_{i}^T : 1 * m \\
+A^T : m * n\\
+A : n * m \\
+x_{j} : m * 1\)
+결과적으로 𝐾는 스칼라값을 반환하게 됨을 알 수 있습니다. 𝐾가 두 벡터간의 거리(유사도)를 측정한다는 점에서 아래 두 가지 조건을 만족해야합니다.
+\(i) K(x_{i}, x_{j}) = K(x_{j}, x_{i}) \\
+ii) K(x_i, x_i) &amp;gt;= 0\)
+즉, 교환법칙이 성립해야하고 자기자신과의 거리를 계산했을 때에는 음수값이 나와서는 안된다는 조건입니다.&lt;/p&gt;
+
+&lt;p&gt;이러한 조건을 만족하기 위한 조건을 계산해보면, 𝐾를 이루는 행렬들이&lt;/p&gt;
+
+&lt;p&gt;​	𝐢) 대칭행렬(symetric matrix)&lt;/p&gt;
+
+&lt;p&gt;​	𝐢𝐢) positive semi-definite matrix&lt;/p&gt;
+
+&lt;p&gt;를 동시에 만족해야합니다. 그리고 이와 관련된 조건은 &lt;strong&gt;Mercer’s Theorem&lt;/strong&gt;으로 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/mercer.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;이러한 조건을 만족하는 커널에는 &lt;em&gt;Linear, polynomial, sigmoid&lt;/em&gt; 그리고 지금 우리가 살펴보고 있는 &lt;strong&gt;&lt;em&gt;gaussian&lt;/em&gt;&lt;/strong&gt;이 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;gaussian-kernel---infinite-dimensional-vector&quot;&gt;Gaussian Kernel - Infinite-dimensional vector&lt;/h2&gt;
+
+&lt;p&gt;Gaussian Kernel의 가장 큰 특징은 무한차원으로 매핑시킨다는 점입니다. 아래 식을 통해 간단한 예를 확인할 수 있습니다. 계산 편의성을 위해 $\sigma^2=\dfrac 1,2$인 경우를 예시로 선택했습니다.
+\(K(x_{i}, x_{j}) = exp(-\dfrac {||x_i - x_j||^2}{2\sigma^2})\\
+K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} \text{)}\\
+=exp(-x_i^2)exp(-x_j^2)exp(2x_ix_j)\\
+\text {By Taylor's theorem,  } exp(2x_ix_j) = \Sigma_{k=0}^{\infty}(\dfrac {2^kx_i^kx_j^k}{k!})\)&lt;/p&gt;
+
+&lt;h2 id=&quot;gaussian-kernel---purpose-of-𝛔&quot;&gt;Gaussian Kernel - Purpose of 𝛔&lt;/h2&gt;
+
+&lt;p&gt;𝛔는 무한차원으로 확장된 벡터 사이의 거리 계산 시 얼마나 민감하게 반응하는지 결정하는 매개변수입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/gaussian-plot.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;위 그림처럼, $K(x)$ 즉 Gaussian Kernel의 계산 결과는 𝛔가 클수록 벡터 간 거리 $x$의 차이에 둔감해집니다. 반대로 𝛔가 작아지면, 벡터 간 거리 $x$에 민감하게 반응합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;how-to-use-&quot;&gt;How to Use ?&lt;/h1&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://ratsgo.github.io/machine%20learning/2017/05/30/SVM3/&quot;&gt;https://ratsgo.github.io/machine%20learning/2017/05/30/SVM3/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://tensorflow.blog/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/2-3-7-%EC%BB%A4%EB%84%90-%EC%84%9C%ED%8F%AC%ED%8A%B8-%EB%B2%A1%ED%84%B0-%EB%A8%B8%EC%8B%A0/&quot;&gt;https://tensorflow.blog/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/2-3-7-%EC%BB%A4%EB%84%90-%EC%84%9C%ED%8F%AC%ED%8A%B8-%EB%B2%A1%ED%84%B0-%EB%A8%B8%EC%8B%A0/&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="datascience" /><summary type="html">Gaussian Kernel ?</summary></entry><entry><title type="html">scala</title><link href="http://localhost:4000/scala" rel="alternate" type="text/html" title="scala" /><published>2021-09-01T22:30:00+09:00</published><updated>2021-09-01T22:30:00+09:00</updated><id>http://localhost:4000/scala</id><content type="html" xml:base="http://localhost:4000/scala">&lt;p&gt;First Scala Posting&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><summary type="html">First Scala Posting</summary></entry></feed>

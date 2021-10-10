@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+    
     <!-- Document Settings -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -137,6 +137,9 @@ into the {body} of the default.hbs template -->
     </li>
     <li class="nav-database" role="menuitem">
         <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/DataScience/">DataScience</a>
     </li>
     <li class="nav-archive" role="menuitem">
         <a href="/archive.html">All Posts</a>
@@ -816,8 +819,11 @@ WITH SERDEPROPERTIES (
                                 
                                   
                                     
-                                  
-                                
+                                        
+                                        
+                                            <li><a href="/bucket-hive-spark">BUCKETTING HIVE on Tez, Spark on Yarn의 차이점</a></li>
+                                        
+                                    
                                   
                                 
                                   
@@ -826,11 +832,14 @@ WITH SERDEPROPERTIES (
                                 
                                   
                                     
-                                        
-                                        
-                                            <li><a href="/spark-test">spark</a></li>
-                                        
-                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
                                   
                                 
                             </ul>
@@ -847,6 +856,56 @@ WITH SERDEPROPERTIES (
             
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/overflow-trick">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/python-sql.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/overflow-trick">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Database</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">OverFlow/UnderFlow Trick in Query</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/abraham.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      1 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
             
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
@@ -1102,6 +1161,7 @@ $(document).ready(function () {
 
     <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
     <!-- ghost_foot -->
-
+    <!-- math LaTex-->
+    
 </body>
 </html>

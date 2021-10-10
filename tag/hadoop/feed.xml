@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-09-27T00:38:11+09:00</updated>
+  <updated>2021-10-10T23:01:06+09:00</updated>
   <id>http://localhost:4000/tag/hadoop/feed.xml</id>
 
   
@@ -30,6 +30,40 @@
   
   
 
+  
+    <entry>
+      <title type="html">BUCKETTING HIVE on Tez, Spark on Yarn의 차이점</title>
+      <link href="http://localhost:4000/bucket-hive-spark" rel="alternate" type="text/html" title="BUCKETTING HIVE on Tez, Spark on Yarn의 차이점" />
+      <published>2021-10-09T22:30:00+09:00</published>
+      <updated>2021-10-09T22:30:00+09:00</updated>
+      <id>http://localhost:4000/bucket-hive-spark</id>
+      <content type="html" xml:base="http://localhost:4000/bucket-hive-spark">&lt;p&gt;First Spark Posting&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html">First Spark Posting</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">hive table create</title>
@@ -582,40 +616,6 @@ WITH SERDEPROPERTIES (
 
       
         <summary type="html">HiveQL - CREATE QUERY 구조에 대하여</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">spark</title>
-      <link href="http://localhost:4000/spark-test" rel="alternate" type="text/html" title="spark" />
-      <published>2021-09-01T22:30:00+09:00</published>
-      <updated>2021-09-01T22:30:00+09:00</updated>
-      <id>http://localhost:4000/spark-test</id>
-      <content type="html" xml:base="http://localhost:4000/spark-test">&lt;p&gt;First Spark Posting&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="hadoop" />
-      
-
-      
-        <summary type="html">First Spark Posting</summary>
       
 
       
