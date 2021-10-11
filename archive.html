@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+    
     <!-- Document Settings -->
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -34,7 +34,8 @@
     <![endif]-->
     
     <!-- This tag outputs SEO meta+structured data and other important settings -->
-    <meta name="description" content="about Data" />
+    </script>
+<meta name="description" content="about Data" />
     <link rel="shortcut icon" href="http://localhost:4000/assets/built/images/favicon.jpg" type="image/png" />
     <link rel="canonical" href="http://localhost:4000/archive" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
@@ -132,6 +133,9 @@ into the {body} of the default.hbs template -->
     <li class="nav-database" role="menuitem">
         <a href="/tag/database/">database</a>
     </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/datascience/">DataScience</a>
+    </li>
     <li class="nav-archive" role="menuitem">
         <a href="/archive.html">All Posts</a>
     </li>
@@ -178,6 +182,42 @@ into the {body} of the default.hbs template -->
     
     <li><span class="post-date">
         
+        2021-10-09 </span><a href="./bucket-hive-spark" target="_blank">BUCKETTING HIVE on Tez, Spark on Yarn의 차이점</a></li>
+
+    
+        
+        
+        
+    
+    <li><span class="post-date">
+        
+        2021-10-09 </span><a href="./regression-in-query" target="_blank">Regression in Query</a></li>
+
+    
+        
+        
+        
+    
+    <li><span class="post-date">
+        
+        2021-10-09 </span><a href="./overflow-trick" target="_blank">OverFlow/UnderFlow Trick in Query</a></li>
+
+    
+        
+        
+        
+    
+    <li><span class="post-date">
+        
+        2021-10-08 </span><a href="./gaussian_kernel" target="_blank">Gaussian Kernel</a></li>
+
+    
+        
+        
+        
+    
+    <li><span class="post-date">
+        
         2021-09-16 </span><a href="./hive-query" target="_blank">hive table create</a></li>
 
     
@@ -207,15 +247,6 @@ into the {body} of the default.hbs template -->
         
         2021-09-01 </span><a href="./python" target="_blank">AWS S3, object zip</a></li>
 
-    
-        
-        
-        
-    
-    <li><span class="post-date">
-        
-        2021-09-01 </span><a href="./spark-test" target="_blank">spark</a></li>
-
 </ul>
 </div>
 
@@ -235,7 +266,22 @@ $(function() {
     $postContent.fitVids();
 });
 </script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
 
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
 
 
         <!-- Previous/next page links - displayed on every page -->
@@ -332,11 +378,27 @@ $(function() {
     $postContent.fitVids();
 });
 </script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
 
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
     
 
     <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
     <!-- ghost_foot -->
-
+    <!-- math LaTex-->
+    
 </body>
 </html>

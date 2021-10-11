@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-09-27T00:38:11+09:00</updated>
+  <updated>2021-10-12T00:47:59+09:00</updated>
   <id>http://localhost:4000/author/GyuhoonK/feed.xml</id>
 
   
@@ -30,6 +30,409 @@
   
   
 
+  
+    <entry>
+      <title type="html">OverFlow/UnderFlow Trick in Query</title>
+      <link href="http://localhost:4000/overflow-trick" rel="alternate" type="text/html" title="OverFlow/UnderFlow Trick in Query" />
+      <published>2021-10-09T22:30:00+09:00</published>
+      <updated>2021-10-09T22:30:00+09:00</updated>
+      <id>http://localhost:4000/overflow-trick</id>
+      <content type="html" xml:base="http://localhost:4000/overflow-trick"></content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="database" />
+      
+
+      
+        <summary type="html"></summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">BUCKETTING HIVE on Tez, Spark on Yarn의 차이점</title>
+      <link href="http://localhost:4000/bucket-hive-spark" rel="alternate" type="text/html" title="BUCKETTING HIVE on Tez, Spark on Yarn의 차이점" />
+      <published>2021-10-09T22:30:00+09:00</published>
+      <updated>2021-10-09T22:30:00+09:00</updated>
+      <id>http://localhost:4000/bucket-hive-spark</id>
+      <content type="html" xml:base="http://localhost:4000/bucket-hive-spark">&lt;h1 id=&quot;bucketting&quot;&gt;Bucketting&lt;/h1&gt;
+
+&lt;p&gt;Bucket은 쿼리 성능 향상을 위해 사용됩니다. 특히 Join에서 사용되는 key column을 기준으로 bucketting 할 경우 큰 성능 향상을 얻을 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;Bucket의 기본 아이디어는 지정된 칼럼을 기준으로 hash function을 통해 만들어진 값에 해당하는 bucket file에 데이터를 저장하는 것입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/bucketing-in-hive.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;bucket-in-hive&quot;&gt;Bucket in Hive&lt;/h1&gt;
+
+&lt;p&gt;HiveQL로 Partition, Bucket이 선언된 테이블을 선언하는 쿼리는 아래와 같습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bucketed_tbl&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- EXTERNAL TABLE로 생성&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;timestamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- COLUMN을 선언, PARTITION으로 사용되는 COLUMN은 제외함&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;PARTITIONED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p_date&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- PARTITION 기준 선언&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;CLUSTERED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- HASH FUNCTION에 사용할 기준 선언&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;SORTED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- BUCKET 내에서 정렬 기준 선언&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BUEKCTS&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- BUCKET FILE 개수 선언&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'parquet'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;LOCATION&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/user/hive/warehouse/default.db/bucketed_tbl'&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- EXTERNAL TABLE의 저장 위치&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;해당 테이블에 INSERT는 아래와 같은 쿼리로 실행합니다(STATIC PARTITION).&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buckted_tbl&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p_date&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'20211010'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; 
+	&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20211010&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_source&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;INSERT 이후 LOCATION에는 아래처럼 파일이 저장됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/bucketed_tbl
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_0
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_1
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_2
+...
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_31
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_date=20211010&lt;/code&gt; partition을 한번 더 INSERT하면, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_copy1&lt;/code&gt;이 붙은 bucket file들이 저장됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/bucketed_tbl
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_0
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_0_copy_1
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_1
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_1_copy_1
+...
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_31
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_31_copy_1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;bucket-in-sparkpyspark&quot;&gt;Bucket in Spark(pyspark)&lt;/h1&gt;
+
+&lt;p&gt;Spark에서도 partition, bucket 기능을 제공합니다. 위 쿼리는 아래와 같은 의미를 지닙니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;32개의 bucket 파일이 생성될 것 같지만, 이렇게 저장한 경우에 매우 많은 parquet file이 생성된다는 겁니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Bucket in Hive에서 저장된 파일들은 모두 삭제했다고 가정하고 조회&lt;/span&gt;
+hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/bucketed_tbl
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/part-000000-xxxx-xxxx.parquet
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/part-000001-xxxx-xxxx.parquet
+...
+/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/part-012415-xxxx-xxxx.parquet
+&lt;span class=&quot;c&quot;&gt;# 12416개의 bucket file&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;왜 이렇게 많은 bucket들이 생성되는 것일까요?&lt;/p&gt;
+
+&lt;p&gt;이는 spark에서 bucketting을 할 경우 각 MAP 별로 bucekt file을 만들기 때문입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hive-spark-bucket.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;위 그림처럼, Hive에서는 Reducer 하나가 하나의 bucket을 만드는데 비해, Spark에서는 각 task가 자신의 bucket을 만들고 이를 hdfs 상에 저장합니다.&lt;/p&gt;
+
+&lt;p&gt;계산해보면 \(32 * 388 = 12416\)입니다. 즉, 388개의 task가 각각 bucket file을 생성하였기 때문에 위와 같이 12416개의 bucket file이 저장된 것입니다. 따라서 Spark를 통해 bucketting을 할 때는 이러한 부분에 주의해야합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;hive-bucket-vs-spark-bucket&quot;&gt;Hive Bucket vs. Spark Bucket&lt;/h1&gt;
+
+&lt;p&gt;더 큰 문제는 Hive Bucket과 Spark Bucket이 양립할 수 없다는 것입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;spark를-통해-bucketting된-테이블은-hive에서-조회-불가능하다&quot;&gt;Spark를 통해 Bucketting된 테이블은 Hive에서 조회 불가능하다&lt;/h2&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;pyspark로 위와 같이 적재에 성공하더라도, 테이블을 조회하는 쿼리를 실행할 경우 에러를 발생시킵니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;SELECT * FROM default.bucketed_tbl&quot;&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# Error&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;hiveql로-생성된-bucketed-table에는-spark를-통해-insert할-수-없다&quot;&gt;HiveQL로 생성된 Bucketed Table에는 Spark를 통해 INSERT할 수 없다&lt;/h2&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;먼저 Bucketed Table을 생성하는 아래 쿼리를 실행합니다.&lt;/p&gt;
+
+    &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bucketed_tbl&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- EXTERNAL TABLE로 생성&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;timestamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- COLUMN을 선언, PARTITION으로 사용되는 COLUMN은 제외함&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;PARTITIONED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p_date&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- PARTITION 기준 선언&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;CLUSTERED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- HASH FUNCTION에 사용할 기준 선언&lt;/span&gt;
+	&lt;span class=&quot;n&quot;&gt;SORTED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- BUCKET 내에서 정렬 기준 선언&lt;/span&gt;
+	&lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BUEKCTS&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- BUCKET FILE 개수 선언&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'parquet'&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;LOCATION&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/user/hive/warehouse/default.db/bucketed_tbl'&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- EXTERNAL TABLE의 저장 위치&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;pyspark를 이용하여 Bucketed Table에 데이터를 적재합니다.&lt;/p&gt;
+
+    &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+
+    &lt;p&gt;아래와 같은 에러 메시지를 확인할 수 있습니다.&lt;/p&gt;
+
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;The format of the existing table default.bucketed_tbl is 'HiveFormat'.
+It doesn't match the specified format 'ParquetFileFormat'.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+
+    &lt;p&gt;HiveQL로 생성한 Buckted Table은 HiveFormat으로 저장되어 있어 ParquetFileFormat은 사용할 수 없다고 합닌다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;이번에는 HiveFormat으로 적재해보았습니다.&lt;/p&gt;
+
+    &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'hive'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+
+    &lt;p&gt;이번에는 다른 에러 메시지가 확인됩니다.&lt;/p&gt;
+
+    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Creating buckted Hive Serde table is not supported yet.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
+
+    &lt;p&gt;Spark가 아직 Bucketed Hive Serde를 생성하는 기능을 지원하지 않고 있다는 내용입니다. 제가 테스트에 사용했던 spark 버전은 2.3입니다.&lt;/p&gt;
+
+    &lt;p&gt;현재는 3.0 이상의 버전이 릴리즈된 것으로 알고 있는데 현재 이 기능이 구현되었는지는 확인해보아야할 것 같습니다.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://medium.com/analytics-vidhya/spark-bucketing-is-not-as-simple-as-it-looks-c74f105f4af0&quot;&gt;https://medium.com/analytics-vidhya/spark-bucketing-is-not-as-simple-as-it-looks-c74f105f4af0&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html">Bucketting</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">Regression in Query</title>
+      <link href="http://localhost:4000/regression-in-query" rel="alternate" type="text/html" title="Regression in Query" />
+      <published>2021-10-09T22:30:00+09:00</published>
+      <updated>2021-10-09T22:30:00+09:00</updated>
+      <id>http://localhost:4000/regression-in-query</id>
+      <content type="html" xml:base="http://localhost:4000/regression-in-query"></content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="database" />
+      
+
+      
+        <summary type="html"></summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">Gaussian Kernel</title>
+      <link href="http://localhost:4000/gaussian_kernel" rel="alternate" type="text/html" title="Gaussian Kernel" />
+      <published>2021-10-08T22:30:00+09:00</published>
+      <updated>2021-10-08T22:30:00+09:00</updated>
+      <id>http://localhost:4000/gaussian_kernel</id>
+      <content type="html" xml:base="http://localhost:4000/gaussian_kernel">&lt;h1 id=&quot;gaussian-kernel-&quot;&gt;Gaussian Kernel ?&lt;/h1&gt;
+
+&lt;p&gt;Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;what-is-kernel-&quot;&gt;What is Kernel ?&lt;/h1&gt;
+
+&lt;p&gt;먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후 고차원에서 데이터의 위치를 확인하는 것이 목적이 아닙니다. 결과적으로 확인하고 싶은 값은 고차원으로 매핑된 이후 두 데이터의 내적값(inner product)입니다. 내적값은 스칼라값으로 반환되고 이를 통해 고차원에 매핑된 두 벡터 사이의 거리를 측정할수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/inner-product.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;그러나 고차원 매핑 이후 내적(inner product)를 계산하여 두 벡터 간의 거리를 측정하는 방법은 계산량이 매우 높아 비효율적입니다.&lt;/p&gt;
+
+&lt;p&gt;이러한 문제를 해결하기 위해 Kernel Trick이 이용됩니다. Kernel Trick은 고차원 매핑과 내적 계산을 한번에 수행합니다. 그리고 이러한 동시 연산을 가능하게 하는 것이 Kernel입니다.&lt;/p&gt;
+
+&lt;p&gt;저차원(m)에서 고차원(n)으로 매핑시켜주는 함수를 다음과 같이 정의합니다.&lt;/p&gt;
+
+\[\phi(x) = Ax \\
+A : n * m (n&amp;gt;m)\\
+x : m * 1\]
+
+&lt;p&gt;위 함수는  m차원 벡터를 n차원으로 매핑시켜줍니다. 이 때, Φ는 선형변환(Linear Transformation)이고, 행렬 𝐴(n x m)는 선형변환에 사용되는 표준행렬입니다.&lt;/p&gt;
+
+&lt;p&gt;위에서 말했듯이, 이러한 매핑이후 우리가 계산하고 하는 것은 두 벡터의 변환 이후 내적값입니다. 아래와 같은 수식으로 𝐾(Kernel)을 정의할 수 있습니다.&lt;/p&gt;
+
+\[K(x_{i}, x_{j}) = \phi(x_{i})^T \phi(x_{j})
+							  =  (Ax_{i})^T (Ax_{j})
+							  = x_{i}^TA^TAx_{j}\]
+
+&lt;p&gt;이 때, 위 식에서 사용되는 변수들의 차원은 아래와 같습니다.&lt;/p&gt;
+
+\[x_{i}^T : 1 * m \\
+A^T : m * n\\
+A : n * m \\
+x_{j} : m * 1\]
+
+&lt;p&gt;결과적으로 𝐾는 스칼라값을 반환하게 됨을 알 수 있습니다. 𝐾가 두 벡터간의 거리(유사도)를 측정한다는 점에서 아래 두 가지 조건을 만족해야합니다.&lt;/p&gt;
+
+\[i) K(x_{i}, x_{j}) = K(x_{j}, x_{i}) \\
+ii) K(x_i, x_i) &amp;gt;= 0\]
+
+&lt;p&gt;즉, 교환법칙이 성립해야하고 자기자신과의 거리를 계산했을 때에는 음수값이 나와서는 안된다는 조건입니다.&lt;/p&gt;
+
+&lt;p&gt;이러한 조건을 만족하기 위한 조건을 계산해보면, 𝐾를 이루는 행렬들이&lt;/p&gt;
+
+&lt;p&gt;​	𝐢) 대칭행렬(symetric matrix)&lt;/p&gt;
+
+&lt;p&gt;​	𝐢𝐢) positive semi-definite matrix&lt;/p&gt;
+
+&lt;p&gt;를 동시에 만족해야합니다. 그리고 이와 관련된 조건은 &lt;strong&gt;Mercer’s Theorem&lt;/strong&gt;으로 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/mercer.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;이러한 조건을 만족하는 커널에는 &lt;em&gt;Linear, polynomial, sigmoid&lt;/em&gt; 그리고 지금 우리가 살펴보고 있는 &lt;strong&gt;&lt;em&gt;gaussian&lt;/em&gt;&lt;/strong&gt;이 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;gaussian-kernel---infinite-dimensional-vector&quot;&gt;Gaussian Kernel - Infinite-dimensional vector&lt;/h2&gt;
+
+&lt;p&gt;Gaussian Kernel의 가장 큰 특징은 무한차원으로 매핑시킨다는 점입니다. 아래 식을 통해 간단한 예를 확인할 수 있습니다. 계산 편의성을 위해 \(\sigma^2=\dfrac {1}{2}\)인 경우를 예시로 선택했습니다.&lt;/p&gt;
+
+\[K(x_{i}, x_{j}) = exp(-\dfrac {||x_i - x_j||^2}{2\sigma^2})\\
+K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} \text{)}\\
+=exp(-x_i^2)exp(-x_j^2)exp(2x_ix_j)\\
+\text {By Taylor's theorem,  } exp(2x_ix_j) = \Sigma_{k=0}^{\infty}(\dfrac {2^kx_i^kx_j^k}{k!})\]
+
+&lt;h2 id=&quot;gaussian-kernel---purpose-of-𝛔&quot;&gt;Gaussian Kernel - Purpose of 𝛔&lt;/h2&gt;
+
+&lt;p&gt;𝛔는 무한차원으로 확장된 벡터 사이의 거리 계산 시 얼마나 민감하게 반응하는지 결정하는 매개변수입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/gaussian-plot.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;위 그림처럼, \(K(x)\) 즉 Gaussian Kernel의 계산 결과는 𝛔가 클수록 벡터 간 거리 \(x\)의 차이에 둔감해집니다. 반대로 𝛔가 작아지면, 벡터 간 거리 \(x\)에 민감하게 반응합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;how-to-use-&quot;&gt;How to Use ?&lt;/h1&gt;
+
+&lt;p&gt;Kernel SVM, Kernel Regression에서 사용됩니다. 각각 예를 살펴보겠습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;kernel-svm&quot;&gt;Kernel SVM&lt;/h2&gt;
+
+&lt;p&gt;SVM Classification은 비선형 분류를 만들 수 없다는 한계를 가지고 있습니다. 이를 극복하기 위해 저차원 공간의 데이터를 고차원 공간으로 매핑시켜 초평면을 찾아 SVM의 한계를 극복하고자 합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/kernel-svm.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;kernel-regression&quot;&gt;Kernel Regression&lt;/h2&gt;
+
+&lt;p&gt;[업데이트 예정]&lt;/p&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://ratsgo.github.io/machine%20learning/2017/05/30/SVM3/&quot;&gt;https://ratsgo.github.io/machine%20learning/2017/05/30/SVM3/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://tensorflow.blog/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/2-3-7-%EC%BB%A4%EB%84%90-%EC%84%9C%ED%8F%AC%ED%8A%B8-%EB%B2%A1%ED%84%B0-%EB%A8%B8%EC%8B%A0/&quot;&gt;https://tensorflow.blog/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/2-3-7-%EC%BB%A4%EB%84%90-%EC%84%9C%ED%8F%AC%ED%8A%B8-%EB%B2%A1%ED%84%B0-%EB%A8%B8%EC%8B%A0/&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="datascience" />
+      
+
+      
+        <summary type="html">Gaussian Kernel ?</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">hive table create</title>
@@ -1083,40 +1486,6 @@ SQLSETPOSIROW Size.: 8
 
       
         <summary type="html">python, R에서 Database Server와 연결하기</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">spark</title>
-      <link href="http://localhost:4000/spark-test" rel="alternate" type="text/html" title="spark" />
-      <published>2021-09-01T22:30:00+09:00</published>
-      <updated>2021-09-01T22:30:00+09:00</updated>
-      <id>http://localhost:4000/spark-test</id>
-      <content type="html" xml:base="http://localhost:4000/spark-test">&lt;p&gt;First Spark Posting&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="hadoop" />
-      
-
-      
-        <summary type="html">First Spark Posting</summary>
       
 
       
