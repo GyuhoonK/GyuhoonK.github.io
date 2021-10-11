@@ -4,7 +4,11 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+<<<<<<< HEAD
   <updated>2021-10-12T00:47:59+09:00</updated>
+=======
+  <updated>2021-10-11T00:14:59+09:00</updated>
+>>>>>>> 6a09b0e19344a26dcfe9df2c469e08435d42264a
   <id>http://localhost:4000/tag/hadoop/feed.xml</id>
 
   
@@ -37,6 +41,7 @@
       <published>2021-10-09T22:30:00+09:00</published>
       <updated>2021-10-09T22:30:00+09:00</updated>
       <id>http://localhost:4000/bucket-hive-spark</id>
+<<<<<<< HEAD
       <content type="html" xml:base="http://localhost:4000/bucket-hive-spark">&lt;h1 id=&quot;bucketting&quot;&gt;Bucketting&lt;/h1&gt;
 
 &lt;p&gt;Bucket은 쿼리 성능 향상을 위해 사용됩니다. 특히 Join에서 사용되는 key column을 기준으로 bucketting 할 경우 큰 성능 향상을 얻을 수 있습니다.&lt;/p&gt;
@@ -216,6 +221,9 @@ It doesn't match the specified format 'ParquetFileFormat'.
 &lt;p&gt;[참고]&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://medium.com/analytics-vidhya/spark-bucketing-is-not-as-simple-as-it-looks-c74f105f4af0&quot;&gt;https://medium.com/analytics-vidhya/spark-bucketing-is-not-as-simple-as-it-looks-c74f105f4af0&lt;/a&gt;&lt;/p&gt;</content>
+=======
+      <content type="html" xml:base="http://localhost:4000/bucket-hive-spark">&lt;p&gt;First Spark Posting&lt;/p&gt;</content>
+>>>>>>> 6a09b0e19344a26dcfe9df2c469e08435d42264a
 
       
       
@@ -236,7 +244,11 @@ It doesn't match the specified format 'ParquetFileFormat'.
       
 
       
+<<<<<<< HEAD
         <summary type="html">Bucketting</summary>
+=======
+        <summary type="html">First Spark Posting</summary>
+>>>>>>> 6a09b0e19344a26dcfe9df2c469e08435d42264a
       
 
       
