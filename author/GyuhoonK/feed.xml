@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-10-12T00:50:18+09:00</updated>
+  <updated>2021-10-13T00:21:42+09:00</updated>
   <id>http://localhost:4000/author/GyuhoonK/feed.xml</id>
 
   
@@ -66,12 +66,14 @@
     </entry>
   
     <entry>
-      <title type="html">BUCKETTING HIVE on Tez, Spark on Yarn의 차이점</title>
-      <link href="http://localhost:4000/bucket-hive-spark" rel="alternate" type="text/html" title="BUCKETTING HIVE on Tez, Spark on Yarn의 차이점" />
+      <title type="html">Bucket in Hive, Spark</title>
+      <link href="http://localhost:4000/bucket-hive-spark" rel="alternate" type="text/html" title="Bucket in Hive, Spark" />
       <published>2021-10-09T22:30:00+09:00</published>
       <updated>2021-10-09T22:30:00+09:00</updated>
       <id>http://localhost:4000/bucket-hive-spark</id>
-      <content type="html" xml:base="http://localhost:4000/bucket-hive-spark">&lt;h1 id=&quot;bucketting&quot;&gt;Bucketting&lt;/h1&gt;
+      <content type="html" xml:base="http://localhost:4000/bucket-hive-spark">&lt;p&gt;Hive와 Spark에서 Bucket 차이점에 대하여&lt;/p&gt;
+
+&lt;h1 id=&quot;bucketting&quot;&gt;Bucketting&lt;/h1&gt;
 
 &lt;p&gt;Bucket은 쿼리 성능 향상을 위해 사용됩니다. 특히 Join에서 사용되는 key column을 기준으로 bucketting 할 경우 큰 성능 향상을 얻을 수 있습니다.&lt;/p&gt;
 
@@ -126,17 +128,17 @@
 
 &lt;h1 id=&quot;bucket-in-sparkpyspark&quot;&gt;Bucket in Spark(pyspark)&lt;/h1&gt;
 
-&lt;p&gt;Spark에서도 partition, bucket 기능을 제공합니다. 위 쿼리는 아래와 같은 의미를 지닙니다.&lt;/p&gt;
+&lt;p&gt;Spark에서도 partition, bucket 기능을 제공합니다. 위에서 실행했던 HiveQL 쿼리는 아래 pyspark 코드와 같은 표면적으로는 같은 의미를 지닙니다. 즉 HiveQL이나 아래 pyspark 코드는 모두 1) External 2) Partition 3) Bucket 을 선언하고 있습니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;32개의 bucket 파일이 생성될 것 같지만, 이렇게 저장한 경우에 매우 많은 parquet file이 생성된다는 겁니다.&lt;/p&gt;
@@ -156,7 +158,7 @@ hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/hive-spark-bucket.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;위 그림처럼, Hive에서는 Reducer 하나가 하나의 bucket을 만드는데 비해, Spark에서는 각 task가 자신의 bucket을 만들고 이를 hdfs 상에 저장합니다.&lt;/p&gt;
+&lt;p&gt;위 그림처럼, Hive에서는 Reducer 하나가 하나의 bucket을 만드는데 비해, Spark에서는 각 task가 자신의 bucket을 만들고 이를 테이블 경로(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path&lt;/code&gt;)에 저장합니다.&lt;/p&gt;
 
 &lt;p&gt;계산해보면 \(32 * 388 = 12416\)입니다. 즉, 388개의 task가 각각 bucket file을 생성하였기 때문에 위와 같이 12416개의 bucket file이 저장된 것입니다. 따라서 Spark를 통해 bucketting을 할 때는 이러한 부분에 주의해야합니다.&lt;/p&gt;
 
@@ -164,17 +166,17 @@ hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/
 
 &lt;p&gt;더 큰 문제는 Hive Bucket과 Spark Bucket이 양립할 수 없다는 것입니다.&lt;/p&gt;
 
-&lt;h2 id=&quot;spark를-통해-bucketting된-테이블은-hive에서-조회-불가능하다&quot;&gt;Spark를 통해 Bucketting된 테이블은 Hive에서 조회 불가능하다&lt;/h2&gt;
+&lt;h2 id=&quot;spark를-통해-생성된-bucketed-table은-hive에서-조회-불가능하다&quot;&gt;Spark를 통해 생성된 Bucketed Table은 Hive에서 조회 불가능하다&lt;/h2&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;pyspark로 위와 같이 적재에 성공하더라도, 테이블을 조회하는 쿼리를 실행할 경우 에러를 발생시킵니다.&lt;/p&gt;
@@ -201,17 +203,17 @@ hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;pyspark를 이용하여 Bucketed Table에 데이터를 적재합니다.&lt;/p&gt;
+    &lt;p&gt;pyspark를 이용하여 Bucketed Table에 데이터를 append(INSERT)합니다.&lt;/p&gt;
 
     &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
 
     &lt;p&gt;아래와 같은 에러 메시지를 확인할 수 있습니다.&lt;/p&gt;
@@ -220,20 +222,20 @@ hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/
 It doesn't match the specified format 'ParquetFileFormat'.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
 
-    &lt;p&gt;HiveQL로 생성한 Buckted Table은 HiveFormat으로 저장되어 있어 ParquetFileFormat은 사용할 수 없다고 합닌다.&lt;/p&gt;
+    &lt;p&gt;HiveQL로 생성한 Bucketed Table은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HiveFormat&lt;/code&gt;으로 저장되어 있어 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ParquetFileFormat&lt;/code&gt; 으로 파일을 적재할 수 없다는 메시지입니다.&lt;/p&gt;
   &lt;/li&gt;
   &lt;li&gt;
-    &lt;p&gt;이번에는 HiveFormat으로 적재해보았습니다.&lt;/p&gt;
+    &lt;p&gt;이번에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HiveFormat&lt;/code&gt;으로 적재해보았습니다.&lt;/p&gt;
 
     &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'hive'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-		  &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'hive'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
 
     &lt;p&gt;이번에는 다른 에러 메시지가 확인됩니다.&lt;/p&gt;
@@ -241,7 +243,7 @@ It doesn't match the specified format 'ParquetFileFormat'.
     &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Creating buckted Hive Serde table is not supported yet.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
 
-    &lt;p&gt;Spark가 아직 Bucketed Hive Serde를 생성하는 기능을 지원하지 않고 있다는 내용입니다. 제가 테스트에 사용했던 spark 버전은 2.3입니다.&lt;/p&gt;
+    &lt;p&gt;Spark가 아직 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Bucketed Hive Serde&lt;/code&gt;를 생성하는 기능을 지원하지 않고 있다는 내용입니다. 제가 테스트에 사용했던 spark 버전은 &lt;strong&gt;2.3&lt;/strong&gt;입니다.&lt;/p&gt;
 
     &lt;p&gt;현재는 3.0 이상의 버전이 릴리즈된 것으로 알고 있는데 현재 이 기능이 구현되었는지는 확인해보아야할 것 같습니다.&lt;/p&gt;
   &lt;/li&gt;
@@ -270,7 +272,7 @@ It doesn't match the specified format 'ParquetFileFormat'.
       
 
       
-        <summary type="html">Bucketting</summary>
+        <summary type="html">Hive와 Spark에서 Bucket 차이점에 대하여</summary>
       
 
       
@@ -317,7 +319,9 @@ It doesn't match the specified format 'ParquetFileFormat'.
       <published>2021-10-08T22:30:00+09:00</published>
       <updated>2021-10-08T22:30:00+09:00</updated>
       <id>http://localhost:4000/gaussian_kernel</id>
-      <content type="html" xml:base="http://localhost:4000/gaussian_kernel">&lt;h1 id=&quot;gaussian-kernel-&quot;&gt;Gaussian Kernel ?&lt;/h1&gt;
+      <content type="html" xml:base="http://localhost:4000/gaussian_kernel">&lt;p&gt;Gaussian Kernel(RBF) 기본 개념에 대하여&lt;/p&gt;
+
+&lt;h1 id=&quot;gaussian-kernel-&quot;&gt;Gaussian Kernel ?&lt;/h1&gt;
 
 &lt;p&gt;Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다.&lt;/p&gt;
 
@@ -427,7 +431,7 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
       
 
       
-        <summary type="html">Gaussian Kernel ?</summary>
+        <summary type="html">Gaussian Kernel(RBF) 기본 개념에 대하여</summary>
       
 
       
@@ -435,8 +439,8 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
     </entry>
   
     <entry>
-      <title type="html">hive table create</title>
-      <link href="http://localhost:4000/hive-query" rel="alternate" type="text/html" title="hive table create" />
+      <title type="html">CREATE query in Hive</title>
+      <link href="http://localhost:4000/hive-query" rel="alternate" type="text/html" title="CREATE query in Hive" />
       <published>2021-09-16T22:30:00+09:00</published>
       <updated>2021-09-16T22:30:00+09:00</updated>
       <id>http://localhost:4000/hive-query</id>
@@ -557,7 +561,7 @@ WHERE country = 'KOR';
 &lt;p&gt;간단하게 설명하면, DYNAMIC은 파티션 컬럼만을 지정해주면 해당 컬럼의 value에 따라 알아서 디렉토리를 생성하는 방법이고, STATIC은 해당 데이터를 저장할 디렉토리를 구체적으로 명시해주는 것입니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;-- STATIC PARTITION&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page_view&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'JPN'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page_view&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'JPN'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;temp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;-- 아래 디렉토리가 새로 생성됩니다&lt;/span&gt;
@@ -565,7 +569,7 @@ WHERE country = 'KOR';
  
 &lt;span class=&quot;c1&quot;&gt;-- DYNAMIC PARTITION&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;exec&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;dynamic&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nonstrict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- dynamic partition 허용 &lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page_view&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;page_view&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;country&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
   &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;temp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;-- country value에 따라 자동으로 디렉토리를 생성합니다&lt;/span&gt;
@@ -682,8 +686,15 @@ WHERE country = 'KOR';
 &lt;p&gt;파일 내 데이터(HDFS Files)에 접근한 이후, 해당 데이터를 테이블로 적재하기 위해 Deserialaizer를 이용하여 Row Format으로 변환합니다. 반대로, 쿼리 결과인 Row들은 Serializer를 이용하여 파일 포맷으로 변환하여 파일로 export합니다.&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;HDFS files –&amp;gt; InputFileFormat –&amp;gt; [key, value] –&amp;gt; &lt;strong&gt;Deserializer&lt;/strong&gt; –&amp;gt; Row object&lt;/li&gt;
-  &lt;li&gt;Row object –&amp;gt; &lt;strong&gt;Serializer&lt;/strong&gt; –&amp;gt; [key, value] –&amp;gt; OutputFileFormat –&amp;gt; HDFS files&lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;HDFS files –&amp;gt; InputFileFormat –&amp;gt; [key, value] –&amp;gt; &lt;strong&gt;Deserializer&lt;/strong&gt; –&amp;gt; Row object&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Row object –&amp;gt; &lt;strong&gt;Serializer&lt;/strong&gt; –&amp;gt; [key, value] –&amp;gt; OutputFileFormat –&amp;gt; HDFS files&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;&lt;img src=&quot;../../assets/built/images/serde.png&quot; alt=&quot;images&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;p&gt;기본 제공되는 SerDe는 다음 7개 입니다.&lt;/p&gt;
@@ -963,7 +974,9 @@ WITH SERDEPROPERTIES (
 
 &lt;p&gt;&lt;a href=&quot;https://wikidocs.net/book/2203&quot;&gt;https://wikidocs.net/book/2203&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/EMR_Hive_Commands.html&quot;&gt;https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/EMR_Hive_Commands.html&lt;/a&gt;&lt;/p&gt;</content>
+&lt;p&gt;&lt;a href=&quot;https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/EMR_Hive_Commands.html&quot;&gt;https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/EMR_Hive_Commands.html&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.educative.io/collection/page/6089575797620736/6248215343005696/6394690049933312&quot;&gt;https://www.educative.io/collection/page/6089575797620736/6248215343005696/6394690049933312&lt;/a&gt;&lt;/p&gt;</content>
 
       
       
@@ -1493,12 +1506,12 @@ SQLSETPOSIROW Size.: 8
     </entry>
   
     <entry>
-      <title type="html">AWS S3, object zip</title>
-      <link href="http://localhost:4000/python" rel="alternate" type="text/html" title="AWS S3, object zip" />
+      <title type="html">AWS S3와 zip 파일</title>
+      <link href="http://localhost:4000/python" rel="alternate" type="text/html" title="AWS S3와 zip 파일" />
       <published>2021-09-01T22:30:00+09:00</published>
       <updated>2021-09-01T22:30:00+09:00</updated>
       <id>http://localhost:4000/python</id>
-      <content type="html" xml:base="http://localhost:4000/python">&lt;p&gt;AWS S3 내 zip파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
+      <content type="html" xml:base="http://localhost:4000/python">&lt;p&gt;AWS S3 내 zip 파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/aws-s3-structure.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
@@ -1736,9 +1749,9 @@ NotImplementedError
 &lt;p&gt;이제 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ZipFile&lt;/code&gt; 에서 파일을 읽기 위해 필요한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read&lt;/code&gt;함수를 구현해봅니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;S3File&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;io&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RawIOBase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-
-    &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;property&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;위와&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;동일&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+		&lt;span class=&quot;c1&quot;&gt;# 추가 부분
+&lt;/span&gt;    &lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;property&lt;/span&gt;
     &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;s3_object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;content_length&lt;/span&gt;
 
@@ -1856,7 +1869,7 @@ NotImplementedError
       
 
       
-        <summary type="html">AWS S3 내 zip파일을 다운로드 받지 않고, 내용물만 다운로드 받기</summary>
+        <summary type="html">AWS S3 내 zip 파일을 다운로드 받지 않고, 내용물만 다운로드 받기</summary>
       
 
       

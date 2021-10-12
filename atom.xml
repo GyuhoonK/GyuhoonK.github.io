@@ -8,9 +8,9 @@
     
       
       <item>
-        <title>BUCKETTING HIVE on Tez, Spark on Yarn의 차이점</title>
+        <title>Bucket in Hive, Spark</title>
         
-          <description>&lt;h1 id=&quot;bucketting&quot;&gt;Bucketting&lt;/h1&gt;
+          <description>&lt;p&gt;Hive와 Spark에서 Bucket 차이점에 대하여&lt;/p&gt;
 
 </description>
         
@@ -53,7 +53,7 @@
       <item>
         <title>Gaussian Kernel</title>
         
-          <description>&lt;h1 id=&quot;gaussian-kernel-&quot;&gt;Gaussian Kernel ?&lt;/h1&gt;
+          <description>&lt;p&gt;Gaussian Kernel(RBF) 기본 개념에 대하여&lt;/p&gt;
 
 </description>
         
@@ -66,7 +66,7 @@
     
       
       <item>
-        <title>hive table create</title>
+        <title>CREATE query in Hive</title>
         
           <description>&lt;p&gt;HiveQL - CREATE QUERY 구조에 대하여&lt;/p&gt;
 
@@ -110,9 +110,9 @@
     
       
       <item>
-        <title>AWS S3, object zip</title>
+        <title>AWS S3와 zip 파일</title>
         
-          <description>&lt;p&gt;AWS S3 내 zip파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
+          <description>&lt;p&gt;AWS S3 내 zip 파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
 
 </description>
         

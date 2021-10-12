@@ -11,7 +11,7 @@
 
 
 
-    <title>hive table create</title>
+    <title>CREATE query in Hive</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -43,7 +43,7 @@
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="hive table create" />
+    <meta property="og:title" content="CREATE query in Hive" />
     <meta property="og:description" content="HiveQL - CREATE QUERY 구조에 대하여 CREATE [TEMPORARY][EXTERNAL] TABLE [IF NOT EXISTS] [db_name.]table_name [(col_name data_type [column_constraint_specification] [COMMENT col_comment], ... [constraint_specification])] [COMMENT table_comment] [PARTITIONED BY (col_name data_type [COMMENT col_comment], ...)] [CLUSTERED BY (col_name, col_name, ...) [SORTED BY (col_name [ASC|DESC], ...)] INTO num_buckets BUCKETS] [SKEWED BY (col_name, col_name, ...) -- (Note: Available" />
     <meta property="og:url" content="http://localhost:4000/hive-query" />
     <meta property="og:image" content="http://localhost:4000/assets/built/images/hive-banner.png" />
@@ -53,7 +53,7 @@
     <meta property="article:modified_time" content="2021-09-16T22:30:00+09:00" />
     <meta property="article:tag" content="Hadoop" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="hive table create" />
+    <meta name="twitter:title" content="CREATE query in Hive" />
     <meta name="twitter:description" content="HiveQL - CREATE QUERY 구조에 대하여 CREATE [TEMPORARY][EXTERNAL] TABLE [IF NOT EXISTS] [db_name.]table_name [(col_name data_type [column_constraint_specification] [COMMENT col_comment], ... [constraint_specification])] [COMMENT table_comment] [PARTITIONED BY (col_name data_type [COMMENT col_comment], ...)] [CLUSTERED BY (col_name, col_name, ...) [SORTED BY (col_name [ASC|DESC], ...)] INTO num_buckets BUCKETS] [SKEWED BY (col_name, col_name, ...) -- (Note: Available" />
     <meta name="twitter:url" content="http://localhost:4000/" />
     <meta name="twitter:image" content="http://localhost:4000/assets/built/images/hive-banner.png" />
@@ -99,7 +99,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="hive table create" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="CREATE query in Hive" href="/feed.xml" />
 
 
 </head>
@@ -185,7 +185,7 @@ into the {body} of the default.hbs template -->
                         
                     
                 </section>
-                <h1 class="post-full-title">hive table create</h1>
+                <h1 class="post-full-title">CREATE query in Hive</h1>
             </header>
 
             <!-- 
@@ -312,7 +312,7 @@ WHERE country = 'KOR';
 <p>간단하게 설명하면, DYNAMIC은 파티션 컬럼만을 지정해주면 해당 컬럼의 value에 따라 알아서 디렉토리를 생성하는 방법이고, STATIC은 해당 데이터를 저장할 디렉토리를 구체적으로 명시해주는 것입니다.</p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- STATIC PARTITION</span>
-<span class="k">INSERT</span> <span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">page_view</span><span class="p">(</span><span class="n">country</span><span class="o">=</span><span class="s1">'JPN'</span><span class="p">)</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">page_view</span> <span class="n">PARTITION</span> <span class="p">(</span><span class="n">country</span><span class="o">=</span><span class="s1">'JPN'</span><span class="p">)</span>
 <span class="k">SELECT</span> <span class="o">*</span>
   <span class="k">FROM</span> <span class="k">temp</span><span class="p">;</span>
 <span class="c1">-- 아래 디렉토리가 새로 생성됩니다</span>
@@ -320,7 +320,7 @@ WHERE country = 'KOR';
  
 <span class="c1">-- DYNAMIC PARTITION</span>
 <span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="k">exec</span><span class="p">.</span><span class="k">dynamic</span><span class="p">.</span><span class="n">partition</span><span class="p">.</span><span class="k">mode</span><span class="o">=</span><span class="n">nonstrict</span><span class="p">;</span> <span class="c1">-- dynamic partition 허용 </span>
-<span class="k">INSERT</span> <span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">page_view</span><span class="p">(</span><span class="n">country</span><span class="p">)</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="k">TABLE</span> <span class="n">page_view</span> <span class="n">PARTITION</span> <span class="p">(</span><span class="n">country</span><span class="p">)</span>
 <span class="k">SELECT</span> <span class="o">*</span>
   <span class="k">FROM</span> <span class="k">temp</span><span class="p">;</span>
 <span class="c1">-- country value에 따라 자동으로 디렉토리를 생성합니다</span>
@@ -437,8 +437,15 @@ WHERE country = 'KOR';
 <p>파일 내 데이터(HDFS Files)에 접근한 이후, 해당 데이터를 테이블로 적재하기 위해 Deserialaizer를 이용하여 Row Format으로 변환합니다. 반대로, 쿼리 결과인 Row들은 Serializer를 이용하여 파일 포맷으로 변환하여 파일로 export합니다.</p>
 
 <ul>
-  <li>HDFS files –&gt; InputFileFormat –&gt; [key, value] –&gt; <strong>Deserializer</strong> –&gt; Row object</li>
-  <li>Row object –&gt; <strong>Serializer</strong> –&gt; [key, value] –&gt; OutputFileFormat –&gt; HDFS files</li>
+  <li>
+    <p>HDFS files –&gt; InputFileFormat –&gt; [key, value] –&gt; <strong>Deserializer</strong> –&gt; Row object</p>
+  </li>
+  <li>
+    <p>Row object –&gt; <strong>Serializer</strong> –&gt; [key, value] –&gt; OutputFileFormat –&gt; HDFS files</p>
+  </li>
+  <li>
+    <p><img src="../../assets/built/images/serde.png" alt="images" /></p>
+  </li>
 </ul>
 
 <p>기본 제공되는 SerDe는 다음 7개 입니다.</p>
@@ -720,6 +727,9 @@ WITH SERDEPROPERTIES (
 
 <p><a href="https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/EMR_Hive_Commands.html">https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/EMR_Hive_Commands.html</a></p>
 
+<p><a href="https://www.educative.io/collection/page/6089575797620736/6248215343005696/6394690049933312">https://www.educative.io/collection/page/6089575797620736/6248215343005696/6394690049933312</a></p>
+
+
                 </div>
             </section>
 
@@ -775,7 +785,7 @@ WITH SERDEPROPERTIES (
                         var disqus_config = function () {
                             var this_page_url = 'http://localhost:4000/hive-query';
                             var this_page_identifier = '/hive-query';
-                            var this_page_title = 'hive table create';
+                            var this_page_title = 'CREATE query in Hive';
                         };
                         (function() {
                             var d = document, s = d.createElement('script');
@@ -822,7 +832,7 @@ WITH SERDEPROPERTIES (
                                     
                                         
                                         
-                                            <li><a href="/bucket-hive-spark">BUCKETTING HIVE on Tez, Spark on Yarn의 차이점</a></li>
+                                            <li><a href="/bucket-hive-spark">Bucket in Hive, Spark</a></li>
                                         
                                     
                                   
@@ -884,7 +894,7 @@ WITH SERDEPROPERTIES (
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>Gaussian Kernel ?
+                        <p>Gaussian Kernel(RBF) 기본 개념에 대하여
 
 </p>
                     
@@ -980,13 +990,13 @@ WITH SERDEPROPERTIES (
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">hive table create</div>
+    <div class="floating-header-title">CREATE query in Hive</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=hive+table+create&amp;url=https://gyuhoonk.github.iohive-query"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=CREATE+query+in+Hive&amp;url=https://gyuhoonk.github.iohive-query"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 

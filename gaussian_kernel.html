@@ -44,7 +44,7 @@
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Gaussian Kernel" />
-    <meta property="og:description" content="Gaussian Kernel ? Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다. What is Kernel ? 먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후 고차원에서 데이터의 위치를 확인하는 것이" />
+    <meta property="og:description" content="Gaussian Kernel(RBF) 기본 개념에 대하여 Gaussian Kernel ? Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다. What is Kernel ? 먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후" />
     <meta property="og:url" content="http://localhost:4000/gaussian_kernel" />
     <meta property="og:image" content="http://localhost:4000/assets/built/images/gaussian-kernel-formula.jpeg" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
@@ -54,7 +54,7 @@
     <meta property="article:tag" content="Datascience" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Gaussian Kernel" />
-    <meta name="twitter:description" content="Gaussian Kernel ? Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다. What is Kernel ? 먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후 고차원에서 데이터의 위치를 확인하는 것이" />
+    <meta name="twitter:description" content="Gaussian Kernel(RBF) 기본 개념에 대하여 Gaussian Kernel ? Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다. What is Kernel ? 먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후" />
     <meta name="twitter:url" content="http://localhost:4000/" />
     <meta name="twitter:image" content="http://localhost:4000/assets/built/images/gaussian-kernel-formula.jpeg" />
     <meta name="twitter:label1" content="Written by" />
@@ -86,7 +86,7 @@
         "@type": "WebPage",
         "@id": "http://localhost:4000/gaussian_kernel"
     },
-    "description": "Gaussian Kernel ? Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다. What is Kernel ? 먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후 고차원에서 데이터의 위치를 확인하는 것이"
+    "description": "Gaussian Kernel(RBF) 기본 개념에 대하여 Gaussian Kernel ? Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다. What is Kernel ? 먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후"
 }
     </script>
 
@@ -195,7 +195,9 @@ into the {body} of the default.hbs template -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <h1 id="gaussian-kernel-">Gaussian Kernel ?</h1>
+                    <p>Gaussian Kernel(RBF) 기본 개념에 대하여</p>
+
+<h1 id="gaussian-kernel-">Gaussian Kernel ?</h1>
 
 <p>Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다.</p>
 
@@ -376,7 +378,7 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
     <article class="post-card post-template">
         
             <a class="post-card-image-link" href="/overflow-trick">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/python-sql.png)"></div>
+                <div class="post-card-image" style="background-image: url(/assets/built/images/overflow-banner.jpg)"></div>
             </a>
         
         <div class="post-card-content">
@@ -443,7 +445,7 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
                         
                     
 
-                    <h2 class="post-card-title">hive table create</h2>
+                    <h2 class="post-card-title">CREATE query in Hive</h2>
                 </header>
                 <section class="post-card-excerpt">
                     

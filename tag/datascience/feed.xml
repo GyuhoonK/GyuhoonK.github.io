@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/tag/datascience/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-10-12T00:50:18+09:00</updated>
+  <updated>2021-10-13T00:21:42+09:00</updated>
   <id>http://localhost:4000/tag/datascience/feed.xml</id>
 
   
@@ -37,7 +37,9 @@
       <published>2021-10-08T22:30:00+09:00</published>
       <updated>2021-10-08T22:30:00+09:00</updated>
       <id>http://localhost:4000/gaussian_kernel</id>
-      <content type="html" xml:base="http://localhost:4000/gaussian_kernel">&lt;h1 id=&quot;gaussian-kernel-&quot;&gt;Gaussian Kernel ?&lt;/h1&gt;
+      <content type="html" xml:base="http://localhost:4000/gaussian_kernel">&lt;p&gt;Gaussian Kernel(RBF) 기본 개념에 대하여&lt;/p&gt;
+
+&lt;h1 id=&quot;gaussian-kernel-&quot;&gt;Gaussian Kernel ?&lt;/h1&gt;
 
 &lt;p&gt;Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다.&lt;/p&gt;
 
@@ -147,7 +149,7 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
       
 
       
-        <summary type="html">Gaussian Kernel ?</summary>
+        <summary type="html">Gaussian Kernel(RBF) 기본 개념에 대하여</summary>
       
 
       
