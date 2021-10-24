@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-10-13T00:21:42+09:00</updated>
+  <updated>2021-10-24T17:26:48+09:00</updated>
   <id>http://localhost:4000/author/GyuhoonK/feed.xml</id>
 
   
@@ -30,6 +30,214 @@
   
   
 
+  
+    <entry>
+      <title type="html">Merge Files in Hive</title>
+      <link href="http://localhost:4000/hive-merge-query" rel="alternate" type="text/html" title="Merge Files in Hive" />
+      <published>2021-10-13T22:30:00+09:00</published>
+      <updated>2021-10-13T22:30:00+09:00</updated>
+      <id>http://localhost:4000/hive-merge-query</id>
+      <content type="html" xml:base="http://localhost:4000/hive-merge-query">&lt;p&gt;Hive에서 작은 용량의 파일들을 하나의 파일로 합치기&lt;/p&gt;
+
+&lt;h1 id=&quot;blocks-in-hdfs&quot;&gt;Blocks in HDFS&lt;/h1&gt;
+
+&lt;p&gt;데이터는 HDFS 상에서 Block이라는 단위로 저장됩니다. 일반적으로 하나의 Block에 128MB를 저장합니다. 따라서 Block Size, 128MB를 넘는 데이터는 여러 개의 Block으로 쪼개서 저장하게 됩니다. 아래는 518MB 파일이 Block으로 쪼개져서 저장되는 예시입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hdfs-blocks.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;각  Block은 안정성을 위해 서로 다른 노드에 Block replication을 저장하고, Name Node에는 해당 File의 block location과 같은 meta data를 저장합니다. 이를 통해 한 Data Node가 작동하지 않더라도, 원본 데이터를 복구할 수 있습니다. 포스팅에서 다루고자하는 내용은 아니니 간단히 이미지로 대체하고 넘어가겠습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/Block-Replication-in-Hadoop.png&quot; alt=&quot;image&quot; style=&quot;zoom:150%;&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;read-file--read-blocks--hdfs-io&quot;&gt;Read File = Read Blocks = HDFS I/O&lt;/h1&gt;
+
+&lt;p&gt;HDFS에서 하나의 File을 읽을 때, 해당 File에 해당하는 Block들을 읽어들여옵니다.&lt;/p&gt;
+
+&lt;p&gt;아래 그림처럼 File A를 읽고자 한다면, File A가 쪼개어 저장되어있는 Block1, Block2, Block3, Block4를 읽어들여오는 작업을 수행합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/file-reading-hive.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;만약 File A에 해당하는 Block이 많다면 더 많은 Block을 읽어와야하고 이는 더 많은 HDFS I/O가 발생함을 의미합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;bad-case--file-size-is-less-than-block-size&quot;&gt;Bad Case : File Size is Less than Block Size&lt;/h1&gt;
+
+&lt;p&gt;HDFS에 저장하고자 하는 File이 Block Size(128MB)보다 작으면 이러한 HDFS I/O는 더 많이 발생하게됩니다.&lt;/p&gt;
+
+&lt;p&gt;예를 들어, 우리는 500MB 짜리 데이터를 저장한다고 가정해봅시다.&lt;/p&gt;
+
+&lt;p&gt;해당 파일은 500MB 짜리 파일 &lt;strong&gt;하나&lt;/strong&gt;로 저장할 수도 있고, 50MB짜리 파일 &lt;strong&gt;10개&lt;/strong&gt;로 저장할 수도 있습니다. 어떻게 저장하는 것이 더 효율적일까요?&lt;/p&gt;
+
+&lt;p&gt;비교 편의를 위해 각 Block들이 모두 다른 DataNode에 저장되었다고 가정하고 비교해보겠습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;case1--only-1-file-size-is-500mb&quot;&gt;Case1 : only 1 File, Size is 500MB&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hdfs-case1.png&quot; alt=&quot;image&quot; style=&quot;zoom:150%;&quot; /&gt;500MB 짜리 파일 하나로 HDFS에 저장할 경우, File A는 위 그림처럼 4개의 block으로 쪼개집니다. 또한, NameNode는 File A의 메타 데이터를 하나 저장합니다. 이때 HDFS I/O는 4번 발생합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;case2--10-files-each-size-is-50mb&quot;&gt;Case2 : 10 Files, each Size is 50MB&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hdfs-case2.png&quot; alt=&quot;image&quot; style=&quot;zoom:150%;&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;File A를 Block Size인 128MB보다 작은 50MB 파일 10개로 쪼개서 저장할 경우, 위 그림처럼 각 10개 File은 각각 50MB 크기의 Block에 저장됩니다. 따라서, HDFS I/O 는 10번 발생하게됩니다. 또한, NameNode는 File A-1부터 File A-10까지 10개 파일에 대한 메타 데이터를 저장하게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;위 그림을 간단하게 비교해보면 아래와 같습니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;# HDFS I/O(Data Node)&lt;/th&gt;
+      &lt;th&gt;# MetaData in NameNode&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Case1&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Case2&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+      &lt;td&gt;10&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;비교를 위해 모든 Block이 다른  Data Node에 저장되어 있다고 가정했지만, 실제 상황에서는 하나의 Data Node에 여러 Block이 저장될 수 있기 때문에  HDFS I/O는 위 수치보다 낮을 것입니다. 즉, 위 상황처럼 모든 Block이 각기 다른 Data Node에 저장된 상황은 최악의 경우라고 생각하시면 됩니다. 그러나 이러한 가정을 제거하더라도 Block Access는 Case1과 Case2가 각각 4,10으로 변함 없을 것입니다. 따라서 우리는 Block Size보다 작은 파일이 저장되는 것을 지양해야함을 알 수 있습니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;when-is-file-size-less-than-block-size-&quot;&gt;When is File size Less than Block size ?&lt;/h1&gt;
+
+&lt;p&gt;그러면 File Size가 128MB보다 작게 저장되는 경우는 왜 그리고 언제 발생하는 것일까요? 이는 Tez, Yarn 스케쥴러의 동작 원리와 관련 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hql-on-tez.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;위 그림처럼, Tez를 이용한 HQL 구문은 최종적으로 Reducer에서 결과를 종합하여 output을 내놓습니다. 그렇다면 File 1개만 나와야하는 것 아닌가? 라고 생각할 수 있지만, 할당 받은 자원 내에서 사용 가능한 여러 개의 Ruducer를 생성하여 작업을 실행하게 되고 각 Reducer들이 처리한 결과를 HDFS에 저장합니다. 이 과정에서 각각의 Reducer가 처리하는 데이터의 양이 적다면, output size가 block size보다 적은 file을 write할 수도 있게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;Spark의 file 개수는 기본적으로 다른 옵션을 지정하지 않는다면  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.default.parallelism&lt;/code&gt; 에 의해 결정됩니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;[default]&lt;/p&gt;
+
+  &lt;p&gt;For distributed shuffle operations like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;reduceByKey&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;join&lt;/code&gt;, the largest number of partitions in a parent RDD. For operations like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parallelize&lt;/code&gt; with no parent RDDs, it depends on the cluster manager:&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;
+      &lt;p&gt;Local mode: number of cores on the local machine&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;p&gt;Mesos fine grained mode: 8&lt;/p&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+      &lt;p&gt;Others: total number of cores on all executor nodes or 2, whichever is larger&lt;/p&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;p&gt;[meaning]&lt;/p&gt;
+
+  &lt;p&gt;Default number of partitions in RDDs returned by transformations like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;join&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;reduceByKey&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parallelize&lt;/code&gt; when not set by user.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;yarn의 Others에 해당하므로, (executor 개수) * (core 개수)만큼 파일을 저장할 것입니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;how-to-merge&quot;&gt;How to Merge?&lt;/h1&gt;
+
+&lt;p&gt;그렇다면 이처럼 비효율적으로 저장된 File을 하나의 Block으로 저장하는 방법을 알아보겠습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;hql-case&quot;&gt;HQL case&lt;/h2&gt;
+
+&lt;p&gt;reducer 개수를 조정하거나, Tez에게 File write 조건을 지정할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;-- case1) Reducer 개수 조정&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mapred&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reduce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;tasks&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;-- case2) hive.merge 옵션 부여&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapfiles&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- Map 결과 파일에 대해 merge를 허용&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapredfiles&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- MapReducer 결과 파일에 대해 merge를 허용&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;per&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;128000000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- 128MB의 file로  merge&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;smallfiles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avgsize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;128000000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- 128MB 이하의 small file들을 merge 대상으로 지정&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;spark-case&quot;&gt;Spark case&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repartition&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;coalesce&lt;/code&gt;  를 통해 output file의 개수를 조정할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repartition&lt;/code&gt; 은 shuffle을 수행하여 RDD를 재조정해주는데 비해,  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;coalesce&lt;/code&gt; 는 shuffle을 수행하지 않고 지정된 개수의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt;으로 조정합니다.&lt;/p&gt;
+
+&lt;p&gt;그럼  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt;이 무엇이냐?를 알아야 이 원리를 이해할 수 있을 것 같습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt; 이란 spark 내에서 task가 처리하는 데이터의 단위를 의미합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt;(혹은 이들로 이루어진 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;)는 여러 개의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt;으로 이루어져있고, 하나의 task가 하나의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt;을 담당하여 작업을 수행합니다.&lt;/p&gt;
+
+&lt;p&gt;이러한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt;은 3개로 분류됩니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;partition&lt;/th&gt;
+      &lt;th&gt;configuration&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Input Partition&lt;/td&gt;
+      &lt;td&gt;spark.sql.files.maxPartitionBytes&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Output Partition&lt;/td&gt;
+      &lt;td&gt;repartition, coalesce&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Shuffle Partition&lt;/td&gt;
+      &lt;td&gt;spark.sql.shuffle.partitions&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;이 중에 Output Partition을 조정하여, 파일 개수를 적절히 조절해줍니다.&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt; repartition&lt;/code&gt;은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD, DataSet, DataFrame&lt;/code&gt;과 같은 객체 내부의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt;에 저장될 데이터를 재조정해주는 역할을 합니다. 이때 &lt;strong&gt;shuffle&lt;/strong&gt;을 통해, 해당 객체 내부의 데이터들을 재분배하게 됩니다. 이에 비해  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;coalesce&lt;/code&gt;는 현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt; 개수보다 적게 만드는 것이 목적이므로, 재조정하지 않고(&lt;strong&gt;shuffle 하지 않고&lt;/strong&gt;), partition에 존재하는 데이터를 단순히 다른 partition에 욱여 넣는 작업입니다.&lt;/p&gt;
+
+&lt;p&gt;따라서 output partition을 적절히 사용하여, output file size가 128MB 이하가 되지 않도록 조정한 뒤, 저장하면 됩니다. 아래 예시 코드를 남기며 글을 마치겠습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT id, grade FROM student&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;coalesce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
+&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;test_table&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://faqreviews.net/question/what-is-hdfs-data-block/&quot;&gt;https://faqreviews.net/question/what-is-hdfs-data-block/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.hdfstutorial.com/hdfs-architecture/block-replication-in-hadoop/&quot;&gt;https://www.hdfstutorial.com/hdfs-architecture/block-replication-in-hadoop/&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://forum.huawei.com/enterprise/en/fi-components-relationship-between-spark-and-hdfs/thread/606704-893&quot;&gt;https://forum.huawei.com/enterprise/en/fi-components-relationship-between-spark-and-hdfs/thread/606704-893&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://tech.kakao.com/2021/10/08/spark-shuffle-partition/&quot;&gt;https://tech.kakao.com/2021/10/08/spark-shuffle-partition/&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html">Hive에서 작은 용량의 파일들을 하나의 파일로 합치기</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">OverFlow/UnderFlow Trick in Query</title>
