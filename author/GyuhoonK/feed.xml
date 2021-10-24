@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-10-25T01:11:12+09:00</updated>
+  <updated>2021-10-25T01:16:34+09:00</updated>
   <id>http://localhost:4000/author/GyuhoonK/feed.xml</id>
 
   
@@ -32,12 +32,12 @@
 
   
     <entry>
-      <title type="html">Merge Files in Hive</title>
-      <link href="http://localhost:4000/hive-merge-query" rel="alternate" type="text/html" title="Merge Files in Hive" />
-      <published>2021-10-13T22:30:00+09:00</published>
-      <updated>2021-10-13T22:30:00+09:00</updated>
+      <title type="html">Merge Files in HDFS</title>
+      <link href="http://localhost:4000/hive-merge-query" rel="alternate" type="text/html" title="Merge Files in HDFS" />
+      <published>2021-10-24T22:30:00+09:00</published>
+      <updated>2021-10-24T22:30:00+09:00</updated>
       <id>http://localhost:4000/hive-merge-query</id>
-      <content type="html" xml:base="http://localhost:4000/hive-merge-query">&lt;p&gt;Hive에서 작은 용량의 파일들을 하나의 파일로 합치기&lt;/p&gt;
+      <content type="html" xml:base="http://localhost:4000/hive-merge-query">&lt;p&gt;HDFS에서 작은 용량의 파일들을 하나의 파일로 합치기&lt;/p&gt;
 
 &lt;h1 id=&quot;blocks-in-hdfs&quot;&gt;Blocks in HDFS&lt;/h1&gt;
 
@@ -303,7 +303,7 @@
       
 
       
-        <summary type="html">Hive에서 작은 용량의 파일들을 하나의 파일로 합치기</summary>
+        <summary type="html">HDFS에서 작은 용량의 파일들을 하나의 파일로 합치기</summary>
       
 
       
