@@ -302,31 +302,13 @@ into the {body} of the default.hbs template -->
 
 <p>위 INSERT문은 Reducer를 거치지 않기 때문에 읽어들여온 파일 개수만큼 디렉토리에 그대로 저장하게 되고, 이는 file number가 급격하게 늘어나는 결과를 초래하게 됩니다.</p>
 
-<p>Spark는 file write 작업을 partition 단위로 수행하게 됩니다. 따라서, Spark를 저장된 ouput file 개수는 기본적으로 다른 옵션(아래서 다루게 될 <code class="language-plaintext highlighter-rouge">repartition, coalesce</code>)을 지정하지 않는다면 partition 개수를 결정하는 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code> 에 의해 결정됩니다.</p>
+<p>Spark는 file write 작업을 partition 단위로 수행하게 됩니다. 따라서, Spark를 저장된 ouput file 개수는 기본적으로 다른 옵션(아래서 다루게 될 <code class="language-plaintext highlighter-rouge">repartition, coalesce</code>)을 지정하지 않는다면 partition 개수를 결정하는 <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code> 에 의해 결정됩니다.</p>
 
 <blockquote>
-  <p>[default]</p>
+  <p>[default] 200</p>
 
-  <p>For distributed shuffle operations like <code class="language-plaintext highlighter-rouge">reduceByKey</code> and <code class="language-plaintext highlighter-rouge">join</code>, the largest number of partitions in a parent RDD. For operations like <code class="language-plaintext highlighter-rouge">parallelize</code> with no parent RDDs, it depends on the cluster manager:</p>
-
-  <ul>
-    <li>
-      <p>Local mode: number of cores on the local machine</p>
-    </li>
-    <li>
-      <p>Mesos fine grained mode: 8</p>
-    </li>
-    <li>
-      <p>Others: total number of cores on all executor nodes or 2, whichever is larger</p>
-    </li>
-  </ul>
-
-  <p>[meaning]</p>
-
-  <p>Default number of partitions in RDDs returned by transformations like <code class="language-plaintext highlighter-rouge">join</code>, <code class="language-plaintext highlighter-rouge">reduceByKey</code>, and <code class="language-plaintext highlighter-rouge">parallelize</code> when not set by user.</p>
+  <p>[meaning] <strong>The default number of partitions</strong> to use when shuffling data for joins or aggregations. Note: For structured streaming, this configuration cannot be changed between query restarts from the same checkpoint location.</p>
 </blockquote>
-
-<p>Spark on yarn은 Others에 해당하므로 default 값을 따르는 경우에는 (executor 개수) * (core 개수)만큼 파일을 저장할 것입니다. write해야하는 전체 데이터 크기가 충분히 크다면 이는 문제되지 않을 수 있으나, 전체 데이터 크기가 작아지는 경우에는 HiveQL에서 살펴보았던 것처럼 small file이 발생하게 됩니다.</p>
 
 <h1 id="how-to-merge">How to Merge?</h1>
 
@@ -371,7 +353,7 @@ into the {body} of the default.hbs template -->
        <span class="k">AVG</span><span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="n">cost</span><span class="p">)</span> 
 <span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> 
 <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">id</span><span class="p">)</span> 
-	     <span class="k">JOIN</span> <span class="k">c</span> 
+       <span class="k">JOIN</span> <span class="k">c</span> 
 <span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">itemid</span> <span class="o">=</span> <span class="k">c</span><span class="p">.</span><span class="n">itemid</span><span class="p">)</span> 
 <span class="k">GROUP</span> <span class="k">BY</span> <span class="n">a</span><span class="p">.</span><span class="n">vendor</span>
 <span class="n">SORT</span> <span class="k">BY</span> <span class="n">a</span><span class="p">.</span><span class="n">vendor</span> <span class="c1">-- SORT BY가 추가됨으로써 해당 쿼리는 Reducer가 추가됩니다.</span>
@@ -415,7 +397,7 @@ into the {body} of the default.hbs template -->
   </tbody>
 </table>
 
-<p>이 중에 Output Partition을 조정하여, 파일 개수를 적절히 조절해줍니다. ` repartition<code class="language-plaintext highlighter-rouge">은  </code>RDD, DataSet, DataFrame<code class="language-plaintext highlighter-rouge">과 같은 객체 내부의 </code>partition<code class="language-plaintext highlighter-rouge">에 저장될 데이터를 재조정해주는 역할을 합니다. 이때 **shuffle**을 통해, 해당 객체 내부의 데이터들을 재분배하게 됩니다. 이에 비해  </code>coalesce<code class="language-plaintext highlighter-rouge">는 현재  </code>partition` 개수보다 적게 만드는 것이 목적이므로, 재조정하지 않고(<strong>shuffle 하지 않고</strong>), partition에 존재하는 데이터를 단순히 다른 partition에 욱여 넣는 작업입니다.</p>
+<p>이 중에 Output Partition을 조정하여, 파일 개수를 적절히 조절해줍니다.  <code class="language-plaintext highlighter-rouge">repartition</code> 은   RDD, DataSet, DataFrame과 같은 객체 내부의 partition에 저장될 데이터를 재조정해주는 역할을 합니다. 이때 <strong>shuffle</strong>을 통해, 해당 객체 내부의 데이터들을 재분배하게 됩니다. 이에 비해  <code class="language-plaintext highlighter-rouge">coalesce</code>는 현재  partition 개수보다 적게 만드는 것이 목적이므로, 재조정하지 않고(<strong>shuffle 하지 않고</strong>), partition에 존재하는 데이터를 단순히 다른 partition에 욱여 넣는 작업입니다.</p>
 
 <p>따라서 Output Partition을 적절히 사용하여, output file size가 128MB 이하가 되지 않도록 조정하여 저장하면 됩니다. 아래 예시 코드를 남기며 글을 마치겠습니다.</p>
 

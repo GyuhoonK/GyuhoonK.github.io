@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-10-25T01:16:34+09:00</updated>
+  <updated>2021-11-01T00:14:59+09:00</updated>
   <id>http://localhost:4000/tag/hadoop/feed.xml</id>
 
   
@@ -144,31 +144,13 @@
 
 &lt;p&gt;위 INSERT문은 Reducer를 거치지 않기 때문에 읽어들여온 파일 개수만큼 디렉토리에 그대로 저장하게 되고, 이는 file number가 급격하게 늘어나는 결과를 초래하게 됩니다.&lt;/p&gt;
 
-&lt;p&gt;Spark는 file write 작업을 partition 단위로 수행하게 됩니다. 따라서, Spark를 저장된 ouput file 개수는 기본적으로 다른 옵션(아래서 다루게 될 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repartition, coalesce&lt;/code&gt;)을 지정하지 않는다면 partition 개수를 결정하는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.default.parallelism&lt;/code&gt; 에 의해 결정됩니다.&lt;/p&gt;
+&lt;p&gt;Spark는 file write 작업을 partition 단위로 수행하게 됩니다. 따라서, Spark를 저장된 ouput file 개수는 기본적으로 다른 옵션(아래서 다루게 될 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repartition, coalesce&lt;/code&gt;)을 지정하지 않는다면 partition 개수를 결정하는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.sql.shuffle.partitions&lt;/code&gt; 에 의해 결정됩니다.&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;[default]&lt;/p&gt;
+  &lt;p&gt;[default] 200&lt;/p&gt;
 
-  &lt;p&gt;For distributed shuffle operations like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;reduceByKey&lt;/code&gt; and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;join&lt;/code&gt;, the largest number of partitions in a parent RDD. For operations like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parallelize&lt;/code&gt; with no parent RDDs, it depends on the cluster manager:&lt;/p&gt;
-
-  &lt;ul&gt;
-    &lt;li&gt;
-      &lt;p&gt;Local mode: number of cores on the local machine&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li&gt;
-      &lt;p&gt;Mesos fine grained mode: 8&lt;/p&gt;
-    &lt;/li&gt;
-    &lt;li&gt;
-      &lt;p&gt;Others: total number of cores on all executor nodes or 2, whichever is larger&lt;/p&gt;
-    &lt;/li&gt;
-  &lt;/ul&gt;
-
-  &lt;p&gt;[meaning]&lt;/p&gt;
-
-  &lt;p&gt;Default number of partitions in RDDs returned by transformations like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;join&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;reduceByKey&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parallelize&lt;/code&gt; when not set by user.&lt;/p&gt;
+  &lt;p&gt;[meaning] &lt;strong&gt;The default number of partitions&lt;/strong&gt; to use when shuffling data for joins or aggregations. Note: For structured streaming, this configuration cannot be changed between query restarts from the same checkpoint location.&lt;/p&gt;
 &lt;/blockquote&gt;
-
-&lt;p&gt;Spark on yarn은 Others에 해당하므로 default 값을 따르는 경우에는 (executor 개수) * (core 개수)만큼 파일을 저장할 것입니다. write해야하는 전체 데이터 크기가 충분히 크다면 이는 문제되지 않을 수 있으나, 전체 데이터 크기가 작아지는 경우에는 HiveQL에서 살펴보았던 것처럼 small file이 발생하게 됩니다.&lt;/p&gt;
 
 &lt;h1 id=&quot;how-to-merge&quot;&gt;How to Merge?&lt;/h1&gt;
 
@@ -213,7 +195,7 @@
        &lt;span class=&quot;k&quot;&gt;AVG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cost&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
 &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; 
 &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-	     &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt; 
+       &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt; 
 &lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;itemid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;itemid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
 &lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt;
 &lt;span class=&quot;n&quot;&gt;SORT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- SORT BY가 추가됨으로써 해당 쿼리는 Reducer가 추가됩니다.&lt;/span&gt;
@@ -257,7 +239,7 @@
   &lt;/tbody&gt;
 &lt;/table&gt;
 
-&lt;p&gt;이 중에 Output Partition을 조정하여, 파일 개수를 적절히 조절해줍니다. ` repartition&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;은  &lt;/code&gt;RDD, DataSet, DataFrame&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;과 같은 객체 내부의 &lt;/code&gt;partition&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;에 저장될 데이터를 재조정해주는 역할을 합니다. 이때 **shuffle**을 통해, 해당 객체 내부의 데이터들을 재분배하게 됩니다. 이에 비해  &lt;/code&gt;coalesce&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;는 현재  &lt;/code&gt;partition` 개수보다 적게 만드는 것이 목적이므로, 재조정하지 않고(&lt;strong&gt;shuffle 하지 않고&lt;/strong&gt;), partition에 존재하는 데이터를 단순히 다른 partition에 욱여 넣는 작업입니다.&lt;/p&gt;
+&lt;p&gt;이 중에 Output Partition을 조정하여, 파일 개수를 적절히 조절해줍니다.  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repartition&lt;/code&gt; 은   RDD, DataSet, DataFrame과 같은 객체 내부의 partition에 저장될 데이터를 재조정해주는 역할을 합니다. 이때 &lt;strong&gt;shuffle&lt;/strong&gt;을 통해, 해당 객체 내부의 데이터들을 재분배하게 됩니다. 이에 비해  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;coalesce&lt;/code&gt;는 현재  partition 개수보다 적게 만드는 것이 목적이므로, 재조정하지 않고(&lt;strong&gt;shuffle 하지 않고&lt;/strong&gt;), partition에 존재하는 데이터를 단순히 다른 partition에 욱여 넣는 작업입니다.&lt;/p&gt;
 
 &lt;p&gt;따라서 Output Partition을 적절히 사용하여, output file size가 128MB 이하가 되지 않도록 조정하여 저장하면 됩니다. 아래 예시 코드를 남기며 글을 마치겠습니다.&lt;/p&gt;
 
