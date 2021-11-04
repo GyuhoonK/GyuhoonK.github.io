@@ -317,17 +317,17 @@ into the {body} of the default.hbs template -->
 
 <p>② Update :  <code class="language-plaintext highlighter-rouge">g_count</code> 에 1을 더하기 위해, register에 1을 더합니다.</p>
 
-<p>③ Read : Context Switching이 발생하여, 이제는 Thread B가 다시 <code class="language-plaintext highlighter-rouge">g_count</code> 값을 register로 읽어옵니다.</p>
+<p>③ Read : Context Switching이 발생하여, Thread A의 작업 정보는 PCB로 저장(<code class="language-plaintext highlighter-rouge">register=1</code>)하고, Thread B를 실행합니다. 이제는 Thread B가 다시 <code class="language-plaintext highlighter-rouge">g_count</code> 값을 register로 읽어옵니다.( <code class="language-plaintext highlighter-rouge">g_count = 0</code>)</p>
 
 <p>④ Update : Thread A의 동작과 마찬가지로 <code class="language-plaintext highlighter-rouge">g_count</code> 에 1을 더하기 위해, register에 1을 더합니다.</p>
 
-<p>⑤ Write :Context Switching이 발생하여 Thread A가 다시 실행됩니다. 이제 register의 값을 <code class="language-plaintext highlighter-rouge">g_count</code> 에 적어야합니다.</p>
-
-<p>Thread B에 의해 업데이트된 현재 register 값은 1이므로 <code class="language-plaintext highlighter-rouge">g_count</code>는 1이 더해졌습니다. <code class="language-plaintext highlighter-rouge">g_count = 1</code>(Thread A에 의해 업데이트된 값이 아니라는 문제점이 있습니다)</p>
+<p>⑤ Write : Context Switching이 발생하여 Thread A가 다시 실행됩니다. PCB에서 register값을 읽어들여옵니다(<code class="language-plaintext highlighter-rouge">register = 1</code>). 이제 register의 값을 <code class="language-plaintext highlighter-rouge">g_count</code> 에 적어야합니다. Thread B에 의해 업데이트된 현재 register 값은 1이므로 <code class="language-plaintext highlighter-rouge">g_count</code>는 1이 더해졌습니다. <code class="language-plaintext highlighter-rouge">g_count = 1</code></p>
 
 <p>⑥ Read : 다음 작업을 위해 다시 <code class="language-plaintext highlighter-rouge">g_count</code> 값을 register에 등록합니다.</p>
 
-<p>⑦ Write : Context Switching이 발생하고, 이번에는 Thread B가 <code class="language-plaintext highlighter-rouge">g_count</code>에 값을 저장합니다. 그러나 현재 register 값이 1이므로 1을 그대로 <code class="language-plaintext highlighter-rouge">g_count</code>에 전달합니다. 이 시점에서 Thread 작업은 2번 완료되었으므로 <code class="language-plaintext highlighter-rouge">g_count</code>는 2가 되어야하지만 1번의 덧셈이 누락되어 1이 되었음을 확인할 수 있습니다.</p>
+<p>⑦ Write : Context Switching이 발생하고, Thread B의 PCB에서 register를 읽습니다(<code class="language-plaintext highlighter-rouge">register=1</code>). 이번에는 Thread B가 <code class="language-plaintext highlighter-rouge">g_count</code>에 값을 저장합니다. 현재 register 값이 1이므로 1을 그대로 <code class="language-plaintext highlighter-rouge">g_count</code>에 전달합니다.</p>
+
+<p>이 시점에서 Thread 작업은 2번 완료되었으므로 <code class="language-plaintext highlighter-rouge">g_count</code>는 2가 되어야하지만 1번의 덧셈이 누락되어 1이 되었음을 확인할 수 있습니다.</p>
 
 <p>위와 같은 문제점이 발생하는 이유는 Thread 간 공유되는 변수에 동시에 여러 Thread가 동시에 접근하고 있기 때문입니다. 이처럼, Thread가 동시에 접근하는 경우에 연산 결과, 혹은 데이터 누락이 발생할 수 있는 영역을 <strong>Critical Section</strong>(임계영역)이라고 부릅니다.</p>
 

@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="http://localhost:4000/tag/python/feed.xml" rel="self" type="application/atom+xml" />
   <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-11-04T22:39:38+09:00</updated>
+  <updated>2021-11-04T22:50:17+09:00</updated>
   <id>http://localhost:4000/tag/python/feed.xml</id>
 
   
@@ -159,17 +159,17 @@
 
 &lt;p&gt;② Update :  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 에 1을 더하기 위해, register에 1을 더합니다.&lt;/p&gt;
 
-&lt;p&gt;③ Read : Context Switching이 발생하여, 이제는 Thread B가 다시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 값을 register로 읽어옵니다.&lt;/p&gt;
+&lt;p&gt;③ Read : Context Switching이 발생하여, Thread A의 작업 정보는 PCB로 저장(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;register=1&lt;/code&gt;)하고, Thread B를 실행합니다. 이제는 Thread B가 다시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 값을 register로 읽어옵니다.( &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count = 0&lt;/code&gt;)&lt;/p&gt;
 
 &lt;p&gt;④ Update : Thread A의 동작과 마찬가지로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 에 1을 더하기 위해, register에 1을 더합니다.&lt;/p&gt;
 
-&lt;p&gt;⑤ Write :Context Switching이 발생하여 Thread A가 다시 실행됩니다. 이제 register의 값을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 에 적어야합니다.&lt;/p&gt;
-
-&lt;p&gt;Thread B에 의해 업데이트된 현재 register 값은 1이므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;는 1이 더해졌습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count = 1&lt;/code&gt;(Thread A에 의해 업데이트된 값이 아니라는 문제점이 있습니다)&lt;/p&gt;
+&lt;p&gt;⑤ Write : Context Switching이 발생하여 Thread A가 다시 실행됩니다. PCB에서 register값을 읽어들여옵니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;register = 1&lt;/code&gt;). 이제 register의 값을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 에 적어야합니다. Thread B에 의해 업데이트된 현재 register 값은 1이므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;는 1이 더해졌습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count = 1&lt;/code&gt;&lt;/p&gt;
 
 &lt;p&gt;⑥ Read : 다음 작업을 위해 다시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 값을 register에 등록합니다.&lt;/p&gt;
 
-&lt;p&gt;⑦ Write : Context Switching이 발생하고, 이번에는 Thread B가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;에 값을 저장합니다. 그러나 현재 register 값이 1이므로 1을 그대로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;에 전달합니다. 이 시점에서 Thread 작업은 2번 완료되었으므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;는 2가 되어야하지만 1번의 덧셈이 누락되어 1이 되었음을 확인할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;⑦ Write : Context Switching이 발생하고, Thread B의 PCB에서 register를 읽습니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;register=1&lt;/code&gt;). 이번에는 Thread B가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;에 값을 저장합니다. 현재 register 값이 1이므로 1을 그대로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;에 전달합니다.&lt;/p&gt;
+
+&lt;p&gt;이 시점에서 Thread 작업은 2번 완료되었으므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;는 2가 되어야하지만 1번의 덧셈이 누락되어 1이 되었음을 확인할 수 있습니다.&lt;/p&gt;
 
 &lt;p&gt;위와 같은 문제점이 발생하는 이유는 Thread 간 공유되는 변수에 동시에 여러 Thread가 동시에 접근하고 있기 때문입니다. 이처럼, Thread가 동시에 접근하는 경우에 연산 결과, 혹은 데이터 누락이 발생할 수 있는 영역을 &lt;strong&gt;Critical Section&lt;/strong&gt;(임계영역)이라고 부릅니다.&lt;/p&gt;
 
