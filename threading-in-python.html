@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>Threading in Python</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    </script>
+<meta name="description" content="about Data" />
+    <link rel="shortcut icon" href="http://localhost:4000/assets/built/images/favicon.jpg" type="image/png" />
+    <link rel="canonical" href="http://localhost:4000/threading-in-python" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Threading in Python" />
+    <meta property="og:description" content="Python - Thread, Mutex, Semaphore Thread란 ? 간단하게, 하나의 Process 내에서 여러 개의 작업을 실행할 수 있도록 구현하는 것을 thread라고 합니다. 일반적으로 Process는 하나의 작업만을 CPU에서 실행하도록 구현되지만, Thread를 선언하여 하나의 Process가 여러 개의 Process처럼 동작하도록 합니다. 이는 IPC(InterProcessCommunication)과 비슷한 개념이지만, Thread는 하나의 Process 내에서 여러 작업을 실행하는 것인데 비해" />
+    <meta property="og:url" content="http://localhost:4000/threading-in-python" />
+    <meta property="og:image" content="http://localhost:4000/assets/built/images/thread-banner.jpeg" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2021-11-01T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2021-11-01T22:30:00+09:00" />
+    <meta property="article:tag" content="Python" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Threading in Python" />
+    <meta name="twitter:description" content="Python - Thread, Mutex, Semaphore Thread란 ? 간단하게, 하나의 Process 내에서 여러 개의 작업을 실행할 수 있도록 구현하는 것을 thread라고 합니다. 일반적으로 Process는 하나의 작업만을 CPU에서 실행하도록 구현되지만, Thread를 선언하여 하나의 Process가 여러 개의 Process처럼 동작하도록 합니다. 이는 IPC(InterProcessCommunication)과 비슷한 개념이지만, Thread는 하나의 Process 내에서 여러 작업을 실행하는 것인데 비해" />
+    <meta name="twitter:url" content="http://localhost:4000/" />
+    <meta name="twitter:image" content="http://localhost:4000/assets/built/images/thread-banner.jpeg" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Python" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "http://localhost:4000/"
+    },
+    "url": "http://localhost:4000/threading-in-python",
+    "image": {
+        "@type": "ImageObject",
+        "url": "http://localhost:4000/assets/built/images/thread-banner.jpeg",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "http://localhost:4000/threading-in-python"
+    },
+    "description": "Python - Thread, Mutex, Semaphore Thread란 ? 간단하게, 하나의 Process 내에서 여러 개의 작업을 실행할 수 있도록 구현하는 것을 thread라고 합니다. 일반적으로 Process는 하나의 작업만을 CPU에서 실행하도록 구현되지만, Thread를 선언하여 하나의 Process가 여러 개의 Process처럼 동작하도록 합니다. 이는 IPC(InterProcessCommunication)과 비슷한 개념이지만, Thread는 하나의 Process 내에서 여러 작업을 실행하는 것인데 비해"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="Threading in Python" href="/feed.xml" />
+
+
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="http://localhost:4000/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/datascience/">DataScience</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-python post tag-pyhon ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime=" 1 November 2021"> 1 November 2021</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/python/'>PYTHON</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">Threading in Python</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/thread-banner.jpeg)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>Python - Thread, Mutex, Semaphore</p>
+
+<h1 id="thread란-">Thread란 ?</h1>
+
+<p>간단하게, 하나의 Process 내에서 여러 개의 작업을 실행할 수 있도록 구현하는 것을 thread라고 합니다. 일반적으로 Process는 하나의 작업만을 CPU에서 실행하도록 구현되지만, Thread를 선언하여 하나의 Process가 여러 개의 Process처럼 동작하도록 합니다. 이는 IPC(InterProcessCommunication)과 비슷한 개념이지만, Thread는 하나의 Process 내에서 여러 작업을 실행하는 것인데 비해 IPC는 다수의 Process가 데이터를 공유한다는 점에서 차이가 있습니다.</p>
+
+<p>예를 들어, 하나의 thread는 데이터를 처리하는 역할만 수행하고 다른 thread는 데이터 처리 결과를 시각화하는 역할만 수행한다면 데이터를 처리하면서 동시에 실시간으로 데이터가 처리되는 결과를 확인할 수 있습니다. IPC도 같은 목적을 가지고 있습니다.</p>
+
+<p>Thread는 Process 내의 메모리 공간(Text(Code), Data, Heap)을 공유하기 때문에 Kernel Space를 다루어야하는 IPC에 비해 덜 복잡하게 구현할 수 있습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Thread</th>
+      <th>IPC</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>메모리 공간 공유</td>
+      <td>- 각 thread는 stack 영역을 할당<br />- Text, Data, Heap 영역에서 thread 간 데이터 공유됨</td>
+      <td>Kernel Space만 공유됨</td>
+    </tr>
+    <tr>
+      <td>메모리 사용</td>
+      <td>4GB 내에서 multi-thread 구현</td>
+      <td>(Process 개수) * 4GB 필요</td>
+    </tr>
+    <tr>
+      <td>구현 방법</td>
+      <td>Library로 제공됨</td>
+      <td>-Kernel Space를 경유(Pipe, Shared Memory, message queue)<br />- Process Signal, Socket 이용</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="threading-in-python">Threading in Python</h1>
+
+<p>python은  <code class="language-plaintext highlighter-rouge">threading</code> 패키지를 통해 thread를 간단하게 구현할 수 있습니다.</p>
+
+<p>10000번을 카운팅하는 함수를 50회 실행하고자 한다고 가정해보겠습니다.</p>
+
+<p>이는 아래처럼 thread를 통해 병렬로(동시에) 실행할 수 있습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">threading</span>
+
+<span class="c1"># thread할 함수 정의
+</span><span class="k">def</span> <span class="nf">thread_main</span><span class="p">():</span>
+  <span class="k">global</span> <span class="n">g_count</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10000</span><span class="p">):</span> 
+    <span class="n">g_count</span> <span class="o">=</span> <span class="n">g_count</span> <span class="o">+</span> <span class="mi">1</span>
+    
+<span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span> 
+    <span class="n">th</span> <span class="o">=</span> <span class="n">threading</span><span class="p">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span> <span class="o">=</span> <span class="n">thread_main</span><span class="p">)</span>
+    <span class="n">threads</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">th</span><span class="p">)</span>
+
+<span class="n">g_count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span> 
+    <span class="n">th</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+    
+<span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+    <span class="n">th</span><span class="p">.</span><span class="n">join</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'g_count = '</span><span class="p">,</span> <span class="n">g_count</span><span class="p">)</span>
+<span class="c1"># g_count = 500000
+</span></code></pre></div></div>
+
+<p>현재 Process 내에서 50개의 thread가 구현되었고 이들은 10000번 카운팅하는 <code class="language-plaintext highlighter-rouge">thread_main</code> 함수를 동시에 실행합니다.</p>
+
+<p>이번에는 10000번이 아니라 1000000번 카운팅하는 것으로 변경하여 thread를 실행해보겠습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">threading</span>
+
+<span class="c1"># thread할 함수 정의
+</span><span class="k">def</span> <span class="nf">thread_main</span><span class="p">():</span>
+  <span class="k">global</span> <span class="n">g_count</span>
+  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000000</span><span class="p">):</span> 
+    <span class="n">g_count</span> <span class="o">=</span> <span class="n">g_count</span> <span class="o">+</span> <span class="mi">1</span>
+    
+<span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span> 
+    <span class="n">th</span> <span class="o">=</span> <span class="n">threading</span><span class="p">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span> <span class="o">=</span> <span class="n">thread_main</span><span class="p">)</span>
+    <span class="n">threads</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">th</span><span class="p">)</span>
+
+<span class="n">g_count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span> 
+    <span class="n">th</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+    
+<span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+    <span class="n">th</span><span class="p">.</span><span class="n">join</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'g_count = '</span><span class="p">,</span> <span class="n">g_count</span><span class="p">)</span>
+
+<span class="c1"># g_count =  13291376
+# CPU times: user 3.13 s, sys: 29.5 ms, total: 3.16 s
+# Wall time: 3.14 s
+</span></code></pre></div></div>
+
+<p>출력 결과가 50 * 1000000 = 50000000가 나와야할 것 같은데 전혀 이상한 값이 출력되었습니다.</p>
+
+<p>이러한 현상이 발생하는 이유는 무엇일까요?</p>
+
+<h1 id="critical-section">Critical Section</h1>
+
+<p>thread들이 Process 내 메모리 공간을 공유하면서 이러한 문제점이 발생합니다.</p>
+
+<p>위 코드를 간단하게 2개 thread로 바꾸어 보면 아래와 같은 그림이 될 것입니다.</p>
+
+<p><img src="../../assets/built/images/thread-in-python-1.jpg" alt="image" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">g_count</code> 값을 register로 읽고(Read), register에 1을 더한 뒤(Update) 해당 값을 다시 <code class="language-plaintext highlighter-rouge">g_count</code> 에 Write해주는 일련의 과정을 thread들이 수행합니다. 이때 하나의 CPU에서는 위 그림처럼 Thread A - Thread B가(혹은 더 많은 수의 thread가) Contetxt Switching을 통해 교체해가며 해당 작업을 수행합니다. 현재 구현한 Thread를 Read-Update-Write라고 생각하면 위와 같이 덧셈이 누락된 원인이 무엇인지 추론해볼 수 있습니다.</p>
+
+<p>Context Switching이 정말 운 좋게도, 항상 Write가 끝난 뒤에 발생한다면 좋겠지만 실제 Scheduler는 그러한 부분까지 고려하여 Switching 시키지 않습니다.</p>
+
+<p><img src="../../assets/built/images/thread-in-python-2.jpg" alt="image" /></p>
+
+<p>위 그림처럼, Update 단계 이후 Write하기 직전에 Context Switching이 발생할 수 있습니다. 단계별로 어떤 일이 발생했는지 알아보겠습니다.</p>
+
+<p>① Read : Thread A는 <code class="language-plaintext highlighter-rouge">g_count</code> 를 읽고 register에 저장합니다. ( <code class="language-plaintext highlighter-rouge">g_count = 0</code>)</p>
+
+<p>② Update :  <code class="language-plaintext highlighter-rouge">g_count</code> 에 1을 더하기 위해, register에 1을 더합니다.</p>
+
+<p>③ Read : Context Switching이 발생하여, 이제는 Thread B가 다시 <code class="language-plaintext highlighter-rouge">g_count</code> 값을 register로 읽어옵니다.</p>
+
+<p>④ Update : Thread A의 동작과 마찬가지로 <code class="language-plaintext highlighter-rouge">g_count</code> 에 1을 더하기 위해, register에 1을 더합니다.</p>
+
+<p>⑤ Write :Context Switching이 발생하여 Thread A가 다시 실행됩니다. 이제 register의 값을 <code class="language-plaintext highlighter-rouge">g_count</code> 에 적어야합니다.</p>
+
+<p>Thread B에 의해 업데이트된 현재 register 값은 1이므로 <code class="language-plaintext highlighter-rouge">g_count</code>는 1이 더해졌습니다. <code class="language-plaintext highlighter-rouge">g_count = 1</code>(Thread A에 의해 업데이트된 값이 아니라는 문제점이 있습니다)</p>
+
+<p>⑥ Read : 다음 작업을 위해 다시 <code class="language-plaintext highlighter-rouge">g_count</code> 값을 register에 등록합니다.</p>
+
+<p>⑦ Write : Context Switching이 발생하고, 이번에는 Thread B가 <code class="language-plaintext highlighter-rouge">g_count</code>에 값을 저장합니다. 그러나 현재 register 값이 1이므로 1을 그대로 <code class="language-plaintext highlighter-rouge">g_count</code>에 전달합니다. 이 시점에서 Thread 작업은 2번 완료되었으므로 <code class="language-plaintext highlighter-rouge">g_count</code>는 2가 되어야하지만 1번의 덧셈이 누락되어 1이 되었음을 확인할 수 있습니다.</p>
+
+<p>위와 같은 문제점이 발생하는 이유는 Thread 간 공유되는 변수에 동시에 여러 Thread가 동시에 접근하고 있기 때문입니다. 이처럼, Thread가 동시에 접근하는 경우에 연산 결과, 혹은 데이터 누락이 발생할 수 있는 영역을 <strong>Critical Section</strong>(임계영역)이라고 부릅니다.</p>
+
+<p>결과적으로 연산 결과가 13291376와 같이 이상한 값이 출력되는 이유는 카운팅할 숫자가 많아짐에 따라 위 예시 같은 경우들이 다수 발생하였고, 이에 따라 누락된 카운팅이 발생한 것입니다.</p>
+
+<h1 id="synchronization---mutex">Synchronization - Mutex</h1>
+
+<p>이러한 Critical Section에서 발생하는 문제점을 해결하는 방법을 동기화(synchronization)라고 부릅니다. 상호배제(Mutual Exclusion, MutEx)는 이러한 문제점을 해결하기 위한 동기화 방법 중 하나입니다.</p>
+
+<p>python에서는 간단하게, <code class="language-plaintext highlighter-rouge">threading.lock()</code> 을 통해 상호배제 동기화를 지원하고 있습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Lock</span>
+
+<span class="n">lock</span> <span class="o">=</span> <span class="n">Lock</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">thread_main_mutex</span><span class="p">():</span>
+  <span class="k">global</span> <span class="n">g_count</span>
+  <span class="n">lock</span><span class="p">.</span><span class="n">acquire</span><span class="p">()</span> <span class="c1"># 아래 코드 블록은 한번에 하나의 thread에 의해서만 실행됩니다
+</span>  <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000000</span><span class="p">):</span>
+  	<span class="n">g_count</span> <span class="o">+=</span> <span class="mi">1</span> 
+  <span class="n">lock</span><span class="p">.</span><span class="n">release</span><span class="p">()</span> <span class="c1"># lock 해제
+</span>    
+<span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span> 
+    <span class="n">th</span> <span class="o">=</span> <span class="n">threading</span><span class="p">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span> <span class="o">=</span> <span class="n">thread_main_mutex</span><span class="p">)</span>
+    <span class="n">threads</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">th</span><span class="p">)</span>
+
+<span class="n">g_count</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span> 
+    <span class="n">th</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+    
+<span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+    <span class="n">th</span><span class="p">.</span><span class="n">join</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'g_count = '</span><span class="p">,</span> <span class="n">g_count</span><span class="p">)</span>
+
+<span class="c1"># g_count =  50000000
+# CPU times: user 3.02 s, sys: 9.92 ms, total: 3.03 s
+# Wall time: 3.03 s
+</span></code></pre></div></div>
+
+<p>위 코드에서 동기화가 어떻게 작동하는지 단순하게 그려보면, 아래 그림과 같습니다.</p>
+
+<p><img src="../../assets/built/images/thread-in-python-3.jpg" alt="image" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">lock()</code>, <code class="language-plaintext highlighter-rouge">release()</code> 을 적용하게 되면, 위 그림처럼 동작합니다. Thread A가 critical section에서 작업을 하는 동안, Thread B는 critical section의 데이터을 읽거나, 쓸 수 없습니다. 따라서 덧셈(카운팅)이 누락되는 경우가 발생하지 않아 출력 결과가 50000000이 나오는 것을 확인할 수 있습니다.</p>
+
+<h1 id="synchronization---semaphore">Synchronization - Semaphore</h1>
+
+<p>또 다른 동기화 방법에는 Semaphore가 있습니다. critical section에 동시에 접근할 수 있는 thread를 관리한다는 개념은 같지만, mutex가 이를 1개로 지정하는 것에 비해, semaphore는 N개의 thread가 접근할 수 있도록 지정합니다.</p>
+
+<p>즉, mutex는 semaphore 동시에 접근 가능한 thread를 1개로 지정한 경우(binary semaphore)로 볼 수 있습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">threading</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Semaphore</span>
+
+<span class="n">sem</span> <span class="o">=</span> <span class="n">Semaphore</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">thread_main_semaphore</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">g_count</span>
+    <span class="n">sem</span><span class="p">.</span><span class="n">acquire</span><span class="p">()</span> <span class="c1"># 아래 코드 블록은 2개 thread가 동시에 실행할 수 있습니다
+</span>    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000000</span><span class="p">):</span>
+        <span class="n">g_count</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">sem</span><span class="p">.</span><span class="n">release</span><span class="p">()</span>
+    
+<span class="n">threads_sem</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">50</span><span class="p">):</span> 
+    <span class="n">th</span> <span class="o">=</span> <span class="n">threading</span><span class="p">.</span><span class="n">Thread</span><span class="p">(</span><span class="n">target</span> <span class="o">=</span> <span class="n">thread_main_semaphore</span><span class="p">)</span>
+    <span class="n">threads_sem</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">th</span><span class="p">)</span>
+    
+<span class="n">g_count</span> <span class="o">=</span> <span class="mi">0</span>        
+<span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="n">threads_sem</span><span class="p">:</span> 
+    <span class="n">th</span><span class="p">.</span><span class="n">start</span><span class="p">()</span>
+    
+<span class="k">for</span> <span class="n">th</span> <span class="ow">in</span> <span class="n">threads_sem</span><span class="p">:</span>
+    <span class="n">th</span><span class="p">.</span><span class="n">join</span><span class="p">()</span>
+<span class="k">print</span><span class="p">(</span><span class="s">'g_count = '</span><span class="p">,</span> <span class="n">g_count</span><span class="p">)</span>
+
+<span class="c1"># g_count =  33725184
+# CPU times: user 3.07 s, sys: 17.1 ms, total: 3.08 s
+# Wall time: 3.08 s
+</span></code></pre></div></div>
+
+<p>동기화를 사용하지 않았던 케이스처럼, Semaphore를 지정하는 경우에도 2개 thread가 동시에 접근하게 되므로 덧셈 누락이 발생합니다. 그러나 <code class="language-plaintext highlighter-rouge">g_count</code> 값이 33725184로 동기화를 적용하지 않았던 케이스가 13291376인 것과 비교한다면 꽤 많은 덧셈 누락을 방지할 수 있는 것으로 보입니다.</p>
+
+<p>위 세 가지(동기화 적용 안함, mutex, semaphore)의 계산 결과와 걸리는 시간을 비교해보면서 글을 마치겠습니다.</p>
+
+<p>1000000으로는 시간 차이가 극명하게 드러나지 않기 때문에 각 thread가 10000000번 카운팅하는 것으로 셋팅하고 실험했습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>time</th>
+      <th>g_count</th>
+      <th>success rate</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>No threading</td>
+      <td>31.9s</td>
+      <td>500000000</td>
+      <td>100%</td>
+    </tr>
+    <tr>
+      <td>Only threading</td>
+      <td>31.0s</td>
+      <td>32379893</td>
+      <td>6.48%</td>
+    </tr>
+    <tr>
+      <td>threading with mutex</td>
+      <td>30.8s</td>
+      <td>500000000</td>
+      <td>100%</td>
+    </tr>
+    <tr>
+      <td>threading with semaphore</td>
+      <td>30.6s</td>
+      <td>327324001</td>
+      <td>65.46%</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Q. critical section에 제약을 걸지 않은 Only threading이 mutex, semaphore를 적용한 케이스보다 더 빨리 수행되어야할 것 같은데 더 긴 시간이 소요되었습니다. 이유를 공부해서 아래에 추가하겠습니다..!</p>
+
+<p>[참고]</p>
+
+<p>패스트캠퍼스 - 컴퓨터 공학 전공 필수 올인원 패키지 Online.</p>
+
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/abraham.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            
+                <section class="post-full-comments">
+                    <div id="disqus_thread"></div>
+                    <script>
+                        var disqus_config = function () {
+                            var this_page_url = 'http://localhost:4000/threading-in-python';
+                            var this_page_identifier = '/threading-in-python';
+                            var this_page_title = 'Threading in Python';
+                        };
+                        (function() {
+                            var d = document, s = d.createElement('script');
+                            s.src = 'https://xxxxxxxx.disqus.com/embed.js';
+                            s.setAttribute('data-timestamp', +new Date());
+                            (d.head || d.body).appendChild(s);
+                        })();
+                    </script>
+                </section>
+            
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+                    <article class="read-next-card"
+                        
+                            style="background-image: url(/assets/built/images/advanced.jpg)"
+                        
+                    >
+                        <header class="read-next-card-header">
+                            <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
+                            
+                                <h3 class="read-next-card-header-title"><a href="/tag/python/">Python</a></h3>
+                            
+                        </header>
+                        <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
+</div>
+                        <div class="read-next-card-content">
+                            <ul>
+                                
+                                
+                                  
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/python">AWS S3와 zip 파일</a></li>
+                                        
+                                    
+                                  
+                                
+                            </ul>
+                        </div>
+                        <footer class="read-next-card-footer">
+                            <a href="/tag/python/">
+                                
+                                    See all 1 posts  →
+                                
+                            </a>
+                        </footer>
+                    </article>
+                <script type="text/javascript"
+                    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+                </script>
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/hive-merge-query">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/merge-files.svg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/hive-merge-query">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Merge Files in HDFS</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>HDFS에서 작은 용량의 파일들을 하나의 파일로 합치기
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/abraham.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      5 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="http://localhost:4000/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">Threading in Python</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Threading+in+Python&amp;url=https://gyuhoonk.github.iothreading-in-python"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iothreading-in-python"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="http://localhost:4000/">Gyuhoon Kim</a> &copy; 2021</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+    <!-- math LaTex-->
+    
+</body>
+</html>
