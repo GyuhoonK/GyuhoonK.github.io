@@ -44,21 +44,19 @@
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Knuth–Morris–Pratt algorithm, KMP" />
-    <meta property="og:description" content="
-" />
+    <meta property="og:description" content="문자열 탐색에서 사용되는 KMP 알고리즘에 대해서 *글의 내용은 KMP : 문자열 검색 알고리즘을 참조했으며 글의 내용 및 구현 코드 모두 작성자 멍멍멍님께서 작성하신 예시, 코드를 그대로 사용했습니다. 작성된 내용을 이해하고, 내 것으로 만드는 과정을 위해 글을 작성했음을 말씀드립니다. 문자열 탐색, O(N*M)의 시간복잡도 어떤 문자열(S)에서 패턴(P)가 몇 번 등장하는지 찾고자 한다고" />
     <meta property="og:url" content="http://localhost:4000/KMP" />
-    <meta property="og:image" content="http://localhost:4000/assets/built/images/python-sql.png" />
+    <meta property="og:image" content="http://localhost:4000/assets/built/images/kmp-banner.jpeg" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2021-11-03T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2021-11-03T22:30:00+09:00" />
+    <meta property="article:published_time" content="2021-11-06T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2021-11-06T22:30:00+09:00" />
     <meta property="article:tag" content="Algorithm" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Knuth–Morris–Pratt algorithm, KMP" />
-    <meta name="twitter:description" content="
-" />
+    <meta name="twitter:description" content="문자열 탐색에서 사용되는 KMP 알고리즘에 대해서 *글의 내용은 KMP : 문자열 검색 알고리즘을 참조했으며 글의 내용 및 구현 코드 모두 작성자 멍멍멍님께서 작성하신 예시, 코드를 그대로 사용했습니다. 작성된 내용을 이해하고, 내 것으로 만드는 과정을 위해 글을 작성했음을 말씀드립니다. 문자열 탐색, O(N*M)의 시간복잡도 어떤 문자열(S)에서 패턴(P)가 몇 번 등장하는지 찾고자 한다고" />
     <meta name="twitter:url" content="http://localhost:4000/" />
-    <meta name="twitter:image" content="http://localhost:4000/assets/built/images/python-sql.png" />
+    <meta name="twitter:image" content="http://localhost:4000/assets/built/images/kmp-banner.jpeg" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
@@ -80,7 +78,7 @@
     "url": "http://localhost:4000/KMP",
     "image": {
         "@type": "ImageObject",
-        "url": "http://localhost:4000/assets/built/images/python-sql.png",
+        "url": "http://localhost:4000/assets/built/images/kmp-banner.jpeg",
         "width": 2000,
         "height": 666
     },
@@ -88,8 +86,7 @@
         "@type": "WebPage",
         "@id": "http://localhost:4000/KMP"
     },
-    "description": "
-"
+    "description": "문자열 탐색에서 사용되는 KMP 알고리즘에 대해서 *글의 내용은 KMP : 문자열 검색 알고리즘을 참조했으며 글의 내용 및 구현 코드 모두 작성자 멍멍멍님께서 작성하신 예시, 코드를 그대로 사용했습니다. 작성된 내용을 이해하고, 내 것으로 만드는 과정을 위해 글을 작성했음을 말씀드립니다. 문자열 탐색, O(N*M)의 시간복잡도 어떤 문자열(S)에서 패턴(P)가 몇 번 등장하는지 찾고자 한다고"
 }
     </script>
 
@@ -178,7 +175,7 @@ into the {body} of the default.hbs template -->
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime=" 3 November 2021"> 3 November 2021</time>
+                    <time class="post-full-meta-date" datetime=" 6 November 2021"> 6 November 2021</time>
                     
                         <span class="date-divider">/</span>
                         
@@ -192,13 +189,1582 @@ into the {body} of the default.hbs template -->
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/python-sql.png)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/kmp-banner.jpeg)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    
+                    <p>문자열 탐색에서 사용되는 KMP 알고리즘에 대해서</p>
+
+<p>*글의 내용은 <a href="https://bowbowbow.tistory.com/6">KMP : 문자열 검색 알고리즘</a>을 참조했으며 글의 내용 및 구현 코드 모두 작성자 멍멍멍님께서 작성하신 예시, 코드를 그대로 사용했습니다.</p>
+
+<p>작성된 내용을 이해하고, 내 것으로 만드는 과정을 위해 글을 작성했음을 말씀드립니다.</p>
+
+<h1 id="문자열-탐색-onm의-시간복잡도">문자열 탐색, O(N*M)의 시간복잡도</h1>
+
+<p>어떤 문자열(S)에서 패턴(P)가 몇 번 등장하는지 찾고자 한다고 가정해봅시다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>index</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+      <th>13</th>
+      <th>14</th>
+      <th>15</th>
+      <th>16</th>
+      <th>17</th>
+      <th>18</th>
+      <th>19</th>
+      <th>20</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>S</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>D</td>
+      <td>E</td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>D</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>가장 간단한 방법은 문자열 S의 인덱스 0부터 시작하여 P가 일치하는지 여부를 확인하는 것입니다. 이를 표로 표현해보면 아래와 같을 것입니다.</p>
+
+<p>S의 인덱스 0부터 확인을 시작하여, 1, 2, 3을 차례로 비교하다가 보면,</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>index</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+      <th>13</th>
+      <th>14</th>
+      <th>15</th>
+      <th>16</th>
+      <th>17</th>
+      <th>18</th>
+      <th>19</th>
+      <th>20</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>S</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>D</td>
+      <td>E</td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>D</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>일치</td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td>X</td>
+      <td>X</td>
+      <td>X</td>
+      <td>O</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td> </td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>D</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>일치</td>
+      <td> </td>
+      <td>X</td>
+      <td>X</td>
+      <td>X</td>
+      <td>X</td>
+      <td>X</td>
+      <td>X</td>
+      <td>X</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td> </td>
+      <td> </td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>D</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>일치</td>
+      <td> </td>
+      <td> </td>
+      <td>X</td>
+      <td>X</td>
+      <td>X</td>
+      <td>X</td>
+      <td>X</td>
+      <td>X</td>
+      <td>X</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>아래처럼 S의 인덱스가 13인 지점에서 패턴 P가 등장함을 확인할 수 있습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+      <th>13</th>
+      <th>14</th>
+      <th>15</th>
+      <th>16</th>
+      <th>17</th>
+      <th>18</th>
+      <th>19</th>
+      <th>20</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>S</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>D</td>
+      <td>E</td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>D</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>일치</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>문제는 위와 같은 알고리즘의 시간복잡도가 매우 높다는 점입니다.</p>
+
+<p>문자열 S의 길이를 N, P의 길이를 M이라고 했을 때 모든 S 인덱스에 대해 반복문을 실행해야하므로 N번의 실행이 필요하고 S 인덱스 각각에서 P의 길이 M만큼의 검사를 거쳐야 하므로 최종적으로 시간복잡도는 \(O(N*M)\) 로 계산됩니다.</p>
+
+<h1 id="더-빠른-방법-kmp">더 빠른 방법, KMP</h1>
+
+<p>이보다 빠르게, 고작 \(O(N+M)\)의 시간복잡도로 S에서 P를 찾아낼 수 있는 방법이 있습니다. KMP(Knuth–Morris–Pratt) 알고리즘이 바로 그것입니다. KMP 알고리즘의 기본 아이디어는 <strong>패턴을 찾기 위해 수행한 비교연산에서 얻은 정보를 활용하는 것</strong>입니다.</p>
+
+<p>KMP 알고리즘을 위해서는 접두사(prefix)와 접미사(suffix), 그리고 이들을 비교하여 작성되는 Pi 배열에 대해 이해하고 있어야 합니다.</p>
+
+<h2 id="prefix-suffix-pi">Prefix, Suffix, Pi</h2>
+
+<p>위에서 예로 들었던 P (ABCDABD)를 예로 들어보겠습니다.</p>
+
+<p>먼저 접두사는 앞에서부터 시작해서 만들 수 있는 문자열의 부분, 반대로 접미사는 뒤에서 시작해서 만들 수 있는 문자열의 부분을 의미합니다.</p>
+
+<p>따라서 ABCDABD의 접미사와 접두사는 아래와 같습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>length</th>
+      <th>Prefix</th>
+      <th>Suffix</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>A</td>
+      <td>D</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>AB</td>
+      <td>BD</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>ABC</td>
+      <td>ABD</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>ABCD</td>
+      <td>DABD</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>ABCDA</td>
+      <td>CDABD</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>ABCDAB</td>
+      <td>BCDABD</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>ABCDABD</td>
+      <td>ABCDABD</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Pi 배열은 이러한 개념을 이용하여 만들어지는 배열입니다. 정의는 아래와 같습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Pi[i] = 문자열 인덱스 0~i로 만들어진 부분 문자열(P[0~i]) 중에서 prefix와 suffix가 같은 경우 중 길이의 최댓값, 단 prefix/suffix가 P[0~i]와 같은 경우는 제외</code></p>
+
+<p>P (ABCDABD)에 대해서 Pi 배열이 만들어지는 과정을 확인하면 아래와 같습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>idx</th>
+      <th>부분문자열 P[0~i]</th>
+      <th>Prefix</th>
+      <th>Suffix</th>
+      <th>Pi[idx]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>A</td>
+      <td>X</td>
+      <td>X</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>AB</td>
+      <td>A</td>
+      <td>B</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>ABC</td>
+      <td>A, AB</td>
+      <td>C, BC</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>ABCD</td>
+      <td>A, AB, ABC</td>
+      <td>D, CD, BCD</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>ABCDA</td>
+      <td><strong>A</strong>, AB, ABC, ABCD</td>
+      <td><strong>A</strong>, DA, CDA, BCDA</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>ABCDAB</td>
+      <td>A, <strong>AB</strong>, ABC, ABCD, ABCDA</td>
+      <td>B, <strong>AB</strong>, DAB, CDAB, BCDAB</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>ABCDABD</td>
+      <td>A, AB, ABC, ABCD, ABCDA, ABCDAB</td>
+      <td>D, BD, ABD, DABD, CDABD, BCDABD</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Pi배열의 정의에 의해 <code class="language-plaintext highlighter-rouge">Pi[0]</code>은 항상 0으로 고정됩니다. 그리고 <code class="language-plaintext highlighter-rouge">Pi[1]</code>부터 표에서 보이는 비교를 통해 조건을 만족하는 경우 중 길이가 최댓값인 경우를 Pi 배열로 저장합니다.</p>
+
+<p>P (ababa)를 가지고  Pi배열을 다시 생성해보겠습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>부분문자열 P[0~i]</th>
+      <th>Prefix</th>
+      <th>Suffix</th>
+      <th>Pi[idx]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>a</td>
+      <td>X</td>
+      <td>X</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>ab</td>
+      <td>a</td>
+      <td>b</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>aba</td>
+      <td><strong>a</strong>, ab</td>
+      <td><strong>a</strong>, ba</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>abab</td>
+      <td>a, <strong>ab</strong>, aba</td>
+      <td>b, <strong>ab</strong>, bab</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>ababa</td>
+      <td>a, ab, <strong>aba</strong>, abab</td>
+      <td>a, ba, <strong>aba</strong>, baba</td>
+      <td>3</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="비교에-의해-발생한-정보를-활용하는-방법">비교에 의해 발생한 정보를 활용하는 방법</h2>
+
+<p>문자열 S(ABCDABCDABEE)에서 패턴 P(ABCDABE)를 찾는다고 가정해보겠습니다.
+참고로, 패턴 P의 Pi 배열은 아래와 같습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>부분문자열 P[0~i]</th>
+      <th>Prefix</th>
+      <th>Suffix</th>
+      <th>Pi[idx]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>A</td>
+      <td>X</td>
+      <td>X</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>AB</td>
+      <td>A</td>
+      <td>B</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>ABC</td>
+      <td>A, AB</td>
+      <td>C, BC</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>ABCD</td>
+      <td>A, AB, ABC</td>
+      <td>D, CD, BCD</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>ABCDA</td>
+      <td>A, AB, ABC, ABCD</td>
+      <td>A, DA, CDA, BCDA</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>ABCDAB</td>
+      <td>A, <strong>AB</strong>, ABC, ABCD, ABCDA</td>
+      <td>B, <strong>AB</strong>, DAB, CDAB, BCDAB</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>ABCDABE</td>
+      <td>A, AB, ABC, ABCD, ABCDA, ABCDAB</td>
+      <td>E, BE, ABE, DABE, CDABE, BCDABE</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>문자열 S의 인덱스 0에서 비교를 수행할 때 우리가 얻는 정보는 아래의 <code class="language-plaintext highlighter-rouge">일치</code> 행과 같습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>index</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+      <th>13</th>
+      <th>14</th>
+      <th>15</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>S</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>E</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>일치</td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td>X</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>이 정보를 이용한다면, 다음 S에서 검색해야할 인덱스는 1이 아니라 4가 됩니다. 즉, <strong>인덱스 1~3을 시작으로 하는 케이스는 검색할 필요도 없다</strong>는 정보를 얻을 수 있습니다. 이는 Pi 배열의 값을 이용했기 때문입니다. 이러한 사고의 흐름은 아래와 같습니다.</p>
+
+<ol>
+  <li>
+    <p>패턴 P의 인덱스 5까지 일치함을 확인하였고, 인덱스 6에서 불일치가 발생했습니다 (현재 인덱스 = 6).</p>
+  </li>
+  <li>
+    <p>지금까지 일치한 P의 부분배열 <code class="language-plaintext highlighter-rouge">P[0~5] = ABCDAB</code>는 prefix과 suffix가 일치하는 최댓값 길이는 2(<strong>AB</strong>CD<strong>AB</strong>)입니다.(이는  <code class="language-plaintext highlighter-rouge">Pi[5]=2</code> 로 바로 확인됩니다)</p>
+
+    <ol>
+      <li>패턴 P는 연속으로 일치하는 5개로 이루어진 부분배열(ABCDAB)의 suffix(ABCD<strong>AB</strong>)의 다음 인덱스부터 검색을 시작해야합니다.</li>
+      <li>왜냐하면 prefix = suffix이므로 <code class="language-plaintext highlighter-rouge">S[4~5]</code> (<code class="language-plaintext highlighter-rouge">P[0~5]</code>의 suffix)는 반드시 <code class="language-plaintext highlighter-rouge">P[0~1]</code> (<code class="language-plaintext highlighter-rouge">P[0~5]</code>의 prefix)와 같음을 알고 있기 때문입니다.</li>
+      <li>따라서, <code class="language-plaintext highlighter-rouge">P[2~6]</code>, <code class="language-plaintext highlighter-rouge">S[6~10]</code>을 비교하게 됩니다.</li>
+    </ol>
+  </li>
+  <li>
+    <p>이는 P와 일치하는 배열을 찾기 위해서는 S에서 <code class="language-plaintext highlighter-rouge">AB</code>로 시작하는 인덱스에서 시작해야하기 때문이며,  <strong><code class="language-plaintext highlighter-rouge">S[1]~S[3]</code>은 AB로 시작하지 않음</strong>을 인덱스 0에서의 비교를 통해 이미 습득했기 때문입니다.</p>
+
+    <ol>
+      <li>
+        <p><code class="language-plaintext highlighter-rouge">S[1~2]=AB, S[2~3]=AB, S[3~4]=AB</code>인 경우에는 일치 비교 결과가 현재와는 다를 것입니다.</p>
+      </li>
+      <li>
+        <table>
+          <thead>
+            <tr>
+              <th>index</th>
+              <th>0</th>
+              <th>1</th>
+              <th>2</th>
+              <th>3</th>
+              <th>4</th>
+              <th>5</th>
+              <th>6</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>P</td>
+              <td>A</td>
+              <td>B</td>
+              <td>C</td>
+              <td>D</td>
+              <td>A</td>
+              <td>B</td>
+              <td>E</td>
+            </tr>
+            <tr>
+              <td>IF S[1]=A</td>
+              <td>A(O)</td>
+              <td>B-&gt;<strong>A</strong>(X)</td>
+              <td>C-&gt;<strong>B</strong>(X)</td>
+              <td>D(O)</td>
+              <td>A(O)</td>
+              <td>B(O)</td>
+              <td>C(X)</td>
+            </tr>
+            <tr>
+              <td>IF S[2]=A</td>
+              <td>A(O)</td>
+              <td>B(O)</td>
+              <td>C-&gt;<strong>A</strong>(X)</td>
+              <td>D-&gt;<strong>B</strong>(X)</td>
+              <td>A(O)</td>
+              <td>B(O)</td>
+              <td>C(O)</td>
+            </tr>
+            <tr>
+              <td>IF S[3]=A</td>
+              <td>A(O)</td>
+              <td>B(O)</td>
+              <td>C(O)</td>
+              <td>D-&gt;<strong>A</strong>(X)</td>
+              <td>A-&gt;<strong>B</strong>(X)</td>
+              <td>B(O)</td>
+              <td>C(O)</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+    </ol>
+  </li>
+</ol>
+
+<p>이러한 정보들을 종합해보았을 때, 아래와 같이 인덱스 <strong>6번</strong>부터 5번의 추가 비교가 이루어지고 S에서 P를 찾게됩니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>index</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+      <th>13</th>
+      <th>14</th>
+      <th>15</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>S</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td><strong>C</strong></td>
+      <td><strong>D</strong></td>
+      <td><strong>A</strong></td>
+      <td><strong>B</strong></td>
+      <td><strong>E</strong></td>
+      <td>E</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>A</td>
+      <td>B</td>
+      <td><strong>C</strong></td>
+      <td><strong>D</strong></td>
+      <td><strong>A</strong></td>
+      <td><strong>B</strong></td>
+      <td><strong>E</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>일치</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td>O</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="kmp-알고리즘을-이용한-pi-배열-생성">KMP 알고리즘을 이용한 Pi 배열 생성</h1>
+
+<p>KMP 알고리즘을 적용하여 문자열을 빠르게 탐색하기 위해서는 미리 Pi 배열을 생성해놓아야합니다. 그러나 1) 각 부분배열에 대해 2) 모든 prefix와 suffix를 찾고 3) 비교하여 길이가 최대인 경우를 찾는 방법은 시간복잡도가 꽤 큽니다(\(O(m * m * m)\)).</p>
+
+<p>패턴 P를 스스로와 비교하는 KMP 알고리즘을 통해 $ O(m) $ 시간복잡도로 Pi 배열을 생성할 수 있습니다.</p>
+
+<p>예를 들어, P(ABCDABEA)에 대해서 KMP 알고리즘을 적용하여 Pi 배열을 만드는 과정을 살펴보겠습니다.</p>
+
+<p>먼저, <code class="language-plaintext highlighter-rouge">P[0]</code>은 항상 0으로 시작합니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>index</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pi</td>
+      <td>0</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P_</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>P_의 인덱스를 1 이동시키고, 1번 인덱스를 비교합니다. <code class="language-plaintext highlighter-rouge">P[1] != P_[0]</code>을 확인했으므로, <code class="language-plaintext highlighter-rouge">Pi[1] = 0</code> 을 입력합니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>index</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pi</td>
+      <td>0</td>
+      <td><strong>0</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P_</td>
+      <td> </td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>일치</td>
+      <td> </td>
+      <td>X</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>다시, P_의 인덱스를 1 이동시킵니다. 여전히 <code class="language-plaintext highlighter-rouge">P[2] != P_[0]</code> 이므로 <code class="language-plaintext highlighter-rouge">Pi[2 ] = 0</code> 을 입력합니다.</p>
+
+<p>P_의 시작 인덱스가 4가 될 때까지 겹치는 부분이 없으므로 생략하고 넘어가겠습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>index</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pi</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>0</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P_</td>
+      <td> </td>
+      <td> </td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>일치</td>
+      <td> </td>
+      <td> </td>
+      <td>X</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>이제 P_는 인덱스 4부터 시작합니다. <code class="language-plaintext highlighter-rouge">P[4] = P_[0]</code> 으로 일치하므로 <code class="language-plaintext highlighter-rouge">Pi[4] = 1</code>을 입력합니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>index</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pi</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P_</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>O</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>이전 비교에서 일치했으므로 P_를 이동시키지 않습니다. 그리고 <code class="language-plaintext highlighter-rouge">P[5] = P_[1]</code> 으로 일치합니다. 단, <code class="language-plaintext highlighter-rouge">Pi[4] = 1</code>이므로,  <code class="language-plaintext highlighter-rouge">Pi[5] = Pi[4] + 1</code>을 입력합니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>index</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pi</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td><strong>2</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P_</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>일치</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>O</td>
+      <td>O</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>이전 비교에서 일치했으므로 P_를 이동시키지 않습니다. 그러나,  <code class="language-plaintext highlighter-rouge">P[6] != P_[2]</code>이라서, <code class="language-plaintext highlighter-rouge">Pi[6]=0</code>을 입력합니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>index</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pi</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td><strong>2</strong></td>
+      <td><strong>0</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P_</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>일치</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>X</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p>이전 비교가 불일치했으므로, P_ 배열을 이동시켜야합니다. <code class="language-plaintext highlighter-rouge">P[7]</code>과 <code class="language-plaintext highlighter-rouge">P_[0]</code>이 비교될 수 있도록 배열을 이동시킵니다. <code class="language-plaintext highlighter-rouge">P[7] = P_[0]</code>이므로 <code class="language-plaintext highlighter-rouge">Pi[7]=1</code>을 입력하고 비교가 종료됩니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>index</th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>10</th>
+      <th>11</th>
+      <th>12</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Pi</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>0</td>
+      <td>1</td>
+      <td>2</td>
+      <td>0</td>
+      <td><strong>1</strong></td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+      <td>E</td>
+      <td>A</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>P_</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+      <td>D</td>
+      <td>A</td>
+      <td>B</td>
+    </tr>
+    <tr>
+      <td>일치</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td>O</td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="code">Code</h1>
+
+<p>아래 코드는 <a href="https://www.acmicpc.net/problem/1786">1786 찾기</a>의 풀이입니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">sys</span><span class="p">.</span><span class="n">stdin</span><span class="p">.</span><span class="n">readline</span><span class="p">().</span><span class="n">rstrip</span><span class="p">()</span>
+<span class="n">P</span> <span class="o">=</span> <span class="n">sys</span><span class="p">.</span><span class="n">stdin</span><span class="p">.</span><span class="n">readline</span><span class="p">().</span><span class="n">rstrip</span><span class="p">()</span>
+
+<span class="k">def</span> <span class="nf">getPi</span><span class="p">(</span><span class="n">P</span><span class="p">)</span> <span class="p">:</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">pi</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="p">:</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+            <span class="n">j</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">P</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="p">:</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">pi</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">j</span>
+    <span class="k">return</span> <span class="n">pi</span>
+
+<span class="n">pi</span> <span class="o">=</span> <span class="n">getPi</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">KMP</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span> <span class="p">:</span> 
+    <span class="n">answer</span> <span class="o">=</span> <span class="p">{</span><span class="s">"count"</span> <span class="p">:</span> <span class="mi">0</span> <span class="p">,</span>
+             <span class="s">"index"</span> <span class="p">:</span> <span class="p">[]}</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="p">)</span>
+    <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="p">:</span>  <span class="c1"># String Index는 계속 진행
+</span>        <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span> <span class="c1"># Pattern Index를 결정하는 코드 블록
+</span>            <span class="n">j</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># Prefix = Suffix인 인덱스의 다음 인덱스 (pi[j-1]가 개수이기 때문에 다음 인덱스 역할)
+</span>        <span class="k">if</span> <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">P</span><span class="p">[</span><span class="n">j</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">m</span><span class="o">-</span><span class="mi">1</span> <span class="p">:</span> <span class="c1"># Pattern을 발견함
+</span>                <span class="n">answer</span><span class="p">[</span><span class="s">'count'</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">answer</span><span class="p">[</span><span class="s">'index'</span><span class="p">].</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="n">pi</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="c1"># Pattern Index 결정
+</span>            <span class="k">else</span> <span class="p">:</span>
+                <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">answer</span>
+
+<span class="n">answer</span> <span class="o">=</span> <span class="n">KMP</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">answer</span><span class="p">[</span><span class="s">'count'</span><span class="p">])</span>
+<span class="k">print</span><span class="p">(</span><span class="s">' '</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span> <span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">answer</span><span class="p">[</span><span class="s">'index'</span><span class="p">]))))</span>
+</code></pre></div></div>
+
 
                 </div>
             </section>
