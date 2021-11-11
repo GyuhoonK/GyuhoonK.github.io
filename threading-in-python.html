@@ -321,7 +321,7 @@ into the {body} of the default.hbs template -->
 
 <p>④ Update : Thread A의 동작과 마찬가지로 <code class="language-plaintext highlighter-rouge">g_count</code> 에 1을 더하기 위해, register에 1을 더합니다.</p>
 
-<p>⑤ Write : Context Switching이 발생하여 Thread A가 다시 실행됩니다. PCB에서 register값을 읽어들여옵니다(<code class="language-plaintext highlighter-rouge">register = 1</code>). 이제 register의 값을 <code class="language-plaintext highlighter-rouge">g_count</code> 에 적어야합니다. Thread B에 의해 업데이트된 현재 register 값은 1이므로 <code class="language-plaintext highlighter-rouge">g_count</code>는 1이 더해졌습니다. <code class="language-plaintext highlighter-rouge">g_count = 1</code></p>
+<p>⑤ Write : Context Switching이 발생하여 Thread A가 다시 실행됩니다. PCB에서 register값을 읽어들여옵니다(<code class="language-plaintext highlighter-rouge">register = 1</code>). 이제 register의 값을 <code class="language-plaintext highlighter-rouge">g_count</code> 에 적어야합니다. PCB에서 읽어온 현재 register 값은 1이므로 <code class="language-plaintext highlighter-rouge">g_count</code>는 1이 더해졌습니다. (<code class="language-plaintext highlighter-rouge">g_count = 1</code>)</p>
 
 <p>⑥ Read : 다음 작업을 위해 다시 <code class="language-plaintext highlighter-rouge">g_count</code> 값을 register에 등록합니다.</p>
 
@@ -490,7 +490,7 @@ into the {body} of the default.hbs template -->
                     
                         <section class="author-card">
                             
-                                <img class="author-profile-image" src="/assets/built/images/abraham.jpg" alt="GyuhoonK" />
+                                <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
                             
                             <section class="author-card-content">
                                 <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
@@ -545,7 +545,7 @@ into the {body} of the default.hbs template -->
                 
                     <article class="read-next-card"
                         
-                            style="background-image: url(/assets/built/images/advanced.jpg)"
+                            style="background-image: url(/assets/built/images/spain-blog-cover.jpg)"
                         
                     >
                         <header class="read-next-card-header">
@@ -642,7 +642,7 @@ into the {body} of the default.hbs template -->
                 
                     
                         
-                        <img class="author-profile-image" src="/assets/built/images/abraham.jpg" alt="GyuhoonK" />
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
                         
                         <span class="post-card-author">
                             <a href="/author/GyuhoonK/">GyuhoonK</a>
@@ -696,7 +696,7 @@ into the {body} of the default.hbs template -->
                 
                     
                         
-                        <img class="author-profile-image" src="/assets/built/images/abraham.jpg" alt="GyuhoonK" />
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
                         
                         <span class="post-card-author">
                             <a href="/author/GyuhoonK/">GyuhoonK</a>
