@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="http://localhost:4000/tag/python/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-11-11T22:58:27+09:00</updated>
-  <id>http://localhost:4000/tag/python/feed.xml</id>
+  <link href="https://gyuhoonk.github.io/tag/python/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2021-11-11T23:38:23+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/python/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">Threading in Python</title>
-      <link href="http://localhost:4000/threading-in-python" rel="alternate" type="text/html" title="Threading in Python" />
+      <link href="https://gyuhoonk.github.io/threading-in-python" rel="alternate" type="text/html" title="Threading in Python" />
       <published>2021-11-01T22:30:00+09:00</published>
       <updated>2021-11-01T22:30:00+09:00</updated>
-      <id>http://localhost:4000/threading-in-python</id>
-      <content type="html" xml:base="http://localhost:4000/threading-in-python">&lt;p&gt;Python - Thread, Mutex, Semaphore&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/threading-in-python</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/threading-in-python">&lt;p&gt;Python - Thread, Mutex, Semaphore&lt;/p&gt;
 
 &lt;h1 id=&quot;thread란-&quot;&gt;Thread란 ?&lt;/h1&gt;
 
@@ -331,11 +331,11 @@
   
     <entry>
       <title type="html">AWS S3와 zip 파일</title>
-      <link href="http://localhost:4000/python" rel="alternate" type="text/html" title="AWS S3와 zip 파일" />
+      <link href="https://gyuhoonk.github.io/python" rel="alternate" type="text/html" title="AWS S3와 zip 파일" />
       <published>2021-09-01T22:30:00+09:00</published>
       <updated>2021-09-01T22:30:00+09:00</updated>
-      <id>http://localhost:4000/python</id>
-      <content type="html" xml:base="http://localhost:4000/python">&lt;p&gt;AWS S3 내 zip 파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/python</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/python">&lt;p&gt;AWS S3 내 zip 파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/aws-s3-structure.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 

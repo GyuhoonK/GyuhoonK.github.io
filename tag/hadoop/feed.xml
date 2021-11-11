@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="http://localhost:4000/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-11-11T22:58:27+09:00</updated>
-  <id>http://localhost:4000/tag/hadoop/feed.xml</id>
+  <link href="https://gyuhoonk.github.io/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2021-11-11T23:38:23+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/hadoop/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">Merge Files in HDFS</title>
-      <link href="http://localhost:4000/hive-merge-query" rel="alternate" type="text/html" title="Merge Files in HDFS" />
+      <link href="https://gyuhoonk.github.io/hive-merge-query" rel="alternate" type="text/html" title="Merge Files in HDFS" />
       <published>2021-10-24T22:30:00+09:00</published>
       <updated>2021-10-24T22:30:00+09:00</updated>
-      <id>http://localhost:4000/hive-merge-query</id>
-      <content type="html" xml:base="http://localhost:4000/hive-merge-query">&lt;p&gt;HDFS에서 작은 용량의 파일들을 하나의 파일로 합치기&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/hive-merge-query</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/hive-merge-query">&lt;p&gt;HDFS에서 작은 용량의 파일들을 하나의 파일로 합치기&lt;/p&gt;
 
 &lt;h1 id=&quot;blocks-in-hdfs&quot;&gt;Blocks in HDFS&lt;/h1&gt;
 
@@ -294,11 +294,11 @@
   
     <entry>
       <title type="html">Bucket in Hive, Spark</title>
-      <link href="http://localhost:4000/bucket-hive-spark" rel="alternate" type="text/html" title="Bucket in Hive, Spark" />
+      <link href="https://gyuhoonk.github.io/bucket-hive-spark" rel="alternate" type="text/html" title="Bucket in Hive, Spark" />
       <published>2021-10-09T22:30:00+09:00</published>
       <updated>2021-10-09T22:30:00+09:00</updated>
-      <id>http://localhost:4000/bucket-hive-spark</id>
-      <content type="html" xml:base="http://localhost:4000/bucket-hive-spark">&lt;p&gt;Hive와 Spark에서 Bucket 차이점에 대하여&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/bucket-hive-spark</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/bucket-hive-spark">&lt;p&gt;Hive와 Spark에서 Bucket 차이점에 대하여&lt;/p&gt;
 
 &lt;h1 id=&quot;bucketting&quot;&gt;Bucketting&lt;/h1&gt;
 
@@ -508,11 +508,11 @@ It doesn't match the specified format 'ParquetFileFormat'.
   
     <entry>
       <title type="html">CREATE query in Hive</title>
-      <link href="http://localhost:4000/hive-query" rel="alternate" type="text/html" title="CREATE query in Hive" />
+      <link href="https://gyuhoonk.github.io/hive-query" rel="alternate" type="text/html" title="CREATE query in Hive" />
       <published>2021-09-16T22:30:00+09:00</published>
       <updated>2021-09-16T22:30:00+09:00</updated>
-      <id>http://localhost:4000/hive-query</id>
-      <content type="html" xml:base="http://localhost:4000/hive-query">&lt;p&gt;HiveQL - CREATE QUERY 구조에 대하여&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/hive-query</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/hive-query">&lt;p&gt;HiveQL - CREATE QUERY 구조에 대하여&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;TEMPORARY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IF&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.]&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;table_name&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_type&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;column_constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])]&lt;/span&gt;

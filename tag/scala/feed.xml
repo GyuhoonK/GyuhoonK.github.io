@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="http://localhost:4000/tag/scala/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-11-11T22:58:27+09:00</updated>
-  <id>http://localhost:4000/tag/scala/feed.xml</id>
+  <link href="https://gyuhoonk.github.io/tag/scala/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2021-11-11T23:38:23+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/scala/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">scala</title>
-      <link href="http://localhost:4000/scala" rel="alternate" type="text/html" title="scala" />
+      <link href="https://gyuhoonk.github.io/scala" rel="alternate" type="text/html" title="scala" />
       <published>2021-09-01T22:30:00+09:00</published>
       <updated>2021-09-01T22:30:00+09:00</updated>
-      <id>http://localhost:4000/scala</id>
-      <content type="html" xml:base="http://localhost:4000/scala">&lt;p&gt;First Scala Posting&lt;/p&gt;</content>
+      <id>https://gyuhoonk.github.io/scala</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/scala">&lt;p&gt;First Scala Posting&lt;/p&gt;</content>
 
       
       

@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="http://localhost:4000/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2021-11-11T22:58:27+09:00</updated>
-  <id>http://localhost:4000/author/GyuhoonK/feed.xml</id>
+  <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2021-11-11T23:38:23+09:00</updated>
+  <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">Knuth–Morris–Pratt algorithm, KMP</title>
-      <link href="http://localhost:4000/KMP" rel="alternate" type="text/html" title="Knuth–Morris–Pratt algorithm, KMP" />
+      <link href="https://gyuhoonk.github.io/KMP" rel="alternate" type="text/html" title="Knuth–Morris–Pratt algorithm, KMP" />
       <published>2021-11-06T22:30:00+09:00</published>
       <updated>2021-11-06T22:30:00+09:00</updated>
-      <id>http://localhost:4000/KMP</id>
-      <content type="html" xml:base="http://localhost:4000/KMP">&lt;p&gt;문자열 탐색에서 사용되는 KMP 알고리즘에 대해서&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/KMP</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/KMP">&lt;p&gt;문자열 탐색에서 사용되는 KMP 알고리즘에 대해서&lt;/p&gt;
 
 &lt;p&gt;*글의 내용은 &lt;a href=&quot;https://bowbowbow.tistory.com/6&quot;&gt;KMP : 문자열 검색 알고리즘&lt;/a&gt;을 참조했으며 글의 내용 및 구현 코드 모두 작성자 멍멍멍님께서 작성하신 예시, 코드를 그대로 사용했습니다.&lt;/p&gt;
 
@@ -1635,11 +1635,11 @@
   
     <entry>
       <title type="html">Threading in Python</title>
-      <link href="http://localhost:4000/threading-in-python" rel="alternate" type="text/html" title="Threading in Python" />
+      <link href="https://gyuhoonk.github.io/threading-in-python" rel="alternate" type="text/html" title="Threading in Python" />
       <published>2021-11-01T22:30:00+09:00</published>
       <updated>2021-11-01T22:30:00+09:00</updated>
-      <id>http://localhost:4000/threading-in-python</id>
-      <content type="html" xml:base="http://localhost:4000/threading-in-python">&lt;p&gt;Python - Thread, Mutex, Semaphore&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/threading-in-python</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/threading-in-python">&lt;p&gt;Python - Thread, Mutex, Semaphore&lt;/p&gt;
 
 &lt;h1 id=&quot;thread란-&quot;&gt;Thread란 ?&lt;/h1&gt;
 
@@ -1933,11 +1933,11 @@
   
     <entry>
       <title type="html">Merge Files in HDFS</title>
-      <link href="http://localhost:4000/hive-merge-query" rel="alternate" type="text/html" title="Merge Files in HDFS" />
+      <link href="https://gyuhoonk.github.io/hive-merge-query" rel="alternate" type="text/html" title="Merge Files in HDFS" />
       <published>2021-10-24T22:30:00+09:00</published>
       <updated>2021-10-24T22:30:00+09:00</updated>
-      <id>http://localhost:4000/hive-merge-query</id>
-      <content type="html" xml:base="http://localhost:4000/hive-merge-query">&lt;p&gt;HDFS에서 작은 용량의 파일들을 하나의 파일로 합치기&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/hive-merge-query</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/hive-merge-query">&lt;p&gt;HDFS에서 작은 용량의 파일들을 하나의 파일로 합치기&lt;/p&gt;
 
 &lt;h1 id=&quot;blocks-in-hdfs&quot;&gt;Blocks in HDFS&lt;/h1&gt;
 
@@ -2194,11 +2194,11 @@
   
     <entry>
       <title type="html">OverFlow/UnderFlow Trick in Query</title>
-      <link href="http://localhost:4000/overflow-trick" rel="alternate" type="text/html" title="OverFlow/UnderFlow Trick in Query" />
+      <link href="https://gyuhoonk.github.io/overflow-trick" rel="alternate" type="text/html" title="OverFlow/UnderFlow Trick in Query" />
       <published>2021-10-09T22:30:00+09:00</published>
       <updated>2021-10-09T22:30:00+09:00</updated>
-      <id>http://localhost:4000/overflow-trick</id>
-      <content type="html" xml:base="http://localhost:4000/overflow-trick"></content>
+      <id>https://gyuhoonk.github.io/overflow-trick</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/overflow-trick"></content>
 
       
       
@@ -2228,11 +2228,11 @@
   
     <entry>
       <title type="html">Regression in Query</title>
-      <link href="http://localhost:4000/regression-in-query" rel="alternate" type="text/html" title="Regression in Query" />
+      <link href="https://gyuhoonk.github.io/regression-in-query" rel="alternate" type="text/html" title="Regression in Query" />
       <published>2021-10-09T22:30:00+09:00</published>
       <updated>2021-10-09T22:30:00+09:00</updated>
-      <id>http://localhost:4000/regression-in-query</id>
-      <content type="html" xml:base="http://localhost:4000/regression-in-query"></content>
+      <id>https://gyuhoonk.github.io/regression-in-query</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/regression-in-query"></content>
 
       
       
@@ -2262,11 +2262,11 @@
   
     <entry>
       <title type="html">Bucket in Hive, Spark</title>
-      <link href="http://localhost:4000/bucket-hive-spark" rel="alternate" type="text/html" title="Bucket in Hive, Spark" />
+      <link href="https://gyuhoonk.github.io/bucket-hive-spark" rel="alternate" type="text/html" title="Bucket in Hive, Spark" />
       <published>2021-10-09T22:30:00+09:00</published>
       <updated>2021-10-09T22:30:00+09:00</updated>
-      <id>http://localhost:4000/bucket-hive-spark</id>
-      <content type="html" xml:base="http://localhost:4000/bucket-hive-spark">&lt;p&gt;Hive와 Spark에서 Bucket 차이점에 대하여&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/bucket-hive-spark</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/bucket-hive-spark">&lt;p&gt;Hive와 Spark에서 Bucket 차이점에 대하여&lt;/p&gt;
 
 &lt;h1 id=&quot;bucketting&quot;&gt;Bucketting&lt;/h1&gt;
 
@@ -2476,11 +2476,11 @@ It doesn't match the specified format 'ParquetFileFormat'.
   
     <entry>
       <title type="html">Gaussian Kernel</title>
-      <link href="http://localhost:4000/gaussian_kernel" rel="alternate" type="text/html" title="Gaussian Kernel" />
+      <link href="https://gyuhoonk.github.io/gaussian_kernel" rel="alternate" type="text/html" title="Gaussian Kernel" />
       <published>2021-10-08T22:30:00+09:00</published>
       <updated>2021-10-08T22:30:00+09:00</updated>
-      <id>http://localhost:4000/gaussian_kernel</id>
-      <content type="html" xml:base="http://localhost:4000/gaussian_kernel">&lt;p&gt;Gaussian Kernel(RBF) 기본 개념에 대하여&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/gaussian_kernel</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/gaussian_kernel">&lt;p&gt;Gaussian Kernel(RBF) 기본 개념에 대하여&lt;/p&gt;
 
 &lt;h1 id=&quot;gaussian-kernel-&quot;&gt;Gaussian Kernel ?&lt;/h1&gt;
 
@@ -2601,11 +2601,11 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
   
     <entry>
       <title type="html">CREATE query in Hive</title>
-      <link href="http://localhost:4000/hive-query" rel="alternate" type="text/html" title="CREATE query in Hive" />
+      <link href="https://gyuhoonk.github.io/hive-query" rel="alternate" type="text/html" title="CREATE query in Hive" />
       <published>2021-09-16T22:30:00+09:00</published>
       <updated>2021-09-16T22:30:00+09:00</updated>
-      <id>http://localhost:4000/hive-query</id>
-      <content type="html" xml:base="http://localhost:4000/hive-query">&lt;p&gt;HiveQL - CREATE QUERY 구조에 대하여&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/hive-query</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/hive-query">&lt;p&gt;HiveQL - CREATE QUERY 구조에 대하여&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;TEMPORARY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IF&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.]&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;table_name&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_type&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;column_constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])]&lt;/span&gt;
@@ -3167,11 +3167,11 @@ WITH SERDEPROPERTIES (
   
     <entry>
       <title type="html">Connection to DataBase in Python, R</title>
-      <link href="http://localhost:4000/connect-to-database" rel="alternate" type="text/html" title="Connection to DataBase in Python, R" />
+      <link href="https://gyuhoonk.github.io/connect-to-database" rel="alternate" type="text/html" title="Connection to DataBase in Python, R" />
       <published>2021-09-06T22:30:00+09:00</published>
       <updated>2021-09-06T22:30:00+09:00</updated>
-      <id>http://localhost:4000/connect-to-database</id>
-      <content type="html" xml:base="http://localhost:4000/connect-to-database">&lt;p&gt;python, R에서 Database Server와 연결하기&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/connect-to-database</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/connect-to-database">&lt;p&gt;python, R에서 Database Server와 연결하기&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/odbc-architecture.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
@@ -3668,11 +3668,11 @@ SQLSETPOSIROW Size.: 8
   
     <entry>
       <title type="html">scala</title>
-      <link href="http://localhost:4000/scala" rel="alternate" type="text/html" title="scala" />
+      <link href="https://gyuhoonk.github.io/scala" rel="alternate" type="text/html" title="scala" />
       <published>2021-09-01T22:30:00+09:00</published>
       <updated>2021-09-01T22:30:00+09:00</updated>
-      <id>http://localhost:4000/scala</id>
-      <content type="html" xml:base="http://localhost:4000/scala">&lt;p&gt;First Scala Posting&lt;/p&gt;</content>
+      <id>https://gyuhoonk.github.io/scala</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/scala">&lt;p&gt;First Scala Posting&lt;/p&gt;</content>
 
       
       
