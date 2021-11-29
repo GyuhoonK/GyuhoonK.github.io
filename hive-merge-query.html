@@ -302,12 +302,18 @@ into the {body} of the default.hbs template -->
 
 <p>위 INSERT문은 Reducer를 거치지 않기 때문에 읽어들여온 파일 개수만큼 디렉토리에 그대로 저장하게 되고, 이는 file number가 급격하게 늘어나는 결과를 초래하게 됩니다.</p>
 
-<p>Spark는 file write 작업을 partition 단위로 수행하게 됩니다. 따라서, Spark를 저장된 ouput file 개수는 기본적으로 다른 옵션(아래서 다루게 될 <code class="language-plaintext highlighter-rouge">repartition, coalesce</code>)을 지정하지 않는다면 partition 개수를 결정하는 <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code> 에 의해 결정됩니다.</p>
+<p>Spark는 file write 작업을 partition 단위로 수행하게 됩니다. 따라서, Spark를 저장된 ouput file 개수는 기본적으로 다른 옵션(아래서 다루게 될 <code class="language-plaintext highlighter-rouge">repartition, coalesce</code>)을 지정하지 않는다면 partition 개수를 결정하는 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code> 에 의해 결정됩니다.</p>
 
 <blockquote>
-  <p>[default] 200</p>
+  <p>[default] For distributed shuffle operations like <code class="language-plaintext highlighter-rouge">reduceByKey</code>and <code class="language-plaintext highlighter-rouge">join</code>, the largest number of partitions in a parent RDD. For operations like <code class="language-plaintext highlighter-rouge">parallelize</code>with no parent RDDs, it depends on the cluster manager:</p>
 
-  <p>[meaning] <strong>The default number of partitions</strong> to use when shuffling data for joins or aggregations. Note: For structured streaming, this configuration cannot be changed between query restarts from the same checkpoint location.</p>
+  <ul>
+    <li>Local mode: number of cores on the local machine</li>
+    <li>Mesos fine grained mode: 8</li>
+    <li><strong>Others: total number of cores on all executor nodes or 2, whichever is larger</strong></li>
+  </ul>
+
+  <p>[meaning] <strong>Default number of partitions</strong> in RDDs returned by transformations like <code class="language-plaintext highlighter-rouge">join</code>, <code class="language-plaintext highlighter-rouge">reduceByKey</code>, and <code class="language-plaintext highlighter-rouge">parallelize</code> when not set by user.</p>
 </blockquote>
 
 <h1 id="how-to-merge">How to Merge?</h1>
@@ -523,6 +529,15 @@ into the {body} of the default.hbs template -->
                                 
                                 
                                   
+                                    
+                                        
+                                        
+                                            <li><a href="/melt-in-pyspark">melt in pyspark</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
                                 
                                   
                                 
@@ -565,7 +580,7 @@ into the {body} of the default.hbs template -->
                         <footer class="read-next-card-footer">
                             <a href="/tag/hadoop/">
                                 
-                                    See all 2 posts  →
+                                    See all 3 posts  →
                                 
                             </a>
                         </footer>
