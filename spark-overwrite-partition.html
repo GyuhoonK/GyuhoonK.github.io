@@ -205,46 +205,37 @@ into the {body} of the default.hbs template -->
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">'col1'</span> <span class="p">:</span> <span class="p">[</span><span class="s">'a'</span><span class="p">,</span><span class="s">'b'</span><span class="p">,</span><span class="s">'c'</span><span class="p">],</span> <span class="s">'col2'</span><span class="p">:[</span><span class="s">'apple'</span><span class="p">,</span><span class="s">'banana'</span><span class="p">,</span><span class="s">'car'</span><span class="p">]})</span>
 <span class="n">df</span>
-</code></pre></div></div>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>|    | col1   | col2   |
-|---:|:-------|:-------|
-|  0 | a      | apple  |
-|  1 | b      | banana |
-|  2 | c      | car    |
-</code></pre></div></div>
+<span class="o">|</span>    <span class="o">|</span> <span class="n">col1</span>   <span class="o">|</span> <span class="n">col2</span>   <span class="o">|</span>
+<span class="o">|---</span><span class="p">:</span><span class="o">|</span><span class="p">:</span><span class="o">-------|</span><span class="p">:</span><span class="o">-------|</span>
+<span class="o">|</span>  <span class="mi">0</span> <span class="o">|</span> <span class="n">a</span>      <span class="o">|</span> <span class="n">apple</span>  <span class="o">|</span>
+<span class="o">|</span>  <span class="mi">1</span> <span class="o">|</span> <span class="n">b</span>      <span class="o">|</span> <span class="n">banana</span> <span class="o">|</span>
+<span class="o">|</span>  <span class="mi">2</span> <span class="o">|</span> <span class="n">c</span>      <span class="o">|</span> <span class="n">car</span>    <span class="o">|</span>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
 <span class="n">sdf</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div></div>
+<span class="o">+----+------+</span>
+<span class="o">|</span><span class="n">col1</span><span class="o">|</span>  <span class="n">col2</span><span class="o">|</span>
+<span class="o">+----+------+</span>
+<span class="o">|</span>   <span class="n">a</span><span class="o">|</span> <span class="n">apple</span><span class="o">|</span>
+<span class="o">|</span>   <span class="n">b</span><span class="o">|</span><span class="n">banana</span><span class="o">|</span>
+<span class="o">|</span>   <span class="n">c</span><span class="o">|</span>   <span class="n">car</span><span class="o">|</span>
+<span class="o">+----+------+</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+----+------+
-|col1|  col2|
-+----+------+
-|   a| apple|
-|   b|banana|
-|   c|   car|
-+----+------+
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">schema</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="s">'default.t_test'</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)</span>
+<span class="n">schema</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="s">'default.t_test'</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)</span>
 <span class="n">sdf</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'append'</span><span class="p">)</span>\
     <span class="p">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s">"col1"</span><span class="p">)</span>\
     <span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">"path"</span><span class="p">,</span> <span class="sa">f</span><span class="s">'/user/hive/warehouse/</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.db/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>\
     <span class="p">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    
+<span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
+<span class="o">+------+----+</span>
+<span class="o">|</span>  <span class="n">col2</span><span class="o">|</span><span class="n">col1</span><span class="o">|</span>
+<span class="o">+------+----+</span>
+<span class="o">|</span><span class="n">banana</span><span class="o">|</span>   <span class="n">b</span><span class="o">|</span>
+<span class="o">|</span> <span class="n">apple</span><span class="o">|</span>   <span class="n">a</span><span class="o">|</span>
+<span class="o">|</span>   <span class="n">car</span><span class="o">|</span>   <span class="n">c</span><span class="o">|</span>
+<span class="o">+------+----+</span>
 </code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------+----+
-|  col2|col1|
-+------+----+
-|banana|   b|
-| apple|   a|
-|   car|   c|
-+------+----+
-</code></pre></div></div>
-
 <p><code class="language-plaintext highlighter-rouge">default.t_test</code>  테이블은 아래와 같은 구조로 저장됩니다.</p>
 
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hdfs <span class="nt">-dfs</span> <span class="nb">ls</span> /user/hive/warehouse/default.db/t_test <span class="c"># hdfs 디렉토리 조회 </span>
@@ -283,22 +274,17 @@ into the {body} of the default.hbs template -->
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">'col1'</span> <span class="p">:</span> <span class="p">[</span><span class="s">'a'</span><span class="p">],</span> <span class="s">'col2'</span><span class="p">:[</span><span class="s">'art'</span><span class="p">]})</span>
 <span class="n">a_art_df</span>
-</code></pre></div></div>
+<span class="o">|</span>    <span class="o">|</span> <span class="n">col1</span>   <span class="o">|</span> <span class="n">col2</span>   <span class="o">|</span>
+<span class="o">|---</span><span class="p">:</span><span class="o">|</span><span class="p">:</span><span class="o">-------|</span><span class="p">:</span><span class="o">-------|</span>
+<span class="o">|</span>  <span class="mi">0</span> <span class="o">|</span> <span class="n">a</span>      <span class="o">|</span> <span class="n">art</span>    <span class="o">|</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>|    | col1   | col2   |
-|---:|:-------|:-------|
-|  0 | a      | art    |
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">a_art_df</span><span class="p">)</span>
+<span class="n">a_art_sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">a_art_df</span><span class="p">)</span>
 <span class="n">a_art_sdf</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+----+----+
-|col1|col2|
-+----+----+
-|   a| art|
-+----+----+
+<span class="o">+----+----+</span>
+<span class="o">|</span><span class="n">col1</span><span class="o">|</span><span class="n">col2</span><span class="o">|</span>
+<span class="o">+----+----+</span>
+<span class="o">|</span>   <span class="n">a</span><span class="o">|</span> <span class="n">art</span><span class="o">|</span>
+<span class="o">+----+----+</span>
 </code></pre></div></div>
 
 <p>이제 <code class="language-plaintext highlighter-rouge">a_art_sdf</code>를 <code class="language-plaintext highlighter-rouge">default.t_test</code>에 <code class="language-plaintext highlighter-rouge">saveAsTable</code>을 이용하여 <code class="language-plaintext highlighter-rouge">overwrite</code>해보겠습니다.</p>
@@ -307,16 +293,13 @@ into the {body} of the default.hbs template -->
     <span class="p">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s">"col1"</span><span class="p">)</span>\
     <span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">"path"</span><span class="p">,</span> <span class="sa">f</span><span class="s">'/user/hive/warehouse/</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.db/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>\
     <span class="p">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+----+----+
-|col2|col1|
-+----+----+
-| art|   a|
-+----+----+
+    
+<span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
+<span class="o">+----+----+</span>
+<span class="o">|</span><span class="n">col2</span><span class="o">|</span><span class="n">col1</span><span class="o">|</span>
+<span class="o">+----+----+</span>
+<span class="o">|</span> <span class="n">art</span><span class="o">|</span>   <span class="n">a</span><span class="o">|</span>
+<span class="o">+----+----+</span>
 </code></pre></div></div>
 
 <p>실행 결과 다른 파티션(<code class="language-plaintext highlighter-rouge">col1=b</code>, <code class="language-plaintext highlighter-rouge">col2=c</code>)이 모두 삭제되고 <code class="language-plaintext highlighter-rouge">col1=a</code> 파티션만 남았음을 확인할 수 있습니다.</p>
@@ -339,19 +322,16 @@ into the {body} of the default.hbs template -->
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_sdf</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
     <span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'parquet'</span><span class="p">)</span>\
     <span class="p">.</span><span class="n">insertInto</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------+----+
-|  col2|col1|
-+------+----+
-|banana|   b|
-| apple|   a|
-|   car|   c|
-|     a| art|
-+------+----+
+    
+<span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
+<span class="o">+------+----+</span>
+<span class="o">|</span>  <span class="n">col2</span><span class="o">|</span><span class="n">col1</span><span class="o">|</span>
+<span class="o">+------+----+</span>
+<span class="o">|</span><span class="n">banana</span><span class="o">|</span>   <span class="n">b</span><span class="o">|</span>
+<span class="o">|</span> <span class="n">apple</span><span class="o">|</span>   <span class="n">a</span><span class="o">|</span>
+<span class="o">|</span>   <span class="n">car</span><span class="o">|</span>   <span class="n">c</span><span class="o">|</span>
+<span class="o">|</span>     <span class="n">a</span><span class="o">|</span> <span class="n">art</span><span class="o">|</span>
+<span class="o">+------+----+</span>
 </code></pre></div></div>
 
 <p><code class="language-plaintext highlighter-rouge">col1</code>, <code class="language-plaintext highlighter-rouge">col2</code>의 위치를 뒤바꿔 저장하는 모습을 보였습니다. 이는 <code class="language-plaintext highlighter-rouge">insertInto</code> 메소드가 칼럼 순서에 기반하여 테이블에 저장하기 때문입니다.</p>
@@ -364,39 +344,32 @@ into the {body} of the default.hbs template -->
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">'col2'</span><span class="p">:[</span><span class="s">'art'</span><span class="p">],</span> <span class="s">'col1'</span> <span class="p">:</span> <span class="p">[</span><span class="s">'a'</span><span class="p">]})</span>
 <span class="n">a_art_df</span>
-</code></pre></div></div>
+<span class="o">|</span>    <span class="o">|</span> <span class="n">col2</span>   <span class="o">|</span> <span class="n">col1</span>   <span class="o">|</span>
+<span class="o">|---</span><span class="p">:</span><span class="o">|</span><span class="p">:</span><span class="o">-------|</span><span class="p">:</span><span class="o">-------|</span>
+<span class="o">|</span>  <span class="mi">0</span> <span class="o">|</span> <span class="n">art</span>    <span class="o">|</span> <span class="n">a</span>      <span class="o">|</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>|    | col2   | col1   |
-|---:|:-------|:-------|
-|  0 | art    | a      |
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">a_art_df</span><span class="p">)</span>
+<span class="n">a_art_sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">a_art_df</span><span class="p">)</span>
 <span class="n">a_art_sdf</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div></div>
+<span class="o">+----+----+</span>
+<span class="o">|</span><span class="n">col2</span><span class="o">|</span><span class="n">col1</span><span class="o">|</span>
+<span class="o">+----+----+</span>
+<span class="o">|</span> <span class="n">art</span><span class="o">|</span>   <span class="n">a</span><span class="o">|</span>
+<span class="o">+----+----+</span>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+----+----+
-|col2|col1|
-+----+----+
-| art|   a|
-+----+----+
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_sdf</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
+<span class="n">a_art_sdf</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
     <span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'parquet'</span><span class="p">)</span>\
     <span class="p">.</span><span class="n">insertInto</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    
 <span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------+----+
-|  col2|col1|
-+------+----+
-|banana|   b|
-| apple|   a|
-|   art|   a| 
-|   car|   c|
-|     a| art|
-+------+----+
+<span class="o">+------+----+</span>
+<span class="o">|</span>  <span class="n">col2</span><span class="o">|</span><span class="n">col1</span><span class="o">|</span>
+<span class="o">+------+----+</span>
+<span class="o">|</span><span class="n">banana</span><span class="o">|</span>   <span class="n">b</span><span class="o">|</span>
+<span class="o">|</span> <span class="n">apple</span><span class="o">|</span>   <span class="n">a</span><span class="o">|</span>
+<span class="o">|</span>   <span class="n">art</span><span class="o">|</span>   <span class="n">a</span><span class="o">|</span> 
+<span class="o">|</span>   <span class="n">car</span><span class="o">|</span>   <span class="n">c</span><span class="o">|</span>
+<span class="o">|</span>     <span class="n">a</span><span class="o">|</span> <span class="n">art</span><span class="o">|</span>
+<span class="o">+------+----+</span>
 </code></pre></div></div>
 
 <p>분명 overwrite했음에도 불구하고, <code class="language-plaintext highlighter-rouge">col1=a</code>에 append된 결과를 보이고 있습니다.</p>
@@ -407,13 +380,12 @@ into the {body} of the default.hbs template -->
     <span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'parquet'</span><span class="p">)</span>\
     <span class="p">.</span><span class="n">insertInto</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 <span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------+----+
-|  col2|col1|
-+------+----+
-|     a| art|
-+------+----+
+<span class="o">+------+----+</span>
+<span class="o">|</span>  <span class="n">col2</span><span class="o">|</span><span class="n">col1</span><span class="o">|</span>
+<span class="o">+------+----+</span>
+<span class="o">|</span>   <span class="n">art</span><span class="o">|</span>   <span class="n">a</span><span class="o">|</span>
+<span class="o">+------+----+</span>
 </code></pre></div></div>
 
 <h2 id="test3--save-directly">Test3 : save (directly)</h2>
@@ -427,27 +399,22 @@ into the {body} of the default.hbs template -->
     <span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
     <span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'parquet'</span><span class="p">)</span>\
     <span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s">'/user/hive/warehouse/</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.db/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">/col1=a'</span><span class="p">)</span>
-</code></pre></div></div>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"REFRESH TABLE </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span> <span class="c1"># 파일을 직접 수정했으므로, 캐싱된 메타데이터 update 실행
+    
+<span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"REFRESH TABLE </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span> <span class="c1"># 파일을 직접 수정했으므로, 캐싱된 메타데이터 update 실행
 </span><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------+----+
-|  col2|col1|
-+------+----+
-|banana|   b|
-|   art|   a|
-|   car|   c|
-+------+----+
+<span class="o">+------+----+</span>
+<span class="o">|</span>  <span class="n">col2</span><span class="o">|</span><span class="n">col1</span><span class="o">|</span>
+<span class="o">+------+----+</span>
+<span class="o">|</span><span class="n">banana</span><span class="o">|</span>   <span class="n">b</span><span class="o">|</span>
+<span class="o">|</span>   <span class="n">art</span><span class="o">|</span>   <span class="n">a</span><span class="o">|</span>
+<span class="o">|</span>   <span class="n">car</span><span class="o">|</span>   <span class="n">c</span><span class="o">|</span>
+<span class="o">+------+----+</span>
 </code></pre></div></div>
 
 <p>성공했습니다! <code class="language-plaintext highlighter-rouge">col1=a</code>에 해당하는 값이 <code class="language-plaintext highlighter-rouge">apple</code>에서 <code class="language-plaintext highlighter-rouge">art</code>로 변경되었습니다.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">!</span><span class="n">hive</span> <span class="o">-</span><span class="n">e</span> <span class="s">"SELECT * FROM default.t_test"</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+---------+-------+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hive <span class="nt">-e</span> <span class="s2">"SELECT * FROM default.t_test"</span>
++---------+-------+
 |  col2   | col1  |
 +---------+-------+
 | art     | a     |
