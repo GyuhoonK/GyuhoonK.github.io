@@ -8,7 +8,22 @@
     
       
       <item>
-        <title>melt in pyspark</title>
+        <title>Overwrite Partition in Spark</title>
+        
+          <description>&lt;p&gt;Spark를 이용하여 특정 파티션만 overwrite하기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Tue, 21 Dec 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/spark-overwrite-partition</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-overwrite-partition</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Melt in Pyspark</title>
         
           <description>&lt;p&gt;pyspark로 melt function 구현하기&lt;/p&gt;
 

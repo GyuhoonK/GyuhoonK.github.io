@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>Overwrite Partition in Spark</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    </script>
+<meta name="description" content="about Data" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/spark-overwrite-partition" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Overwrite Partition in Spark" />
+    <meta property="og:description" content="Spark를 이용하여 특정 파티션만 overwrite하기 Partitioned Table in Hive Hive에서 파티셔닝을 이용하는 가장 큰 이유 중 하나는 쿼리 성능 향상입니다. HDFS 상에서 partition column을 기준으로 각각 다른 디렉토리에 저장되므로 쿼리 조회 시 조회가 필요 없는 파일은 조회를 수행하지 않으므로, 쿼리 성능이 향상될 수 있습니다. 예를 들어 설명해보겠습니다. 아래와 같은 간단한" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/spark-overwrite-partition" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/spark-overwrite-partition.jpg" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2021-12-21T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2021-12-21T22:30:00+09:00" />
+    <meta property="article:tag" content="Hadoop" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Overwrite Partition in Spark" />
+    <meta name="twitter:description" content="Spark를 이용하여 특정 파티션만 overwrite하기 Partitioned Table in Hive Hive에서 파티셔닝을 이용하는 가장 큰 이유 중 하나는 쿼리 성능 향상입니다. HDFS 상에서 partition column을 기준으로 각각 다른 디렉토리에 저장되므로 쿼리 조회 시 조회가 필요 없는 파일은 조회를 수행하지 않으므로, 쿼리 성능이 향상될 수 있습니다. 예를 들어 설명해보겠습니다. 아래와 같은 간단한" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/spark-overwrite-partition.jpg" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Hadoop" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "https://gyuhoonk.github.io/"
+    },
+    "url": "https://gyuhoonk.github.io/spark-overwrite-partition",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://gyuhoonk.github.io/assets/built/images/hadoop/spark-overwrite-partition.jpg",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://gyuhoonk.github.io/spark-overwrite-partition"
+    },
+    "description": "Spark를 이용하여 특정 파티션만 overwrite하기 Partitioned Table in Hive Hive에서 파티셔닝을 이용하는 가장 큰 이유 중 하나는 쿼리 성능 향상입니다. HDFS 상에서 partition column을 기준으로 각각 다른 디렉토리에 저장되므로 쿼리 조회 시 조회가 필요 없는 파일은 조회를 수행하지 않으므로, 쿼리 성능이 향상될 수 있습니다. 예를 들어 설명해보겠습니다. 아래와 같은 간단한"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="Overwrite Partition in Spark" href="/feed.xml" />
+
+
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/datascience/">DataScience</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-hadoop post tag-hadoop ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime="21 December 2021">21 December 2021</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/hadoop/'>HADOOP</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">Overwrite Partition in Spark</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/hadoop/spark-overwrite-partition.jpg)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>Spark를 이용하여 특정 파티션만 overwrite하기</p>
+
+<h1 id="partitioned-table-in-hive">Partitioned Table in Hive</h1>
+
+<p>Hive에서  파티셔닝을 이용하는 가장 큰 이유 중 하나는 쿼리 성능 향상입니다. HDFS 상에서 partition column을 기준으로 각각 다른 디렉토리에 저장되므로 쿼리 조회 시 조회가 필요 없는 파일은 조회를 수행하지 않으므로, 쿼리 성능이 향상될 수 있습니다.</p>
+
+<p>예를 들어 설명해보겠습니다. 아래와 같은 간단한 테이블을 hive에 저장해보겠습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">'col1'</span> <span class="p">:</span> <span class="p">[</span><span class="s">'a'</span><span class="p">,</span><span class="s">'b'</span><span class="p">,</span><span class="s">'c'</span><span class="p">],</span> <span class="s">'col2'</span><span class="p">:[</span><span class="s">'apple'</span><span class="p">,</span><span class="s">'banana'</span><span class="p">,</span><span class="s">'car'</span><span class="p">]})</span>
+<span class="n">df</span>
+</code></pre></div></div>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>|    | col1   | col2   |
+|---:|:-------|:-------|
+|  0 | a      | apple  |
+|  1 | b      | banana |
+|  2 | c      | car    |
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">sdf</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+----+------+
+|col1|  col2|
++----+------+
+|   a| apple|
+|   b|banana|
+|   c|   car|
++----+------+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">schema</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="s">'default.t_test'</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">'.'</span><span class="p">)</span>
+<span class="n">sdf</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'append'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s">"col1"</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">"path"</span><span class="p">,</span> <span class="sa">f</span><span class="s">'/user/hive/warehouse/</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.db/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------+----+
+|  col2|col1|
++------+----+
+|banana|   b|
+| apple|   a|
+|   car|   c|
++------+----+
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">default.t_test</code>  테이블은 아래와 같은 구조로 저장됩니다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hdfs <span class="nt">-dfs</span> <span class="nb">ls</span> /user/hive/warehouse/default.db/t_test <span class="c"># hdfs 디렉토리 조회 </span>
+<span class="o">&gt;&gt;</span> /user/hive/warehouse/default.db/t_test/col1<span class="o">=</span>a
+<span class="o">&gt;&gt;</span> /user/hive/warehouse/default.db/t_test/col1<span class="o">=</span>b
+<span class="o">&gt;&gt;</span> /user/hive/warehouse/default.db/t_test/col1<span class="o">=</span>c
+</code></pre></div></div>
+
+<p>따라서, 만약 아래와 같은 쿼리를 실행한다면 ``col1=a` 디렉토리 내부의 파일만 조회하여 결과를 반환하므로 파티션이 적용되지 않은 테이블보다 쿼리 성능이 향상됩니다.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span>   <span class="k">default</span><span class="p">.</span><span class="n">t_test</span>
+<span class="k">WHERE</span>  <span class="n">col1</span><span class="o">=</span><span class="s1">'a'</span><span class="p">;</span> <span class="c1">-- col1=a 디렉토리만 조회</span>
+</code></pre></div></div>
+
+<p>이외에도 파티션 테이블이 갖는 장점이 하나 더 있습니다.</p>
+
+<h1 id="overwrite-only-a-singleor-specific-partition">Overwrite Only a Single(or Specific) Partition</h1>
+
+<p>각 파티션에 해당하는 디렉토리 내에 파일이 따로 저장되어 있으므로 테이블의 수정이 필요한 경우 수정이 필요한 파티션에 대해서만 overwrite할 수 있습니다.</p>
+
+<p>예를 들어, 아래 쿼리를 이용하여 위 테이블에서 <code class="language-plaintext highlighter-rouge">col=1</code> 파티션을 <code class="language-plaintext highlighter-rouge">tmp</code> 테이블(혹은 뷰) 내용으로 수정할 수 있습니다.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="n">OVERWRITE</span> <span class="k">TABLE</span> <span class="k">default</span><span class="p">.</span><span class="n">t_test</span> <span class="n">PARTITION</span><span class="p">(</span><span class="n">col1</span><span class="o">=</span><span class="s1">'a'</span><span class="p">)</span>
+<span class="k">SELECT</span> <span class="n">col2</span>
+<span class="k">FROM</span> <span class="n">tmp</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>HiveQL은 <code class="language-plaintext highlighter-rouge">INSERT OVERWRITE</code>와 STATIC PARTITION 문법을 통해 이러한 Partition Overwrite가 비교적 간단한 편입니다.</p>
+
+<p>Spark에서는 Partition Overwrite를 어떻게 구현할 수 있을까요?</p>
+
+<h2 id="test1--saveastable">Test1 : saveAsTable</h2>
+
+<p><code class="language-plaintext highlighter-rouge">col1=a</code> 파티션의 내용을 변경하기 위한 데이터를 만들어 실험해보겠습니다. 목표는 다른 파티션은 건드리지 않고, <code class="language-plaintext highlighter-rouge">{a:apple}</code>인 현재 상태를 <code class="language-plaintext highlighter-rouge">{a:art}</code>로 변경하는 것입니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">'col1'</span> <span class="p">:</span> <span class="p">[</span><span class="s">'a'</span><span class="p">],</span> <span class="s">'col2'</span><span class="p">:[</span><span class="s">'art'</span><span class="p">]})</span>
+<span class="n">a_art_df</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>|    | col1   | col2   |
+|---:|:-------|:-------|
+|  0 | a      | art    |
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">a_art_df</span><span class="p">)</span>
+<span class="n">a_art_sdf</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+----+----+
+|col1|col2|
++----+----+
+|   a| art|
++----+----+
+</code></pre></div></div>
+
+<p>이제 <code class="language-plaintext highlighter-rouge">a_art_sdf</code>를 <code class="language-plaintext highlighter-rouge">default.t_test</code>에 <code class="language-plaintext highlighter-rouge">saveAsTable</code>을 이용하여 <code class="language-plaintext highlighter-rouge">overwrite</code>해보겠습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_sdf</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">partitionBy</span><span class="p">(</span><span class="s">"col1"</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">"path"</span><span class="p">,</span> <span class="sa">f</span><span class="s">'/user/hive/warehouse/</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.db/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+----+----+
+|col2|col1|
++----+----+
+| art|   a|
++----+----+
+</code></pre></div></div>
+
+<p>실행 결과 다른 파티션(<code class="language-plaintext highlighter-rouge">col1=b</code>, <code class="language-plaintext highlighter-rouge">col2=c</code>)이 모두 삭제되고 <code class="language-plaintext highlighter-rouge">col1=a</code> 파티션만 남았음을 확인할 수 있습니다.</p>
+
+<p>이는 saveAsTable이 파티션에 관련된 메소드가 아니라, 테이블 단위의 메소드이기 때문입니다.</p>
+
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">DataFrameWriter.saveAsTable</code>(<em>name</em>, <em>format=None</em>, <em>mode=None</em>, <em>partitionBy=None</em>, <em>**options</em>)[<a href="https://spark.apache.org/docs/latest/api/python/_modules/pyspark/sql/readwriter.html#DataFrameWriter.saveAsTable">source]</a></p>
+
+  <p>Saves the content of the <a href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrame.html#pyspark.sql.DataFrame"><code class="language-plaintext highlighter-rouge">DataFrame</code></a> as the specified table.</p>
+
+</blockquote>
+
+<p>따라서, <code class="language-plaintext highlighter-rouge">defaut.t_test</code> 내의 모든 내용에 대해서 overwrite가 발생했습니다.</p>
+
+<h2 id="test2--insertinto">Test2 : insertInto</h2>
+
+<p>Spark의 <code class="language-plaintext highlighter-rouge">DataFrame</code>을 테이블로 저장하는 다른 메소드에 <code class="language-plaintext highlighter-rouge">insertInto</code>가 있습니다. 이를 이용하여 테스트해보았습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_sdf</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'parquet'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">insertInto</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------+----+
+|  col2|col1|
++------+----+
+|banana|   b|
+| apple|   a|
+|   car|   c|
+|     a| art|
++------+----+
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">col1</code>, <code class="language-plaintext highlighter-rouge">col2</code>의 위치를 뒤바꿔 저장하는 모습을 보였습니다. 이는 <code class="language-plaintext highlighter-rouge">insertInto</code> 메소드가 칼럼 순서에 기반하여 테이블에 저장하기 때문입니다.</p>
+
+<blockquote>
+  <p>Unlike <a href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.saveAsTable.html#pyspark.sql.DataFrameWriter.saveAsTable"><code class="language-plaintext highlighter-rouge">DataFrameWriter.saveAsTable()</code></a>, <a href="https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.sql.DataFrameWriter.insertInto.html?highlight=insertinto#pyspark.sql.DataFrameWriter.insertInto"><code class="language-plaintext highlighter-rouge">DataFrameWriter.insertInto()</code></a> <strong>ignores the column names</strong> and <strong>just uses position-based resolution</strong>.</p>
+</blockquote>
+
+<p>컬럼 순서를 바꿔서 다시 overwrite해보았습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_df</span> <span class="o">=</span> <span class="n">pd</span><span class="p">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s">'col2'</span><span class="p">:[</span><span class="s">'art'</span><span class="p">],</span> <span class="s">'col1'</span> <span class="p">:</span> <span class="p">[</span><span class="s">'a'</span><span class="p">]})</span>
+<span class="n">a_art_df</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>|    | col2   | col1   |
+|---:|:-------|:-------|
+|  0 | art    | a      |
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_sdf</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">createDataFrame</span><span class="p">(</span><span class="n">a_art_df</span><span class="p">)</span>
+<span class="n">a_art_sdf</span><span class="p">.</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+----+----+
+|col2|col1|
++----+----+
+| art|   a|
++----+----+
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_sdf</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'parquet'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">insertInto</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+<span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------+----+
+|  col2|col1|
++------+----+
+|banana|   b|
+| apple|   a|
+|   art|   a| 
+|   car|   c|
+|     a| art|
++------+----+
+</code></pre></div></div>
+
+<p>분명 overwrite했음에도 불구하고, <code class="language-plaintext highlighter-rouge">col1=a</code>에 append된 결과를 보이고 있습니다.</p>
+
+<p>추측컨데, <code class="language-plaintext highlighter-rouge">insertInto</code> 메소드에 <code class="language-plaintext highlighter-rouge">overwrite=True</code> 옵션을 따로 줄 수 있는 것으로 보아, <code class="language-plaintext highlighter-rouge">write.mode</code>의 영향을 받지 않는 것으로 보입니다. 또한 이 메소드 역시 테이블 자체에 저장하는 방식이기 때문에 <code class="language-plaintext highlighter-rouge">overwrite=True</code> 옵션을 부여하게 되면 테이블 전체를 overwrite하여 <code class="language-plaintext highlighter-rouge">col1=b</code>, <code class="language-plaintext highlighter-rouge">col1=c</code> 파티션이 사라지게 됩니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_sdf</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'parquet'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">insertInto</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">,</span> <span class="n">overwrite</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------+----+
+|  col2|col1|
++------+----+
+|     a| art|
++------+----+
+</code></pre></div></div>
+
+<h2 id="test3--save-directly">Test3 : save (directly)</h2>
+
+<p>마지막으로 실험해본 방법은 파티션 경로에 직접 해당 파일을 저장하는 것입니다.</p>
+
+<p>이 경우 주의해야할 점은 partition column(이 경우에는 <code class="language-plaintext highlighter-rouge">col1</code>)은 제외하고 저장해야한다는 점입니다. partition column에 해당하는 value는 디렉토리 이름(<code class="language-plaintext highlighter-rouge">col1=a</code>)를 통해 추론되는 값이기 때문입니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">a_art_sdf</span>\
+    <span class="p">.</span><span class="n">drop</span><span class="p">(</span><span class="s">'col1'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'parquet'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="sa">f</span><span class="s">'/user/hive/warehouse/</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.db/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">/col1=a'</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"REFRESH TABLE </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span> <span class="c1"># 파일을 직접 수정했으므로, 캐싱된 메타데이터 update 실행
+</span><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM </span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+------+----+
+|  col2|col1|
++------+----+
+|banana|   b|
+|   art|   a|
+|   car|   c|
++------+----+
+</code></pre></div></div>
+
+<p>성공했습니다! <code class="language-plaintext highlighter-rouge">col1=a</code>에 해당하는 값이 <code class="language-plaintext highlighter-rouge">apple</code>에서 <code class="language-plaintext highlighter-rouge">art</code>로 변경되었습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">!</span><span class="n">hive</span> <span class="o">-</span><span class="n">e</span> <span class="s">"SELECT * FROM default.t_test"</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>+---------+-------+
+|  col2   | col1  |
++---------+-------+
+| art     | a     |
+| banana  | b     |
+| car     | c     |
++---------+-------+
+</code></pre></div></div>
+
+<p>HiveQL로 조회하는 경우에도 정상적으로 값이 조회됩니다!</p>
+
+<h1 id="끝내며">끝내며</h1>
+
+<p>간단한 글이지만, 정리하지 않으면 항상 헷갈리고 혼란스러운 내용이 될 것 같아 정리해보았습니다.</p>
+
+<p>테스트에 사용한 버전은 Spark 2.3.0이며 Spark 3.0 이상의 버전에서는 좀 더 멋지고 깔끔한 메소드가 있을지도 모릅니다.</p>
+
+<p>감사합니다.</p>
+
+<p>[참고]</p>
+
+<p><a href="https://stackoverflow.com/questions/38487667/overwrite-specific-partitions-in-spark-dataframe-write-method">Overwrite specific partitions in spark dataframe write method</a></p>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            
+                <section class="post-full-comments">
+                    <div id="disqus_thread"></div>
+                    <script>
+                        var disqus_config = function () {
+                            var this_page_url = 'https://gyuhoonk.github.io/spark-overwrite-partition';
+                            var this_page_identifier = '/spark-overwrite-partition';
+                            var this_page_title = 'Overwrite Partition in Spark';
+                        };
+                        (function() {
+                            var d = document, s = d.createElement('script');
+                            s.src = 'https://xxxxxxxx.disqus.com/embed.js';
+                            s.setAttribute('data-timestamp', +new Date());
+                            (d.head || d.body).appendChild(s);
+                        })();
+                    </script>
+                </section>
+            
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+                    <article class="read-next-card"
+                        
+                            style="background-image: url(/assets/built/images/spain-blog-cover.jpg)"
+                        
+                    >
+                        <header class="read-next-card-header">
+                            <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
+                            
+                                <h3 class="read-next-card-header-title"><a href="/tag/hadoop/">Hadoop</a></h3>
+                            
+                        </header>
+                        <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
+</div>
+                        <div class="read-next-card-content">
+                            <ul>
+                                
+                                
+                                  
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/melt-in-pyspark">Melt in Pyspark</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/hive-merge-query">Merge Files in HDFS</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/bucket-hive-spark">Bucket in Hive, Spark</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                            </ul>
+                        </div>
+                        <footer class="read-next-card-footer">
+                            <a href="/tag/hadoop/">
+                                
+                                    See all 4 posts  →
+                                
+                            </a>
+                        </footer>
+                    </article>
+                <script type="text/javascript"
+                    src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+                </script>
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/melt-in-pyspark">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/melt-image.jpg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/melt-in-pyspark">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Melt in Pyspark</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>pyspark로 melt function 구현하기
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      3 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://gyuhoonk.github.io/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">Overwrite Partition in Spark</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Overwrite+Partition+in+Spark&amp;url=https://gyuhoonk.github.iospark-overwrite-partition"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iospark-overwrite-partition"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2021</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+    <!-- math LaTex-->
+    
+</body>
+</html>
