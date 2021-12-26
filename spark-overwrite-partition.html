@@ -244,7 +244,7 @@ into the {body} of the default.hbs template -->
 <span class="o">&gt;&gt;</span> /user/hive/warehouse/default.db/t_test/col1<span class="o">=</span>c
 </code></pre></div></div>
 
-<p>따라서, 만약 아래와 같은 쿼리를 실행한다면 ``col1=a` 디렉토리 내부의 파일만 조회하여 결과를 반환하므로 파티션이 적용되지 않은 테이블보다 쿼리 성능이 향상됩니다.</p>
+<p>따라서, 만약 아래와 같은 쿼리를 실행한다면 <code class="language-plaintext highlighter-rouge">col1=a</code> 디렉토리 내부의 파일만 조회하여 결과를 반환하므로 파티션이 적용되지 않은 테이블보다 쿼리 성능이 향상됩니다.</p>
 
 <div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
 <span class="k">FROM</span>   <span class="k">default</span><span class="p">.</span><span class="n">t_test</span>
@@ -302,7 +302,7 @@ into the {body} of the default.hbs template -->
 <span class="o">+----+----+</span>
 </code></pre></div></div>
 
-<p>실행 결과 다른 파티션(<code class="language-plaintext highlighter-rouge">col1=b</code>, <code class="language-plaintext highlighter-rouge">col2=c</code>)이 모두 삭제되고 <code class="language-plaintext highlighter-rouge">col1=a</code> 파티션만 남았음을 확인할 수 있습니다.</p>
+<p>실행 결과 다른 파티션(<code class="language-plaintext highlighter-rouge">col1=b</code>, <code class="language-plaintext highlighter-rouge">col1=c</code>)이 모두 삭제되고 <code class="language-plaintext highlighter-rouge">col1=a</code> 파티션만 남았음을 확인할 수 있습니다.</p>
 
 <p>이는 saveAsTable이 파티션에 관련된 메소드가 아니라, 테이블 단위의 메소드이기 때문입니다.</p>
 
@@ -536,6 +536,8 @@ into the {body} of the default.hbs template -->
                                 
                                 
                                   
+                                
+                                  
                                     
                                   
                                 
@@ -575,8 +577,6 @@ into the {body} of the default.hbs template -->
                                   
                                 
                                   
-                                
-                                  
                                     
                                         
                                         
@@ -606,6 +606,57 @@ into the {body} of the default.hbs template -->
             
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/EXP-SUM-LOG">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/overflow-banner.jpg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/EXP-SUM-LOG">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Database</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">EXP-SUM-LOG / LOG-SUM-EXP</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      1 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
             
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->

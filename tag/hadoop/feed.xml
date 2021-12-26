@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2021-12-21T23:25:14+09:00</updated>
+  <updated>2021-12-26T19:54:57+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/hadoop/feed.xml</id>
 
   
@@ -86,7 +86,7 @@
 &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; /user/hive/warehouse/default.db/t_test/col1&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;c
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;따라서, 만약 아래와 같은 쿼리를 실행한다면 ``col1=a` 디렉토리 내부의 파일만 조회하여 결과를 반환하므로 파티션이 적용되지 않은 테이블보다 쿼리 성능이 향상됩니다.&lt;/p&gt;
+&lt;p&gt;따라서, 만약 아래와 같은 쿼리를 실행한다면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;col1=a&lt;/code&gt; 디렉토리 내부의 파일만 조회하여 결과를 반환하므로 파티션이 적용되지 않은 테이블보다 쿼리 성능이 향상됩니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
 &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;t_test&lt;/span&gt;
@@ -144,7 +144,7 @@
 &lt;span class=&quot;o&quot;&gt;+----+----+&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;실행 결과 다른 파티션(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;col1=b&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;col2=c&lt;/code&gt;)이 모두 삭제되고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;col1=a&lt;/code&gt; 파티션만 남았음을 확인할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;실행 결과 다른 파티션(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;col1=b&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;col1=c&lt;/code&gt;)이 모두 삭제되고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;col1=a&lt;/code&gt; 파티션만 남았음을 확인할 수 있습니다.&lt;/p&gt;
 
 &lt;p&gt;이는 saveAsTable이 파티션에 관련된 메소드가 아니라, 테이블 단위의 메소드이기 때문입니다.&lt;/p&gt;
 

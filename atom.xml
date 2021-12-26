@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>EXP-SUM-LOG / LOG-SUM-EXP</title>
+        
+          <description>&lt;p&gt;EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 25 Dec 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/EXP-SUM-LOG</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/EXP-SUM-LOG</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Overwrite Partition in Spark</title>
         
           <description>&lt;p&gt;Spark를 이용하여 특정 파티션만 overwrite하기&lt;/p&gt;
@@ -107,20 +122,6 @@
         <link>
         https://gyuhoonk.github.io/regression-in-query</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/regression-in-query</guid>
-      </item>
-      
-    
-      
-      <item>
-        <title>OverFlow/UnderFlow Trick in Query</title>
-        
-          <description>
-</description>
-        
-        <pubDate>Sat, 09 Oct 2021 22:30:00 +0900</pubDate>
-        <link>
-        https://gyuhoonk.github.io/overflow-trick</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/overflow-trick</guid>
       </item>
       
     
