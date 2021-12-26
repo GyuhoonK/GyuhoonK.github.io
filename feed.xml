@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2021-12-26T19:57:48+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>about Data</subtitle><entry><title type="html">EXP-SUM-LOG / LOG-SUM-EXP</title><link href="https://gyuhoonk.github.io/EXP-SUM-LOG" rel="alternate" type="text/html" title="EXP-SUM-LOG / LOG-SUM-EXP" /><published>2021-12-25T22:30:00+09:00</published><updated>2021-12-25T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/EXP-SUM-LOG</id><content type="html" xml:base="https://gyuhoonk.github.io/EXP-SUM-LOG">&lt;p&gt;EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2021-12-26T22:47:03+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>about Data</subtitle><entry><title type="html">EXP-SUM-LOG / LOG-SUM-EXP</title><link href="https://gyuhoonk.github.io/EXP-SUM-LOG" rel="alternate" type="text/html" title="EXP-SUM-LOG / LOG-SUM-EXP" /><published>2021-12-25T22:30:00+09:00</published><updated>2021-12-25T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/EXP-SUM-LOG</id><content type="html" xml:base="https://gyuhoonk.github.io/EXP-SUM-LOG">&lt;p&gt;EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서&lt;/p&gt;
 
 &lt;h1 id=&quot;sum-in-sql&quot;&gt;SUM in SQL&lt;/h1&gt;
 
@@ -74,7 +74,7 @@ FROM default.t_test;
 \[exp(100) + exp(200) \\
 =\dfrac {exp(100) + exp(200)}{exp(100)} * exp(100)\\
 =[exp(0)+exp(100)]*exp(100)\\
-=exp(log([1+exp(100)]*exp(100))\\
+=exp(log([1+exp(100)]*exp(100)))\\
 =exp(log[1+exp(100)] + log(exp(100)))\\
 =exp(log[1+exp(100)] + 100)\]
 
@@ -108,12 +108,15 @@ FROM default.t_test;
 &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exp1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exp2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;num1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;c1&quot;&gt;# 751.3132616875182
 &lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# exp(750)+exp(751)은 계산된 적 없으나 계산결과가 exp(751.3132616875182)이라는 사실은 알 수 있습니다.
+&lt;span class=&quot;c1&quot;&gt;# exp(750)+exp(751)은 계산된 적 없으나 
+# 계산결과가 exp(751.3132616875182)이라는 사실은 알 수 있습니다.
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;h3 id=&quot;log-sum-exp-trick-1&quot;&gt;&lt;a href=&quot;https://basicstatistics.tistory.com/entry/logsumexp-trick&quot;&gt;log-sum-exp trick&lt;/a&gt;&lt;/h3&gt;</content><author><name>GyuhoonK</name></author><category term="database" /><summary type="html">EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서</summary></entry><entry><title type="html">Overwrite Partition in Spark</title><link href="https://gyuhoonk.github.io/spark-overwrite-partition" rel="alternate" type="text/html" title="Overwrite Partition in Spark" /><published>2021-12-21T22:30:00+09:00</published><updated>2021-12-21T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/spark-overwrite-partition</id><content type="html" xml:base="https://gyuhoonk.github.io/spark-overwrite-partition">&lt;p&gt;Spark를 이용하여 특정 파티션만 overwrite하기&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.py4u.net/discuss/823103&quot;&gt;Multiplication aggregate operator in SQL&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://basicstatistics.tistory.com/entry/logsumexp-trick&quot;&gt;log-sum-exp trick&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="database" /><summary type="html">EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서</summary></entry><entry><title type="html">Overwrite Partition in Spark</title><link href="https://gyuhoonk.github.io/spark-overwrite-partition" rel="alternate" type="text/html" title="Overwrite Partition in Spark" /><published>2021-12-21T22:30:00+09:00</published><updated>2021-12-21T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/spark-overwrite-partition</id><content type="html" xml:base="https://gyuhoonk.github.io/spark-overwrite-partition">&lt;p&gt;Spark를 이용하여 특정 파티션만 overwrite하기&lt;/p&gt;
 
 &lt;h1 id=&quot;partitioned-table-in-hive&quot;&gt;Partitioned Table in Hive&lt;/h1&gt;
 
@@ -2845,9 +2848,9 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
 
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://ratsgo.github.io/machine%20learning/2017/05/30/SVM3/&quot;&gt;https://ratsgo.github.io/machine%20learning/2017/05/30/SVM3/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://ratsgo.github.io/machine%20learning/2017/05/30/SVM3/&quot;&gt;Kernel-SVM&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://tensorflow.blog/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/2-3-7-%EC%BB%A4%EB%84%90-%EC%84%9C%ED%8F%AC%ED%8A%B8-%EB%B2%A1%ED%84%B0-%EB%A8%B8%EC%8B%A0/&quot;&gt;https://tensorflow.blog/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/2-3-7-%EC%BB%A4%EB%84%90-%EC%84%9C%ED%8F%AC%ED%8A%B8-%EB%B2%A1%ED%84%B0-%EB%A8%B8%EC%8B%A0/&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="datascience" /><summary type="html">Gaussian Kernel(RBF) 기본 개념에 대하여</summary></entry><entry><title type="html">CREATE query in Hive</title><link href="https://gyuhoonk.github.io/hive-query" rel="alternate" type="text/html" title="CREATE query in Hive" /><published>2021-09-16T22:30:00+09:00</published><updated>2021-09-16T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/hive-query</id><content type="html" xml:base="https://gyuhoonk.github.io/hive-query">&lt;p&gt;HiveQL - CREATE QUERY 구조에 대하여&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://tensorflow.blog/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/2-3-7-%EC%BB%A4%EB%84%90-%EC%84%9C%ED%8F%AC%ED%8A%B8-%EB%B2%A1%ED%84%B0-%EB%A8%B8%EC%8B%A0/&quot;&gt;h2.3.7 커널 서포트 벡터 머신&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="datascience" /><summary type="html">Gaussian Kernel(RBF) 기본 개념에 대하여</summary></entry><entry><title type="html">CREATE query in Hive</title><link href="https://gyuhoonk.github.io/hive-query" rel="alternate" type="text/html" title="CREATE query in Hive" /><published>2021-09-16T22:30:00+09:00</published><updated>2021-09-16T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/hive-query</id><content type="html" xml:base="https://gyuhoonk.github.io/hive-query">&lt;p&gt;HiveQL - CREATE QUERY 구조에 대하여&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;TEMPORARY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IF&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.]&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;table_name&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_type&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;column_constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])]&lt;/span&gt;
