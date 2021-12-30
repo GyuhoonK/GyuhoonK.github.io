@@ -8,13 +8,28 @@
     
       
       <item>
+        <title>Learning Apache Spark 3 with Scala (Section1)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section1)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Wed, 29 Dec 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala1</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala1</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>EXP-SUM-LOG / LOG-SUM-EXP</title>
         
           <description>&lt;p&gt;EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서&lt;/p&gt;
 
 </description>
         
-        <pubDate>Sat, 25 Dec 2021 22:30:00 +0900</pubDate>
+        <pubDate>Wed, 29 Dec 2021 22:30:00 +0900</pubDate>
         <link>
         https://gyuhoonk.github.io/EXP-SUM-LOG</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/EXP-SUM-LOG</guid>
