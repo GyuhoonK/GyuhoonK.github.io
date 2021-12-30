@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2021-12-26T23:02:25+09:00</updated>
+  <updated>2021-12-30T15:35:43+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/hadoop/feed.xml</id>
 
   
@@ -724,19 +724,19 @@
 
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://faqreviews.net/question/what-is-hdfs-data-block/&quot;&gt;https://faqreviews.net/question/what-is-hdfs-data-block/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://faqreviews.net/question/what-is-hdfs-data-block/&quot;&gt;what is HDFS Data Block&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.hdfstutorial.com/hdfs-architecture/block-replication-in-hadoop/&quot;&gt;https://www.hdfstutorial.com/hdfs-architecture/block-replication-in-hadoop/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.hdfstutorial.com/hdfs-architecture/block-replication-in-hadoop/&quot;&gt;Block Replication in Hadoop&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://forum.huawei.com/enterprise/en/fi-components-relationship-between-spark-and-hdfs/thread/606704-893&quot;&gt;https://forum.huawei.com/enterprise/en/fi-components-relationship-between-spark-and-hdfs/thread/606704-893&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://forum.huawei.com/enterprise/en/fi-components-relationship-between-spark-and-hdfs/thread/606704-893&quot;&gt;Relationship between Spark and HDFS&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://tech.kakao.com/2021/10/08/spark-shuffle-partition/&quot;&gt;https://tech.kakao.com/2021/10/08/spark-shuffle-partition/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://tech.kakao.com/2021/10/08/spark-shuffle-partition/&quot;&gt;Spark Shuffle Partition과 최적화&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://docs.cloudera.com/best-practices/latest/impala-performance/topics/bp-impala-avoiding-small-files.html&quot;&gt;https://docs.cloudera.com/best-practices/latest/impala-performance/topics/bp-impala-avoiding-small-files.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://docs.cloudera.com/best-practices/latest/impala-performance/topics/bp-impala-avoiding-small-files.html&quot;&gt;Avoiding small files&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://118k.tistory.com/750&quot;&gt;https://118k.tistory.com/750&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://118k.tistory.com/750&quot;&gt;[hive] 작은 사이즈의 파일 머지 설정과 그로 인한 오버헤드&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://3months.tistory.com/536&quot;&gt;https://3months.tistory.com/536&lt;/a&gt;&lt;/p&gt;</content>
+&lt;p&gt;&lt;a href=&quot;https://3months.tistory.com/536&quot;&gt;하둡과 응용 프레임워크 2) 하둡 실행 환경 (YARN, Tez, Spark)&lt;/a&gt;&lt;/p&gt;</content>
 
       
       
@@ -950,7 +950,7 @@ It doesn't match the specified format 'ParquetFileFormat'.
 
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://medium.com/analytics-vidhya/spark-bucketing-is-not-as-simple-as-it-looks-c74f105f4af0&quot;&gt;https://medium.com/analytics-vidhya/spark-bucketing-is-not-as-simple-as-it-looks-c74f105f4af0&lt;/a&gt;&lt;/p&gt;</content>
+&lt;p&gt;&lt;a href=&quot;https://medium.com/analytics-vidhya/spark-bucketing-is-not-as-simple-as-it-looks-c74f105f4af0&quot;&gt;Spark Bucketing is not as simple as it looks&lt;/a&gt;&lt;/p&gt;</content>
 
       
       
@@ -1510,13 +1510,13 @@ WITH SERDEPROPERTIES (
 
 &lt;p&gt;[참조]&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-CreateTableCreate/Drop/TruncateTable&quot;&gt;https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDLCreateTableCreate/Drop/TruncateTable&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://cwiki.apache.org/confluence/display/Hive/LanguageManual+DDL#LanguageManualDDL-CreateTableCreate/Drop/TruncateTable&quot;&gt;Create/Drop/Truncate Table&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://wikidocs.net/book/2203&quot;&gt;https://wikidocs.net/book/2203&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://wikidocs.net/book/2203&quot;&gt;빅데이터 - 하둡, 하이브로 시작하기&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/EMR_Hive_Commands.html&quot;&gt;https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/EMR_Hive_Commands.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://docs.aws.amazon.com/ko_kr/emr/latest/ReleaseGuide/EMR_Hive_Commands.html&quot;&gt;DynamoDB 에서 데이터 내보내기, 가져오기 및 쿼리를 위한 Hive 명령 예제&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.educative.io/collection/page/6089575797620736/6248215343005696/6394690049933312&quot;&gt;https://www.educative.io/collection/page/6089575797620736/6248215343005696/6394690049933312&lt;/a&gt;&lt;/p&gt;</content>
+&lt;p&gt;&lt;a href=&quot;https://www.educative.io/collection/page/6089575797620736/6248215343005696/6394690049933312&quot;&gt;educative-Hive&lt;/a&gt;&lt;/p&gt;</content>
 
       
       
