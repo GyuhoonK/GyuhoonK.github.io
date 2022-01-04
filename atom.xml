@@ -8,13 +8,28 @@
     
       
       <item>
+        <title>Learning Apache Spark 3 with Scala (Scala Basic)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Scala Basic)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 03 Jan 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala2</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala2</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Learning Apache Spark 3 with Scala (Section1)</title>
         
           <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section1)&lt;/p&gt;
 
 </description>
         
-        <pubDate>Wed, 29 Dec 2021 22:30:00 +0900</pubDate>
+        <pubDate>Thu, 30 Dec 2021 22:30:00 +0900</pubDate>
         <link>
         https://gyuhoonk.github.io/sparkscala1</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala1</guid>

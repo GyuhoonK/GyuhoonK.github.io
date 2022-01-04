@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2021-12-30T22:30:51+09:00</updated>
+  <updated>2022-01-05T00:20:23+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/hadoop/feed.xml</id>
 
   
@@ -34,8 +34,8 @@
     <entry>
       <title type="html">Learning Apache Spark 3 with Scala (Section1)</title>
       <link href="https://gyuhoonk.github.io/sparkscala1" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section1)" />
-      <published>2021-12-29T22:30:00+09:00</published>
-      <updated>2021-12-29T22:30:00+09:00</updated>
+      <published>2021-12-30T22:30:00+09:00</published>
+      <updated>2021-12-30T22:30:00+09:00</updated>
       <id>https://gyuhoonk.github.io/sparkscala1</id>
       <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala1">&lt;p&gt;Learning Apache Spark 3 with Scala (Section1)&lt;/p&gt;
 
@@ -89,9 +89,7 @@
 
 &lt;h1 id=&quot;whats-new-in-spark-3&quot;&gt;What’s new in Spark 3&lt;/h1&gt;
 
-&lt;p&gt;Spark 3에서 변경점은 무엇이 있는지 알아보았습니다.&lt;/p&gt;
-
-&lt;p&gt;중요도가 떨어져 곧 사라지게 될 기능 중에서 예전&lt;/p&gt;
+&lt;p&gt;Spark 3에서 변경점은 무엇이 있는지 알아보겠습니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;mllib-1&quot;&gt;MLLib&lt;/h2&gt;
 
@@ -111,13 +109,13 @@
 
 &lt;p&gt;Spark 3에 바이너리 파일 기능이 생겼습니다. 예를 들어, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.read.format&lt;/code&gt;을 바이너리 파일로 선언하면 처리되지 않은 전체 바이너리 데이터를 데이터 프레임 딱 한 줄로 입력해줍니다. 이미지 파일처럼 바이너리 데이터를 다루게 되면 편리합니다. 각각의 바이너리 파일을 데이터 프레임 형태로, 즉 한 행으로 나타내고 스파크 클러스터에 분산시켜서 바이너리 데이터를 처리하기 위한 코드를 작성하기가 유용합니다. Spark 3에서는 바이너리 데이터를 처리하고 분산하는 게 더 쉬워졌습니다.&lt;/p&gt;
 
-&lt;h2 id=&quot;graphx-is-gone&quot;&gt;GraphX is Gone&lt;/h2&gt;
+&lt;h2 id=&quot;graphx-is-deprecated&quot;&gt;GraphX is deprecated&lt;/h2&gt;
 
-&lt;p&gt;그래프 처리와 관련해서 Spark graph가 새로 생겼습니다. Spark 3에서 새로 도입되었고 사이퍼 쿼리 언어로 port 할 수 있죠. SQL처럼 구체적인 언어이긴 한데 그래프 구조로 된 데이터를 위한 언어입니다. Spark graph는 결국 사이퍼 쿼리 언어를 기반으로 한 GraphX의 새로운 버전입니다. GraphX 보다 좀 더 확장해서 쓸 수 있고 훨씬 유용합니다. 프로퍼티 그래프 모델이나 그래프 알고리즘으로 불렸고, Morpheus와 Cypher for Spark로 알려지기도 했습니다. 이제 Spark의 한 부분으로 흡수돼서 Spark graph라는 이름을 갖게 되었습니다. ß&lt;/p&gt;
+&lt;p&gt;그래프 처리와 관련해서 Spark graph가 새로 생겼습니다. Spark 3에서 새로 도입되었고 사이퍼 쿼리 언어로 port 할 수 있죠. SQL처럼 구체적인 언어이긴 한데 그래프 구조로 된 데이터를 위한 언어입니다. Spark graph는 결국 사이퍼 쿼리 언어를 기반으로 한 GraphX의 새로운 버전입니다. GraphX 보다 좀 더 확장해서 쓸 수 있고 훨씬 유용합니다. 프로퍼티 그래프 모델이나 그래프 알고리즘으로 불렸고, Morpheus와 Cypher for Spark로 알려지기도 했습니다. 이제 Spark의 한 부분으로 흡수돼서 Spark graph라는 이름을 갖게 되었습니다.&lt;/p&gt;
 
 &lt;p&gt;이외에도 이제 data lake가 가능합니다. Spark에선 Delta Lake라 불립니다. 아마존과 같이 data lake를 다루시는 분한테는 좋은 기능일 것입니다. 비구조적인 CSV 데이터를 일관성 있게 처리하는 게 가능합니다.&lt;/p&gt;
 
-&lt;h1 id=&quot;scala-설치-실습-디버깅&quot;&gt;Scala 설치 실습 디버깅&lt;/h1&gt;
+&lt;h1 id=&quot;scala-설치-및-실행-실습-디버깅&quot;&gt;Scala 설치 및 실행 실습 디버깅&lt;/h1&gt;
 
 &lt;p&gt;HelloWord를 실행하는 과정에서 아래와 같은 에러 메시지가 출력되었습니다.&lt;/p&gt;
 
@@ -128,7 +126,7 @@
 &lt;span class=&quot;n&quot;&gt;to&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;the&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;correct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;binding&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;address&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;/etc/hosts에 아래와 같은 host를 추가했습니다.&lt;/p&gt;
+&lt;p&gt;/etc/hosts에 아래와 같은 host를 추가하여 해결했습니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; vim /etc/hosts
 
