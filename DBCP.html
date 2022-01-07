@@ -11,7 +11,7 @@
 
 
 
-    <title>Learning Apache Spark 3 with Scala (Section1)</title>
+    <title>DataBase Connection Pool</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,30 +37,30 @@
     </script>
 <meta name="description" content="about Data" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/sparkscala1" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/DBCP" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Learning Apache Spark 3 with Scala (Section1)" />
-    <meta property="og:description" content="Learning Apache Spark 3 with Scala (Section1) Spark Component Driver Program 사용자가 입력하는 스크립트입니다. 그리고 입력된 내용은 Cluster Manager 작성된 내용이 전달됩니다. 이때 컴퓨터 안의 전체 클러스터를 조정할 수 있는 시스템이 필요한데, 그게 Hadoop cluster일 수 있고 Hadoop의 YARN 클러스터 매니저가 그 역할을 하게 됩니다. 각각의 머신에는 각기 다른 노드가" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/sparkscala1" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
+    <meta property="og:title" content="DataBase Connection Pool" />
+    <meta property="og:description" content="DBCP(DataBase Connection Pool)에 대해서  DataBase Connection 어플리케이션에과 데이터베이스를 연결하기 위해, 어플리케이션은 데이터베이스에게 DataBase Connection을 요구합니다.(A database connection is a session of work, opened by the program to communicate with a specific database server, in order to execute SQL statements as a specific user.) JDBC의 예시를 보면 DataBase Connection을 생성하기 위해서는" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/DBCP" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/database/dbcp-banner.jpeg" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2021-12-30T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2021-12-30T22:30:00+09:00" />
-    <meta property="article:tag" content="Scala" />
+    <meta property="article:published_time" content="2022-01-06T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2022-01-06T22:30:00+09:00" />
+    <meta property="article:tag" content="Database" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Learning Apache Spark 3 with Scala (Section1)" />
-    <meta name="twitter:description" content="Learning Apache Spark 3 with Scala (Section1) Spark Component Driver Program 사용자가 입력하는 스크립트입니다. 그리고 입력된 내용은 Cluster Manager 작성된 내용이 전달됩니다. 이때 컴퓨터 안의 전체 클러스터를 조정할 수 있는 시스템이 필요한데, 그게 Hadoop cluster일 수 있고 Hadoop의 YARN 클러스터 매니저가 그 역할을 하게 됩니다. 각각의 머신에는 각기 다른 노드가" />
+    <meta name="twitter:title" content="DataBase Connection Pool" />
+    <meta name="twitter:description" content="DBCP(DataBase Connection Pool)에 대해서  DataBase Connection 어플리케이션에과 데이터베이스를 연결하기 위해, 어플리케이션은 데이터베이스에게 DataBase Connection을 요구합니다.(A database connection is a session of work, opened by the program to communicate with a specific database server, in order to execute SQL statements as a specific user.) JDBC의 예시를 보면 DataBase Connection을 생성하기 위해서는" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/database/dbcp-banner.jpeg" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Scala" />
+    <meta name="twitter:data2" content="Database" />
     <meta name="twitter:site" content="@" />
     <meta name="twitter:creator" content="@" />
     <meta property="og:image:width" content="1400" />
@@ -75,18 +75,18 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/sparkscala1",
+    "url": "https://gyuhoonk.github.io/DBCP",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png",
+        "url": "https://gyuhoonk.github.io/assets/built/images/database/dbcp-banner.jpeg",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/sparkscala1"
+        "@id": "https://gyuhoonk.github.io/DBCP"
     },
-    "description": "Learning Apache Spark 3 with Scala (Section1) Spark Component Driver Program 사용자가 입력하는 스크립트입니다. 그리고 입력된 내용은 Cluster Manager 작성된 내용이 전달됩니다. 이때 컴퓨터 안의 전체 클러스터를 조정할 수 있는 시스템이 필요한데, 그게 Hadoop cluster일 수 있고 Hadoop의 YARN 클러스터 매니저가 그 역할을 하게 됩니다. 각각의 머신에는 각기 다른 노드가"
+    "description": "DBCP(DataBase Connection Pool)에 대해서  DataBase Connection 어플리케이션에과 데이터베이스를 연결하기 위해, 어플리케이션은 데이터베이스에게 DataBase Connection을 요구합니다.(A database connection is a session of work, opened by the program to communicate with a specific database server, in order to execute SQL statements as a specific user.) JDBC의 예시를 보면 DataBase Connection을 생성하기 위해서는"
 }
     </script>
 
@@ -99,8 +99,33 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="Learning Apache Spark 3 with Scala (Section1)" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="DataBase Connection Pool" href="/feed.xml" />
 
+    
+      <script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	TeX: {
+		equationNumbers: {
+		autoNumber: "AMS"
+		}
+	},
+	tex2jax: {
+		inlineMath: [ ['$', '$'] ],
+		displayMath: [ ['$$', '$$'] ],
+		processEscapes: true,
+		}
+	});
+	MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
+		alert("Math Processing Error: "+message[1]);
+	});
+	MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
+		alert("Math Processing Error: "+message[1]);
+	});
+</script>
+
+<script type="text/javascript" async
+	src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
     
 </head>
 <body class="post-template">
@@ -171,141 +196,178 @@ into the {body} of the default.hbs template -->
 <main id="site-main" class="site-main outer" role="main">
     <div class="inner">
 
-        <article class="post-full  tag-scala tag-hadoop post tag-scala ">
+        <article class="post-full  tag-database post tag-database ">
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="30 December 2021">30 December 2021</time>
+                    <time class="post-full-meta-date" datetime=" 6 January 2022"> 6 January 2022</time>
                     
                         <span class="date-divider">/</span>
                         
                             
-                               <a href='/tag/scala/'>SCALA</a>,
-                            
-                        
-                            
-                               <a href='/tag/hadoop/'>HADOOP</a>
+                               <a href='/tag/database/'>DATABASE</a>
                             
                         
                     
                 </section>
-                <h1 class="post-full-title">Learning Apache Spark 3 with Scala (Section1)</h1>
+                <h1 class="post-full-title">DataBase Connection Pool</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/scala-banner-post.png)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/database/dbcp-banner.jpeg)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>Learning Apache Spark 3 with Scala (Section1)</p>
+                    <p>DBCP(DataBase Connection Pool)에 대해서</p>
 
-<h1 id="spark-component">Spark Component</h1>
+<h1 id="database-connection"> DataBase Connection</h1>
 
-<p><img src="../../assets/built/images/scala/spark-components.png" alt="image" /></p>
+<p>어플리케이션에과 데이터베이스를 연결하기 위해, 어플리케이션은 데이터베이스에게 DataBase Connection을 요구합니다.(A <strong>database connection</strong> is a session of work, opened by the program to communicate with a specific database server, in order to execute SQL statements as a specific user.)</p>
 
-<p>Driver Program 사용자가 입력하는 스크립트입니다. 그리고 입력된 내용은 Cluster Manager 작성된 내용이 전달됩니다. 이때 컴퓨터 안의 전체 클러스터를 조정할 수 있는 시스템이 필요한데, 그게 Hadoop cluster일 수 있고 Hadoop의 YARN 클러스터 매니저가 그 역할을 하게 됩니다.</p>
+<p><img src="../../assets/built/images/database/database-connection.jpeg" alt="image" /></p>
 
-<p>각각의 머신에는 각기 다른 노드가 있고 노드는 각기 다른 executor를 실행합니다. 그리고 모든 executor 과정은 전체 클러스터에 걸쳐 분배되고 각자만의 cache를 가집니다. 또한 각 executor는 task를 갖는데 data에 task를 적용합니다. Driver Program은 Cluster Manager에게 명령을 보내거나 필요하다면 executor에 직접 명령을 내리기도 합니다. executor는 서로 소통하며 동기화합니다. 물론 Cluster Manager도 모든 executor 과정에 명령할 수 있습니다. 무엇을 그리고 어디에서 실행하는지를 조정하고 호출해서 결과를 모아 모든 과정이 끝나면 최종 결과를 사용자에게 전달합니다.</p>
+<p>JDBC의 예시를 보면 DataBase Connection을 생성하기 위해서는 Driver 등록, <code class="language-plaintext highlighter-rouge">connection</code> object 생성(<code class="language-plaintext highlighter-rouge">getConnection()</code> method)의 과정을 거칩니다.</p>
 
-<h1 id="spark-is-fast--dag">Spark is Fast : DAG</h1>
+<p><img src="../../assets/built/images/database/java-database-connectivity-steps.jpeg" alt="image" /></p>
 
-<p>Spark는 Hadoop의 MapReduce를 대체합니다. 왜냐하면 최대 100배 정도까지 빠르게 실행되기 때문입니다. 충분한 메모리가 있다면 100배 정도 빠르다고 추정됩니다. MapReduce보다 이렇게나 빠른 이유는 바로 <strong>directed acyclic graph, DAG</strong> 엔진 덕분입니다. 이 엔진은 여러분이 드라이버 스크립트에 설명해놓은 workflow를 보고 이를 자동으로 최적화해줍니다. 이와 반대로, MapReduce는 딱 한 가지의 방법을 처리할 데이터에 맞춰 끼워 넣는 방식입니다. 데이터를 병렬적으로 작업하고 그러면 데이터를 다시 합쳐서 최종 결과를 정의합니다. 이러한 DAG 엔진은 Spark가 메모리를 기반으로 하기 때문에 가능합니다.</p>
+<h1 id="database-connection-is-expensive">DataBase Connection is expensive</h1>
 
-<h1 id="high-level-api">High Level API</h1>
+<p>DataBase Connection은 한 번 생성하는데 많은 자원과 시간을 사용하는 작업입니다. Driver와  Database Server 간에 많은 통신을 필요로 하며, 이후에 DBMS는 Connection을 위해 DISK I/O를 요구합니다.</p>
 
-<p><img src="../../assets/built/images/scala/spark-api.png" alt="image" /></p>
+<blockquote>
+  <p>In reality, a connection typically involves <strong>many network round trips between the driver and the database server</strong>. For example, when a driver connectsto Oracle or Sybase, that connection may take anywhere from <em>seven to ten network round trips</em> to perform the following actions:</p>
 
-<h2 id="spark-streaming">Spark Streaming</h2>
+  <ul>
+    <li>Validate the user’s credentials.</li>
+    <li>Negotiate code page settings between what the database driver expects and what the database has available, if necessary.</li>
+    <li>Get database version information.</li>
+    <li>Establish the optimal database protocol packet size to be used for communication.</li>
+    <li>Set session settings.</li>
+  </ul>
 
-<p>실시간으로 데이터를 수집할 수 있습니다. 예를 들어, 웹사이트에서 Spark Streaming을 이용하여 발생하는 로그 파일을 계속 Spark로 데이터를 공급하는 파이프라인을 생각할 수 있습니다. 예를 들어, 웹사이트 상에 500개의 에러가 생겼다고 칩시다. Spark Streaming 시스템은 발생한 500개의 에러가 Apache Spark에 스트리밍되도록 구성되어야합니다. 그러면 실시간으로 500개의 에러를 확인할 수 있습니다. 임계치를 넘을 경우, 에러를 해결하기 위한 프로그램이 실행되도록 설정할 수 있습니다. 가장 흔한 형태의 애플리케이션은 로그 데이터를 변환해서 다른 곳에 입력하는 것입니다. Spark Streaming 과정을 이용해서 로그로부터 데이터를 수집하고 그것을 변환시켜 저장시킬 수 있습니다.(Elastic Search와 유사)</p>
+  <p>In addition, the database management system establishes resources on behalf of the connection, which involves <strong>performance-expensive disk I/O and memory allocation</strong>.</p>
+</blockquote>
 
-<h2 id="spark-sql">Spark SQL</h2>
+<h1 id="dbcpdatabase-connection-pool">DBCP(DataBase Connection Pool)</h1>
 
-<p>SQL 명령을 통해 Spark와 통합할 수 있습니다. Spark는 하나의 거대한 DB로 취급됩니다. 데이터를 테이블 구조에 따라 정의하면, SQL으로 해결해야 하는 문제를 정의할 수 있습니다. 즉, Spark SQL을 사용하여 문제를 정의하고 해결할 수 있습니다. 이후에는 Spark가 해당 실행을 어떻게 병렬화해야하는지 스스로 알아내고 실행합니다. 이를 통해 프로젝트와 관련 있는 DB를 탄련적으로 이용할 수 있습니다. 즉 database를 수평적으로 확장할 수 있습니다. 과거에는 분산 컴퓨팅을 원하면 SQL 데이터베이스를 고르지 않던가, 단일 관계 데이터베이스를 골라야 했지만 이제는 SparkSQL 덕분에 수평적으로 두 개 DB를 동시에 사용할 수 있습니다(사실 수평으로 분할된 서버 환경에서 DB를 확장하는 것이 그렇게 효율적이지는 않습니다).</p>
+<p>따라서, DB에 연결하려는 요청이 있을 때마다 Connection을 생성하는 것은 비효율적입니다. 이러한 비효율을 해결하기 위해 등장한 방법이 DBCP(DataBase Connection Pool) 입니다. 미리 DataBase Connection을 생성해두고, 요청이 들어올 때 마다 Connection을 대여해준 뒤 사용이 끝나면 반납 받습니다.</p>
 
-<p>Spark SQL과 Spark는 구분이 불분명합니다. Spark Core에서  <code class="language-plaintext highlighter-rouge">DataFrames</code>와 <code class="language-plaintext highlighter-rouge">DataSets</code> 을 이용하기 때문입니다. 이런 API는 SQL과 구조, 사용 방식면에서  비슷합니다. 그렇다면  <code class="language-plaintext highlighter-rouge">DataFrames</code>과 <code class="language-plaintext highlighter-rouge">DataSets</code>를 Spark SQL이면서 Spark Core인 걸까요? 이처럼 SparkSQL과 Spark Core는 구분이 불분명합니다. 분명한 점은, Spark SQL가 Spark를 사용하는 방법 중에서 가장 많이 사용된다는 점입니다.</p>
+<p><img src="../../assets/built/images/database/dbcp.png" alt="image" /></p>
 
-<h2 id="mllib">MLLib</h2>
+<p>DBCP를 구현하기 위해서는  Apache의 Commons DBCP, Tomcat-JDBC, BoneCP, HikariCP와 같은 오픈소스 라이브러리들이 사용됩니다.</p>
 
-<p>Apache Spark 상에서 분산 처리 기반의 기계 학습을 실행할 수 있습니다. 선택할 수 있는 알고리즘이 제한적이긴 하지만, 기본적인 알고리즘은 모두 지원합니다.</p>
+<h1 id="dbcp-settings">DBCP Settings</h1>
 
-<h2 id="graphx">GraphX</h2>
+<p>적절한 DBCP를 구현하기 위해서는 고려해야할 옵션들이 존재합니다.</p>
 
-<p>GraphX는 컴퓨터 과학 측면에서의 그래프와 관련된 API입니다. GraphX 사용자 간 연결된 소셜 네트워크 그래프를 분석할 수 있습니다. 그러나 GraphX는 많이 사용되지 않습니다. 최근 들어 잘 업데이트와 지원이 중단되었기 때문입니다(극단적으로는 Spark의 실패한 프로젝트라고 말할 수 있습니다)</p>
+<ul>
+  <li>
+    <p>커넥션의 개수</p>
 
-<h1 id="why-scala-">Why Scala ?</h1>
+    <ul>
+      <li>
+        <table>
+          <thead>
+            <tr>
+              <th>속성 이름</th>
+              <th>설명</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>initialSize</td>
+              <td>BasicDataSource 클래스 생성 후 최초로 getConnection() 메서드를 호출할 때 커넥션 풀에 채워 넣을 커넥션 개수</td>
+            </tr>
+            <tr>
+              <td>maxActive</td>
+              <td>동시에 사용할 수 있는 최대 커넥션 개수(기본값: 8)</td>
+            </tr>
+            <tr>
+              <td>maxIdle</td>
+              <td>커넥션 풀에 반납할 때 최대로 유지될 수 있는 커넥션 개수(기본값: 8)</td>
+            </tr>
+            <tr>
+              <td>minIdle</td>
+              <td>최소한으로 유지할 커넥션 개수(기본값: 0)</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>커넥션을 얻기 전 대기 시간</p>
 
-<h2 id="apache-spark-is-implemented-in-scala">Apache Spark is implemented in Scala</h2>
+    <ul>
+      <li>
+        <table>
+          <thead>
+            <tr>
+              <th>속성 이름</th>
+              <th>설명</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>maxWait (1.x)<br />maxWaitMillis (2.x)</td>
+              <td>Pool이 예외를 throw하기 전 연결이 반환될 때까지(사용 가능한 Connection 객체가 없는경우) 대기하는 최대 시간(ms) 또는 무한 대기(-1)</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>커넥션의 검사와 정리</p>
 
-<p>첫 번째로, Spark 자체가 Scala로 작성되었습니다. 즉 Scala로 스크립트를 작성해야 Spark 자체가 어떻게 쓰였고 최적화됐는지 더 잘 알 수 있습니다.</p>
-
-<h2 id="scala-is-functional-programming-language">Scala is Functional Programming Language</h2>
-
-<p>Scala가 함수형 프로그래밍 언어이기 때문에 분산 처리에 적합합니다. Java, Python과는 다르게 Scala는 함수가 전체 클러스터에 걸쳐 분산되는 방식으로 코드를 작성하도록 강요합니다. 따라서, Spark 드라이버 스크립트를 Scala 언어로 작성하면 병렬적으로, 안전하게 그리고 쉽게 코드를 작성할 수 있습니다.</p>
-
-<h2 id="jvm">JVM</h2>
-
-<p>Scala가 Java bytecode로 컴파일되고 결국엔 Java 인터프리터인 JVM에서 실행됩니다. 이는 Java도 마찬가지입니다. 하지만 Python 언어로 Spark 스크립트를 쓰게 되면 하나의 layer를 더 거쳐야합니다. 결국 Python 코드를 Java bytecode로 바로 컴파일 해줄 수 없고 변환시켜줘야 하기 때문입니다. Scala로 작성된 코드는 실행되는 저수준 언어에 가깝습니다. 예전보다 Scala와 Python의 차이가 그렇게 크진 않지만, 여전히 속도 면에서 차이가 존재합니다.</p>
-
-<h1 id="whats-new-in-spark-3">What’s new in Spark 3</h1>
-
-<p>Spark 3에서 변경점은 무엇이 있는지 알아보겠습니다.</p>
-
-<h2 id="mllib-1">MLLib</h2>
-
-<p>RDD 인터페이스를 기반으로 한 기계 학습 라이브러리입니다.<code class="language-plaintext highlighter-rouge">DataFrames</code>을 기반으로 한 MLLib는 여전히 사용하고 있습니다. RDD를 사용하는 MLLib 원래 버전은 공식적으로 완전히 없애진 않았지만, 업데이트를 하지 않고 있습니다. 버그나 에러가 존재해도 이제 신경쓰지 않습니다. 그래서 Apache Spark에서 기계 학습을 할 때는 <code class="language-plaintext highlighter-rouge">DataFrames</code>을 기반으로 한 MLLib 라이브러리를 사용해야합니다.</p>
-
-<h2 id="spark-3-is-faster-than-spark-2">Spark 3 is Faster than Spark 2</h2>
-
-<p>Spark 2보다 17배 정도나 빨라졌다는 평가를 받고 있습니다. 적응형 실행이나 동적 파티션 프루닝과 같은 방법을 사용해 성능을 향상시켰습니다. 이러한 변화가 Spark 3가 더 나은 성능을 자랑하는 데 기여를 많이 했습니다.</p>
-
-<p>또 다른 점은 Python 2가 사라졌습니다.</p>
-
-<h2 id="deep-learning">Deep Learning</h2>
-
-<p>딥 러닝 기능 자체가 Spark 3에 구현되지는 않았지만, GPU 인스턴스를 이용할 수 있도록 지원합니다. 즉 GPU 노드가 있는 클러스터를 실행하게 되면, 그걸 이용할 수 있습니다. 그러면 ML Spark나 Tensor Flow 같은 프로젝트를 스파크에 추가해서 Spark를 Tensor Flow와 같은 딥 러닝 프레임워크랑 합치면 Spark는 클러스터에서 GPU 하드웨어를 사용할 수 있습니다. 즉, Spark 자체가 딥러닝은 못하지만, GPU를 Spark에 추가할 수 있습니다.</p>
-
-<h2 id="binary-file">Binary File</h2>
-
-<p>Spark 3에 바이너리 파일 기능이 생겼습니다. 예를 들어, <code class="language-plaintext highlighter-rouge">spark.read.format</code>을 바이너리 파일로 선언하면 처리되지 않은 전체 바이너리 데이터를 데이터 프레임 딱 한 줄로 입력해줍니다. 이미지 파일처럼 바이너리 데이터를 다루게 되면 편리합니다. 각각의 바이너리 파일을 데이터 프레임 형태로, 즉 한 행으로 나타내고 스파크 클러스터에 분산시켜서 바이너리 데이터를 처리하기 위한 코드를 작성하기가 유용합니다. Spark 3에서는 바이너리 데이터를 처리하고 분산하는 게 더 쉬워졌습니다.</p>
-
-<h2 id="graphx-is-deprecated">GraphX is deprecated</h2>
-
-<p>그래프 처리와 관련해서 Spark graph가 새로 생겼습니다. Spark 3에서 새로 도입되었고 사이퍼 쿼리 언어로 port 할 수 있죠. SQL처럼 구체적인 언어이긴 한데 그래프 구조로 된 데이터를 위한 언어입니다. Spark graph는 결국 사이퍼 쿼리 언어를 기반으로 한 GraphX의 새로운 버전입니다. GraphX 보다 좀 더 확장해서 쓸 수 있고 훨씬 유용합니다. 프로퍼티 그래프 모델이나 그래프 알고리즘으로 불렸고, Morpheus와 Cypher for Spark로 알려지기도 했습니다. 이제 Spark의 한 부분으로 흡수돼서 Spark graph라는 이름을 갖게 되었습니다.</p>
-
-<p>이외에도 이제 data lake가 가능합니다. Spark에선 Delta Lake라 불립니다. 아마존과 같이 data lake를 다루시는 분한테는 좋은 기능일 것입니다. 비구조적인 CSV 데이터를 일관성 있게 처리하는 게 가능합니다.</p>
-
-<h1 id="scala-설치-및-실행-실습-디버깅">Scala 설치 및 실행 실습 디버깅</h1>
-
-<p>HelloWord를 실행하는 과정에서 아래와 같은 에러 메시지가 출력되었습니다.</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">java</span><span class="o">.</span><span class="py">net</span><span class="o">.</span><span class="py">BindException</span><span class="k">:</span> <span class="kt">Can't</span> <span class="kt">assign</span> <span class="kt">requested</span> <span class="kt">address:</span>
-<span class="kt">Service</span> <span class="kt">'sparkDriver'</span> <span class="kt">failed</span> <span class="kt">after</span> <span class="err">16</span> <span class="kt">retries</span> <span class="o">(</span><span class="kt">on</span> <span class="kt">a</span> <span class="kt">random</span> <span class="kt">free</span> <span class="kt">port</span><span class="o">)</span><span class="kt">!</span>
-<span class="kt">Consider</span> <span class="kt">explicitly</span> <span class="kt">setting</span> <span class="kt">the</span> <span class="kt">appropriate</span> <span class="kt">binding</span> <span class="kt">address</span> <span class="kt">for</span> <span class="kt">the</span> <span class="kt">service</span>
-<span class="ss">'sparkDrive</span><span class="n">r</span><span class="o">'</span> <span class="o">(</span><span class="k">for</span> <span class="n">example</span> <span class="nv">spark</span><span class="o">.</span><span class="py">driver</span><span class="o">.</span><span class="py">bindAddress</span> <span class="k">for</span> <span class="nc">SparkDriver</span><span class="o">)</span>
-<span class="n">to</span> <span class="n">the</span> <span class="n">correct</span> <span class="n">binding</span> <span class="n">address</span><span class="o">.</span>
-</code></pre></div></div>
-
-<p>/etc/hosts에 아래와 같은 host를 추가하여 해결했습니다.</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;</span> vim /etc/hosts
-
-<span class="c">## Spark HostName ##</span>
-127.0.0.1    HostName.local
-</code></pre></div></div>
+    <ul>
+      <li>
+        <table>
+          <thead>
+            <tr>
+              <th>속성 이름</th>
+              <th>설명</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>testOnBorrow</td>
+              <td>커넥션 풀에서 커넥션을 얻어올 때 테스트 실행(기본값: true)</td>
+            </tr>
+            <tr>
+              <td>testOnReturn</td>
+              <td>커넥션 풀로 커넥션을 반환할 때 테스트 실행(기본값: false)</td>
+            </tr>
+            <tr>
+              <td>testWhileIdle</td>
+              <td>Evictor 스레드가 실행될 때 (timeBetweenEvictionRunMillis &gt; 0) 커넥션 풀 안에 있는 유휴 상태의 커넥션을 대상으로 테스트 실행(기본값: false)</td>
+            </tr>
+            <tr>
+              <td>validationQuery</td>
+              <td>Oracle: select 1 from dual <br />Microsoft SQL Server: select 1 <br />MySQL: select 1 <br />CUBRID: select 1 from db_root</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+    </ul>
+  </li>
+</ul>
 
 <p>[참고]</p>
 
-<p><a href="https://www.udemy.com/course/best-scala-apache-spark/">Learning Apache Spark 3 with Scala</a></p>
+<p><a href="https://4js.com/online_documentation/fjs-fgl-2.50.02-manual-html/c_fgl_Connections_002.html">Understanding database conncections</a></p>
 
-<p><a href="https://itholic.github.io/etc-sparkdriver-retires-err/">[spark] Service ‘sparkDriver’ failed after 16 retries (on a random free port)! 오류</a></p>
+<p><a href="https://www.javatpoint.com/steps-to-connect-to-the-database-in-java">Java JDBC</a></p>
 
-<p><a href="https://spark.apache.org/docs/latest/cluster-overview.html">Spark-Cluster Mode Overview</a></p>
+<p><a href="https://amitstechblog.wordpress.com/2011/06/25/database-connections-are-performance-expensive/">Database Connections Are Performance Expensive</a></p>
 
-<p><a href="https://techblog-history-younghunjo1.tistory.com/151">[PySpark] Apache Spark 와 RDD 자료구조</a></p>
+<p><a href="https://zzang9ha.tistory.com/376">DBCP(DataBase Connectiopn Pool), 커넥션 풀이란?</a></p>
 
+<p><a href="https://d2.naver.com/helloworld/5102792">Commons DBCP 이해하기</a></p>
+
+<p><a href="https://commons.apache.org/proper/commons-dbcp/configuration.html">Apache DBCP</a></p>
 
                 </div>
             </section>
@@ -360,9 +422,9 @@ into the {body} of the default.hbs template -->
                     <div id="disqus_thread"></div>
                     <script>
                         var disqus_config = function () {
-                            var this_page_url = 'https://gyuhoonk.github.io/sparkscala1';
-                            var this_page_identifier = '/sparkscala1';
-                            var this_page_title = 'Learning Apache Spark 3 with Scala (Section1)';
+                            var this_page_url = 'https://gyuhoonk.github.io/DBCP';
+                            var this_page_identifier = '/DBCP';
+                            var this_page_title = 'DataBase Connection Pool';
                         };
                         (function() {
                             var d = document, s = d.createElement('script');
@@ -396,7 +458,7 @@ into the {body} of the default.hbs template -->
                         <header class="read-next-card-header">
                             <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
                             
-                                <h3 class="read-next-card-header-title"><a href="/tag/scala/">Scala</a></h3>
+                                <h3 class="read-next-card-header-title"><a href="/tag/database/">Database</a></h3>
                             
                         </header>
                         <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
@@ -406,17 +468,6 @@ into the {body} of the default.hbs template -->
                                 
                                 
                                   
-                                
-                                  
-                                    
-                                        
-                                        
-                                            <li><a href="/sparkscala2">Learning Apache Spark 3 with Scala (Scala Basic)</a></li>
-                                        
-                                    
-                                  
-                                
-                                  
                                     
                                   
                                 
@@ -425,7 +476,12 @@ into the {body} of the default.hbs template -->
                                   
                                 
                                   
-                                
+                                    
+                                        
+                                        
+                                            <li><a href="/EXP-LOG-SUM">EXP-SUM-LOG / LOG-SUM-EXP</a></li>
+                                        
+                                    
                                   
                                 
                                   
@@ -438,6 +494,19 @@ into the {body} of the default.hbs template -->
                                 
                                   
                                 
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/connect-to-database">Connection to DataBase in Python, R</a></li>
+                                        
+                                    
                                   
                                 
                                   
@@ -445,9 +514,9 @@ into the {body} of the default.hbs template -->
                             </ul>
                         </div>
                         <footer class="read-next-card-footer">
-                            <a href="/tag/scala/">
+                            <a href="/tag/database/">
                                 
-                                    See all 1 posts  →
+                                    See all 2 posts  →
                                 
                             </a>
                         </footer>
@@ -459,6 +528,9 @@ into the {body} of the default.hbs template -->
             
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
             
                 
 
@@ -503,61 +575,7 @@ into the {body} of the default.hbs template -->
                 <span class="reading-time">
                     
                     
-                      3 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-            
-
-            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
-            
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/EXP-LOG-SUM">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/overflow-banner.jpg)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/EXP-LOG-SUM">
-                <header class="post-card-header">
-                    
-                        
-                            
-                                <span class="post-card-tags">Database</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">EXP-SUM-LOG / LOG-SUM-EXP</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      1 min read
+                      4 min read
                     
                 </span>
             </footer>
@@ -579,18 +597,18 @@ into the {body} of the default.hbs template -->
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">Learning Apache Spark 3 with Scala (Section1)</div>
+    <div class="floating-header-title">DataBase Connection Pool</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Learning+Apache+Spark+3+with+Scala+%28Section1%29&amp;url=https://gyuhoonk.github.iosparkscala1"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=DataBase+Connection+Pool&amp;url=https://gyuhoonk.github.ioDBCP"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iosparkscala1"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.ioDBCP"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 
@@ -782,5 +800,30 @@ $(document).ready(function () {
     <!-- ghost_foot -->
     <!-- math LaTex-->
     
+     <script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	TeX: {
+		equationNumbers: {
+		autoNumber: "AMS"
+		}
+	},
+	tex2jax: {
+		inlineMath: [ ['$', '$'] ],
+		displayMath: [ ['$$', '$$'] ],
+		processEscapes: true,
+		}
+	});
+	MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
+		alert("Math Processing Error: "+message[1]);
+	});
+	MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
+		alert("Math Processing Error: "+message[1]);
+	});
+</script>
+
+<script type="text/javascript" async
+	src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
+
 </body>
 </html>

@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>DataBase Connection Pool</title>
+        
+          <description>&lt;p&gt;DBCP(DataBase Connection Pool)에 대해서&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Thu, 06 Jan 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/DBCP</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/DBCP</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Learning Apache Spark 3 with Scala (Scala Basic)</title>
         
           <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Scala Basic)&lt;/p&gt;
@@ -46,8 +61,8 @@
         
         <pubDate>Wed, 29 Dec 2021 22:30:00 +0900</pubDate>
         <link>
-        https://gyuhoonk.github.io/EXP-SUM-LOG</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/EXP-SUM-LOG</guid>
+        https://gyuhoonk.github.io/EXP-LOG-SUM</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/EXP-LOG-SUM</guid>
       </item>
       
     

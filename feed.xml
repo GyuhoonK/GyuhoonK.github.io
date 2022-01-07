@@ -1,4 +1,151 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2022-01-05T00:20:23+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>about Data</subtitle><entry><title type="html">Learning Apache Spark 3 with Scala (Scala Basic)</title><link href="https://gyuhoonk.github.io/sparkscala2" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Scala Basic)" /><published>2022-01-03T22:30:00+09:00</published><updated>2022-01-03T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/sparkscala2</id><content type="html" xml:base="https://gyuhoonk.github.io/sparkscala2">&lt;p&gt;Learning Apache Spark 3 with Scala (Scala Basic)&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2022-01-07T19:57:59+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>about Data</subtitle><entry><title type="html">DataBase Connection Pool</title><link href="https://gyuhoonk.github.io/DBCP" rel="alternate" type="text/html" title="DataBase Connection Pool" /><published>2022-01-06T22:30:00+09:00</published><updated>2022-01-06T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/DBCP</id><content type="html" xml:base="https://gyuhoonk.github.io/DBCP">&lt;p&gt;DBCP(DataBase Connection Pool)에 대해서&lt;/p&gt;
+
+&lt;h1 id=&quot;database-connection&quot;&gt; DataBase Connection&lt;/h1&gt;
+
+&lt;p&gt;어플리케이션에과 데이터베이스를 연결하기 위해, 어플리케이션은 데이터베이스에게 DataBase Connection을 요구합니다.(A &lt;strong&gt;database connection&lt;/strong&gt; is a session of work, opened by the program to communicate with a specific database server, in order to execute SQL statements as a specific user.)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/database/database-connection.jpeg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;JDBC의 예시를 보면 DataBase Connection을 생성하기 위해서는 Driver 등록, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;connection&lt;/code&gt; object 생성(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getConnection()&lt;/code&gt; method)의 과정을 거칩니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/database/java-database-connectivity-steps.jpeg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;database-connection-is-expensive&quot;&gt;DataBase Connection is expensive&lt;/h1&gt;
+
+&lt;p&gt;DataBase Connection은 한 번 생성하는데 많은 자원과 시간을 사용하는 작업입니다. Driver와  Database Server 간에 많은 통신을 필요로 하며, 이후에 DBMS는 Connection을 위해 DISK I/O를 요구합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;In reality, a connection typically involves &lt;strong&gt;many network round trips between the driver and the database server&lt;/strong&gt;. For example, when a driver connectsto Oracle or Sybase, that connection may take anywhere from &lt;em&gt;seven to ten network round trips&lt;/em&gt; to perform the following actions:&lt;/p&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;Validate the user’s credentials.&lt;/li&gt;
+    &lt;li&gt;Negotiate code page settings between what the database driver expects and what the database has available, if necessary.&lt;/li&gt;
+    &lt;li&gt;Get database version information.&lt;/li&gt;
+    &lt;li&gt;Establish the optimal database protocol packet size to be used for communication.&lt;/li&gt;
+    &lt;li&gt;Set session settings.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;p&gt;In addition, the database management system establishes resources on behalf of the connection, which involves &lt;strong&gt;performance-expensive disk I/O and memory allocation&lt;/strong&gt;.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h1 id=&quot;dbcpdatabase-connection-pool&quot;&gt;DBCP(DataBase Connection Pool)&lt;/h1&gt;
+
+&lt;p&gt;따라서, DB에 연결하려는 요청이 있을 때마다 Connection을 생성하는 것은 비효율적입니다. 이러한 비효율을 해결하기 위해 등장한 방법이 DBCP(DataBase Connection Pool) 입니다. 미리 DataBase Connection을 생성해두고, 요청이 들어올 때 마다 Connection을 대여해준 뒤 사용이 끝나면 반납 받습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/database/dbcp.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;DBCP를 구현하기 위해서는  Apache의 Commons DBCP, Tomcat-JDBC, BoneCP, HikariCP와 같은 오픈소스 라이브러리들이 사용됩니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;dbcp-settings&quot;&gt;DBCP Settings&lt;/h1&gt;
+
+&lt;p&gt;적절한 DBCP를 구현하기 위해서는 고려해야할 옵션들이 존재합니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;커넥션의 개수&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;table&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;속성 이름&lt;/th&gt;
+              &lt;th&gt;설명&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            &lt;tr&gt;
+              &lt;td&gt;initialSize&lt;/td&gt;
+              &lt;td&gt;BasicDataSource 클래스 생성 후 최초로 getConnection() 메서드를 호출할 때 커넥션 풀에 채워 넣을 커넥션 개수&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;maxActive&lt;/td&gt;
+              &lt;td&gt;동시에 사용할 수 있는 최대 커넥션 개수(기본값: 8)&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;maxIdle&lt;/td&gt;
+              &lt;td&gt;커넥션 풀에 반납할 때 최대로 유지될 수 있는 커넥션 개수(기본값: 8)&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;minIdle&lt;/td&gt;
+              &lt;td&gt;최소한으로 유지할 커넥션 개수(기본값: 0)&lt;/td&gt;
+            &lt;/tr&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;커넥션을 얻기 전 대기 시간&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;table&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;속성 이름&lt;/th&gt;
+              &lt;th&gt;설명&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            &lt;tr&gt;
+              &lt;td&gt;maxWait (1.x)&lt;br /&gt;maxWaitMillis (2.x)&lt;/td&gt;
+              &lt;td&gt;Pool이 예외를 throw하기 전 연결이 반환될 때까지(사용 가능한 Connection 객체가 없는경우) 대기하는 최대 시간(ms) 또는 무한 대기(-1)&lt;/td&gt;
+            &lt;/tr&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;커넥션의 검사와 정리&lt;/p&gt;
+
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;table&gt;
+          &lt;thead&gt;
+            &lt;tr&gt;
+              &lt;th&gt;속성 이름&lt;/th&gt;
+              &lt;th&gt;설명&lt;/th&gt;
+            &lt;/tr&gt;
+          &lt;/thead&gt;
+          &lt;tbody&gt;
+            &lt;tr&gt;
+              &lt;td&gt;testOnBorrow&lt;/td&gt;
+              &lt;td&gt;커넥션 풀에서 커넥션을 얻어올 때 테스트 실행(기본값: true)&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;testOnReturn&lt;/td&gt;
+              &lt;td&gt;커넥션 풀로 커넥션을 반환할 때 테스트 실행(기본값: false)&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;testWhileIdle&lt;/td&gt;
+              &lt;td&gt;Evictor 스레드가 실행될 때 (timeBetweenEvictionRunMillis &amp;gt; 0) 커넥션 풀 안에 있는 유휴 상태의 커넥션을 대상으로 테스트 실행(기본값: false)&lt;/td&gt;
+            &lt;/tr&gt;
+            &lt;tr&gt;
+              &lt;td&gt;validationQuery&lt;/td&gt;
+              &lt;td&gt;Oracle: select 1 from dual &lt;br /&gt;Microsoft SQL Server: select 1 &lt;br /&gt;MySQL: select 1 &lt;br /&gt;CUBRID: select 1 from db_root&lt;/td&gt;
+            &lt;/tr&gt;
+          &lt;/tbody&gt;
+        &lt;/table&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://4js.com/online_documentation/fjs-fgl-2.50.02-manual-html/c_fgl_Connections_002.html&quot;&gt;Understanding database conncections&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.javatpoint.com/steps-to-connect-to-the-database-in-java&quot;&gt;Java JDBC&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://amitstechblog.wordpress.com/2011/06/25/database-connections-are-performance-expensive/&quot;&gt;Database Connections Are Performance Expensive&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://zzang9ha.tistory.com/376&quot;&gt;DBCP(DataBase Connectiopn Pool), 커넥션 풀이란?&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://d2.naver.com/helloworld/5102792&quot;&gt;Commons DBCP 이해하기&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://commons.apache.org/proper/commons-dbcp/configuration.html&quot;&gt;Apache DBCP&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="database" /><summary type="html">DBCP(DataBase Connection Pool)에 대해서</summary></entry><entry><title type="html">Learning Apache Spark 3 with Scala (Scala Basic)</title><link href="https://gyuhoonk.github.io/sparkscala2" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Scala Basic)" /><published>2022-01-03T22:30:00+09:00</published><updated>2022-01-03T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/sparkscala2</id><content type="html" xml:base="https://gyuhoonk.github.io/sparkscala2">&lt;p&gt;Learning Apache Spark 3 with Scala (Scala Basic)&lt;/p&gt;
 
 &lt;h1 id=&quot;var--val&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;var&lt;/code&gt; / &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;val&lt;/code&gt;&lt;/h1&gt;
 
@@ -355,7 +502,7 @@
 
 &lt;p&gt;&lt;a href=&quot;https://spark.apache.org/docs/latest/cluster-overview.html&quot;&gt;Spark-Cluster Mode Overview&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://techblog-history-younghunjo1.tistory.com/151&quot;&gt;[PySpark] Apache Spark 와 RDD 자료구조&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><category term="hadoop" /><summary type="html">Learning Apache Spark 3 with Scala (Section1)</summary></entry><entry><title type="html">EXP-SUM-LOG / LOG-SUM-EXP</title><link href="https://gyuhoonk.github.io/EXP-SUM-LOG" rel="alternate" type="text/html" title="EXP-SUM-LOG / LOG-SUM-EXP" /><published>2021-12-29T22:30:00+09:00</published><updated>2021-12-29T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/EXP-SUM-LOG</id><content type="html" xml:base="https://gyuhoonk.github.io/EXP-SUM-LOG">&lt;p&gt;EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://techblog-history-younghunjo1.tistory.com/151&quot;&gt;[PySpark] Apache Spark 와 RDD 자료구조&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><category term="hadoop" /><summary type="html">Learning Apache Spark 3 with Scala (Section1)</summary></entry><entry><title type="html">EXP-SUM-LOG / LOG-SUM-EXP</title><link href="https://gyuhoonk.github.io/EXP-LOG-SUM" rel="alternate" type="text/html" title="EXP-SUM-LOG / LOG-SUM-EXP" /><published>2021-12-29T22:30:00+09:00</published><updated>2021-12-29T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/EXP-LOG-SUM</id><content type="html" xml:base="https://gyuhoonk.github.io/EXP-LOG-SUM">&lt;p&gt;EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서&lt;/p&gt;
 
 &lt;h1 id=&quot;sum-in-sql&quot;&gt;SUM in SQL&lt;/h1&gt;
 
@@ -3116,95 +3263,4 @@ It doesn't match the specified format 'ParquetFileFormat'.
 
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://medium.com/analytics-vidhya/spark-bucketing-is-not-as-simple-as-it-looks-c74f105f4af0&quot;&gt;Spark Bucketing is not as simple as it looks&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">Hive와 Spark에서 Bucket 차이점에 대하여</summary></entry><entry><title type="html">Gaussian Kernel</title><link href="https://gyuhoonk.github.io/gaussian_kernel" rel="alternate" type="text/html" title="Gaussian Kernel" /><published>2021-10-08T22:30:00+09:00</published><updated>2021-10-08T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/gaussian_kernel</id><content type="html" xml:base="https://gyuhoonk.github.io/gaussian_kernel">&lt;p&gt;Gaussian Kernel(RBF) 기본 개념에 대하여&lt;/p&gt;
-
-&lt;h1 id=&quot;gaussian-kernel-&quot;&gt;Gaussian Kernel ?&lt;/h1&gt;
-
-&lt;p&gt;Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;what-is-kernel-&quot;&gt;What is Kernel ?&lt;/h1&gt;
-
-&lt;p&gt;먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후 고차원에서 데이터의 위치를 확인하는 것이 목적이 아닙니다. 결과적으로 확인하고 싶은 값은 고차원으로 매핑된 이후 두 데이터의 내적값(inner product)입니다. 내적값은 스칼라값으로 반환되고 이를 통해 고차원에 매핑된 두 벡터 사이의 거리를 측정할수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/inner-product.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;그러나 고차원 매핑 이후 내적(inner product)를 계산하여 두 벡터 간의 거리를 측정하는 방법은 계산량이 매우 높아 비효율적입니다.&lt;/p&gt;
-
-&lt;p&gt;이러한 문제를 해결하기 위해 Kernel Trick이 이용됩니다. Kernel Trick은 고차원 매핑과 내적 계산을 한번에 수행합니다. 그리고 이러한 동시 연산을 가능하게 하는 것이 Kernel입니다.&lt;/p&gt;
-
-&lt;p&gt;저차원(m)에서 고차원(n)으로 매핑시켜주는 함수를 다음과 같이 정의합니다.&lt;/p&gt;
-
-\[\phi(x) = Ax \\
-A : n * m (n&amp;gt;m)\\
-x : m * 1\]
-
-&lt;p&gt;위 함수는  m차원 벡터를 n차원으로 매핑시켜줍니다. 이 때, Φ는 선형변환(Linear Transformation)이고, 행렬 𝐴(n x m)는 선형변환에 사용되는 표준행렬입니다.&lt;/p&gt;
-
-&lt;p&gt;위에서 말했듯이, 이러한 매핑이후 우리가 계산하고 하는 것은 두 벡터의 변환 이후 내적값입니다. 아래와 같은 수식으로 𝐾(Kernel)을 정의할 수 있습니다.&lt;/p&gt;
-
-\[K(x_{i}, x_{j}) = \phi(x_{i})^T \phi(x_{j})
-							  =  (Ax_{i})^T (Ax_{j})
-							  = x_{i}^TA^TAx_{j}\]
-
-&lt;p&gt;이 때, 위 식에서 사용되는 변수들의 차원은 아래와 같습니다.&lt;/p&gt;
-
-\[x_{i}^T : 1 * m \\
-A^T : m * n\\
-A : n * m \\
-x_{j} : m * 1\]
-
-&lt;p&gt;결과적으로 𝐾는 스칼라값을 반환하게 됨을 알 수 있습니다. 𝐾가 두 벡터간의 거리(유사도)를 측정한다는 점에서 아래 두 가지 조건을 만족해야합니다.&lt;/p&gt;
-
-\[i) K(x_{i}, x_{j}) = K(x_{j}, x_{i}) \\
-ii) K(x_i, x_i) &amp;gt;= 0\]
-
-&lt;p&gt;즉, 교환법칙이 성립해야하고 자기자신과의 거리를 계산했을 때에는 음수값이 나와서는 안된다는 조건입니다.&lt;/p&gt;
-
-&lt;p&gt;이러한 조건을 만족하기 위한 조건을 계산해보면, 𝐾를 이루는 행렬들이&lt;/p&gt;
-
-&lt;p&gt;​	𝐢) 대칭행렬(symetric matrix)&lt;/p&gt;
-
-&lt;p&gt;​	𝐢𝐢) positive semi-definite matrix&lt;/p&gt;
-
-&lt;p&gt;를 동시에 만족해야합니다. 그리고 이와 관련된 조건은 &lt;strong&gt;Mercer’s Theorem&lt;/strong&gt;으로 확인할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/mercer.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;이러한 조건을 만족하는 커널에는 &lt;em&gt;Linear, polynomial, sigmoid&lt;/em&gt; 그리고 지금 우리가 살펴보고 있는 &lt;strong&gt;&lt;em&gt;gaussian&lt;/em&gt;&lt;/strong&gt;이 있습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;gaussian-kernel---infinite-dimensional-vector&quot;&gt;Gaussian Kernel - Infinite-dimensional vector&lt;/h2&gt;
-
-&lt;p&gt;Gaussian Kernel의 가장 큰 특징은 무한차원으로 매핑시킨다는 점입니다. 아래 식을 통해 간단한 예를 확인할 수 있습니다. 계산 편의성을 위해 \(\sigma^2=\dfrac {1}{2}\)인 경우를 예시로 선택했습니다.&lt;/p&gt;
-
-\[K(x_{i}, x_{j}) = exp(-\dfrac {||x_i - x_j||^2}{2\sigma^2})\\
-K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} \text{)}\\
-=exp(-x_i^2)exp(-x_j^2)exp(2x_ix_j)\\
-\text {By Taylor's theorem,  } exp(2x_ix_j) = \Sigma_{k=0}^{\infty}(\dfrac {2^kx_i^kx_j^k}{k!})\]
-
-&lt;h2 id=&quot;gaussian-kernel---purpose-of-𝛔&quot;&gt;Gaussian Kernel - Purpose of 𝛔&lt;/h2&gt;
-
-&lt;p&gt;𝛔는 무한차원으로 확장된 벡터 사이의 거리 계산 시 얼마나 민감하게 반응하는지 결정하는 매개변수입니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/gaussian-plot.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;위 그림처럼, \(K(x)\) 즉 Gaussian Kernel의 계산 결과는 𝛔가 클수록 벡터 간 거리 \(x\)의 차이에 둔감해집니다. 반대로 𝛔가 작아지면, 벡터 간 거리 \(x\)에 민감하게 반응합니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;how-to-use-&quot;&gt;How to Use ?&lt;/h1&gt;
-
-&lt;p&gt;Kernel SVM, Kernel Regression에서 사용됩니다. 각각 예를 살펴보겠습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;kernel-svm&quot;&gt;Kernel SVM&lt;/h2&gt;
-
-&lt;p&gt;SVM Classification은 비선형 분류를 만들 수 없다는 한계를 가지고 있습니다. 이를 극복하기 위해 저차원 공간의 데이터를 고차원 공간으로 매핑시켜 초평면을 찾아 SVM의 한계를 극복하고자 합니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/kernel-svm.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;kernel-regression&quot;&gt;Kernel Regression&lt;/h2&gt;
-
-&lt;p&gt;[업데이트 예정]&lt;/p&gt;
-
-&lt;p&gt;[참고]&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://ratsgo.github.io/machine%20learning/2017/05/30/SVM3/&quot;&gt;Kernel-SVM&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://tensorflow.blog/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/2-3-7-%EC%BB%A4%EB%84%90-%EC%84%9C%ED%8F%AC%ED%8A%B8-%EB%B2%A1%ED%84%B0-%EB%A8%B8%EC%8B%A0/&quot;&gt;h2.3.7 커널 서포트 벡터 머신&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="datascience" /><summary type="html">Gaussian Kernel(RBF) 기본 개념에 대하여</summary></entry></feed>
+&lt;p&gt;&lt;a href=&quot;https://medium.com/analytics-vidhya/spark-bucketing-is-not-as-simple-as-it-looks-c74f105f4af0&quot;&gt;Spark Bucketing is not as simple as it looks&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">Hive와 Spark에서 Bucket 차이점에 대하여</summary></entry></feed>
