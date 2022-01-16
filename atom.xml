@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Learning Apache Spark 3 with Scala (Section2)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section2 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD Action&lt;/code&gt;)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 15 Jan 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala3</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala3</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>DataBase Connection Pool</title>
         
           <description>&lt;p&gt;DBCP(DataBase Connection Pool)에 대해서&lt;/p&gt;
