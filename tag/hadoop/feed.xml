@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-01-16T17:40:23+09:00</updated>
+  <updated>2022-01-22T19:47:49+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/hadoop/feed.xml</id>
 
   
@@ -30,6 +30,229 @@
   
   
 
+  
+    <entry>
+      <title type="html">hadoop distcp</title>
+      <link href="https://gyuhoonk.github.io/hadoop-distcp" rel="alternate" type="text/html" title="hadoop distcp" />
+      <published>2022-01-20T22:30:00+09:00</published>
+      <updated>2022-01-20T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/hadoop-distcp</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/hadoop-distcp">&lt;p&gt;hadoop distcp 명령어&lt;/p&gt;
+
+&lt;h1 id=&quot;distcp&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;distcp&lt;/code&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;distcp&lt;/code&gt; 명령어는 효율적인 병렬 처리를 통해 파일을 복사합니다. 아래와 같은 명령어로 실행합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 파일 복사&lt;/span&gt;
+% hadoop distcp file1 file2
+&lt;span class=&quot;c&quot;&gt;# hadoop fs -cp file1 file2 와 같은 결과이지만&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# distcp를 이용하는 경우에는 '병렬 처리'하여 복사함&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 디렉토리 복사&lt;/span&gt;
+% hadoop distcp dir1 dir2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;discp&lt;/code&gt;는 내부적으로는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hadoop fs -cp&lt;/code&gt;명령을 클라이언트가 직접 수행하는 방식이기 때문에 큰 파일의 복사에 더 적합합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;options&quot;&gt;options&lt;/h1&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# overwrite&lt;/span&gt;
+% hdfs dfs &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; 
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; dir1 dir2
+
+% hadoop distcp dir1 dir2
+&lt;span class=&quot;c&quot;&gt;# 이미 dir2가 존재하고 있으므로, dir2의 하위에 dir1을 복사함&lt;/span&gt;
+
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; dir1 dir2
+&lt;span class=&quot;c&quot;&gt;# overwrite 옵션이 있으므로 dir2에 dir1을 덮어씌움&lt;/span&gt;
+
+
+
+&lt;span class=&quot;c&quot;&gt;# update&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 디렉토리 내에 변경이 있는 파일들만 복사하여 동기화시킵니다.&lt;/span&gt;
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-update&lt;/span&gt; dir1 dir2
+&lt;span class=&quot;c&quot;&gt;# dir1 내 파일과 dir2 내 파일을 비교하여 변경된 부분만 dir2에 동기화시킴&lt;/span&gt;
+
+
+
+&lt;span class=&quot;c&quot;&gt;# delete&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 원본 경로에는 존재하지 않고, 타겟 경로에만 존재하는 파일들을 지우도록 하는 옵션입니다.&lt;/span&gt;
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-delete&lt;/span&gt; dir1 dir2
+&lt;span class=&quot;c&quot;&gt;# dir1, dir2를 비교하여 dir2에만 존재하는 파일들은 삭제한 뒤 distcp를 수행&lt;/span&gt;
+
+
+
+&lt;span class=&quot;c&quot;&gt;# m&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 몇 개의 mapper를 사용할지 결정합니다. 기본적으로 distcp는 Map-Reduce Job으로 구현되어있으며 클러스터 전반에 걸쳐 병렬로 수행되는 Map Task를 이용하여 복사 작업을 수행합니다. 단, Reducer를 사용하지 않으며 각 파일은 Mapper에서 복사합니다. 이 때 bucketing을 통해 각 Mapper에 거의 같은 양의 데이터를 제공하고자 합니다. 기본값으로 최대 20개의 Mapper가 사용됩니다.&lt;/span&gt;
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 100 file1 file2
+&lt;span class=&quot;c&quot;&gt;# 100개 Mapper를 사용하여 distcp 수행&lt;/span&gt;
+
+
+
+&lt;span class=&quot;c&quot;&gt;# p&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#복제 시 파일의 권한, 블록 사이즈 등 파일 속성 정보를 보전하려는 경우에 사용됩니다. &lt;/span&gt;
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; file1 file2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;다른-클러스터namenode간-복사&quot;&gt;다른 클러스터(namenode)간 복사&lt;/h1&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hadoop distcp webhdfs://namenode1:14000/foo webhdfs://namenode2:14000/foo
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위처럼 namenode1에서 namenode2로 파일을 복사할 수 있습니다. 이 경우에 webHDFS 프로토콜을 이용합니다. webHDFS 프로토콜 대신에 HttpFs 프록시 방식으로 distcp의 소스 혹은 타깃을 변경할 수도 있다. HttpFs 프록시 방식은 방화벽, 대역폭 설정을 할 수 있다는 장점이 있습니다.&lt;/p&gt;
+
+&lt;p&gt;참고로 HDFS에 접근 가능한 인터페이스는 아래와 같습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;webHDFS&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;HDFS는 REST API를 이용하여 파일을 조회, 생성, 수정, 삭제(CRUD)를 지원합니다. 이러한 기능을 제공하는 API가 webHDFS이며  FileSystem API입니다. 해당 프로토콜은 Java FileSystem Class에 작성되어 있습니다. 그리고 이를 바탕으로 다른 FileSystem을 이용할 수도 있습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Http&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JAVA로 작성되지 않은 애플리케이션이 HDFS에 접근할 수 있도록 WebHDFS 프로토콜을 기반으로 하여 HTTP REST API를 사용할 수 있습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;C - libhdfs library&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JAVA FileSystem Class를 모방하여 작성된 라이브러리입니다. 모든 HDFS(Local, S3 등)에 접근 가능합니다. JNI(Java Native Interface)를 사용하여 JAVA FileSystem Class를 호출합니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;NFS&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;NFSv3 게이트웨이를 이용하여 로컬 클라이언트 파일시스템에 HDFS를 마운트할 수 있습니다. 또한, ls, cat과 같은 unix 명령어를 이용할 수 있습니다. 참고로, HDFS는 파일의 끝에만 쓰기를 허용하므로 파일에 추가하는 작업은 가능하지만, 파일의 임의 위치에 있는 데이터를 수정하는 것은 지원하지 않습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;FUSE(Filesystem in Userspace)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;사용자 공간과 유닉스 파일 시스템을 통합한 파일 시스템을 지원합니다. 하둡의 Fuse-DFS contrib 모듈은 표준 로컬 파일시스템에 HDFS를 마운트할 수 있는 기능을 제공합니다. Fuse-DFS는 C로 작성된 libhdfs로 HDFS 인터페이스를 구현했습니다. 참고로 NFS가 Fuse-DFS보다 안전하며 선호되는 방법입니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;클러스터간-테이블-이동&quot;&gt;클러스터간 테이블 이동&lt;/h1&gt;
+
+&lt;p&gt;예를 들어, namenode1에 아래와 같은 테이블이 있다고 가정해보겠습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'SELECT * FROM default.table_1'&lt;/span&gt;
++-------+---------+
+| col1  |  col2   |
++-------+---------+
+| a     | apple   |
+| b     | banana  |
+| c     | car     |
++-------+---------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;namenode2로 default.table_1을 이동하기 위해서는 아래와 같은 과정이 필요합니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/user/hive/warehouse/default.db/table_1&lt;/code&gt; 디렉토리 이동&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# namenode1에서 실행&lt;/span&gt;
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; webhdfs://namenode1:14000/user/hive/warehouse/default.db/table_1 webhdfs://namenode2:14000/user/hive/warehouse/default.db/table_1
+
+&lt;span class=&quot;c&quot;&gt;#namenode2에서 distcp 결과 확인&lt;/span&gt;
+% hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/table_1
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive          0 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/_SUCCESS
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        340 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00000-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        544 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00166-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        549 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00333-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        534 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00499-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;create statement 확인&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'SHOW CREATE TABLE default.table_1'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;----------------------------------------------------+&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;                   &lt;span class=&quot;n&quot;&gt;createtab_stmt&lt;/span&gt;                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;----------------------------------------------------+&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;`default.table_1`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;           &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;nv&quot;&gt;`col1`&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;                                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;nv&quot;&gt;`col2`&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;                                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ROW&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FORMAT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SERDE&lt;/span&gt;                                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;WITH&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SERDEPROPERTIES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;                             &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'hdfs://nameservice1/user/hive/warehouse/default.db/table_1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;                                          &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INPUTFORMAT&lt;/span&gt;                              &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OUTPUTFORMAT&lt;/span&gt;                                       &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;LOCATION&lt;/span&gt;                                           &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'hdfs://nameservice1/user/hive/warehouse/default.db/table_1'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TBLPROPERTIES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;                                    &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'bucketing_version'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;                         &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.create.version'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'2.3.1.3.0.1.0-187'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.sources.provider'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;          &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.sources.schema.numParts'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;         &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.sources.schema.part.0'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'{&quot;type&quot;:&quot;struct&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;col1&quot;,&quot;type&quot;:&quot;string&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:{}},{&quot;name&quot;:&quot;col2&quot;,&quot;type&quot;:&quot;string&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:{}}]}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'transient_lastDdlTime'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'1642640799'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;----------------------------------------------------+&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;아래와 같이 명령어를 조합하면 쿼리문만 파일로 저장할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'show create table default.table_1'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/|//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/+//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/createtab_stmt//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/WARN/d'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; create.sql 2&amp;gt;/dev/null&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;';'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; create.sql
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;create.sql&lt;/code&gt; 파일을 namenode2로 옮긴 뒤 namenode2에서 create statement 실행&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# namenode1&lt;/span&gt;
+% hdfs dfs &lt;span class=&quot;nt&quot;&gt;-copyFromLocal&lt;/span&gt; create.sql hdfs://nameservice1/create.sql
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; webhdfs://namenode1:14000/create.sql webhdfs://namenode2:14000/create.sql
+
+&lt;span class=&quot;c&quot;&gt;# namenode2&lt;/span&gt;
+% hdfs dfs &lt;span class=&quot;nt&quot;&gt;-copyToLocal&lt;/span&gt; hdfs://nameservice1/create.sql create.sql
+% hive &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; create.sql
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Partitioned table인 경우에는 TABLE REPAIR 실행&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'MSCK REPAIR TABLE defulat.table_1'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;하둡 완벽 가이드, 한빛미디어&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://hadoop.apache.org/docs/r1.2.1/distcp.html&quot;&gt;DistCp Guide&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html">hadoop distcp 명령어</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">Learning Apache Spark 3 with Scala (Section2)</title>
@@ -1312,12 +1535,12 @@ It doesn't match the specified format 'ParquetFileFormat'.
     </entry>
   
     <entry>
-      <title type="html">CREATE query in Hive</title>
-      <link href="https://gyuhoonk.github.io/hive-query" rel="alternate" type="text/html" title="CREATE query in Hive" />
+      <title type="html">CREATE Statement in Hive</title>
+      <link href="https://gyuhoonk.github.io/hive-create-stmt" rel="alternate" type="text/html" title="CREATE Statement in Hive" />
       <published>2021-09-16T22:30:00+09:00</published>
       <updated>2021-09-16T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/hive-query</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/hive-query">&lt;p&gt;HiveQL - CREATE QUERY 구조에 대하여&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/hive-create-stmt</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/hive-create-stmt">&lt;p&gt;HiveQL - CREATE Statement구조에 대하여&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;TEMPORARY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IF&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.]&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;table_name&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_type&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;column_constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])]&lt;/span&gt;
@@ -1870,7 +2093,7 @@ WITH SERDEPROPERTIES (
       
 
       
-        <summary type="html">HiveQL - CREATE QUERY 구조에 대하여</summary>
+        <summary type="html">HiveQL - CREATE Statement구조에 대하여</summary>
       
 
       

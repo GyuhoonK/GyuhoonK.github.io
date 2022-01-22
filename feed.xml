@@ -1,4 +1,193 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2022-01-16T17:40:23+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>Data Engineering</subtitle><entry><title type="html">Learning Apache Spark 3 with Scala (Section2)</title><link href="https://gyuhoonk.github.io/sparkscala3" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section2)" /><published>2022-01-15T22:30:00+09:00</published><updated>2022-01-15T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/sparkscala3</id><content type="html" xml:base="https://gyuhoonk.github.io/sparkscala3">&lt;p&gt;Learning Apache Spark 3 with Scala (Section2 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD Action&lt;/code&gt;)&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2022-01-22T19:47:49+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>Data Engineering</subtitle><entry><title type="html">hadoop distcp</title><link href="https://gyuhoonk.github.io/hadoop-distcp" rel="alternate" type="text/html" title="hadoop distcp" /><published>2022-01-20T22:30:00+09:00</published><updated>2022-01-20T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/hadoop-distcp</id><content type="html" xml:base="https://gyuhoonk.github.io/hadoop-distcp">&lt;p&gt;hadoop distcp 명령어&lt;/p&gt;
+
+&lt;h1 id=&quot;distcp&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;distcp&lt;/code&gt;&lt;/h1&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;distcp&lt;/code&gt; 명령어는 효율적인 병렬 처리를 통해 파일을 복사합니다. 아래와 같은 명령어로 실행합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 파일 복사&lt;/span&gt;
+% hadoop distcp file1 file2
+&lt;span class=&quot;c&quot;&gt;# hadoop fs -cp file1 file2 와 같은 결과이지만&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# distcp를 이용하는 경우에는 '병렬 처리'하여 복사함&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# 디렉토리 복사&lt;/span&gt;
+% hadoop distcp dir1 dir2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;discp&lt;/code&gt;는 내부적으로는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hadoop fs -cp&lt;/code&gt;명령을 클라이언트가 직접 수행하는 방식이기 때문에 큰 파일의 복사에 더 적합합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;options&quot;&gt;options&lt;/h1&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# overwrite&lt;/span&gt;
+% hdfs dfs &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; 
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; dir1 dir2
+
+% hadoop distcp dir1 dir2
+&lt;span class=&quot;c&quot;&gt;# 이미 dir2가 존재하고 있으므로, dir2의 하위에 dir1을 복사함&lt;/span&gt;
+
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; dir1 dir2
+&lt;span class=&quot;c&quot;&gt;# overwrite 옵션이 있으므로 dir2에 dir1을 덮어씌움&lt;/span&gt;
+
+
+
+&lt;span class=&quot;c&quot;&gt;# update&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 디렉토리 내에 변경이 있는 파일들만 복사하여 동기화시킵니다.&lt;/span&gt;
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-update&lt;/span&gt; dir1 dir2
+&lt;span class=&quot;c&quot;&gt;# dir1 내 파일과 dir2 내 파일을 비교하여 변경된 부분만 dir2에 동기화시킴&lt;/span&gt;
+
+
+
+&lt;span class=&quot;c&quot;&gt;# delete&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 원본 경로에는 존재하지 않고, 타겟 경로에만 존재하는 파일들을 지우도록 하는 옵션입니다.&lt;/span&gt;
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-delete&lt;/span&gt; dir1 dir2
+&lt;span class=&quot;c&quot;&gt;# dir1, dir2를 비교하여 dir2에만 존재하는 파일들은 삭제한 뒤 distcp를 수행&lt;/span&gt;
+
+
+
+&lt;span class=&quot;c&quot;&gt;# m&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 몇 개의 mapper를 사용할지 결정합니다. 기본적으로 distcp는 Map-Reduce Job으로 구현되어있으며 클러스터 전반에 걸쳐 병렬로 수행되는 Map Task를 이용하여 복사 작업을 수행합니다. 단, Reducer를 사용하지 않으며 각 파일은 Mapper에서 복사합니다. 이 때 bucketing을 통해 각 Mapper에 거의 같은 양의 데이터를 제공하고자 합니다. 기본값으로 최대 20개의 Mapper가 사용됩니다.&lt;/span&gt;
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 100 file1 file2
+&lt;span class=&quot;c&quot;&gt;# 100개 Mapper를 사용하여 distcp 수행&lt;/span&gt;
+
+
+
+&lt;span class=&quot;c&quot;&gt;# p&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;#복제 시 파일의 권한, 블록 사이즈 등 파일 속성 정보를 보전하려는 경우에 사용됩니다. &lt;/span&gt;
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; file1 file2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;다른-클러스터namenode간-복사&quot;&gt;다른 클러스터(namenode)간 복사&lt;/h1&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hadoop distcp webhdfs://namenode1:14000/foo webhdfs://namenode2:14000/foo
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위처럼 namenode1에서 namenode2로 파일을 복사할 수 있습니다. 이 경우에 webHDFS 프로토콜을 이용합니다. webHDFS 프로토콜 대신에 HttpFs 프록시 방식으로 distcp의 소스 혹은 타깃을 변경할 수도 있다. HttpFs 프록시 방식은 방화벽, 대역폭 설정을 할 수 있다는 장점이 있습니다.&lt;/p&gt;
+
+&lt;p&gt;참고로 HDFS에 접근 가능한 인터페이스는 아래와 같습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;webHDFS&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;HDFS는 REST API를 이용하여 파일을 조회, 생성, 수정, 삭제(CRUD)를 지원합니다. 이러한 기능을 제공하는 API가 webHDFS이며  FileSystem API입니다. 해당 프로토콜은 Java FileSystem Class에 작성되어 있습니다. 그리고 이를 바탕으로 다른 FileSystem을 이용할 수도 있습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Http&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JAVA로 작성되지 않은 애플리케이션이 HDFS에 접근할 수 있도록 WebHDFS 프로토콜을 기반으로 하여 HTTP REST API를 사용할 수 있습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;C - libhdfs library&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;JAVA FileSystem Class를 모방하여 작성된 라이브러리입니다. 모든 HDFS(Local, S3 등)에 접근 가능합니다. JNI(Java Native Interface)를 사용하여 JAVA FileSystem Class를 호출합니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;NFS&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;NFSv3 게이트웨이를 이용하여 로컬 클라이언트 파일시스템에 HDFS를 마운트할 수 있습니다. 또한, ls, cat과 같은 unix 명령어를 이용할 수 있습니다. 참고로, HDFS는 파일의 끝에만 쓰기를 허용하므로 파일에 추가하는 작업은 가능하지만, 파일의 임의 위치에 있는 데이터를 수정하는 것은 지원하지 않습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;FUSE(Filesystem in Userspace)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;사용자 공간과 유닉스 파일 시스템을 통합한 파일 시스템을 지원합니다. 하둡의 Fuse-DFS contrib 모듈은 표준 로컬 파일시스템에 HDFS를 마운트할 수 있는 기능을 제공합니다. Fuse-DFS는 C로 작성된 libhdfs로 HDFS 인터페이스를 구현했습니다. 참고로 NFS가 Fuse-DFS보다 안전하며 선호되는 방법입니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;클러스터간-테이블-이동&quot;&gt;클러스터간 테이블 이동&lt;/h1&gt;
+
+&lt;p&gt;예를 들어, namenode1에 아래와 같은 테이블이 있다고 가정해보겠습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'SELECT * FROM default.table_1'&lt;/span&gt;
++-------+---------+
+| col1  |  col2   |
++-------+---------+
+| a     | apple   |
+| b     | banana  |
+| c     | car     |
++-------+---------+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;namenode2로 default.table_1을 이동하기 위해서는 아래와 같은 과정이 필요합니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/user/hive/warehouse/default.db/table_1&lt;/code&gt; 디렉토리 이동&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# namenode1에서 실행&lt;/span&gt;
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; webhdfs://namenode1:14000/user/hive/warehouse/default.db/table_1 webhdfs://namenode2:14000/user/hive/warehouse/default.db/table_1
+
+&lt;span class=&quot;c&quot;&gt;#namenode2에서 distcp 결과 확인&lt;/span&gt;
+% hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/table_1
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive          0 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/_SUCCESS
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        340 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00000-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        544 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00166-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        549 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00333-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        534 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00499-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;create statement 확인&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'SHOW CREATE TABLE default.table_1'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;----------------------------------------------------+&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;                   &lt;span class=&quot;n&quot;&gt;createtab_stmt&lt;/span&gt;                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;----------------------------------------------------+&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;`default.table_1`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;           &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;nv&quot;&gt;`col1`&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;                                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;nv&quot;&gt;`col2`&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;                                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ROW&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FORMAT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SERDE&lt;/span&gt;                                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;WITH&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SERDEPROPERTIES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;                             &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'hdfs://nameservice1/user/hive/warehouse/default.db/table_1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;                                          &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INPUTFORMAT&lt;/span&gt;                              &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OUTPUTFORMAT&lt;/span&gt;                                       &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;LOCATION&lt;/span&gt;                                           &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'hdfs://nameservice1/user/hive/warehouse/default.db/table_1'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TBLPROPERTIES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;                                    &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'bucketing_version'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;                         &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.create.version'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'2.3.1.3.0.1.0-187'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.sources.provider'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;          &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.sources.schema.numParts'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;         &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.sources.schema.part.0'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'{&quot;type&quot;:&quot;struct&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;col1&quot;,&quot;type&quot;:&quot;string&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:{}},{&quot;name&quot;:&quot;col2&quot;,&quot;type&quot;:&quot;string&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:{}}]}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'transient_lastDdlTime'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'1642640799'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;----------------------------------------------------+&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;아래와 같이 명령어를 조합하면 쿼리문만 파일로 저장할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'show create table default.table_1'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/|//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/+//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/createtab_stmt//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/WARN/d'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; create.sql 2&amp;gt;/dev/null&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;';'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; create.sql
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;create.sql&lt;/code&gt; 파일을 namenode2로 옮긴 뒤 namenode2에서 create statement 실행&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# namenode1&lt;/span&gt;
+% hdfs dfs &lt;span class=&quot;nt&quot;&gt;-copyFromLocal&lt;/span&gt; create.sql hdfs://nameservice1/create.sql
+% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; webhdfs://namenode1:14000/create.sql webhdfs://namenode2:14000/create.sql
+
+&lt;span class=&quot;c&quot;&gt;# namenode2&lt;/span&gt;
+% hdfs dfs &lt;span class=&quot;nt&quot;&gt;-copyToLocal&lt;/span&gt; hdfs://nameservice1/create.sql create.sql
+% hive &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; create.sql
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Partitioned table인 경우에는 TABLE REPAIR 실행&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'MSCK REPAIR TABLE defulat.table_1'&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;하둡 완벽 가이드, 한빛미디어&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://hadoop.apache.org/docs/r1.2.1/distcp.html&quot;&gt;DistCp Guide&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">hadoop distcp 명령어</summary></entry><entry><title type="html">Learning Apache Spark 3 with Scala (Section2)</title><link href="https://gyuhoonk.github.io/sparkscala3" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section2)" /><published>2022-01-15T22:30:00+09:00</published><updated>2022-01-15T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/sparkscala3</id><content type="html" xml:base="https://gyuhoonk.github.io/sparkscala3">&lt;p&gt;Learning Apache Spark 3 with Scala (Section2 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD Action&lt;/code&gt;)&lt;/p&gt;
 
 &lt;h1 id=&quot;what-is-rdd&quot;&gt;What is RDD?&lt;/h1&gt;
 
@@ -2994,237 +3183,4 @@ FROM default.t_test;
 
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;p&gt;패스트캠퍼스 - 컴퓨터 공학 전공 필수 올인원 패키지 Online.&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="python" /><summary type="html">Python - Thread, Mutex, Semaphore</summary></entry><entry><title type="html">Merge Files in HDFS</title><link href="https://gyuhoonk.github.io/hive-merge-query" rel="alternate" type="text/html" title="Merge Files in HDFS" /><published>2021-10-24T22:30:00+09:00</published><updated>2021-10-24T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/hive-merge-query</id><content type="html" xml:base="https://gyuhoonk.github.io/hive-merge-query">&lt;p&gt;HDFS에서 작은 용량의 파일들을 하나의 파일로 합치기&lt;/p&gt;
-
-&lt;h1 id=&quot;blocks-in-hdfs&quot;&gt;Blocks in HDFS&lt;/h1&gt;
-
-&lt;p&gt;데이터는 HDFS 상에서 Block이라는 단위로 저장됩니다. 일반적으로 하나의 Block에 128MB를 저장합니다. 따라서 Block Size, 128MB를 넘는 데이터는 여러 개의 Block으로 쪼개서 저장하게 됩니다. 아래는 518MB 파일이 Block으로 쪼개져서 저장되는 예시입니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hdfs-blocks.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;각  Block은 안정성을 위해 서로 다른 노드에 Block replication을 저장하고, Name Node에는 해당 File의 block location과 같은 meta data를 저장합니다. 이를 통해 한 Data Node가 작동하지 않더라도, 원본 데이터를 복구할 수 있습니다. 포스팅에서 다루고자하는 내용은 아니니 간단히 이미지로 대체하고 넘어가겠습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/Block-Replication-in-Hadoop.png&quot; alt=&quot;image&quot; style=&quot;zoom:150%;&quot; /&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;read-file--read-blocks--hdfs-io&quot;&gt;Read File = Read Blocks = HDFS I/O&lt;/h1&gt;
-
-&lt;p&gt;HDFS에서 하나의 File을 읽을 때, 해당 File에 해당하는 Block들을 읽어들여옵니다.&lt;/p&gt;
-
-&lt;p&gt;아래 그림처럼 File A를 읽고자 한다면, File A가 쪼개어 저장되어있는 Block1, Block2, Block3, Block4를 읽어들여오는 작업을 수행합니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/file-reading-hive.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;만약 File A에 해당하는 Block이 많다면 더 많은 Block을 읽어와야하고 이는 더 많은 HDFS I/O가 발생함을 의미합니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;bad-case--file-size-is-less-than-block-size&quot;&gt;Bad Case : File Size is Less than Block Size&lt;/h1&gt;
-
-&lt;p&gt;HDFS에 저장하고자 하는 File이 Block Size(128MB)보다 작으면 이러한 HDFS I/O는 더 많이 발생하게됩니다.&lt;/p&gt;
-
-&lt;p&gt;예를 들어, 우리는 500MB 짜리 데이터를 저장한다고 가정해봅시다.&lt;/p&gt;
-
-&lt;p&gt;해당 파일은 500MB 짜리 파일 &lt;strong&gt;하나&lt;/strong&gt;로 저장할 수도 있고, 50MB짜리 파일 &lt;strong&gt;10개&lt;/strong&gt;로 저장할 수도 있습니다. 어떻게 저장하는 것이 더 효율적일까요?&lt;/p&gt;
-
-&lt;p&gt;비교 편의를 위해 각 Block들이 모두 다른 DataNode에 저장되었다고 가정하고 비교해보겠습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;case1--only-1-file-size-is-500mb&quot;&gt;Case1 : only 1 File, Size is 500MB&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hdfs-case1.png&quot; alt=&quot;image&quot; style=&quot;zoom:150%;&quot; /&gt;500MB 짜리 파일 하나로 HDFS에 저장할 경우, File A는 위 그림처럼 4개의 block으로 쪼개집니다. 또한, NameNode는 File A의 메타 데이터를 하나 저장합니다. 이때 HDFS I/O는 4번 발생합니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;case2--10-files-each-size-is-50mb&quot;&gt;Case2 : 10 Files, each Size is 50MB&lt;/h2&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hdfs-case2.png&quot; alt=&quot;image&quot; style=&quot;zoom:150%;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;File A를 Block Size인 128MB보다 작은 50MB 파일 10개로 쪼개서 저장할 경우, 위 그림처럼 각 10개 File은 각각 50MB 크기의 Block에 저장됩니다. 따라서, HDFS I/O 는 10번 발생하게됩니다. 또한, NameNode는 File A-1부터 File A-10까지 10개 파일에 대한 메타 데이터를 저장하게 됩니다.&lt;/p&gt;
-
-&lt;p&gt;위 그림을 간단하게 비교해보면 아래와 같습니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt; &lt;/th&gt;
-      &lt;th&gt;# HDFS I/O(Data Node)&lt;/th&gt;
-      &lt;th&gt;# MetaData in NameNode&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Case1&lt;/td&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt;1&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Case2&lt;/td&gt;
-      &lt;td&gt;10&lt;/td&gt;
-      &lt;td&gt;10&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;비교를 위해 모든 Block이 다른  Data Node에 저장되어 있다고 가정했지만, 실제 상황에서는 하나의 Data Node에 여러 Block이 저장될 수 있기 때문에  HDFS I/O는 위 수치보다 낮을 것입니다. 즉, 위 상황처럼 모든 Block이 각기 다른 Data Node에 저장된 상황은 최악의 경우라고 생각하시면 됩니다. 그러나 이러한 가정을 제거하더라도 Block Access는 Case1과 Case2가 각각 4,10으로 변함 없을 것입니다. 따라서 우리는 Block Size보다 작은 파일이 저장되는 것을 지양해야함을 알 수 있습니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;when-is-file-size-less-than-block-size-&quot;&gt;When is File size Less than Block size ?&lt;/h1&gt;
-
-&lt;p&gt;그러면 File Size가 128MB보다 작게 저장되는 경우(small file issue)는 왜 그리고 언제 발생하는 것일까요? 이는 Tez, Yarn 스케쥴러의 동작 원리와 관련 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;-- HiveQL 예시 &lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;COUNT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;AVG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cost&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-	     &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;itemid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;itemid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;-- 위 쿼리는 아래 Tez DAG에 따라 수행됩니다&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hql-on-tez.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Tez engine은 Map-Reduce 이후 작업을 HDFS에 저장하지 않고(HDFS I/O를 발생시키지 않고), in-memory 상에서 다음 작업을 진행한다는 점입니다. 이를 위해 DAG를 미리 생성하는 등의 선행 작업을 실행합니다. 위 그림은 Tez가 이러한 작업을 위해 DAG를 생성하고, HDFS IO없이 Reducer를 통해 쿼리를 실행하는 과정을 설명해줍니다.&lt;/p&gt;
-
-&lt;p&gt;위 도식 대로 INSERT 쿼리가 수행된다면, small file은 등장하지 않아야 하는 것 아닐까요?&lt;/p&gt;
-
-&lt;p&gt;하지만, INSERT는 Mapper만 동작하는 작업입니다(mapper-only).&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outputtable&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- 아래 쿼리 실행 결과에 대해서 Mapper만 동작하여 file write&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;COUNT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;AVG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cost&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-	     &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;itemid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;itemid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;위 INSERT문은 Reducer를 거치지 않기 때문에 읽어들여온 파일 개수만큼 디렉토리에 그대로 저장하게 되고, 이는 file number가 급격하게 늘어나는 결과를 초래하게 됩니다.&lt;/p&gt;
-
-&lt;p&gt;Spark는 file write 작업을 partition 단위로 수행하게 됩니다. 따라서, Spark를 저장된 ouput file 개수는 기본적으로 다른 옵션(아래서 다루게 될 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repartition, coalesce&lt;/code&gt;)을 지정하지 않는다면 partition 개수를 결정하는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.default.parallelism&lt;/code&gt; 에 의해 결정됩니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;[default] For distributed shuffle operations like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;reduceByKey&lt;/code&gt;and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;join&lt;/code&gt;, the largest number of partitions in a parent RDD. For operations like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parallelize&lt;/code&gt;with no parent RDDs, it depends on the cluster manager:&lt;/p&gt;
-
-  &lt;ul&gt;
-    &lt;li&gt;Local mode: number of cores on the local machine&lt;/li&gt;
-    &lt;li&gt;Mesos fine grained mode: 8&lt;/li&gt;
-    &lt;li&gt;&lt;strong&gt;Others: total number of cores on all executor nodes or 2, whichever is larger&lt;/strong&gt;&lt;/li&gt;
-  &lt;/ul&gt;
-
-  &lt;p&gt;[meaning] &lt;strong&gt;Default number of partitions&lt;/strong&gt; in RDDs returned by transformations like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;join&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;reduceByKey&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parallelize&lt;/code&gt; when not set by user.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;h1 id=&quot;how-to-merge&quot;&gt;How to Merge?&lt;/h1&gt;
-
-&lt;p&gt;그렇다면 이처럼 비효율적으로 저장된 File을 하나의 Block으로 저장하는 방법을 알아보겠습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;hiveql-case&quot;&gt;HiveQL case&lt;/h2&gt;
-
-&lt;p&gt;널리 알려져있고 간단한 방법은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hive.merge&lt;/code&gt; 조건을 설정하여 file write 단계에서 small file들을 병합시키도록 강제할 수 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;-- hive.merge 옵션 부여&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapfiles&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- Map 결과 파일에 대해 merge를 허용&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapredfiles&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- MapReducer 결과 파일에 대해 merge를 허용&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;per&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;128000000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- 128MB의 file로  merge&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;smallfiles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avgsize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;128000000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- 128MB 이하의 small file들을 merge 대상으로 지정&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;INSERT가 Mapper-Only Task라는 점에 착안한다면, Reducer 작업을 추가해줌으로써 small file 문제를 해결할 수도 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outputtable&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- 아래 쿼리 실행 결과에 대해서 Mapper만 동작하여 file write&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;COUNT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;AVG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cost&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-	     &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;itemid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;itemid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;SORT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- SORT BY가 추가됨으로써 해당 쿼리는 Reducer가 추가됩니다.&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;두 방법을 동시에 사용한다면 더 높은 효율을 보이게 됩니다. Reducer를 거친 결과를 merge하는 것이 file read만 수행한 mapper-only에 비해 merge해야할 파일 개수가 적기 때문입니다. (다른 말로 하면 이미 어느 정도 수준의 merge를 거쳤다는 의미입니다)&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapfiles&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- Map 결과 파일에 대해 merge를 허용&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapredfiles&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- MapReducer 결과 파일에 대해 merge를 허용&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;per&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;128000000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- 128MB의 file로  merge&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merge&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;smallfiles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avgsize&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;128000000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- 128MB 이하의 small file들을 merge 대상으로 지정&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outputtable&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- 아래 쿼리 실행 결과에 대해서 Mapper만 동작하여 file write&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;COUNT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-       &lt;span class=&quot;k&quot;&gt;AVG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cost&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;b&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-       &lt;span class=&quot;k&quot;&gt;JOIN&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;ON&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;itemid&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;itemid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;SORT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;a&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vendor&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- SORT BY가 추가됨으로써 해당 쿼리는 Reducer가 추가됩니다.&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;-- 1) SORT BY에 의해 먼저 Reducer 작업을 한번 수행한 다음&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;-- 2) hive.merge가 동작하게 됩니다&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;spark-case&quot;&gt;Spark case&lt;/h2&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repartition&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;coalesce&lt;/code&gt;  를 통해 output file의 개수를 조정할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repartition&lt;/code&gt; 은 shuffle을 수행하여 RDD를 재조정해주는데 비해,  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;coalesce&lt;/code&gt; 는 shuffle을 수행하지 않고 지정된 개수의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt;으로 조정합니다.&lt;/p&gt;
-
-&lt;p&gt;그럼  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt;이 무엇인지를 알아야 이 원리를 이해할 수 있을 것 같습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt; 이란 spark 내에서 task가 처리하는 데이터의 단위를 의미합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt;(혹은 이들로 이루어진 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;)는 여러 개의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt;으로 이루어져있고, 하나의 task가 하나의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt;을 담당하여 작업을 수행합니다.&lt;/p&gt;
-
-&lt;p&gt;이러한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partition&lt;/code&gt;은 3개로 분류됩니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;partition&lt;/th&gt;
-      &lt;th&gt;configuration&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Input Partition&lt;/td&gt;
-      &lt;td&gt;spark.sql.files.maxPartitionBytes&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Output Partition&lt;/td&gt;
-      &lt;td&gt;repartition, coalesce&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Shuffle Partition&lt;/td&gt;
-      &lt;td&gt;spark.sql.shuffle.partitions&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;이 중에 Output Partition을 조정하여, 파일 개수를 적절히 조절해줍니다.  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;repartition&lt;/code&gt; 은   RDD, DataSet, DataFrame과 같은 객체 내부의 partition에 저장될 데이터를 재조정해주는 역할을 합니다. 이때 &lt;strong&gt;shuffle&lt;/strong&gt;을 통해, 해당 객체 내부의 데이터들을 재분배하게 됩니다. 이에 비해  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;coalesce&lt;/code&gt;는 현재  partition 개수보다 적게 만드는 것이 목적이므로, 재조정하지 않고(&lt;strong&gt;shuffle 하지 않고&lt;/strong&gt;), partition에 존재하는 데이터를 단순히 다른 partition에 욱여 넣는 작업입니다.&lt;/p&gt;
-
-&lt;p&gt;따라서 Output Partition을 적절히 사용하여, output file size가 128MB 이하가 되지 않도록 조정하여 저장하면 됩니다. 아래 예시 코드를 남기며 글을 마치겠습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT id, grade FROM student&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;coalesce&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;append&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;test_table&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;[참고]&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://faqreviews.net/question/what-is-hdfs-data-block/&quot;&gt;what is HDFS Data Block&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://www.hdfstutorial.com/hdfs-architecture/block-replication-in-hadoop/&quot;&gt;Block Replication in Hadoop&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://forum.huawei.com/enterprise/en/fi-components-relationship-between-spark-and-hdfs/thread/606704-893&quot;&gt;Relationship between Spark and HDFS&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://tech.kakao.com/2021/10/08/spark-shuffle-partition/&quot;&gt;Spark Shuffle Partition과 최적화&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://docs.cloudera.com/best-practices/latest/impala-performance/topics/bp-impala-avoiding-small-files.html&quot;&gt;Avoiding small files&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://118k.tistory.com/750&quot;&gt;[hive] 작은 사이즈의 파일 머지 설정과 그로 인한 오버헤드&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://3months.tistory.com/536&quot;&gt;하둡과 응용 프레임워크 2) 하둡 실행 환경 (YARN, Tez, Spark)&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">HDFS에서 작은 용량의 파일들을 하나의 파일로 합치기</summary></entry></feed>
+&lt;p&gt;패스트캠퍼스 - 컴퓨터 공학 전공 필수 올인원 패키지 Online.&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="python" /><summary type="html">Python - Thread, Mutex, Semaphore</summary></entry></feed>
