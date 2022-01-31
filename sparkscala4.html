@@ -11,7 +11,7 @@
 
 
 
-    <title>Learning Apache Spark 3 with Scala (Section3)</title>
+    <title>Learning Apache Spark 3 with Scala (Section4)</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,15 +37,20 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/sparkscala3" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/sparkscala4" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Learning Apache Spark 3 with Scala (Section3)" />
-    <meta property="og:description" content="Learning Apache Spark 3 with Scala (Section3 - RDD &amp; RDD Action) What is RDD?  RDD는 복원력 있는(Resilient) 분산(Distributed) 데이터 세트(Dataset)입니다(Spark의 Dataset와는 다른 개념). RDD는 Spark의 오리지널 API이고, 이를 바탕으로 Spark DataFrame, DataSet과 같은 최신 API가 개발되었습니다. 물론, 최근에는 DataFrame, DataSet이 주로 이용되지만 그럼에도 불구하고 RDD를 이해하고 사용할 줄 아는" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/sparkscala3" />
+    <meta property="og:title" content="Learning Apache Spark 3 with Scala (Section4)" />
+    <meta property="og:description" content="Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp; Dataset)
+
+[참고]
+
+Learning Apache Spark 3 with Scala
+" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/sparkscala4" />
     <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
@@ -53,8 +58,13 @@
     <meta property="article:modified_time" content="2022-01-15T22:30:00+09:00" />
     <meta property="article:tag" content="Scala" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Learning Apache Spark 3 with Scala (Section3)" />
-    <meta name="twitter:description" content="Learning Apache Spark 3 with Scala (Section3 - RDD &amp; RDD Action) What is RDD?  RDD는 복원력 있는(Resilient) 분산(Distributed) 데이터 세트(Dataset)입니다(Spark의 Dataset와는 다른 개념). RDD는 Spark의 오리지널 API이고, 이를 바탕으로 Spark DataFrame, DataSet과 같은 최신 API가 개발되었습니다. 물론, 최근에는 DataFrame, DataSet이 주로 이용되지만 그럼에도 불구하고 RDD를 이해하고 사용할 줄 아는" />
+    <meta name="twitter:title" content="Learning Apache Spark 3 with Scala (Section4)" />
+    <meta name="twitter:description" content="Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp; Dataset)
+
+[참고]
+
+Learning Apache Spark 3 with Scala
+" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
     <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
     <meta name="twitter:label1" content="Written by" />
@@ -75,7 +85,7 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/sparkscala3",
+    "url": "https://gyuhoonk.github.io/sparkscala4",
     "image": {
         "@type": "ImageObject",
         "url": "https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png",
@@ -84,9 +94,14 @@
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/sparkscala3"
+        "@id": "https://gyuhoonk.github.io/sparkscala4"
     },
-    "description": "Learning Apache Spark 3 with Scala (Section3 - RDD &amp; RDD Action) What is RDD?  RDD는 복원력 있는(Resilient) 분산(Distributed) 데이터 세트(Dataset)입니다(Spark의 Dataset와는 다른 개념). RDD는 Spark의 오리지널 API이고, 이를 바탕으로 Spark DataFrame, DataSet과 같은 최신 API가 개발되었습니다. 물론, 최근에는 DataFrame, DataSet이 주로 이용되지만 그럼에도 불구하고 RDD를 이해하고 사용할 줄 아는"
+    "description": "Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp; Dataset)
+
+[참고]
+
+Learning Apache Spark 3 with Scala
+"
 }
     </script>
 
@@ -99,7 +114,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="Learning Apache Spark 3 with Scala (Section3)" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Learning Apache Spark 3 with Scala (Section4)" href="/feed.xml" />
 
     
 </head>
@@ -189,7 +204,7 @@ into the {body} of the default.hbs template -->
                         
                     
                 </section>
-                <h1 class="post-full-title">Learning Apache Spark 3 with Scala (Section3)</h1>
+                <h1 class="post-full-title">Learning Apache Spark 3 with Scala (Section4)</h1>
             </header>
 
             <!-- 
@@ -199,159 +214,7 @@ into the {body} of the default.hbs template -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>Learning Apache Spark 3 with Scala (Section3 - <code class="language-plaintext highlighter-rouge">RDD</code> &amp; <code class="language-plaintext highlighter-rouge">RDD Action</code>)</p>
-
-<h1 id="what-is-rdd">What is RDD?</h1>
-
-<p> RDD는 복원력 있는(Resilient) 분산(Distributed) 데이터 세트(Dataset)입니다(Spark의 <code class="language-plaintext highlighter-rouge">Dataset</code>와는 다른 개념). RDD는 Spark의 오리지널 API이고, 이를 바탕으로 Spark <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">DataSet</code>과 같은 최신 API가 개발되었습니다. 물론, 최근에는 <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">DataSet</code>이 주로 이용되지만 그럼에도 불구하고 RDD를 이해하고 사용할 줄 아는 것은 필수적입니다. 이는 1. 여전히 RDD가 효율적인 솔루션이며 2. RDD를 사용하는 타사 라이브러리의 레거시 코드를 분석할 수 있으며, 3. RDD가 Spark의 핵심 API이기 때문입니다.</p>
-
-<p>RDD는 기본적으로 일련의 데이터(Dataset)입니다. 또한 행(row)로 나뉘어져 있기 때문에 각 행들을 서로 다른 컴퓨터에 분배(Distributed)하여 병렬 처리할 수 있습니다. 여기서 Resilient란 Spark가 RDD에서 실행되는 작업을 어떤 식으로든 이루어지도록 해준다는 의미입니다. 즉, 작동 도중에 한 노드(node)에서 문제가 발생하면 상황을 파악하고 새로운 노드로 전환시켜 해당 문제 상황을 해결하고자 합니다.</p>
-
-<p>RDD의 이러한 분산, 복원력이라는 특성을 위해서는 SparkContext를 먼저 만들어야합니다. SparkContext 오브젝트는 RDD의 복원(Resilient)과 분산(Distributed)을 가능하게 합니다. 이 과정에서 우리는 노드/하드웨어 장애 발생 시 어떻게 처리할지, 전체 클러스터에 데이터를 어떻게 배포해야하는지에 대해는 작성하지 않습니다. 이러한 작업은 SparkContext 내의 RDD 객체가 자동으로 찾습니다! 오로지 우리가 신경써야할 부분은 데이터의 변환(transformation)입니다.</p>
-
-<h1 id="creating-rdds">Creating RDD’s</h1>
-
-<p>RDD 객체를 생성하는 대표적인 몇 가지 방법에 대해 알아보겠습니다.</p>
-
-<p>가장 간단하게는 <code class="language-plaintext highlighter-rouge">List</code> 객체를 전달하는 방법이 있습니다.</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">nums</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallezize</span><span class="o">(</span><span class="nc">List</span><span class="o">((</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">)))</span>
-</code></pre></div></div>
-
-<p>저장되어있는 데이터를 RDD 객체로 불러오는 것도 가능합니다.</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Local에 저장된 txt 파일 불러오기</span>
-<span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="s">"file:///C:/Users/frank/gobs-o-text.txt"</span><span class="o">)</span>
-<span class="c1">// 이와 같은 저장소에서도 불러올 수 있습니다(s3n://, hdfs://)</span>
-</code></pre></div></div>
-
-<p>Hive에서도 불러올 수 있습니다. 이 경우 HiveContext를 선언해야합니다.</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">hiveCtx</span><span class="k">=</span><span class="nc">HiveContext</span><span class="o">(</span><span class="n">sc</span><span class="o">)</span>
-<span class="n">rows</span> <span class="k">=</span> <span class="nv">hiveCtx</span><span class="o">.</span><span class="py">sql</span><span class="o">(</span><span class="s">"SELECT name, age FROM users"</span><span class="o">)</span>
-</code></pre></div></div>
-
-<p> 이외에도  JDBC, cassandra, Hbase, ElasticSeartch, JSON, CSV  등 여러 포맷과 데이터소스로부터 RDD를 생성할 수 있습니다.</p>
-
-<h1 id="transforming-rdds">Transforming RDD’s</h1>
-
-<ul>
-  <li>
-    <p>map</p>
-
-    <p>MapReduce처럼 작동하여 RDD의 모든 행에 어떤 기능을 적용할 수 있게 해줍니다. map은 원본 RDD 행과 결과  RDD 행이 1:1 관계를 가집니다.</p>
-
-    <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">rdd</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">parallezize</span><span class="o">(</span><span class="nc">List</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="o">,</span><span class="mi">4</span><span class="o">))</span>
-<span class="k">val</span> <span class="nv">squared</span> <span class="k">=</span> <span class="nv">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="o">)</span>
-<span class="nf">println</span><span class="o">(</span><span class="n">squared</span><span class="o">)</span>
-<span class="c1">// 1, 4, 9, 16</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>flatmap</p>
-
-    <p>map과 유사하지만 1:1 관계를 갖지 않습니다. 원본 RDD 행 하나로부터 여러 행을 만들 수 있습니다. 예를 들어, RDD 행이 List라면 flatmap을 적용하여 각각의 행으로 나눌 수 있습니다.</p>
-
-    <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// input = "Hello World!" 1 row RDD </span>
-<span class="k">val</span> <span class="nv">words</span> <span class="k">=</span> <span class="nv">input</span><span class="o">.</span><span class="py">flatMap</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nv">x</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">"\\W+"</span><span class="o">))</span>
-<span class="c1">// Hello, World : 2 rows RDD</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>filter</p>
-
-    <p>데이터를 삭제하고 정리할 수 있습니다. 적용하는 함수의 결과가 false인 행은 버려집니다.</p>
-
-    <div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">minTemps</span> <span class="k">=</span> <span class="nv">parsedLines</span><span class="o">.</span><span class="py">filter</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nv">x</span><span class="o">.</span><span class="py">_2</span> <span class="o">==</span> <span class="s">"TMIN"</span><span class="o">)</span>
-<span class="c1">// minTepms는 각 row의 2번째 field가 "TMIN"인 경우로 필터링됨</span>
-</code></pre></div>    </div>
-  </li>
-  <li>
-    <p>distinct</p>
-
-    <p>중복되는 값을 제거합니다.</p>
-  </li>
-  <li>
-    <p>sample</p>
-
-    <p>표본을 추출합니다.</p>
-  </li>
-  <li>
-    <p>union, intersection, subtract, cartesian, etc.</p>
-  </li>
-</ul>
-
-<h1 id="rdd-actions">RDD Actions</h1>
-
-<p>Transform을 적용한 RDD 결과는 Action을 통해 반환받을 수 있습니다. Spark의 기본적인 전략은 Lazy Evaluation이기 때문에 action이 호출되기 전까지 Spark는 어떠한 연산도 수행하지 않습니다. 따라서 action이 실행되기 전까지 최적화하지 않다가 action이 호출되는 순간, Spark는 Directed Acyclic Graph를 생성하여 최적화 작업을 시작합니다.</p>
-
-<p>Action은 RDD를 collapse하여 Driver Script로 반환합니다. 다음과 같은 action들이 존재합니다.</p>
-
-<ul>
-  <li>
-    <p>collect</p>
-
-    <p>RDD에 있는 모든 데이터 행을 반환합니다.</p>
-  </li>
-  <li>
-    <p>count</p>
-
-    <p>RDD에 있는 데이터 행의 개수를 반환합니다.</p>
-  </li>
-  <li>
-    <p>countByValue</p>
-
-    <p>key-value 형식의 RDD에 대해서 key에 대해 몇 개의 행이 존재하는지 반환합니다.</p>
-  </li>
-  <li>
-    <p>take</p>
-  </li>
-  <li>
-    <p>top</p>
-  </li>
-  <li>
-    <p>reduce</p>
-  </li>
-  <li>
-    <p>and more …</p>
-  </li>
-</ul>
-
-<h1 id="practice--totalspentbycustormerscala">Practice : TotalSpentByCustormer.scala</h1>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">package</span> <span class="nn">com.sundogsoftware.spark</span>
-<span class="k">import</span> <span class="nn">org.apache.spark._</span>
-<span class="k">import</span> <span class="nn">org.apache.log4j._</span>
-
-<span class="k">object</span> <span class="nc">TotalSpentByCustormerGyuhoon</span> <span class="o">{</span>
-  <span class="k">def</span> <span class="nf">parseLine</span><span class="o">(</span><span class="n">line</span><span class="k">:</span><span class="kt">String</span><span class="o">)</span><span class="k">:</span> <span class="o">(</span><span class="kt">Int</span><span class="o">,</span> <span class="kt">Float</span><span class="o">)</span> <span class="k">=</span> <span class="o">{</span>
-    <span class="k">val</span> <span class="nv">fields</span> <span class="k">=</span> <span class="nv">line</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="s">","</span><span class="o">)</span>
-    <span class="k">val</span> <span class="nv">field1</span> <span class="k">=</span> <span class="nf">fields</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="py">toInt</span> <span class="c1">// first field</span>
-    <span class="k">val</span> <span class="nv">field2</span> <span class="k">=</span> <span class="nf">fields</span><span class="o">(</span><span class="mi">2</span><span class="o">).</span><span class="py">toFloat</span> <span class="c1">// thrid field</span>
-    <span class="o">(</span><span class="n">field1</span><span class="o">,</span> <span class="n">field2</span><span class="o">)</span>
-  <span class="o">}</span>
-
-  <span class="k">def</span> <span class="nf">main</span><span class="o">(</span><span class="n">args</span><span class="k">:</span> <span class="kt">Array</span><span class="o">[</span><span class="kt">String</span><span class="o">])</span><span class="k">:</span> <span class="kt">Unit</span> <span class="o">=</span> <span class="o">{</span>
-     <span class="c1">// Set log level</span>
-    <span class="nv">Logger</span><span class="o">.</span><span class="py">getLogger</span><span class="o">(</span><span class="s">"org"</span><span class="o">).</span><span class="py">setLevel</span><span class="o">(</span><span class="nv">Level</span><span class="o">.</span><span class="py">ERROR</span><span class="o">)</span>
-    <span class="c1">// SparkContext</span>
-    <span class="k">val</span> <span class="nv">sc</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">SparkContext</span><span class="o">(</span><span class="n">master</span><span class="o">=</span><span class="s">"local[*]"</span><span class="o">,</span> <span class="c1">// User All CPU</span>
-                              <span class="n">appName</span><span class="o">=</span><span class="s">"TotalSpentByCustormerGyuhoon"</span><span class="o">)</span> 
-    												
-    <span class="k">val</span> <span class="nv">lines</span> <span class="k">=</span> <span class="nv">sc</span><span class="o">.</span><span class="py">textFile</span><span class="o">(</span><span class="s">"data/customer-orders.csv"</span><span class="o">)</span>
-    <span class="c1">// map -&gt; 1:1 trnasformtaion</span>
-    <span class="k">val</span> <span class="nv">parsedLines</span> <span class="k">=</span> <span class="nv">lines</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">parseLine</span><span class="o">)</span>
-    <span class="c1">// reduceByKey(trnasformtaion)</span>
-    <span class="k">val</span> <span class="nv">totalAmountByID</span> <span class="k">=</span> <span class="nv">parsedLines</span><span class="o">.</span><span class="py">reduceByKey</span><span class="o">(</span> <span class="o">(</span><span class="n">x</span><span class="o">,</span><span class="n">y</span><span class="o">)</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="o">)</span>
-    <span class="c1">// map &amp; sortByKey(trnasformtaion)</span>
-    <span class="k">val</span> <span class="nv">idByTotal</span> <span class="k">=</span> <span class="nv">totalAmountByID</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="nv">x</span><span class="o">.</span><span class="py">_2</span><span class="o">,</span> <span class="nv">x</span><span class="o">.</span><span class="py">_1</span><span class="o">)).</span><span class="py">sortByKey</span><span class="o">()</span>
-    <span class="c1">// collect(action)</span>
-    <span class="k">val</span> <span class="nv">results</span> <span class="k">=</span> <span class="nv">idByTotal</span><span class="o">.</span><span class="py">collect</span><span class="o">()</span>
-    <span class="c1">// Print the results.</span>
-    <span class="nv">results</span><span class="o">.</span><span class="py">foreach</span><span class="o">(</span><span class="n">println</span><span class="o">)</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
+                    <p>Learning Apache Spark 3 with Scala (Section4 - <code class="language-plaintext highlighter-rouge">DataFrame</code> &amp; <code class="language-plaintext highlighter-rouge">Dataset</code>)</p>
 
 <p>[참고]</p>
 
@@ -410,9 +273,9 @@ into the {body} of the default.hbs template -->
                     <div id="disqus_thread"></div>
                     <script>
                         var disqus_config = function () {
-                            var this_page_url = 'https://gyuhoonk.github.io/sparkscala3';
-                            var this_page_identifier = '/sparkscala3';
-                            var this_page_title = 'Learning Apache Spark 3 with Scala (Section3)';
+                            var this_page_url = 'https://gyuhoonk.github.io/sparkscala4';
+                            var this_page_identifier = '/sparkscala4';
+                            var this_page_title = 'Learning Apache Spark 3 with Scala (Section4)';
                         };
                         (function() {
                             var d = document, s = d.createElement('script');
@@ -459,14 +322,14 @@ into the {body} of the default.hbs template -->
                                 
                                   
                                     
-                                        
-                                        
-                                            <li><a href="/sparkscala4">Learning Apache Spark 3 with Scala (Section4)</a></li>
-                                        
-                                    
                                   
                                 
                                   
+                                    
+                                        
+                                        
+                                            <li><a href="/sparkscala3">Learning Apache Spark 3 with Scala (Section3)</a></li>
+                                        
                                     
                                   
                                 
@@ -534,18 +397,14 @@ into the {body} of the default.hbs template -->
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/sparkscala4">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/scala-banner-post.png)"></div>
+            <a class="post-card-image-link" href="/hadoop-distcp">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/distcp.png)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/sparkscala4">
+            <a class="post-card-content-link" href="/hadoop-distcp">
                 <header class="post-card-header">
                     
-                        
-                            
-                               <span class="post-card-tags">Scala</span>
-                            
                         
                             
                                 <span class="post-card-tags">Hadoop</span>
@@ -553,11 +412,11 @@ into the {body} of the default.hbs template -->
                         
                     
 
-                    <h2 class="post-card-title">Learning Apache Spark 3 with Scala (Section4)</h2>
+                    <h2 class="post-card-title">hadoop distcp</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp; Dataset)
+                        <p>hadoop distcp 명령어
 
 </p>
                     
@@ -577,7 +436,7 @@ into the {body} of the default.hbs template -->
                 <span class="reading-time">
                     
                     
-                      1 min read
+                      3 min read
                     
                 </span>
             </footer>
@@ -592,26 +451,30 @@ into the {body} of the default.hbs template -->
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/DBCP">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/database/dbcp-banner.png)"></div>
+            <a class="post-card-image-link" href="/sparkscala3">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/scala-banner-post.png)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/DBCP">
+            <a class="post-card-content-link" href="/sparkscala3">
                 <header class="post-card-header">
                     
                         
                             
-                                <span class="post-card-tags">Database</span>
+                               <span class="post-card-tags">Scala</span>
+                            
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
                             
                         
                     
 
-                    <h2 class="post-card-title">DataBase Connection Pool</h2>
+                    <h2 class="post-card-title">Learning Apache Spark 3 with Scala (Section3)</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>DBCP(DataBase Connection Pool)에 대해서
+                        <p>Learning Apache Spark 3 with Scala (Section3 - RDD &amp; RDD Action)
 
 </p>
                     
@@ -653,18 +516,18 @@ into the {body} of the default.hbs template -->
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">Learning Apache Spark 3 with Scala (Section3)</div>
+    <div class="floating-header-title">Learning Apache Spark 3 with Scala (Section4)</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Learning+Apache+Spark+3+with+Scala+%28Section3%29&amp;url=https://gyuhoonk.github.iosparkscala3"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Learning+Apache+Spark+3+with+Scala+%28Section4%29&amp;url=https://gyuhoonk.github.iosparkscala4"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iosparkscala3"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iosparkscala4"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 

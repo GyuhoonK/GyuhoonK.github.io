@@ -230,7 +230,7 @@ into the {body} of the default.hbs template -->
 
 <p>INSERT 이후 LOCATION에는 아래처럼 파일이 저장됩니다.</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hdfs dfs <span class="nt">-ls</span> /user/hive/warehouse/default.db/bucketed_tbl
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hdfs dfs <span class="nt">-ls</span> /user/hive/warehouse/default.db/bucketed_tbl
 /user/hive/warehouse/default.db/bucketed_tbl/p_date<span class="o">=</span>20211010/000000_0
 /user/hive/warehouse/default.db/bucketed_tbl/p_date<span class="o">=</span>20211010/000000_1
 /user/hive/warehouse/default.db/bucketed_tbl/p_date<span class="o">=</span>20211010/000000_2
@@ -240,7 +240,7 @@ into the {body} of the default.hbs template -->
 
 <p><code class="language-plaintext highlighter-rouge">p_date=20211010</code> partition을 한번 더 INSERT하면, <code class="language-plaintext highlighter-rouge">_copy1</code>이 붙은 bucket file들이 저장됩니다.</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hdfs dfs <span class="nt">-ls</span> /user/hive/warehouse/default.db/bucketed_tbl
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hdfs dfs <span class="nt">-ls</span> /user/hive/warehouse/default.db/bucketed_tbl
 /user/hive/warehouse/default.db/bucketed_tbl/p_date<span class="o">=</span>20211010/000000_0
 /user/hive/warehouse/default.db/bucketed_tbl/p_date<span class="o">=</span>20211010/000000_0_copy_1
 /user/hive/warehouse/default.db/bucketed_tbl/p_date<span class="o">=</span>20211010/000000_1
@@ -268,7 +268,7 @@ into the {body} of the default.hbs template -->
 <p>32개의 bucket 파일이 생성될 것 같지만, 이렇게 저장한 경우에 매우 많은 parquet file이 생성된다는 겁니다.</p>
 
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Bucket in Hive에서 저장된 파일들은 모두 삭제했다고 가정하고 조회</span>
-hdfs dfs <span class="nt">-ls</span> /user/hive/warehouse/default.db/bucketed_tbl
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hdfs dfs <span class="nt">-ls</span> /user/hive/warehouse/default.db/bucketed_tbl
 /user/hive/warehouse/default.db/bucketed_tbl/p_date<span class="o">=</span>20211010/part-000000-xxxx-xxxx.parquet
 /user/hive/warehouse/default.db/bucketed_tbl/p_date<span class="o">=</span>20211010/part-000001-xxxx-xxxx.parquet
 ...
@@ -305,7 +305,7 @@ hdfs dfs <span class="nt">-ls</span> /user/hive/warehouse/default.db/bucketed_tb
 
 <p>pyspark로 위와 같이 적재에 성공하더라도, 테이블을 조회하는 쿼리를 실행할 경우 에러를 발생시킵니다.</p>
 
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>hive <span class="nt">-e</span> <span class="s2">"SELECT * FROM default.bucketed_tbl"</span>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hive <span class="nt">-e</span> <span class="s2">"SELECT * FROM default.bucketed_tbl"</span>
 <span class="c"># Error</span>
 </code></pre></div></div>
 
@@ -488,7 +488,16 @@ It doesn't match the specified format 'ParquetFileFormat'.
                                     
                                         
                                         
-                                            <li><a href="/sparkscala3">Learning Apache Spark 3 with Scala (Section2)</a></li>
+                                            <li><a href="/sparkscala4">Learning Apache Spark 3 with Scala (Section4)</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/sparkscala3">Learning Apache Spark 3 with Scala (Section3)</a></li>
                                         
                                     
                                   
@@ -500,8 +509,6 @@ It doesn't match the specified format 'ParquetFileFormat'.
                                   
                                     
                                         
-                                        
-                                            <li><a href="/sparkscala1">Learning Apache Spark 3 with Scala (Section1)</a></li>
                                         
                                     
                                   
@@ -555,7 +562,7 @@ It doesn't match the specified format 'ParquetFileFormat'.
                         <footer class="read-next-card-footer">
                             <a href="/tag/hadoop/">
                                 
-                                    See all 7 posts  →
+                                    See all 8 posts  →
                                 
                             </a>
                         </footer>

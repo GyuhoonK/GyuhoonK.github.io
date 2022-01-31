@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-01-22T19:47:49+09:00</updated>
+  <updated>2022-02-01T00:21:29+09:00</updated>
   <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
 
   
@@ -44,59 +44,68 @@
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;distcp&lt;/code&gt; 명령어는 효율적인 병렬 처리를 통해 파일을 복사합니다. 아래와 같은 명령어로 실행합니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 파일 복사&lt;/span&gt;
-% hadoop distcp file1 file2
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp file1 file2
 &lt;span class=&quot;c&quot;&gt;# hadoop fs -cp file1 file2 와 같은 결과이지만&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# distcp를 이용하는 경우에는 '병렬 처리'하여 복사함&lt;/span&gt;
 
 &lt;span class=&quot;c&quot;&gt;# 디렉토리 복사&lt;/span&gt;
-% hadoop distcp dir1 dir2
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp dir1 dir2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;discp&lt;/code&gt;는 내부적으로는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hadoop fs -cp&lt;/code&gt;명령을 클라이언트가 직접 수행하는 방식이기 때문에 큰 파일의 복사에 더 적합합니다.&lt;/p&gt;
 
 &lt;h1 id=&quot;options&quot;&gt;options&lt;/h1&gt;
 
+&lt;p&gt;https://hadoop.apache.org/docs/stable/hadoop-distcp/DistCp.html&lt;/p&gt;
+
 &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# overwrite&lt;/span&gt;
-% hdfs dfs &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; 
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hdfs dfs &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; 
 &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; dir1 dir2
 
-% hadoop distcp dir1 dir2
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp dir1 dir2
 &lt;span class=&quot;c&quot;&gt;# 이미 dir2가 존재하고 있으므로, dir2의 하위에 dir1을 복사함&lt;/span&gt;
 
-% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; dir1 dir2
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; dir1 dir2
 &lt;span class=&quot;c&quot;&gt;# overwrite 옵션이 있으므로 dir2에 dir1을 덮어씌움&lt;/span&gt;
 
 
 
 &lt;span class=&quot;c&quot;&gt;# update&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# 디렉토리 내에 변경이 있는 파일들만 복사하여 동기화시킵니다.&lt;/span&gt;
-% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-update&lt;/span&gt; dir1 dir2
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-update&lt;/span&gt; dir1 dir2
 &lt;span class=&quot;c&quot;&gt;# dir1 내 파일과 dir2 내 파일을 비교하여 변경된 부분만 dir2에 동기화시킴&lt;/span&gt;
 
 
 
 &lt;span class=&quot;c&quot;&gt;# delete&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;# 원본 경로에는 존재하지 않고, 타겟 경로에만 존재하는 파일들을 지우도록 하는 옵션입니다.&lt;/span&gt;
-% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-delete&lt;/span&gt; dir1 dir2
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-delete&lt;/span&gt; dir1 dir2
 &lt;span class=&quot;c&quot;&gt;# dir1, dir2를 비교하여 dir2에만 존재하는 파일들은 삭제한 뒤 distcp를 수행&lt;/span&gt;
 
 
 
 &lt;span class=&quot;c&quot;&gt;# m&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 몇 개의 mapper를 사용할지 결정합니다. 기본적으로 distcp는 Map-Reduce Job으로 구현되어있으며 클러스터 전반에 걸쳐 병렬로 수행되는 Map Task를 이용하여 복사 작업을 수행합니다. 단, Reducer를 사용하지 않으며 각 파일은 Mapper에서 복사합니다. 이 때 bucketing을 통해 각 Mapper에 거의 같은 양의 데이터를 제공하고자 합니다. 기본값으로 최대 20개의 Mapper가 사용됩니다.&lt;/span&gt;
-% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 100 file1 file2
+&lt;span class=&quot;c&quot;&gt;# 몇 개의 mapper를 사용할지 결정합니다. &lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 기본적으로 distcp는 Map-Reduce Job으로 구현되어있으며 &lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 클러스터 전반에 걸쳐 병렬로 수행되는 Map Task를 이용하여 복사 작업을 수행합니다.&lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 단, Reducer를 사용하지 않으며 각 파일은 Mapper에서 복사합니다. &lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 이 때 bucketing을 통해 각 Mapper에 거의 같은 양의 데이터를 제공하고자 합니다. &lt;/span&gt;
+&lt;span class=&quot;c&quot;&gt;# 기본값으로 최대 20개의 Mapper가 사용됩니다.&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 100 file1 file2
 &lt;span class=&quot;c&quot;&gt;# 100개 Mapper를 사용하여 distcp 수행&lt;/span&gt;
 
 
 
 &lt;span class=&quot;c&quot;&gt;# p&lt;/span&gt;
 &lt;span class=&quot;c&quot;&gt;#복제 시 파일의 권한, 블록 사이즈 등 파일 속성 정보를 보전하려는 경우에 사용됩니다. &lt;/span&gt;
-% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; file1 file2
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; file1 file2
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h1 id=&quot;다른-클러스터namenode간-복사&quot;&gt;다른 클러스터(namenode)간 복사&lt;/h1&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hadoop distcp webhdfs://namenode1:14000/foo webhdfs://namenode2:14000/foo
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp webhdfs://namenode1:14000/foo webhdfs://namenode2:14000/foo
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;위처럼 namenode1에서 namenode2로 파일을 복사할 수 있습니다. 이 경우에 webHDFS 프로토콜을 이용합니다. webHDFS 프로토콜 대신에 HttpFs 프록시 방식으로 distcp의 소스 혹은 타깃을 변경할 수도 있다. HttpFs 프록시 방식은 방화벽, 대역폭 설정을 할 수 있다는 장점이 있습니다.&lt;/p&gt;
@@ -137,7 +146,7 @@
 
 &lt;p&gt;예를 들어, namenode1에 아래와 같은 테이블이 있다고 가정해보겠습니다.&lt;/p&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'SELECT * FROM default.table_1'&lt;/span&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'SELECT * FROM default.table_1'&lt;/span&gt;
 +-------+---------+
 | col1  |  col2   |
 +-------+---------+
@@ -154,10 +163,10 @@
 &lt;/ol&gt;
 
 &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# namenode1에서 실행&lt;/span&gt;
-% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; webhdfs://namenode1:14000/user/hive/warehouse/default.db/table_1 webhdfs://namenode2:14000/user/hive/warehouse/default.db/table_1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; webhdfs://namenode1:14000/user/hive/warehouse/default.db/table_1 webhdfs://namenode2:14000/user/hive/warehouse/default.db/table_1
 
 &lt;span class=&quot;c&quot;&gt;#namenode2에서 distcp 결과 확인&lt;/span&gt;
-% hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/table_1
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode2~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/table_1
 &lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive          0 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/_SUCCESS
 &lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        340 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00000-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
 &lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        544 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00166-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
@@ -169,7 +178,7 @@
   &lt;li&gt;create statement 확인&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'SHOW CREATE TABLE default.table_1'&lt;/span&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'SHOW CREATE TABLE default.table_1'&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;----------------------------------------------------+&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;                   &lt;span class=&quot;n&quot;&gt;createtab_stmt&lt;/span&gt;                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
@@ -199,7 +208,7 @@
 
 &lt;p&gt;아래와 같이 명령어를 조합하면 쿼리문만 파일로 저장할 수 있습니다.&lt;/p&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'show create table default.table_1'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/|//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/+//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/createtab_stmt//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/WARN/d'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; create.sql 2&amp;gt;/dev/null&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;';'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; create.sql
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'show create table default.table_1'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/|//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/+//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/createtab_stmt//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/WARN/d'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; create.sql 2&amp;gt;/dev/null&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;';'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; create.sql
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ol&gt;
@@ -207,19 +216,16 @@
 &lt;/ol&gt;
 
 &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# namenode1&lt;/span&gt;
-% hdfs dfs &lt;span class=&quot;nt&quot;&gt;-copyFromLocal&lt;/span&gt; create.sql hdfs://nameservice1/create.sql
-% hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; webhdfs://namenode1:14000/create.sql webhdfs://namenode2:14000/create.sql
-
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;scp create.sql gyuhoonk@namenode2:/home/gyuhoonk/
 &lt;span class=&quot;c&quot;&gt;# namenode2&lt;/span&gt;
-% hdfs dfs &lt;span class=&quot;nt&quot;&gt;-copyToLocal&lt;/span&gt; hdfs://nameservice1/create.sql create.sql
-% hive &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; create.sql
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode2~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hive &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; create.sql
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ol&gt;
   &lt;li&gt;Partitioned table인 경우에는 TABLE REPAIR 실행&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;% hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'MSCK REPAIR TABLE defulat.table_1'&lt;/span&gt;
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode2~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'MSCK REPAIR TABLE defulat.table_1'&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;[참고]&lt;/p&gt;
@@ -255,12 +261,52 @@
     </entry>
   
     <entry>
-      <title type="html">Learning Apache Spark 3 with Scala (Section2)</title>
-      <link href="https://gyuhoonk.github.io/sparkscala3" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section2)" />
+      <title type="html">Learning Apache Spark 3 with Scala (Section4)</title>
+      <link href="https://gyuhoonk.github.io/sparkscala4" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section4)" />
+      <published>2022-01-15T22:30:00+09:00</published>
+      <updated>2022-01-15T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/sparkscala4</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala4">&lt;p&gt;Learning Apache Spark 3 with Scala (Section4 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;)&lt;/p&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="scala" />
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html">Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp;amp; Dataset)</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">Learning Apache Spark 3 with Scala (Section3)</title>
+      <link href="https://gyuhoonk.github.io/sparkscala3" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section3)" />
       <published>2022-01-15T22:30:00+09:00</published>
       <updated>2022-01-15T22:30:00+09:00</updated>
       <id>https://gyuhoonk.github.io/sparkscala3</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala3">&lt;p&gt;Learning Apache Spark 3 with Scala (Section2 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD Action&lt;/code&gt;)&lt;/p&gt;
+      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala3">&lt;p&gt;Learning Apache Spark 3 with Scala (Section3 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD Action&lt;/code&gt;)&lt;/p&gt;
 
 &lt;h1 id=&quot;what-is-rdd&quot;&gt;What is RDD?&lt;/h1&gt;
 
@@ -439,7 +485,7 @@
       
 
       
-        <summary type="html">Learning Apache Spark 3 with Scala (Section2 - RDD &amp;amp; RDD Action)</summary>
+        <summary type="html">Learning Apache Spark 3 with Scala (Section3 - RDD &amp;amp; RDD Action)</summary>
       
 
       
@@ -3256,304 +3302,6 @@ FROM default.t_test;
 
       
         <summary type="html">문자열 탐색에서 사용되는 KMP 알고리즘에 대해서</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">Threading in Python</title>
-      <link href="https://gyuhoonk.github.io/threading-in-python" rel="alternate" type="text/html" title="Threading in Python" />
-      <published>2021-11-01T22:30:00+09:00</published>
-      <updated>2021-11-01T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/threading-in-python</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/threading-in-python">&lt;p&gt;Python - Thread, Mutex, Semaphore&lt;/p&gt;
-
-&lt;h1 id=&quot;thread란-&quot;&gt;Thread란 ?&lt;/h1&gt;
-
-&lt;p&gt;간단하게, 하나의 Process 내에서 여러 개의 작업을 실행할 수 있도록 구현하는 것을 thread라고 합니다. 일반적으로 Process는 하나의 작업만을 CPU에서 실행하도록 구현되지만, Thread를 선언하여 하나의 Process가 여러 개의 Process처럼 동작하도록 합니다. 이는 IPC(InterProcessCommunication)과 비슷한 개념이지만, Thread는 하나의 Process 내에서 여러 작업을 실행하는 것인데 비해 IPC는 다수의 Process가 데이터를 공유한다는 점에서 차이가 있습니다.&lt;/p&gt;
-
-&lt;p&gt;예를 들어, 하나의 thread는 데이터를 처리하는 역할만 수행하고 다른 thread는 데이터 처리 결과를 시각화하는 역할만 수행한다면 데이터를 처리하면서 동시에 실시간으로 데이터가 처리되는 결과를 확인할 수 있습니다. IPC도 같은 목적을 가지고 있습니다.&lt;/p&gt;
-
-&lt;p&gt;Thread는 Process 내의 메모리 공간(Text(Code), Data, Heap)을 공유하기 때문에 Kernel Space를 다루어야하는 IPC에 비해 덜 복잡하게 구현할 수 있습니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt; &lt;/th&gt;
-      &lt;th&gt;Thread&lt;/th&gt;
-      &lt;th&gt;IPC&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;메모리 공간 공유&lt;/td&gt;
-      &lt;td&gt;- 각 thread는 stack 영역을 할당&lt;br /&gt;- Text, Data, Heap 영역에서 thread 간 데이터 공유됨&lt;/td&gt;
-      &lt;td&gt;Kernel Space만 공유됨&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;메모리 사용&lt;/td&gt;
-      &lt;td&gt;4GB 내에서 multi-thread 구현&lt;/td&gt;
-      &lt;td&gt;(Process 개수) * 4GB 필요&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;구현 방법&lt;/td&gt;
-      &lt;td&gt;Library로 제공됨&lt;/td&gt;
-      &lt;td&gt;-Kernel Space를 경유(Pipe, Shared Memory, message queue)&lt;br /&gt;- Process Signal, Socket 이용&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h1 id=&quot;threading-in-python&quot;&gt;Threading in Python&lt;/h1&gt;
-
-&lt;p&gt;python은  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;threading&lt;/code&gt; 패키지를 통해 thread를 간단하게 구현할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;10000번을 카운팅하는 함수를 50회 실행하고자 한다고 가정해보겠습니다.&lt;/p&gt;
-
-&lt;p&gt;이는 아래처럼 thread를 통해 병렬로(동시에) 실행할 수 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;threading&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# thread할 함수 정의
-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;thread_main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-    
-&lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threading&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;thread_main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'g_count = '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;# g_count = 500000
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;현재 Process 내에서 50개의 thread가 구현되었고 이들은 10000번 카운팅하는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thread_main&lt;/code&gt; 함수를 동시에 실행합니다.&lt;/p&gt;
-
-&lt;p&gt;이번에는 10000번이 아니라 1000000번 카운팅하는 것으로 변경하여 thread를 실행해보겠습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;threading&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# thread할 함수 정의
-&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;thread_main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-    
-&lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threading&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;thread_main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'g_count = '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# g_count =  13291376
-# CPU times: user 3.13 s, sys: 29.5 ms, total: 3.16 s
-# Wall time: 3.14 s
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;출력 결과가 50 * 1000000 = 50000000가 나와야할 것 같은데 전혀 이상한 값이 출력되었습니다.&lt;/p&gt;
-
-&lt;p&gt;이러한 현상이 발생하는 이유는 무엇일까요?&lt;/p&gt;
-
-&lt;h1 id=&quot;critical-section&quot;&gt;Critical Section&lt;/h1&gt;
-
-&lt;p&gt;thread들이 Process 내 메모리 공간을 공유하면서 이러한 문제점이 발생합니다.&lt;/p&gt;
-
-&lt;p&gt;위 코드를 간단하게 2개 thread로 바꾸어 보면 아래와 같은 그림이 될 것입니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/thread-in-python-1.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 값을 register로 읽고(Read), register에 1을 더한 뒤(Update) 해당 값을 다시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 에 Write해주는 일련의 과정을 thread들이 수행합니다. 이때 하나의 CPU에서는 위 그림처럼 Thread A - Thread B가(혹은 더 많은 수의 thread가) Contetxt Switching을 통해 교체해가며 해당 작업을 수행합니다. 현재 구현한 Thread를 Read-Update-Write라고 생각하면 위와 같이 덧셈이 누락된 원인이 무엇인지 추론해볼 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;Context Switching이 정말 운 좋게도, 항상 Write가 끝난 뒤에 발생한다면 좋겠지만 실제 Scheduler는 그러한 부분까지 고려하여 Switching 시키지 않습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/thread-in-python-2.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;위 그림처럼, Update 단계 이후 Write하기 직전에 Context Switching이 발생할 수 있습니다. 단계별로 어떤 일이 발생했는지 알아보겠습니다.&lt;/p&gt;
-
-&lt;p&gt;① Read : Thread A는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 를 읽고 register에 저장합니다. ( &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count = 0&lt;/code&gt;)&lt;/p&gt;
-
-&lt;p&gt;② Update :  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 에 1을 더하기 위해, register에 1을 더합니다.&lt;/p&gt;
-
-&lt;p&gt;③ Read : Context Switching이 발생하여, Thread A의 작업 정보는 PCB로 저장(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;register=1&lt;/code&gt;)하고, Thread B를 실행합니다. 이제는 Thread B가 다시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 값을 register로 읽어옵니다.( &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count = 0&lt;/code&gt;)&lt;/p&gt;
-
-&lt;p&gt;④ Update : Thread A의 동작과 마찬가지로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 에 1을 더하기 위해, register에 1을 더합니다.&lt;/p&gt;
-
-&lt;p&gt;⑤ Write : Context Switching이 발생하여 Thread A가 다시 실행됩니다. PCB에서 register값을 읽어들여옵니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;register = 1&lt;/code&gt;). 이제 register의 값을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 에 적어야합니다. PCB에서 읽어온 현재 register 값은 1이므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;는 1이 더해졌습니다. (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count = 1&lt;/code&gt;)&lt;/p&gt;
-
-&lt;p&gt;⑥ Read : 다음 작업을 위해 다시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 값을 register에 등록합니다.&lt;/p&gt;
-
-&lt;p&gt;⑦ Write : Context Switching이 발생하고, Thread B의 PCB에서 register를 읽습니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;register=1&lt;/code&gt;). 이번에는 Thread B가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;에 값을 저장합니다. 현재 register 값이 1이므로 1을 그대로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;에 전달합니다.&lt;/p&gt;
-
-&lt;p&gt;이 시점에서 Thread 작업은 2번 완료되었으므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt;는 2가 되어야하지만 1번의 덧셈이 누락되어 1이 되었음을 확인할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;위와 같은 문제점이 발생하는 이유는 Thread 간 공유되는 변수에 동시에 여러 Thread가 동시에 접근하고 있기 때문입니다. 이처럼, Thread가 동시에 접근하는 경우에 연산 결과, 혹은 데이터 누락이 발생할 수 있는 영역을 &lt;strong&gt;Critical Section&lt;/strong&gt;(임계영역)이라고 부릅니다.&lt;/p&gt;
-
-&lt;p&gt;결과적으로 연산 결과가 13291376와 같이 이상한 값이 출력되는 이유는 카운팅할 숫자가 많아짐에 따라 위 예시 같은 경우들이 다수 발생하였고, 이에 따라 누락된 카운팅이 발생한 것입니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;synchronization---mutex&quot;&gt;Synchronization - Mutex&lt;/h1&gt;
-
-&lt;p&gt;이러한 Critical Section에서 발생하는 문제점을 해결하는 방법을 동기화(synchronization)라고 부릅니다. 상호배제(Mutual Exclusion, MutEx)는 이러한 문제점을 해결하기 위한 동기화 방법 중 하나입니다.&lt;/p&gt;
-
-&lt;p&gt;python에서는 간단하게, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;threading.lock()&lt;/code&gt; 을 통해 상호배제 동기화를 지원하고 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;threading&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;threading&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Lock&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;lock&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;thread_main_mutex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;acquire&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 아래 코드 블록은 한번에 하나의 thread에 의해서만 실행됩니다
-&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-  	&lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt; 
-  &lt;span class=&quot;n&quot;&gt;lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;release&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# lock 해제
-&lt;/span&gt;    
-&lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threading&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;thread_main_mutex&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'g_count = '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# g_count =  50000000
-# CPU times: user 3.02 s, sys: 9.92 ms, total: 3.03 s
-# Wall time: 3.03 s
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;위 코드에서 동기화가 어떻게 작동하는지 단순하게 그려보면, 아래 그림과 같습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/thread-in-python-3.jpg&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lock()&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;release()&lt;/code&gt; 을 적용하게 되면, 위 그림처럼 동작합니다. Thread A가 critical section에서 작업을 하는 동안, Thread B는 critical section의 데이터을 읽거나, 쓸 수 없습니다. 따라서 덧셈(카운팅)이 누락되는 경우가 발생하지 않아 출력 결과가 50000000이 나오는 것을 확인할 수 있습니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;synchronization---semaphore&quot;&gt;Synchronization - Semaphore&lt;/h1&gt;
-
-&lt;p&gt;또 다른 동기화 방법에는 Semaphore가 있습니다. critical section에 동시에 접근할 수 있는 thread를 관리한다는 개념은 같지만, mutex가 이를 1개로 지정하는 것에 비해, semaphore는 N개의 thread가 접근할 수 있도록 지정합니다.&lt;/p&gt;
-
-&lt;p&gt;즉, mutex는 semaphore 동시에 접근 가능한 thread를 1개로 지정한 경우(binary semaphore)로 볼 수 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;threading&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;threading&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Semaphore&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;sem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Semaphore&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;thread_main_semaphore&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;global&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;sem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;acquire&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 아래 코드 블록은 2개 thread가 동시에 실행할 수 있습니다
-&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;sem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;release&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    
-&lt;span class=&quot;n&quot;&gt;threads_sem&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;50&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threading&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Thread&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;target&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;thread_main_semaphore&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;threads_sem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-    
-&lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;        
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threads_sem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; 
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-    
-&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;threads_sem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;n&quot;&gt;th&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'g_count = '&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;g_count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;# g_count =  33725184
-# CPU times: user 3.07 s, sys: 17.1 ms, total: 3.08 s
-# Wall time: 3.08 s
-&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;동기화를 사용하지 않았던 케이스처럼, Semaphore를 지정하는 경우에도 2개 thread가 동시에 접근하게 되므로 덧셈 누락이 발생합니다. 그러나 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;g_count&lt;/code&gt; 값이 33725184로 동기화를 적용하지 않았던 케이스가 13291376인 것과 비교한다면 꽤 많은 덧셈 누락을 방지할 수 있는 것으로 보입니다.&lt;/p&gt;
-
-&lt;p&gt;위 세 가지(동기화 적용 안함, mutex, semaphore)의 계산 결과와 걸리는 시간을 비교해보면서 글을 마치겠습니다.&lt;/p&gt;
-
-&lt;p&gt;1000000으로는 시간 차이가 극명하게 드러나지 않기 때문에 각 thread가 10000000번 카운팅하는 것으로 셋팅하고 실험했습니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt; &lt;/th&gt;
-      &lt;th&gt;time&lt;/th&gt;
-      &lt;th&gt;g_count&lt;/th&gt;
-      &lt;th&gt;success rate&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;No threading&lt;/td&gt;
-      &lt;td&gt;31.9s&lt;/td&gt;
-      &lt;td&gt;500000000&lt;/td&gt;
-      &lt;td&gt;100%&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Only threading&lt;/td&gt;
-      &lt;td&gt;31.0s&lt;/td&gt;
-      &lt;td&gt;32379893&lt;/td&gt;
-      &lt;td&gt;6.48%&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;threading with mutex&lt;/td&gt;
-      &lt;td&gt;30.8s&lt;/td&gt;
-      &lt;td&gt;500000000&lt;/td&gt;
-      &lt;td&gt;100%&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;threading with semaphore&lt;/td&gt;
-      &lt;td&gt;30.6s&lt;/td&gt;
-      &lt;td&gt;327324001&lt;/td&gt;
-      &lt;td&gt;65.46%&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;Q. critical section에 제약을 걸지 않은 Only threading이 mutex, semaphore를 적용한 케이스보다 더 빨리 수행되어야할 것 같은데 더 긴 시간이 소요되었습니다. 이유를 공부해서 아래에 추가하겠습니다..!&lt;/p&gt;
-
-&lt;p&gt;[참고]&lt;/p&gt;
-
-&lt;p&gt;패스트캠퍼스 - 컴퓨터 공학 전공 필수 올인원 패키지 Online.&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="python" />
-      
-
-      
-        <summary type="html">Python - Thread, Mutex, Semaphore</summary>
       
 
       

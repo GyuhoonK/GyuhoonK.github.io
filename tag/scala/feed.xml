@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/scala/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-01-22T19:47:49+09:00</updated>
+  <updated>2022-02-01T00:21:29+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/scala/feed.xml</id>
 
   
@@ -32,12 +32,52 @@
 
   
     <entry>
-      <title type="html">Learning Apache Spark 3 with Scala (Section2)</title>
-      <link href="https://gyuhoonk.github.io/sparkscala3" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section2)" />
+      <title type="html">Learning Apache Spark 3 with Scala (Section4)</title>
+      <link href="https://gyuhoonk.github.io/sparkscala4" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section4)" />
+      <published>2022-01-15T22:30:00+09:00</published>
+      <updated>2022-01-15T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/sparkscala4</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala4">&lt;p&gt;Learning Apache Spark 3 with Scala (Section4 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;)&lt;/p&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="scala" />
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html">Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp;amp; Dataset)</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">Learning Apache Spark 3 with Scala (Section3)</title>
+      <link href="https://gyuhoonk.github.io/sparkscala3" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section3)" />
       <published>2022-01-15T22:30:00+09:00</published>
       <updated>2022-01-15T22:30:00+09:00</updated>
       <id>https://gyuhoonk.github.io/sparkscala3</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala3">&lt;p&gt;Learning Apache Spark 3 with Scala (Section2 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD Action&lt;/code&gt;)&lt;/p&gt;
+      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala3">&lt;p&gt;Learning Apache Spark 3 with Scala (Section3 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD Action&lt;/code&gt;)&lt;/p&gt;
 
 &lt;h1 id=&quot;what-is-rdd&quot;&gt;What is RDD?&lt;/h1&gt;
 
@@ -216,7 +256,7 @@
       
 
       
-        <summary type="html">Learning Apache Spark 3 with Scala (Section2 - RDD &amp;amp; RDD Action)</summary>
+        <summary type="html">Learning Apache Spark 3 with Scala (Section3 - RDD &amp;amp; RDD Action)</summary>
       
 
       
