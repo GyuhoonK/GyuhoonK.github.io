@@ -213,9 +213,7 @@ into the {body} of the default.hbs template -->
 <p><code class="language-plaintext highlighter-rouge">discp</code>는 내부적으로는 <code class="language-plaintext highlighter-rouge">hadoop fs -cp</code>명령을 클라이언트가 직접 수행하는 방식이기 때문에 큰 파일의 복사에 더 적합합니다.</p>
 
 <h1 id="options">options</h1>
-
-<p>https://hadoop.apache.org/docs/stable/hadoop-distcp/DistCp.html</p>
-
+<p><a href="https://hadoop.apache.org/docs/stable/hadoop-distcp/DistCp.html">DistCp Guide</a></p>
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># overwrite</span>
 <span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hdfs dfs <span class="nb">ls</span> 
 <span class="o">&gt;&gt;&gt;</span> dir1 dir2
@@ -492,6 +490,15 @@ into the {body} of the default.hbs template -->
                                 
                                   
                                     
+                                        
+                                        
+                                            <li><a href="/spark-shuffle-partition">Partition, Spill in Spark</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
                                   
                                 
                                   
@@ -519,8 +526,6 @@ into the {body} of the default.hbs template -->
                                   
                                     
                                         
-                                        
-                                            <li><a href="/sparkscala1">Learning Apache Spark 3 with Scala (Section1)</a></li>
                                         
                                     
                                   
@@ -577,7 +582,7 @@ into the {body} of the default.hbs template -->
                         <footer class="read-next-card-footer">
                             <a href="/tag/hadoop/">
                                 
-                                    See all 8 posts  →
+                                    See all 9 posts  →
                                 
                             </a>
                         </footer>
@@ -589,6 +594,57 @@ into the {body} of the default.hbs template -->
             
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/spark-shuffle-partition">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/partition-spill-spark.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/spark-shuffle-partition">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Partition, Spill in Spark</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Partition, Spill in Spark
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      3 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
             
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->

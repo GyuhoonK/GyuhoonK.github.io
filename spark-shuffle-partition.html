@@ -11,7 +11,7 @@
 
 
 
-    <title>EXP-SUM-LOG / LOG-SUM-EXP</title>
+    <title>Partition, Spill in Spark</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,30 +37,30 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/EXP-LOG-SUM" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/spark-shuffle-partition" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="EXP-SUM-LOG / LOG-SUM-EXP" />
-    <meta property="og:description" content="EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서 SUM in SQL SQL은 SUM 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다. 아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다. SELECT * FROM default.t_test; +---+ | a| +---+ | 1| | 2| | 3| | 4| | 5| +---+ SELECT SUM(a) FROM default.t_test; +------+" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/EXP-LOG-SUM" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/overflow-banner.jpg" />
+    <meta property="og:title" content="Partition, Spill in Spark" />
+    <meta property="og:description" content="Partition, Spill in Spark Spark Needs Performance Tuning Spark로 작성된 Application은 실행을 넘어, 최적화가 필요합니다. 이는 Partition 단위로 작업을 실행하는 Spark 특성 때문입니다. 특히, Partition 간 shuffle이 발생하는 경우에 많은 자원과 시간을 소모하게 됩니다. 따라서, Spark Tuning(Optimization)이란 Shuffle 작업 속도를 빠르게 만드는 것과 다름 없습니다. Shuffle 속도를 향상시키기 위해서는 partition" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/spark-shuffle-partition" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/partition-spill-spark.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2021-12-29T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2021-12-29T22:30:00+09:00" />
-    <meta property="article:tag" content="Database" />
+    <meta property="article:published_time" content="2022-02-09T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2022-02-09T22:30:00+09:00" />
+    <meta property="article:tag" content="Hadoop" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="EXP-SUM-LOG / LOG-SUM-EXP" />
-    <meta name="twitter:description" content="EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서 SUM in SQL SQL은 SUM 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다. 아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다. SELECT * FROM default.t_test; +---+ | a| +---+ | 1| | 2| | 3| | 4| | 5| +---+ SELECT SUM(a) FROM default.t_test; +------+" />
+    <meta name="twitter:title" content="Partition, Spill in Spark" />
+    <meta name="twitter:description" content="Partition, Spill in Spark Spark Needs Performance Tuning Spark로 작성된 Application은 실행을 넘어, 최적화가 필요합니다. 이는 Partition 단위로 작업을 실행하는 Spark 특성 때문입니다. 특히, Partition 간 shuffle이 발생하는 경우에 많은 자원과 시간을 소모하게 됩니다. 따라서, Spark Tuning(Optimization)이란 Shuffle 작업 속도를 빠르게 만드는 것과 다름 없습니다. Shuffle 속도를 향상시키기 위해서는 partition" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/overflow-banner.jpg" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/partition-spill-spark.png" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Database" />
+    <meta name="twitter:data2" content="Hadoop" />
     <meta name="twitter:site" content="@" />
     <meta name="twitter:creator" content="@" />
     <meta property="og:image:width" content="1400" />
@@ -75,18 +75,18 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/EXP-LOG-SUM",
+    "url": "https://gyuhoonk.github.io/spark-shuffle-partition",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/overflow-banner.jpg",
+        "url": "https://gyuhoonk.github.io/assets/built/images/hadoop/partition-spill-spark.png",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/EXP-LOG-SUM"
+        "@id": "https://gyuhoonk.github.io/spark-shuffle-partition"
     },
-    "description": "EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서 SUM in SQL SQL은 SUM 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다. 아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다. SELECT * FROM default.t_test; +---+ | a| +---+ | 1| | 2| | 3| | 4| | 5| +---+ SELECT SUM(a) FROM default.t_test; +------+"
+    "description": "Partition, Spill in Spark Spark Needs Performance Tuning Spark로 작성된 Application은 실행을 넘어, 최적화가 필요합니다. 이는 Partition 단위로 작업을 실행하는 Spark 특성 때문입니다. 특히, Partition 간 shuffle이 발생하는 경우에 많은 자원과 시간을 소모하게 됩니다. 따라서, Spark Tuning(Optimization)이란 Shuffle 작업 속도를 빠르게 만드는 것과 다름 없습니다. Shuffle 속도를 향상시키기 위해서는 partition"
 }
     </script>
 
@@ -99,33 +99,8 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="EXP-SUM-LOG / LOG-SUM-EXP" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Partition, Spill in Spark" href="/feed.xml" />
 
-    
-      <script type="text/x-mathjax-config">
-	MathJax.Hub.Config({
-	TeX: {
-		equationNumbers: {
-		autoNumber: "AMS"
-		}
-	},
-	tex2jax: {
-		inlineMath: [ ['$', '$'] ],
-		displayMath: [ ['$$', '$$'] ],
-		processEscapes: true,
-		}
-	});
-	MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-	MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-</script>
-
-<script type="text/javascript" async
-	src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
     
 </head>
 <body class="post-template">
@@ -196,150 +171,145 @@ into the {body} of the default.hbs template -->
 <main id="site-main" class="site-main outer" role="main">
     <div class="inner">
 
-        <article class="post-full  tag-database post tag-database ">
+        <article class="post-full  tag-hadoop post tag-hadoop ">
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="29 December 2021">29 December 2021</time>
+                    <time class="post-full-meta-date" datetime=" 9 February 2022"> 9 February 2022</time>
                     
                         <span class="date-divider">/</span>
                         
                             
-                               <a href='/tag/database/'>DATABASE</a>
+                               <a href='/tag/hadoop/'>HADOOP</a>
                             
                         
                     
                 </section>
-                <h1 class="post-full-title">EXP-SUM-LOG / LOG-SUM-EXP</h1>
+                <h1 class="post-full-title">Partition, Spill in Spark</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/overflow-banner.jpg)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/hadoop/partition-spill-spark.png)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서</p>
+                    <p>Partition, Spill in Spark</p>
 
-<h1 id="sum-in-sql">SUM in SQL</h1>
+<h2 id="spark-needs-performance-tuning">Spark Needs Performance Tuning</h2>
 
-<p>SQL은 <code class="language-plaintext highlighter-rouge">SUM</code> 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다.</p>
+<p>Spark로 작성된 Application은 실행을 넘어, 최적화가 필요합니다. 이는 Partition 단위로 작업을 실행하는 Spark 특성 때문입니다. 특히, Partition 간 shuffle이 발생하는 경우에 많은 자원과 시간을 소모하게 됩니다. 따라서, Spark Tuning(Optimization)이란 Shuffle 작업 속도를 빠르게 만드는 것과 다름 없습니다.</p>
 
-<p>아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다.</p>
+<p>Shuffle 속도를 향상시키기 위해서는 partition 개수를 적절하게 조절해주어야합니다.</p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span> 
-<span class="k">FROM</span> <span class="k">default</span><span class="p">.</span><span class="n">t_test</span><span class="p">;</span>
-<span class="o">+</span><span class="c1">---+</span>
-<span class="o">|</span>  <span class="n">a</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">---+</span>
-<span class="o">|</span>  <span class="mi">1</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">2</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">3</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">4</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">5</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">---+</span>
+<h4 id="spark-partitionsparkdefaultparallelism">Spark Partition(spark.default.parallelism)</h4>
 
-<span class="k">SELECT</span> <span class="k">SUM</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> 
-<span class="k">FROM</span> <span class="k">default</span><span class="p">.</span><span class="n">t_test</span><span class="p">;</span>
-<span class="o">+</span><span class="c1">------+</span>
-<span class="o">|</span><span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">------+</span>
-<span class="o">|</span>    <span class="mi">15</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">------+</span>
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">spark.default.parallelism</code> – Default number of partitions in resilient distributed datasets (RDDs) returned by transformations like <code class="language-plaintext highlighter-rouge">join</code>, <code class="language-plaintext highlighter-rouge">reduceByKey</code>, and <code class="language-plaintext highlighter-rouge">parallelize</code> when no partition number is set by the user.</p>
+</blockquote>
+
+<p>Spark에서 사용하는 <code class="language-plaintext highlighter-rouge">RDD</code>, <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>은 모두 Partition을 가장 작은 단위로 갖습니다. 이 Partition을 단위로 각 Executor의 Core는 작업(Task)를 적용합니다. 이중에 <code class="language-plaintext highlighter-rouge">RDD</code>는 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>에 의해서 partition 값이 결정됩니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">SparkConf</span>
+
+<span class="n">conf</span> <span class="o">=</span> <span class="n">SparkConf</span><span class="p">().</span><span class="n">setAppName</span><span class="p">(</span><span class="s">'spark_partition_test'</span><span class="p">).</span><span class="n">setMaster</span><span class="p">(</span><span class="s">"yarn"</span><span class="p">)</span>
+
+<span class="c1">## 5 cores per executor
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.cores"</span><span class="p">,</span><span class="s">"5"</span><span class="p">)</span> 
+<span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.driver.cores"</span><span class="p">,</span> <span class="s">"5"</span><span class="p">)</span>
+<span class="c1">## 30 executors
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.instances"</span><span class="p">,</span> <span class="s">"30"</span><span class="p">)</span>
+<span class="c1">## 10 GB per executor -&gt; 2GB per core
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.driver.memory"</span><span class="p">,</span><span class="s">"10G"</span><span class="p">)</span>
+<span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.memory"</span><span class="p">,</span><span class="s">"10G"</span><span class="p">)</span>
+<span class="c1">## SparkSession has 30 * 5 cores, which each core has 2GB mem.
+## So, spark.default.parallelism is 150(# of cores), and spark.sql.shuffle.partitions is 200(default)
+</span><span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">enableHiveSupport</span><span class="p">().</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
 </code></pre></div></div>
 
-<h1 id="multiplication-in-sql">Multiplication in SQL</h1>
+<p>따로 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>을 지정하지 않으면 core 개수만큼으로 partition 개수를 지정합니다. 따라서,  기본적으로 <code class="language-plaintext highlighter-rouge">RDD</code>는 150개의 partition으로 분할처리될 것입니다. 이는 core 개수와 같으므로 각 core가 task 1개를 처리하게 될 것입니다. 1개 executor가 5개 core를 가지고 있으므로 아래와 같은 매핑이 총 30개 발생할 것입니다(executor1 ~ executor30).</p>
 
-<p><code class="language-plaintext highlighter-rouge">SUM</code>함수는 기본으로 제공되지만, column의 값을 모두 곱하는 기능은 기본으로 제공되지 않습니다. 이는 <code class="language-plaintext highlighter-rouge">EXP-SUM-LOG</code>를 이용해 구현 가능합니다.</p>
+<p><img src="../../assets/built/images/hadoop/spark-partition-core.png" alt="image" /></p>
 
-<p>EXP-SUM-LOG로 column곱을 구현할 수 있는 이유는 아래와 같은 log의 성질 때문입니다.</p>
+<p>이 때, 1개 Core는 2GB나 되는 memory size를 할당받았고 Partition 1개에 대해서 1개 작업(Task)만 실행합니다. 만약 <code class="language-plaintext highlighter-rouge">RDD</code>가 300GB가 넘는 데이터이고, 각 partition에 균등하게 분할(distribution)되었다면 1개 Partition은 2GB 이상의 크기일 것입니다. 이 경우에 1개 Core가 처리할 수 있는 사이즈(2GB)를 초과하기 때문에 작업 수행 시간은 길어지게 됩니다.</p>
 
-\[log(xy) = log(x) + log(y)\\
-x = exp(log(x))\]
+<p>일반적으로 전체 core 개수의 2배~3배 정도까지 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>을 설정해줄 것을 권장합니다. 따라서 위의 conf setting은 아래 항목을 추가해주어야합니다.</p>
 
-<p>따라서 아래와 같은 수식이 성립합니다.</p>
-
-\[\sum_{i=1}^nlog(x_i)=log(x_1x_2...x_n)\\
-\therefore exp[\sum_{i=1}^nlog(x_i)] = x_1x_2...x_n\]
-
-<p>이를 쿼리로 작성하여 실행하면, 아래와 같은 결과가 출력됩니다.</p>
-
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">EXP</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="n">LOG</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span> <span class="k">AS</span> <span class="n">multiplication</span>
-<span class="k">FROM</span> <span class="k">default</span><span class="p">.</span><span class="n">t_test</span><span class="p">;</span>
-<span class="o">+</span><span class="c1">--------------+</span>
-<span class="o">|</span><span class="n">multiplication</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">--------------+</span>
-<span class="o">|</span><span class="mi">119</span><span class="p">.</span><span class="mi">9999999</span><span class="p">...</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">--------------+</span>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+<span class="c1">## SparkSession has 30 * 5 cores, So proper number of partitions is 150 * 2 or 150 * 3.
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.defualt.parallelism"</span><span class="p">,</span><span class="s">"450"</span><span class="p">)</span>
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">enableHiveSupport</span><span class="p">().</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
 </code></pre></div></div>
 
-<p>1~5를 곱한 값은 120이지만, 계산된 값은 119.9999로 다소 오차가 발생했습니다. 이는 LOG를 거치며 정수가 소수로 변환될 때 부동소수점으로 표현이 되고 이에 따라 소수값 연산에 오차가 발생하기 때문입니다.</p>
+<p>이처럼 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>을 450으로 설정해도 Read Size가 900GB가 넘는다면(!!) partition은 여전히 2GB 이상이 분배됩니다. 따라서 <strong>Cores 수 X 3</strong>이라는 규칙은 참조만 하고, Read Size에 따라 유동적으로 해당 값을 결정해야합니다.</p>
 
-<p>따라서 정확한 계산 결과를 반환하려면 아래와 같이 ROUND를 적용해주어야합니다.</p>
+<h4 id="spark-shuffle-partitions-sparksqlshufflepartitions">Spark Shuffle Partitions (spark.sql.shuffle.partitions)</h4>
 
-<pre><code class="language-SQL">SELECT ROUND(EXP(SUM(LOG(a))), 1) AS multiplication
-FROM default.t_test;
-+--------------+
-|multiplication|
-+--------------+
-|           120|
-+--------------+
-</code></pre>
+<p><code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>의 경우에는 <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>에 의해 partition 개수가 결정됩니다.</p>
 
-<h1 id="log-sum-exp-trick">LOG-SUM-EXP trick</h1>
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code> – Sets the number of partitions for joins and aggregations.</p>
+</blockquote>
 
-<p>반대로, <code class="language-plaintext highlighter-rouge">LOG-SUM-EXP</code>를 이용한 트릭도 존재합니다. 이는 너무 큰 수를 연산하는 경우에 발생하는 <strong>overflow</strong>, 혹은 너무 작은 수를 연산하는 경우엔 발생하는 <strong>underflow</strong>를 피하기 위한 트릭입니다.</p>
+<p>기본적인 개념은 위와 같고, <code class="language-plaintext highlighter-rouge">RDD</code>가 아닌 <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>에 적용되는 옵션이라는 사실만 다릅니다.</p>
 
-<p>\(exp(100) + exp(200)\)을 계산하는 과정을 수식으로 보면 아래와 같습니다.</p>
+<h2 id="what-makes-spark-slower">What makes Spark Slower?</h2>
 
-\[exp(100) + exp(200) \\
-=\dfrac {exp(100) + exp(200)}{exp(100)} * exp(100)\\
-=[exp(0)+exp(100)]*exp(100)\\
-=exp(log([1+exp(100)]*exp(100)))\\
-=exp(log[1+exp(100)] + log(exp(100)))\\
-=exp(log[1+exp(100)] + 100)\]
+<p>가장 큰 이유는 <strong>Shuffle Spill</strong> 때문입니다. partition이 너무 커서 하나의 core(RAM)에 모두 담을 수 없는 경우에 Spill이 발생합니다. 이 때 발생한 Spill은 Disk에 저장되었다가, 연산 필요 시 다시 RAM으로 전달됩니다. 이러한 과정에서 직렬화(serialize)와 역직렬화(deserialize) 과정을 거치기 때문에 Spill이 발생한 Task(즉 partition)은 수행 시간이 늘어나고 Fail이 발생할 확률이 늘어납니다.</p>
 
-<p>간단하게 python으로 이를 확인해보았습니다.</p>
+<blockquote>
+  <p><em>Spill is the term used to refer to the act of moving an RDD from RAM to disk, and later back into RAM again.</em></p>
+</blockquote>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">log</span> 
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">exp</span>
+<p>Shuffle Spill(Disk) 와  Shuffle Spill(Memory)가 있습니다.</p>
 
-<span class="n">num1</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">num2</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="k">print</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="p">)</span><span class="o">+</span><span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="p">))</span>
-<span class="c1"># 74.68368695633191
-</span>
-<span class="n">exp1</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
-<span class="n">exp2</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">exp1</span><span class="o">+</span><span class="n">exp2</span><span class="p">)</span> <span class="o">+</span> <span class="n">num1</span><span class="p">))</span>
-<span class="c1"># 74.68368695633188
-</span></code></pre></div></div>
+<blockquote>
+  <p>“Shuffle spill (memory) is the size of the deserialized form of the data in memory at the time when we spill it, whereas shuffle spill (disk) is the size of the serialized form of the data on disk after we spill it. This is why the latter tends to be much smaller than the former. Note that both metrics are aggregated over the entire duration of the task (i.e. within each task you can spill multiple times).”</p>
+</blockquote>
 
-<p>부동소수점 계산에 따른 오차는 있으나, 같은 값이라 봐도 무방할 값이 나왔습니다. 이러한 방식의 계산트릭은 underflow, overflow가 발생하는 경우에 이를 회피하여 값을 기록하는 트릭으로 이용될 수 있습니다.</p>
+<p>RAM(=memory)에서 Spill이 발생하게 되면 이를 직렬화(serialize)하여 disk에 임시로 저장해둡니다. 직렬화하는 과정에서 메모리는 줄어들게 되므로 일반적으로 Shuffle Spill(Disk)가 Shuffle Spill(Memory)보다 작은 값을 갖습니다.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">num1</span> <span class="o">=</span> <span class="mi">750</span>
-<span class="n">num2</span> <span class="o">=</span> <span class="mi">751</span>
+<p>이후에, Task에서 Disk로 Spill한 데이터를 연산에 사용하기 위해서는 역직렬화(deserialize)하여 RAM으로 로드합니다. 따라서 I/O의 증가, 직렬화/역직렬화 과정이 추가되면서 Task 수행 시간은 늘어나게 됩니다.</p>
 
-<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="p">.</span><span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="p">))</span>
-<span class="c1"># inf
-</span>
-<span class="n">exp1</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
-<span class="n">exp2</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
+<p><img src="../../assets/built/images/hadoop/spill-water.jpg" alt="image" style="zoom:33%;" /></p>
 
-<span class="k">print</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">exp1</span><span class="o">+</span><span class="n">exp2</span><span class="p">)</span> <span class="o">+</span> <span class="n">num1</span><span class="p">)</span>
-<span class="c1"># 751.3132616875182
-</span>
-<span class="c1"># exp(750)+exp(751)은 계산된 적 없으나 
-# 계산결과가 exp(751.3132616875182)이라는 사실은 알 수 있습니다.
-</span></code></pre></div></div>
+<p>​							       컵이 물을 모두 담아내지 못하는 것처럼 memory가 partition을 담아내지 못하고 흘려버리는 것과 같습니다</p>
+
+<h4 id="how-to-remove-spill">How to remove Spill?</h4>
+
+<ul>
+  <li>Memory Size를 늘린다</li>
+</ul>
+
+<p>Task 수행에 사용되는 Core에게 더 큰 RAM을 할당해주면, Shuffle Spill이 발생하지 않을 수 있습니다. 이는 물과 컵에 비유하자면 컵의 크기를 늘리는 방법입니다. 다만 한정된 자원을 공유하며 사용해야하는 다수의 엔지니어들에게는 쉽지 않은 선택일 것입니다. 따라서 보통 아래의 방법을 사용합니다.</p>
+
+<ul>
+  <li>partition size를 줄인다 ( # partition을 늘린다 )</li>
+</ul>
+
+<p>Core에게 전달되는 partition size를 줄여서 Shuffle Spill을 방지할 수 있습니다. 물을 조금씩(smaller partition size) 자주 컵에 담는다면 물이 넘치지않겠죠. Shuffle Read는 데이터가 변하지 않는다면 고정되어있으므로 partition size를 줄인다는 것은 partition 개수를 늘리는 것과 동일합니다.</p>
+
+<p>이를 위해 앞서 살펴보았던 <code class="language-plaintext highlighter-rouge">spark.default.paralleism</code>, <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>와 같은 conf option이 사용될 수 있습니다. 혹은 <code class="language-plaintext highlighter-rouge">df.repartition()</code>처럼 명시적으로 partition 개수를 늘려주는 방법도 있습니다.</p>
+
+<h2 id="마치며">마치며</h2>
+
+<p>실제 일하며 애매하게 알고 있었던 partition, shuffle, spill의 개념을 정리할 수 있었습니다. 적당한 테스트를 만들어서 실제로 수행 시간이 줄어드는 것을 확인해보는 것도 괜찮을 것 같습니다. 읽어주셔서 감사합니다.</p>
 
 <p>[참고]</p>
 
-<p><a href="https://www.py4u.net/discuss/823103">Multiplication aggregate operator in SQL</a></p>
+<p><a href="https://tech.kakao.com/2021/10/08/spark-shuffle-partition/">Spark Shuffle Partition과 최적화</a></p>
 
-<p><a href="https://basicstatistics.tistory.com/entry/logsumexp-trick">log-sum-exp trick</a></p>
+<p><a href="https://luminousmen.com/post/spark-partitions">Spark Partitions</a></p>
 
+<p><a href="https://jaemunbro.medium.com/apache-spark-partition-%EA%B0%9C%EC%88%98%EC%99%80-%ED%81%AC%EA%B8%B0-%EC%A0%95%ED%95%98%EA%B8%B0-3a790bd4675d">[Apache Spark] Partition 개수와 크기 정하기</a></p>
+
+<p><a href="https://aws.amazon.com/ko/blogs/big-data/best-practices-for-successfully-managing-memory-for-apache-spark-applications-on-amazon-emr/">Best practices for successfully managing memory for Apache Spark applications on Amazon EMR</a></p>
+
+<p><a href="https://community.cloudera.com/t5/Support-Questions/Spark-shuffle-spill-Memory/td-p/186859">Spark shuffle spill (Memory)</a></p>
+
+<p><a href="https://medium.com/road-to-data-engineering/spark-performance-optimization-series-2-spill-685126e9d21f">Spark Performance Optimization Series: #2. Spill</a></p>
 
                 </div>
             </section>
@@ -394,9 +364,9 @@ FROM default.t_test;
                     <div id="disqus_thread"></div>
                     <script>
                         var disqus_config = function () {
-                            var this_page_url = 'https://gyuhoonk.github.io/EXP-LOG-SUM';
-                            var this_page_identifier = '/EXP-LOG-SUM';
-                            var this_page_title = 'EXP-SUM-LOG / LOG-SUM-EXP';
+                            var this_page_url = 'https://gyuhoonk.github.io/spark-shuffle-partition';
+                            var this_page_identifier = '/spark-shuffle-partition';
+                            var this_page_title = 'Partition, Spill in Spark';
                         };
                         (function() {
                             var d = document, s = d.createElement('script');
@@ -430,7 +400,7 @@ FROM default.t_test;
                         <header class="read-next-card-header">
                             <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
                             
-                                <h3 class="read-next-card-header-title"><a href="/tag/database/">Database</a></h3>
+                                <h3 class="read-next-card-header-title"><a href="/tag/hadoop/">Hadoop</a></h3>
                             
                         </header>
                         <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
@@ -440,7 +410,34 @@ FROM default.t_test;
                                 
                                 
                                   
+                                    
+                                  
                                 
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/hadoop-distcp">hadoop distcp</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/sparkscala4">Learning Apache Spark 3 with Scala (Section4)</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/sparkscala3">Learning Apache Spark 3 with Scala (Section3)</a></li>
+                                        
+                                    
                                   
                                 
                                   
@@ -451,7 +448,21 @@ FROM default.t_test;
                                     
                                         
                                         
-                                            <li><a href="/DBCP">DataBase Connection Pool</a></li>
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
                                         
                                     
                                   
@@ -462,20 +473,16 @@ FROM default.t_test;
                                 
                                   
                                     
+                                        
+                                        
+                                    
                                   
                                 
                                   
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
+                                    
+                                        
+                                        
+                                    
                                   
                                 
                                   
@@ -484,9 +491,9 @@ FROM default.t_test;
                                     
                                         
                                         
-                                            <li><a href="/connect-to-database">Connection to DataBase in Python, R</a></li>
-                                        
                                     
+                                  
+                                
                                   
                                 
                                   
@@ -494,9 +501,9 @@ FROM default.t_test;
                             </ul>
                         </div>
                         <footer class="read-next-card-footer">
-                            <a href="/tag/database/">
+                            <a href="/tag/hadoop/">
                                 
-                                    See all 2 posts  →
+                                    See all 9 posts  →
                                 
                             </a>
                         </footer>
@@ -509,61 +516,6 @@ FROM default.t_test;
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
             
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/sparkscala1">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/scala-banner-post.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/sparkscala1">
-                <header class="post-card-header">
-                    
-                        
-                            
-                               <span class="post-card-tags">Scala</span>
-                            
-                        
-                            
-                                <span class="post-card-tags">Hadoop</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">Learning Apache Spark 3 with Scala (Section1)</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>Learning Apache Spark 3 with Scala (Section1)
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      5 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-            
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
             
@@ -571,12 +523,12 @@ FROM default.t_test;
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/spark-overwrite-partition">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/spark-overwrite-partition.jpg)"></div>
+            <a class="post-card-image-link" href="/hadoop-distcp">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/distcp.png)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/spark-overwrite-partition">
+            <a class="post-card-content-link" href="/hadoop-distcp">
                 <header class="post-card-header">
                     
                         
@@ -586,11 +538,11 @@ FROM default.t_test;
                         
                     
 
-                    <h2 class="post-card-title">Overwrite Partition in Spark</h2>
+                    <h2 class="post-card-title">hadoop distcp</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>Spark를 이용하여 특정 파티션만 overwrite하기
+                        <p>hadoop distcp 명령어
 
 </p>
                     
@@ -632,18 +584,18 @@ FROM default.t_test;
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">EXP-SUM-LOG / LOG-SUM-EXP</div>
+    <div class="floating-header-title">Partition, Spill in Spark</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=EXP-SUM-LOG+%2F+LOG-SUM-EXP&amp;url=https://gyuhoonk.github.ioEXP-LOG-SUM"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Partition%2C+Spill+in+Spark&amp;url=https://gyuhoonk.github.iospark-shuffle-partition"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.ioEXP-LOG-SUM"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iospark-shuffle-partition"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 
@@ -835,30 +787,5 @@ $(document).ready(function () {
     <!-- ghost_foot -->
     <!-- math LaTex-->
     
-     <script type="text/x-mathjax-config">
-	MathJax.Hub.Config({
-	TeX: {
-		equationNumbers: {
-		autoNumber: "AMS"
-		}
-	},
-	tex2jax: {
-		inlineMath: [ ['$', '$'] ],
-		displayMath: [ ['$$', '$$'] ],
-		processEscapes: true,
-		}
-	});
-	MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-	MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-</script>
-
-<script type="text/javascript" async
-	src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
 </body>
 </html>
