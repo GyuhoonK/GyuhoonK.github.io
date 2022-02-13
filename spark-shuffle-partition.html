@@ -203,13 +203,81 @@ into the {body} of the default.hbs template -->
 
 <p>Shuffle 속도를 향상시키기 위해서는 partition 개수를 적절하게 조절해주어야합니다.</p>
 
-<h4 id="spark-partitionsparkdefaultparallelism">Spark Partition(spark.default.parallelism)</h4>
+<h4 id="input-shuffle-read-shuffle-write-output">Input, Shuffle Read, Shuffle Write, Output</h4>
+
+<p>Spark Job은 여러 Stage로 나뉘게 되고, 각 Stage는 Input, Shuffle Read, Shuffle Write, Ouput로 구성됩니다. 모든 Stage는 partition을 처리하는 과정이며, 아래와 같이 설명됩니다.</p>
+
+<blockquote>
+  <p>Shuffling means the reallocation of data between multiple Spark stages. “Shuffle Write” is the sum of all written serialized data on all executors before transmitting (normally at the end of a stage) and “Shuffle Read” means the sum of read serialized data on all executors at the beginning of a stage. (<a href="https://stackoverflow.com/questions/27276884/what-is-shuffle-read-shuffle-write-in-apache-spark">What is shuffle read &amp; shuffle write in Apache Spark</a>)</p>
+</blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Stage</th>
+      <th>설명</th>
+      <th>구분</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Input</td>
+      <td>Task 수행을 위해 외부 데이터를 SparkSession, SparkContext로 로드함</td>
+      <td>Partition Read</td>
+    </tr>
+    <tr>
+      <td>Shuffle Read</td>
+      <td>Task 수행을 위해 SparkSession, SparkContext 내부(executors)의 Serialized Data를 읽어들임</td>
+      <td>Partition Read</td>
+    </tr>
+    <tr>
+      <td>Shuffle Write</td>
+      <td>Task 수행 결과를 SparkSession, SparkContext 내부(executors)의 Serialzied Data로 내보냄</td>
+      <td>Partition Write</td>
+    </tr>
+    <tr>
+      <td>Output</td>
+      <td>Task 수행 결과를 SparkSession, SparkContext 외부에 작성함</td>
+      <td>Partition Write</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>하나의 Stage는 Partiton Read와 Partition Write로 이루어져있습니다. Partition을 읽고, 읽어들여온 Partition에 대해 Task를 수행하고(Shuffle) 그 결과를 다시 Partition으로 작성합니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df1</span><span class="o">=</span><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"SELECT * FROM default.table_1"</span><span class="p">)</span>
+<span class="n">df2</span><span class="o">=</span><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"SELECT * FROM default.table_2"</span><span class="p">)</span>
+
+<span class="n">joined</span> <span class="o">=</span> <span class="n">df1</span><span class="p">.</span><span class="n">alias</span><span class="p">(</span><span class="s">"df1"</span><span class="p">).</span><span class="n">join</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="n">df1</span><span class="p">.</span><span class="n">col1</span><span class="o">==</span><span class="n">df2</span><span class="p">.</span><span class="n">col1</span><span class="p">,</span> <span class="n">df1</span><span class="p">.</span><span class="n">col2</span><span class="o">==</span><span class="n">df2</span><span class="p">.</span><span class="n">col2</span><span class="p">])</span>
+<span class="n">joined</span> <span class="o">=</span> <span class="n">joined</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s">"df1.col1"</span><span class="p">,</span> <span class="s">"df1.col2"</span><span class="p">,</span> <span class="s">"df1.col3"</span><span class="p">)</span>
+<span class="n">joined_agg</span> <span class="o">=</span> <span class="n">joined</span><span class="p">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s">"col1"</span><span class="p">,</span> <span class="s">"col2"</span><span class="p">).</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="s">"col3"</span><span class="p">).</span><span class="n">alias</span><span class="p">(</span><span class="s">"cnt"</span><span class="p">))</span>
+<span class="n">schema</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="s">"default.joined"</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">"."</span><span class="p">)</span>
+<span class="n">joined_agg</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">"path"</span><span class="p">,</span> <span class="sa">f</span><span class="s">'/user/hive/warehouse/</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.db/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>예를 들어 위 코드는 아래와 같은 stages를 구성하고, 실행됩니다. Input이 2번 있었고, Input하여 shuffle write된 DataFrame(<code class="language-plaintext highlighter-rouge">df1</code>, <code class="language-plaintext highlighter-rouge">df2</code>)에 대해 <code class="language-plaintext highlighter-rouge">join</code>과 <code class="language-plaintext highlighter-rouge">saveAsTable</code>이 실행되었습니다.</p>
+
+<p><img src="../../assets/built/images/hadoop/stages1.png" alt="image" /></p>
+
+<p>왼쪽의 <strong>Task: Succeeded/Total</strong>은 Stage 내에서 Task 수행 시 몇 개의 Task가 수행되었는지 표시합니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">spark.sql</code>을 사용하여 <code class="language-plaintext highlighter-rouge">DataFrame</code> 객체를 만드는 경우에는 해당 테이블의 파일 개수만큼(61228, 29684) Task를 실행했습니다. 따라서 <code class="language-plaintext highlighter-rouge">df1</code>, <code class="language-plaintext highlighter-rouge">df2</code>의 파티션 개수도 각각 61228, 29684개 입니다.</p>
+
+<p>맨 위에 <strong>1000/1000 (112 failed)</strong>는 1000개 작업 중에 중간에 112개 task를 실패했었음을 의미합니다. 1000개 task가 실행된 이유는 <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>를 1000으로 설정했기 때문입니다.</p>
+
+<p>해당 값은 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>, <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>를 통해 변경할수 있습니다.</p>
+
+<h4 id="spark-partitionsparkdefaultparallelism-sparksqlshufflepartitions">Spark Partition(spark.default.parallelism, spark.sql.shuffle.partitions)</h4>
 
 <blockquote>
   <p><code class="language-plaintext highlighter-rouge">spark.default.parallelism</code> – Default number of partitions in resilient distributed datasets (RDDs) returned by transformations like <code class="language-plaintext highlighter-rouge">join</code>, <code class="language-plaintext highlighter-rouge">reduceByKey</code>, and <code class="language-plaintext highlighter-rouge">parallelize</code> when no partition number is set by the user.</p>
+
+  <p><code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code> – Sets the number of partitions for joins and aggregations.</p>
 </blockquote>
 
-<p>Spark에서 사용하는 <code class="language-plaintext highlighter-rouge">RDD</code>, <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>은 모두 Partition을 가장 작은 단위로 갖습니다. 이 Partition을 단위로 각 Executor의 Core는 작업(Task)를 적용합니다. 이중에 <code class="language-plaintext highlighter-rouge">RDD</code>는 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>에 의해서 partition 값이 결정됩니다.</p>
+<p>Spark에서 사용하는 <code class="language-plaintext highlighter-rouge">RDD</code>, <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>은 모두 Partition을 가장 작은 단위(객체)로 갖습니다. 이 Partition을 단위로 각 Executor의 Core는 작업(Task)를 적용합니다. 이중에 <code class="language-plaintext highlighter-rouge">RDD</code>는 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>에 의해서 partition 값이 결정됩니다. <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>의 경우에는 <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>에 의해 partition 개수가 결정됩니다.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
 <span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">SparkConf</span>
@@ -227,33 +295,39 @@ into the {body} of the default.hbs template -->
 <span class="c1">## SparkSession has 30 * 5 cores, which each core has 2GB mem.
 ## So, spark.default.parallelism is 150(# of cores), and spark.sql.shuffle.partitions is 200(default)
 </span><span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">enableHiveSupport</span><span class="p">().</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
+
+<span class="n">df1</span><span class="o">=</span><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"SELECT * FROM default.table_1"</span><span class="p">)</span>
+<span class="n">df2</span><span class="o">=</span><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"SELECT * FROM default.table_2"</span><span class="p">)</span>
+
+<span class="n">joined</span> <span class="o">=</span> <span class="n">df1</span><span class="p">.</span><span class="n">alias</span><span class="p">(</span><span class="s">"df1"</span><span class="p">).</span><span class="n">join</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="n">df1</span><span class="p">.</span><span class="n">col1</span><span class="o">==</span><span class="n">df2</span><span class="p">.</span><span class="n">col1</span><span class="p">,</span> <span class="n">df1</span><span class="p">.</span><span class="n">col2</span><span class="o">==</span><span class="n">df2</span><span class="p">.</span><span class="n">col2</span><span class="p">])</span>
+<span class="n">joined</span> <span class="o">=</span> <span class="n">joined</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s">"df1.col1"</span><span class="p">,</span> <span class="s">"df1.col2"</span><span class="p">,</span> <span class="s">"df1.col3"</span><span class="p">)</span>
+<span class="n">joined_agg</span> <span class="o">=</span> <span class="n">joined</span><span class="p">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s">"col1"</span><span class="p">,</span> <span class="s">"col2"</span><span class="p">).</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="s">"col3"</span><span class="p">).</span><span class="n">alias</span><span class="p">(</span><span class="s">"cnt"</span><span class="p">))</span>
+<span class="n">schema</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="s">"default.joined"</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">"."</span><span class="p">)</span>
+<span class="n">joined_agg</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">"path"</span><span class="p">,</span> <span class="sa">f</span><span class="s">'/user/hive/warehouse/</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.db/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>따로 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>을 지정하지 않으면 core 개수만큼으로 partition 개수를 지정합니다. 따라서,  기본적으로 <code class="language-plaintext highlighter-rouge">RDD</code>는 150개의 partition으로 분할처리될 것입니다. 이는 core 개수와 같으므로 각 core가 task 1개를 처리하게 될 것입니다. 1개 executor가 5개 core를 가지고 있으므로 아래와 같은 매핑이 총 30개 발생할 것입니다(executor1 ~ executor30).</p>
+<p>따로 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>을 지정하지 않으면 core 개수만큼으로 partition 개수를 지정합니다. 따라서, 기본적으로 <code class="language-plaintext highlighter-rouge">RDD</code>는 150(5 cores * 30 executors)개의 partition으로 분할처리될 것입니다. core 개수와 partiton 개수가 같으므로 1 task per 1 core로 분산 처리하게 될 것입니다. 한편, <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>는 기본값이 200이기 때문에 <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>은 200개의 partition으로 분할처리 될 것입니다.</p>
 
-<p><img src="../../assets/built/images/hadoop/spark-partition-core.png" alt="image" /></p>
+<p><img src="../../assets/built/images/hadoop/stages2.png" alt="image" /></p>
 
-<p>이 때, 1개 Core는 2GB나 되는 memory size를 할당받았고 Partition 1개에 대해서 1개 작업(Task)만 실행합니다. 만약 <code class="language-plaintext highlighter-rouge">RDD</code>가 300GB가 넘는 데이터이고, 각 partition에 균등하게 분할(distribution)되었다면 1개 Partition은 2GB 이상의 크기일 것입니다. 이 경우에 1개 Core가 처리할 수 있는 사이즈(2GB)를 초과하기 때문에 작업 수행 시간은 길어지게 됩니다.</p>
+<p>그러나, 200 partitions로 설정하여 코드를 실행하는 경우 계속해서 fail task가 발생하고 결과적으로 App이 중간에 종료되어버렸습니다. Fail 발생을 줄이고 app이 성공적으로 실행을 완료하기 위해서는 튜닝이 필요합니다.</p>
 
 <p>일반적으로 전체 core 개수의 2배~3배 정도까지 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>을 설정해줄 것을 권장합니다. 따라서 위의 conf setting은 아래 항목을 추가해주어야합니다.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
 <span class="c1">## SparkSession has 30 * 5 cores, So proper number of partitions is 150 * 2 or 150 * 3.
-</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.defualt.parallelism"</span><span class="p">,</span><span class="s">"450"</span><span class="p">)</span>
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.sql.shuffle.partitions"</span><span class="p">,</span><span class="s">"450"</span><span class="p">)</span>
 <span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">enableHiveSupport</span><span class="p">().</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">...</span>
 </code></pre></div></div>
 
-<p>이처럼 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>을 450으로 설정해도 Read Size가 900GB가 넘는다면(!!) partition은 여전히 2GB 이상이 분배됩니다. 따라서 <strong>Cores 수 X 3</strong>이라는 규칙은 참조만 하고, Read Size에 따라 유동적으로 해당 값을 결정해야합니다.</p>
+<p><img src="../../assets/built/images/hadoop/stages3.png" alt="image" /></p>
 
-<h4 id="spark-shuffle-partitions-sparksqlshufflepartitions">Spark Shuffle Partitions (spark.sql.shuffle.partitions)</h4>
+<p>450 tasks가 수행됩니다. 그러나 어젼히 Shuffle Spill이 발생하고 있습니다.</p>
 
-<p><code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>의 경우에는 <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>에 의해 partition 개수가 결정됩니다.</p>
-
-<blockquote>
-  <p><code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code> – Sets the number of partitions for joins and aggregations.</p>
-</blockquote>
-
-<p>기본적인 개념은 위와 같고, <code class="language-plaintext highlighter-rouge">RDD</code>가 아닌 <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>에 적용되는 옵션이라는 사실만 다릅니다.</p>
+<p><img src="../../assets/built/images/hadoop/shuffle-spill1.png" alt="image" /></p>
 
 <h2 id="what-makes-spark-slower">What makes Spark Slower?</h2>
 
@@ -269,7 +343,7 @@ into the {body} of the default.hbs template -->
   <p>“Shuffle spill (memory) is the size of the deserialized form of the data in memory at the time when we spill it, whereas shuffle spill (disk) is the size of the serialized form of the data on disk after we spill it. This is why the latter tends to be much smaller than the former. Note that both metrics are aggregated over the entire duration of the task (i.e. within each task you can spill multiple times).”</p>
 </blockquote>
 
-<p>RAM(=memory)에서 Spill이 발생하게 되면 이를 직렬화(serialize)하여 disk에 임시로 저장해둡니다. 직렬화하는 과정에서 메모리는 줄어들게 되므로 일반적으로 Shuffle Spill(Disk)가 Shuffle Spill(Memory)보다 작은 값을 갖습니다.</p>
+<p>RAM(=memory)에서 Spill이 발생하게 되면 이를 직렬화(serialize)하여 disk에 임시로 저장해둡니다. 직렬화하는 과정에서 데이터 사이즈는 줄어들게 되므로 일반적으로 Shuffle Spill(Disk)가 Shuffle Spill(Memory)보다 작은 값을 갖습니다.</p>
 
 <p>이후에, Task에서 Disk로 Spill한 데이터를 연산에 사용하기 위해서는 역직렬화(deserialize)하여 RAM으로 로드합니다. 따라서 I/O의 증가, 직렬화/역직렬화 과정이 추가되면서 Task 수행 시간은 늘어나게 됩니다.</p>
 
@@ -283,21 +357,50 @@ into the {body} of the default.hbs template -->
   <li>Memory Size를 늘린다</li>
 </ul>
 
-<p>Task 수행에 사용되는 Core에게 더 큰 RAM을 할당해주면, Shuffle Spill이 발생하지 않을 수 있습니다. 이는 물과 컵에 비유하자면 컵의 크기를 늘리는 방법입니다. 다만 한정된 자원을 공유하며 사용해야하는 다수의 엔지니어들에게는 쉽지 않은 선택일 것입니다. 따라서 보통 아래의 방법을 사용합니다.</p>
+<p>Task 수행에 사용되는 Core에게 더 큰 RAM을 할당해주면, Shuffle Spill이 발생하지 않을 수 있습니다. 이는 물과 컵에 비유하자면 컵의 크기를 늘리는 방법입니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## 5 cores per executor
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.cores"</span><span class="p">,</span><span class="s">"5"</span><span class="p">)</span> 
+<span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.driver.cores"</span><span class="p">,</span> <span class="s">"5"</span><span class="p">)</span>
+<span class="c1">## 30 executors
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.instances"</span><span class="p">,</span> <span class="s">"30"</span><span class="p">)</span>
+<span class="c1">## 15 GB per executor -&gt; 3GB per core
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.driver.memory"</span><span class="p">,</span><span class="s">"15G"</span><span class="p">)</span>
+<span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.memory"</span><span class="p">,</span><span class="s">"15G"</span><span class="p">)</span>
+<span class="c1">## SparkSession has 30 * 5 cores, which each core has 2GB mem.
+## So, spark.default.parallelism is 150(# of cores), and spark.sql.shuffle.partitions is 200(default)
+</span><span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">enableHiveSupport</span><span class="p">().</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>기존에 Core에 2GB를 할당했었지만, 3GB로 증가시켰습니다. 일반적으로 Shuffle Read가 600GB 이상인 경우에는 core size가 4GB 이상으로 설정할 것을 권장합니다.</p>
+
+<p>Shuffle Read가 600GB가 넘지 않는 경우에는 core size를 늘리는 것보다 아래의 방법을 사용합니다.</p>
 
 <ul>
   <li>partition size를 줄인다 ( # partition을 늘린다 )</li>
 </ul>
 
-<p>Core에게 전달되는 partition size를 줄여서 Shuffle Spill을 방지할 수 있습니다. 물을 조금씩(smaller partition size) 자주 컵에 담는다면 물이 넘치지않겠죠. Shuffle Read는 데이터가 변하지 않는다면 고정되어있으므로 partition size를 줄인다는 것은 partition 개수를 늘리는 것과 동일합니다.</p>
+<p>Core에게 전달되는 partition size를 줄여서 Shuffle Spill을 방지할 수 있습니다. 물을 조금씩(smaller partition size) 자주 컵에 담는다면 물이 넘치지않겠죠. Shuffle Read는 데이터가 변하지 않는다면 고정되어있으므로 partition size를 줄인다는 것은 partition 개수를 늘리는 것과 동일합니다. Shuffle Partition의 크기를 100MB~200MB로 설정하는 것이 최적으로 알려져있습니다.</p>
 
-<p>이를 위해 앞서 살펴보았던 <code class="language-plaintext highlighter-rouge">spark.default.paralleism</code>, <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>와 같은 conf option이 사용될 수 있습니다. 혹은 <code class="language-plaintext highlighter-rouge">df.repartition()</code>처럼 명시적으로 partition 개수를 늘려주는 방법도 있습니다.</p>
+<p><code class="language-plaintext highlighter-rouge">spark.default.paralleism</code>, <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>와 같은 conf option이 사용될 수 있습니다. 혹은 <code class="language-plaintext highlighter-rouge">df.repartition()</code>처럼 명시적으로 partition 개수를 늘려주는 방법도 있습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+<span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.sql.shuffle.partitions"</span><span class="p">,</span><span class="s">"1000"</span><span class="p">)</span>
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">enableHiveSupport</span><span class="p">().</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">...</span>
+</code></pre></div></div>
+
+<p>Shuffle Spill이 발생하지 않고 수행 시간도 줄어들었음을 확인할 수 있습니다.</p>
+
+<p><img src="../../assets/built/images/hadoop/shuffle-spill2.png" alt="image" /></p>
 
 <h2 id="마치며">마치며</h2>
 
-<p>실제 일하며 애매하게 알고 있었던 partition, shuffle, spill의 개념을 정리할 수 있었습니다. 적당한 테스트를 만들어서 실제로 수행 시간이 줄어드는 것을 확인해보는 것도 괜찮을 것 같습니다. 읽어주셔서 감사합니다.</p>
+<p>애매하게 알고 있었던 partition, shuffle, spill의 개념을 정리할 수 있었습니다. 다만, 위에서 가정한 상황은 모든 partition에 데이터가 고루 분배되는 이상적인 상황입니다. 실제 상황에서는 skewed dataset 때문에 straggler task가 발생하기도 합니다. 이러한 경우에는 먼저 필터링하거나, partition 개수를 더욱 늘리는 방법(partition size가 100MB보다 작도록)으로 대처해야합니다.</p>
 
 <p>[참고]</p>
+
+<p><a href="http://people.csail.mit.edu/matei/papers/2012/nsdi_spark.pdf">Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing</a></p>
 
 <p><a href="https://tech.kakao.com/2021/10/08/spark-shuffle-partition/">Spark Shuffle Partition과 최적화</a></p>
 
