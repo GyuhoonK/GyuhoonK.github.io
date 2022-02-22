@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/scala/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-02-13T23:06:33+09:00</updated>
+  <updated>2022-02-22T17:27:21+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/scala/feed.xml</id>
 
   
@@ -34,14 +34,99 @@
     <entry>
       <title type="html">Learning Apache Spark 3 with Scala (Section4)</title>
       <link href="https://gyuhoonk.github.io/sparkscala4" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section4)" />
-      <published>2022-01-15T22:30:00+09:00</published>
-      <updated>2022-01-15T22:30:00+09:00</updated>
+      <published>2022-02-21T22:30:00+09:00</published>
+      <updated>2022-02-21T22:30:00+09:00</updated>
       <id>https://gyuhoonk.github.io/sparkscala4</id>
       <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala4">&lt;p&gt;Learning Apache Spark 3 with Scala (Section4 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;)&lt;/p&gt;
 
+&lt;h2 id=&quot;sparksql&quot;&gt;SparkSQL&lt;/h2&gt;
+
+&lt;p&gt;SparkSQL와 함께 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;이라는 현대적인 API가 등장했습니다. 이들 API는 대부분의 데이터 분석 문제가 SQL 명령어로 해결되는 것처럼, Spark내에서도 SQL 명령어를 사용할 수 있게끔 지원합니다.&lt;/p&gt;
+
+&lt;p&gt;Spark 2가 도입되면서 SparkSQL 인터페이스를 더 강조하기 시작했습니다. 그리고 Spark2부터  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;이 적극적으로 개발되었습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;dataframe&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;RDD를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; 객체로 확장합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;은 RDB와 비슷한 점이 많습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Row&lt;/code&gt; 객체와 Schema라는 두 가지 특징을 갖습니다.  먼저, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Row&lt;/code&gt; 객체로 나뉘어집니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Row&lt;/code&gt; 객체는 구조화된 정보(structured information)를 담고 있습니다. 두번째로, schema를 가지고 있기에 효율적으로 정보를 저장할 수 있습니다. 그리고 스키마와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Row&lt;/code&gt;가 있기 때문에 우리는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;을 DB처럼 다룰 수 있고, SQL 커맨드를 실행할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;은 RDB와 비슷해 보이기 때문에, RDB와의 상호운영성(inter-operability)을 확보할 수 있습니다. 이는 Json, Hive, Parquet과 같은 다양한 데이터 소스로부터 파일/데이터를 읽고 쓸 수 있음을 의미합니다. 이외에도 JDBC/ODBC 인터페이스나 Taleau에 직접 작업도 가능합니다.&lt;/p&gt;
+
+&lt;p&gt;SQL 쿼리로 접근할 수 있다는 사실은 쿼리 최적화(query optimization)을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;에 적용할 수 있다는 의미이기도 합니다.&lt;/p&gt;
+
+&lt;p&gt;그래서 보통 DAG(Directed Acyclic Graph) 최적화 이후, 실행되는 SQL 쿼리를 볼 수 있고 해당 쿼리에 RDB에 시도하는 것처럼 쿼리 최적화를 적용해볼 수도 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;dataset&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;과 같은 종류입니다. 기술적으로, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Row&lt;/code&gt; 객체로 이루어진 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;의 하나 일뿐입니다. 차이점은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;이 명확한 타입(Expicit Type)을 갖고 있으며 컴파일 타임에 이를 검사한다는 사실입니다. 다시 말해, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;은 실행 단계에서 스키마를 적용하지만, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;이 컴파일 타임에 스키마를 검사합니다.&lt;/p&gt;
+
+&lt;p&gt;이러한 차이점 때문에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Row&lt;/code&gt; 객체가 존재하고, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Row&lt;/code&gt;를 정의할 때까지 무엇이든 담을 수 있는 것에 비해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;은 스키마를 통해 명확한 타입을 지정했으므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Row&lt;/code&gt; 객체에 담을 수 있는 자료형이 분명합니다(제한됩니다). 따라서, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;은 컴파일 타임에 이미 스키마를 알고 있으므로 스크립트 실행 시가 아니라 스크립트 &lt;strong&gt;빌드&lt;/strong&gt; 시에 Type Error를 발견할 수 있습니다. 클러스터에서 스크립트 실행 시 많은 비용을 요구하기 때문에 실행 전에 미리 이러한 에러를 알아챌 수 있는 것은 큰 장점입니다. 또한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;을 이용하면 더 나은 최적화를 가능하게 합니다. 런타임이 아니라, 컴파일하는 동안 최적화가 진행되기 때문입니다.&lt;/p&gt;
+
+&lt;p&gt;그러나, 이러한 작업들은 컴파일 타임에 이루어지기 때문에 컴파일된 언어(Java, Scala)로만 사용이 가능합니다. python은 컴파일 타임 최적화가 불가능합니다.&lt;/p&gt;
+
+&lt;p&gt;현재 Spark 개발의 전반적인 트렌드는 RDD를 적게 사용하고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;을 더 많이 사용하는 것입니다. RDD에 비해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;이 갖는 장점은 먼저, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;은 매우 효율적으로 직렬화(serialized)됩니다. 컴파일 타임에 실행되는 실행 계획(execution plan)때문 입니다. 그리고 상호운영성(interoperability)가 뛰어납니다. RDB, 외부 파일 형식(parquet, json)과 호환될 수 있습니다. JDBC, ODBC에도 접근하여 데이터를 로드할 수 있습니다. 이는 spark를 수평적으로 확장된 데이터베이스(horizontally-scalable database)처럼 작동하게 만듭니다. 마지막으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;은 Spark MLLib과 Streaming에서 주로 사용됩니다. RDD로는 이들 라이브러리에 데이터를 전달할 수 없습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;sparksession&quot;&gt;SparkSession&lt;/h2&gt;
+
+&lt;p&gt;RDD로 작업할 때는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SparkContext를&lt;/code&gt; 이용했습니다. 그러나 sparkSQL을 사용하려면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SparkSession&lt;/code&gt;을 사용해야합니다. 이는 DataBase Session과 유사한 개념입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-scala highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;spark&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SparkSession&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;builder&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;appName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SparkSession_test&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;master&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;local[*]&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;getOrCreate&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이제 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SparkSession&lt;/code&gt; 객체로부터 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SparkContext를&lt;/code&gt; 얻을 수 있고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;에 쿼리를 날릴 수 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;sparksql-api&quot;&gt;sparkSQL API&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;show&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;select&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;filter&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;groupBy&lt;/code&gt; 같은 쿼리를 실행할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-scala highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	&lt;span class=&quot;nv&quot;&gt;myResultDataSet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;nv&quot;&gt;myResultDataSet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;FieldName&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;nv&quot;&gt;myResultDataSet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;filter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;myResultDataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;FieldName&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&amp;gt;&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+	&lt;span class=&quot;nv&quot;&gt;myResultDataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;groupBy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;myResultDataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;FieldName&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)).&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;mean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+	&lt;span class=&quot;nv&quot;&gt;myRestulDataset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;rdd&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mapperFunction&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;마지막 라인처럼,  RDD로 다시 변환해서 자신이 만든 map Function을 적용해볼 수도 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;udfuser-defined-function&quot;&gt;UDF(User Defined Function)&lt;/h2&gt;
+
+&lt;p&gt;사용자 정의 함수(UDF)가 있습니다. 데이터베이스에서 정의하여 사용하는 UDF와 비슷한 개념입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;org.apache.spark.sql.functions.udf&lt;/code&gt;를 임포트해서 간단한 사용자 정의 함수를 만들 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-scala highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;org.apache.spark.sql.functions.udf&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;square&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;udf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;x&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)}&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;squaredDF&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;withColumn&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;square&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;square&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;-before-string-in-scalaspark&quot;&gt;$ before string in Scala(Spark)&lt;/h2&gt;
+
+&lt;p&gt;scala를 이용하여 spark 코드를 작성하다 보면 아래와 같이 $이 string 앞에 쓰이는 것을 자주 마주칩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-scala highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// example1&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;words&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;input&lt;/span&gt;
+      &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;explode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;value&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;\\W+&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)).&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;word&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// example2&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;df&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;name&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;$&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;age&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이는 scala에서 사용되는 문법이라기 보다, spark에서 사용되는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;column&lt;/code&gt; 객체 표현 방법입니다. 또한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;$&quot;age&quot;+1&lt;/code&gt;처럼 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;column&lt;/code&gt;에 연산을 실행하는 경우에 이와 같은 표현이 사용됩니다.&lt;/p&gt;
+
+&lt;p&gt;scala는 아래와 같이 작성하는 경우에 에러가 발생합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-scala highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;dataframe&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;age&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;show&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;org&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;apache&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;AnalysisException&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;cannot&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;resolve&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;'`age1`'&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;given&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;input&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;columns:&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;age&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;;&lt;/span&gt;
+&lt;span class=&quot;ss&quot;&gt;'Project&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;'age1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;</content>
+&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://stackoverflow.com/questions/42427388/what-is-the-output-of-a-some-string-in-scala&quot;&gt;what is the output of a $ some string in scala&lt;/a&gt;&lt;/p&gt;</content>
 
       
       

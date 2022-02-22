@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Learning Apache Spark 3 with Scala (Section4)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section4 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 21 Feb 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala4</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala4</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Partition, Spill in Spark</title>
         
           <description>&lt;p&gt;Partition, Spill in Spark&lt;/p&gt;
@@ -33,21 +48,6 @@
         <link>
         https://gyuhoonk.github.io/hadoop-distcp</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/hadoop-distcp</guid>
-      </item>
-      
-    
-      
-      <item>
-        <title>Learning Apache Spark 3 with Scala (Section4)</title>
-        
-          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section4 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;)&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sat, 15 Jan 2022 22:30:00 +0900</pubDate>
-        <link>
-        https://gyuhoonk.github.io/sparkscala4</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala4</guid>
       </item>
       
     
