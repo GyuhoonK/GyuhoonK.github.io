@@ -23,6 +23,21 @@
     
       
       <item>
+        <title>누적 합(Prefix Sum)</title>
+        
+          <description>&lt;p&gt;누적 합(Prefix Sum) 알고리즘 (2022 KAKAO BLIND RECRUITMENT 6 파괴되지 않은 건물)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 14 Feb 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/prefix-sum</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/prefix-sum</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Partition, Spill in Spark</title>
         
           <description>&lt;p&gt;Partition, Spill in Spark&lt;/p&gt;
