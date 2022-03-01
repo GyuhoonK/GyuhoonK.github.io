@@ -8,6 +8,36 @@
     
       
       <item>
+        <title>What is Airflow?</title>
+        
+          <description>&lt;p&gt;Basic Concepts of Airflow&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 28 Feb 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/airflow1</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/airflow1</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Learning Apache Spark 3 with Scala (Section5)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 21 Feb 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala5</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala5</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Learning Apache Spark 3 with Scala (Section4)</title>
         
           <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section4 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;)&lt;/p&gt;
