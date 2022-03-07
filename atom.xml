@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Learning Apache Spark 3 with Scala (Section6)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 06 Mar 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala6</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala6</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>What is Airflow?</title>
         
           <description>&lt;p&gt;Basic Concepts of Airflow&lt;/p&gt;

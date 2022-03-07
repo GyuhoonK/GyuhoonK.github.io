@@ -11,7 +11,7 @@
 
 
 
-    <title>EXP-SUM-LOG / LOG-SUM-EXP</title>
+    <title>Learning Apache Spark 3 with Scala (Section6)</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,30 +37,30 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/EXP-LOG-SUM" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/sparkscala6" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="EXP-SUM-LOG / LOG-SUM-EXP" />
-    <meta property="og:description" content="EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서 SUM in SQL SQL은 SUM 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다. 아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다. SELECT * FROM default.t_test; +---+ | a| +---+ | 1| | 2| | 3| | 4| | 5| +---+ SELECT SUM(a) FROM default.t_test; +------+" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/EXP-LOG-SUM" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/overflow-banner.jpg" />
+    <meta property="og:title" content="Learning Apache Spark 3 with Scala (Section6)" />
+    <meta property="og:description" content="Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster) Download Spark IntelliJ 환경이 아닌, 클러스터 환경에서 spark-submit 명령어를 통해 스크립트를 실행해보겠습니다. 먼저 spark 실행 파일을 다운로드 받습니다. Download Apache Spark 파일을 다운로드 받아 압축을 해제한 뒤, 기억하기 쉬운 경로에 옮겨두었습니다. (base) gyuhoonkim@Gyuhoonui-MacBookAir ~ % cd ~ (base)" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/sparkscala6" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2021-12-29T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2021-12-29T22:30:00+09:00" />
-    <meta property="article:tag" content="Database" />
+    <meta property="article:published_time" content="2022-03-06T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2022-03-06T22:30:00+09:00" />
+    <meta property="article:tag" content="Scala" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="EXP-SUM-LOG / LOG-SUM-EXP" />
-    <meta name="twitter:description" content="EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서 SUM in SQL SQL은 SUM 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다. 아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다. SELECT * FROM default.t_test; +---+ | a| +---+ | 1| | 2| | 3| | 4| | 5| +---+ SELECT SUM(a) FROM default.t_test; +------+" />
+    <meta name="twitter:title" content="Learning Apache Spark 3 with Scala (Section6)" />
+    <meta name="twitter:description" content="Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster) Download Spark IntelliJ 환경이 아닌, 클러스터 환경에서 spark-submit 명령어를 통해 스크립트를 실행해보겠습니다. 먼저 spark 실행 파일을 다운로드 받습니다. Download Apache Spark 파일을 다운로드 받아 압축을 해제한 뒤, 기억하기 쉬운 경로에 옮겨두었습니다. (base) gyuhoonkim@Gyuhoonui-MacBookAir ~ % cd ~ (base)" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/overflow-banner.jpg" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Database" />
+    <meta name="twitter:data2" content="Scala" />
     <meta name="twitter:site" content="@" />
     <meta name="twitter:creator" content="@" />
     <meta property="og:image:width" content="1400" />
@@ -75,18 +75,18 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/EXP-LOG-SUM",
+    "url": "https://gyuhoonk.github.io/sparkscala6",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/overflow-banner.jpg",
+        "url": "https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/EXP-LOG-SUM"
+        "@id": "https://gyuhoonk.github.io/sparkscala6"
     },
-    "description": "EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서 SUM in SQL SQL은 SUM 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다. 아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다. SELECT * FROM default.t_test; +---+ | a| +---+ | 1| | 2| | 3| | 4| | 5| +---+ SELECT SUM(a) FROM default.t_test; +------+"
+    "description": "Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster) Download Spark IntelliJ 환경이 아닌, 클러스터 환경에서 spark-submit 명령어를 통해 스크립트를 실행해보겠습니다. 먼저 spark 실행 파일을 다운로드 받습니다. Download Apache Spark 파일을 다운로드 받아 압축을 해제한 뒤, 기억하기 쉬운 경로에 옮겨두었습니다. (base) gyuhoonkim@Gyuhoonui-MacBookAir ~ % cd ~ (base)"
 }
     </script>
 
@@ -99,33 +99,8 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="EXP-SUM-LOG / LOG-SUM-EXP" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Learning Apache Spark 3 with Scala (Section6)" href="/feed.xml" />
 
-    
-      <script type="text/x-mathjax-config">
-	MathJax.Hub.Config({
-	TeX: {
-		equationNumbers: {
-		autoNumber: "AMS"
-		}
-	},
-	tex2jax: {
-		inlineMath: [ ['$', '$'] ],
-		displayMath: [ ['$$', '$$'] ],
-		processEscapes: true,
-		}
-	});
-	MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-	MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-</script>
-
-<script type="text/javascript" async
-	src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
     
 </head>
 <body class="post-template">
@@ -196,150 +171,180 @@ into the {body} of the default.hbs template -->
 <main id="site-main" class="site-main outer" role="main">
     <div class="inner">
 
-        <article class="post-full  tag-database post tag-database ">
+        <article class="post-full  tag-scala tag-hadoop post tag-scala ">
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="29 December 2021">29 December 2021</time>
+                    <time class="post-full-meta-date" datetime=" 6 March 2022"> 6 March 2022</time>
                     
                         <span class="date-divider">/</span>
                         
                             
-                               <a href='/tag/database/'>DATABASE</a>
+                               <a href='/tag/scala/'>SCALA</a>,
+                            
+                        
+                            
+                               <a href='/tag/hadoop/'>HADOOP</a>
                             
                         
                     
                 </section>
-                <h1 class="post-full-title">EXP-SUM-LOG / LOG-SUM-EXP</h1>
+                <h1 class="post-full-title">Learning Apache Spark 3 with Scala (Section6)</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/overflow-banner.jpg)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/scala-banner-post.png)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서</p>
+                    <p>Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)</p>
 
-<h1 id="sum-in-sql">SUM in SQL</h1>
+<h2 id="download-spark">Download Spark</h2>
 
-<p>SQL은 <code class="language-plaintext highlighter-rouge">SUM</code> 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다.</p>
+<p>IntelliJ 환경이 아닌, 클러스터 환경에서 spark-submit 명령어를 통해 스크립트를 실행해보겠습니다. 먼저 spark 실행 파일을 다운로드 받습니다.</p>
 
-<p>아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다.</p>
+<p><a href="https://spark.apache.org/downloads.html">Download Apache Spark</a></p>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span> 
-<span class="k">FROM</span> <span class="k">default</span><span class="p">.</span><span class="n">t_test</span><span class="p">;</span>
-<span class="o">+</span><span class="c1">---+</span>
-<span class="o">|</span>  <span class="n">a</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">---+</span>
-<span class="o">|</span>  <span class="mi">1</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">2</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">3</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">4</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">5</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">---+</span>
+<p>파일을 다운로드 받아 압축을 해제한 뒤, 기억하기 쉬운 경로에 옮겨두었습니다.</p>
 
-<span class="k">SELECT</span> <span class="k">SUM</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> 
-<span class="k">FROM</span> <span class="k">default</span><span class="p">.</span><span class="n">t_test</span><span class="p">;</span>
-<span class="o">+</span><span class="c1">------+</span>
-<span class="o">|</span><span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">------+</span>
-<span class="o">|</span>    <span class="mi">15</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">------+</span>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>base<span class="o">)</span> gyuhoonkim@Gyuhoonui-MacBookAir ~ % <span class="nb">cd</span> ~
+<span class="o">(</span>base<span class="o">)</span> gyuhoonkim@Gyuhoonui-MacBookAir ~ % <span class="nb">ls
+</span>spark-3.0.3-bin-hadoop2.7
+<span class="o">(</span>base<span class="o">)</span> gyuhoonkim@Gyuhoonui-MacBookAir ~ % <span class="nb">cd </span>spark-3.0.3-bin-hadoop2.7 
+<span class="o">(</span>base<span class="o">)</span> gyuhoonkim@Gyuhoonui-MacBookAir spark-3.0.3-bin-hadoop2.7 % <span class="nb">ls
+</span>LICENSE		README.md	conf		jars		python
+NOTICE		RELEASE		data		kubernetes	sbin
+R		bin		examples	licenses	yarn
+
 </code></pre></div></div>
 
-<h1 id="multiplication-in-sql">Multiplication in SQL</h1>
+<h2 id="spark-submit">spark-submit</h2>
 
-<p><code class="language-plaintext highlighter-rouge">SUM</code>함수는 기본으로 제공되지만, column의 값을 모두 곱하는 기능은 기본으로 제공되지 않습니다. 이는 <code class="language-plaintext highlighter-rouge">EXP-SUM-LOG</code>를 이용해 구현 가능합니다.</p>
+<p>spark-submit을 하기 전에, 우리는 jar 파일을 만들어야합니다. 현재 강의에서 사용하고 있는 SparkCourse 디렉토리를 jar파일로 압축해보겠습니다.</p>
 
-<p>EXP-SUM-LOG로 column곱을 구현할 수 있는 이유는 아래와 같은 log의 성질 때문입니다.</p>
+<ol>
+  <li>IntelliJ에서 <code class="language-plaintext highlighter-rouge">Project Structure</code>를 선택합니다.</li>
+</ol>
 
-\[log(xy) = log(x) + log(y)\\
-x = exp(log(x))\]
+<p><img src="../../assets/built/images/scala/jar1.png" alt="image" style="zoom:50%;" /></p>
 
-<p>따라서 아래와 같은 수식이 성립합니다.</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">Artifacts</code>에서 + 버튼을 클릭합니다.</li>
+</ol>
 
-\[\sum_{i=1}^nlog(x_i)=log(x_1x_2...x_n)\\
-\therefore exp[\sum_{i=1}^nlog(x_i)] = x_1x_2...x_n\]
+<p><img src="../../assets/built/images/scala/jar2.png" alt="image" style="zoom:50%;" /></p>
 
-<p>이를 쿼리로 작성하여 실행하면, 아래와 같은 결과가 출력됩니다.</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">JAR &gt; empty</code>를 선택합니다.</li>
+</ol>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">EXP</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="n">LOG</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span> <span class="k">AS</span> <span class="n">multiplication</span>
-<span class="k">FROM</span> <span class="k">default</span><span class="p">.</span><span class="n">t_test</span><span class="p">;</span>
-<span class="o">+</span><span class="c1">--------------+</span>
-<span class="o">|</span><span class="n">multiplication</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">--------------+</span>
-<span class="o">|</span><span class="mi">119</span><span class="p">.</span><span class="mi">9999999</span><span class="p">...</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">--------------+</span>
+<p><img src="../../assets/built/images/scala/jar3.png" alt="image" style="zoom:50%;" /></p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">Name</code>에 원하는 이름을 입력합니다. 저는 SparkCourse로 하겠습니다.</li>
+</ol>
+
+<p><img src="../../assets/built/images/scala/jar4.png" alt="image" style="zoom:50%;" /></p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">Avaliable Elements</code> 항목에서 <code class="language-plaintext highlighter-rouge">SparkScalaCourse compile output</code>을 선택합니다. 이는 컴파일이 완료된 byte-code입니다. <code class="language-plaintext highlighter-rouge">Include in project build</code> 항목도 체크해줍니다. (프로젝트 내에서 사용하고 있는 의존성 패키지는 모두 spark에 설치되어 있으므로 제외했습니다)</li>
+</ol>
+
+<p><img src="../../assets/built/images/scala/jar5.png" alt="image" style="zoom:50%;" /></p>
+
+<ol>
+  <li>
+    <p>마지막으로 하단의 <code class="language-plaintext highlighter-rouge">OK</code> 버튼을 눌러줍니다.</p>
+
+    <p><img src="../../assets/built/images/scala/jar6.png" alt="image" style="zoom:50%;" /></p>
+  </li>
+</ol>
+
+<p>위 과정을 순서대로 따르면, 우리가 입력했던 경로인 <code class="language-plaintext highlighter-rouge">/Users/gyuhoonkim/Documents/SparkScalaCourse/out/artifacts/SparkCourse</code> 폴더 내에 jar 파일이 생성된 것을 확인할 수 있습니다.</p>
+
+<p>아래와 같은 명령어로 우리가 만든 jar 파일에서 원하는 class를 실행할 수 있습니다.  <code class="language-plaintext highlighter-rouge">HelloWorld.scala</code> 를 실행해보겠습니다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>base<span class="o">)</span> gyuhoonkim@Gyuhoonui-MacBookAir ~ % ~/spark-3.0.3-bin-hadoop2.7/bin/spark-submit <span class="se">\</span>
+<span class="nt">--class</span> com.sundogsoftware.spark.HelloWorld <span class="se">\</span>
+SparkScalaCourse/out/artifacts/SparkCourse/SparkCourse.jar 
 </code></pre></div></div>
 
-<p>1~5를 곱한 값은 120이지만, 계산된 값은 119.9999로 다소 오차가 발생했습니다. 이는 LOG를 거치며 정수가 소수로 변환될 때 부동소수점으로 표현이 되고 이에 따라 소수값 연산에 오차가 발생하기 때문입니다.</p>
+<h2 id="sbt">sbt</h2>
 
-<p>따라서 정확한 계산 결과를 반환하려면 아래와 같이 ROUND를 적용해주어야합니다.</p>
+<p>프로젝트에서 사용하는 모든 패키지와 모든 의존성을 한번에 jar 파일로 패키징할 수 있는 방법이 있습니다. sbt를 이용하는 방법입니다. sbt는 scala를 위한 maven 정도로 생각하면 됩니다. sbt는 라이브러리와 의존성 트리를 관리합니다. 필요로 되는 라이브러리 혹은 jar파일에 의존하는 스크립트를 가지고 있다면 자동으로 검색하여 컴파일하는 jar파일에 패키지합니다.</p>
 
-<pre><code class="language-SQL">SELECT ROUND(EXP(SUM(LOG(a))), 1) AS multiplication
-FROM default.t_test;
-+--------------+
-|multiplication|
-+--------------+
-|           120|
-+--------------+
-</code></pre>
+<p><a href="https://www.scala-sbt.org/download.html">Download sbt</a></p>
 
-<h1 id="log-sum-exp-trick">LOG-SUM-EXP trick</h1>
+<p>저는 M1 맥북이라서 <code class="language-plaintext highlighter-rouge">brew</code>로는 설치할 수가 없었고, <code class="language-plaintext highlighter-rouge">sdk</code>로 설치했습니다.</p>
 
-<p>반대로, <code class="language-plaintext highlighter-rouge">LOG-SUM-EXP</code>를 이용한 트릭도 존재합니다. 이는 너무 큰 수를 연산하는 경우에 발생하는 <strong>overflow</strong>, 혹은 너무 작은 수를 연산하는 경우엔 발생하는 <strong>underflow</strong>를 피하기 위한 트릭입니다.</p>
+<p>이후 아래 디렉토리 구조를 셋업합니다.</p>
 
-<p>\(exp(100) + exp(200)\)을 계산하는 과정을 수식으로 보면 아래와 같습니다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.
+├── build.sbt
+├── project
+│   └── assembly.sbt
+└── src
+    └── main
+        └── scala
+</code></pre></div></div>
 
-\[exp(100) + exp(200) \\
-=\dfrac {exp(100) + exp(200)}{exp(100)} * exp(100)\\
-=[exp(0)+exp(100)]*exp(100)\\
-=exp(log([1+exp(100)]*exp(100)))\\
-=exp(log[1+exp(100)] + log(exp(100)))\\
-=exp(log[1+exp(100)] + 100)\]
+<p>root 위치에 <code class="language-plaintext highlighter-rouge">build.sbt</code> 파일이 존재해야합니다. 이는 가장 중요한 역할을 합니다.</p>
 
-<p>간단하게 python으로 이를 확인해보았습니다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>name := "MinTemperaturesDataset"
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">log</span> 
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">exp</span>
+version := "1.0"
 
-<span class="n">num1</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">num2</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="k">print</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="p">)</span><span class="o">+</span><span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="p">))</span>
-<span class="c1"># 74.68368695633191
-</span>
-<span class="n">exp1</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
-<span class="n">exp2</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">exp1</span><span class="o">+</span><span class="n">exp2</span><span class="p">)</span> <span class="o">+</span> <span class="n">num1</span><span class="p">))</span>
-<span class="c1"># 74.68368695633188
-</span></code></pre></div></div>
+organization := "com.sundogsoftware"
 
-<p>부동소수점 계산에 따른 오차는 있으나, 같은 값이라 봐도 무방할 값이 나왔습니다. 이러한 방식의 계산트릭은 underflow, overflow가 발생하는 경우에 이를 회피하여 값을 기록하는 트릭으로 이용될 수 있습니다.</p>
+scalaVersion := "2.12.10"
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">num1</span> <span class="o">=</span> <span class="mi">750</span>
-<span class="n">num2</span> <span class="o">=</span> <span class="mi">751</span>
+libraryDependencies ++= Seq(
+"org.apache.spark" %% "spark-core" % "3.0.3" % "provided",
+"org.apache.spark" %% "spark-sql" % "3.0.3" % "provided"
+)
+</code></pre></div></div>
 
-<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="p">.</span><span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="p">))</span>
-<span class="c1"># inf
-</span>
-<span class="n">exp1</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
-<span class="n">exp2</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ScalaVersion</code> : 사용하는 Spark에 따라 scala 버전이 달라질 수 있습니다. 항상 패키지 전에 Spark 버전을 확인하고 그에 맞는 scala 버전을 확인해야합니다.</li>
+  <li><code class="language-plaintext highlighter-rouge">libraryDependencies</code> :  라이브러리 의존성은 Seq 자료형으로 컴마(,)를 기준으로 나누어 필요한만큼 추가작성할 수 있습니다. 위처럼 <code class="language-plaintext highlighter-rouge">provided</code>라 적혀있는 경우에는 해당 패키지가 사용 환경에서 이미 설치되었음을 알려주는 명령어입니다. Spark가 이미 설치된 환경에서 배포할 jar 파일을 컴파일하는 경우에는 spark 패키지를 포함할 필요가 없을 것입니다.</li>
+</ul>
 
-<span class="k">print</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">exp1</span><span class="o">+</span><span class="n">exp2</span><span class="p">)</span> <span class="o">+</span> <span class="n">num1</span><span class="p">)</span>
-<span class="c1"># 751.3132616875182
-</span>
-<span class="c1"># exp(750)+exp(751)은 계산된 적 없으나 
-# 계산결과가 exp(751.3132616875182)이라는 사실은 알 수 있습니다.
-</span></code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">src/min/scala</code> 디렉토리 내에 패키징할 scala 파일을 위치하면 됩니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">project</code> 디렉토리 내에는 <code class="language-plaintext highlighter-rouge">assembly.sbt</code> 파일이 존재해야합니다. 해당 파일은 아래와 같이 작성되어있습니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.10")
+</code></pre></div></div>
+
+<p>이는 어떤 플러그인을 사용할 지 결정합니다.</p>
+
+<p>이러한 설정을 마치고, 컴파일할 스크립트를 올바르게 위치시켰으면 root 위치에서 아래 명령어를 가지고 패키징합니다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>base<span class="o">)</span> gyuhoonkim@Gyuhoonui-MacBookAir sbt % sbt assmbly
+</code></pre></div></div>
+
+<p>target 디렉토리가 새로 생성되고 해당 scala 버전에 맞는 디렉토리 내에 jar 파일이 생성됩니다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sbt/target
+├── MinTemperaturesDataset-assembly-1.0.jar
+├── classes
+├── <span class="nb">sync</span>
+├── test-sync
+├── update
+└── zinc
+</code></pre></div></div>
+
+<p>컴파일이 완료된 jar 파일은 아래처럼 spark-submit에 제출하면 실행됩니다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>base<span class="o">)</span> gyuhoonkim@Gyuhoonui-MacBookAir ~ % ~/spark-3.0.3-bin-hadoop2.7/bin/spark-submit <span class="se">\</span>
+MinTemperaturesDataset-assembly-1.0.jar
+</code></pre></div></div>
 
 <p>[참고]</p>
 
-<p><a href="https://www.py4u.net/discuss/823103">Multiplication aggregate operator in SQL</a></p>
-
-<p><a href="https://basicstatistics.tistory.com/entry/logsumexp-trick">log-sum-exp trick</a></p>
-
+<p><a href="https://www.udemy.com/course/best-scala-apache-spark/">Learning Apache Spark 3 with Scala</a></p>
 
                 </div>
             </section>
@@ -394,9 +399,9 @@ FROM default.t_test;
                     <div id="disqus_thread"></div>
                     <script>
                         var disqus_config = function () {
-                            var this_page_url = 'https://gyuhoonk.github.io/EXP-LOG-SUM';
-                            var this_page_identifier = '/EXP-LOG-SUM';
-                            var this_page_title = 'EXP-SUM-LOG / LOG-SUM-EXP';
+                            var this_page_url = 'https://gyuhoonk.github.io/sparkscala6';
+                            var this_page_identifier = '/sparkscala6';
+                            var this_page_title = 'Learning Apache Spark 3 with Scala (Section6)';
                         };
                         (function() {
                             var d = document, s = d.createElement('script');
@@ -430,7 +435,7 @@ FROM default.t_test;
                         <header class="read-next-card-header">
                             <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
                             
-                                <h3 class="read-next-card-header-title"><a href="/tag/database/">Database</a></h3>
+                                <h3 class="read-next-card-header-title"><a href="/tag/scala/">Scala</a></h3>
                             
                         </header>
                         <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
@@ -440,13 +445,27 @@ FROM default.t_test;
                                 
                                 
                                   
-                                
+                                    
                                   
                                 
                                   
                                 
                                   
+                                    
+                                        
+                                        
+                                            <li><a href="/sparkscala5">Learning Apache Spark 3 with Scala (Section5)</a></li>
+                                        
+                                    
+                                  
                                 
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/sparkscala4">Learning Apache Spark 3 with Scala (Section4)</a></li>
+                                        
+                                    
                                   
                                 
                                   
@@ -459,7 +478,23 @@ FROM default.t_test;
                                     
                                         
                                         
-                                            <li><a href="/DBCP">DataBase Connection Pool</a></li>
+                                            <li><a href="/sparkscala3">Learning Apache Spark 3 with Scala (Section3)</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
                                         
                                     
                                   
@@ -469,8 +504,6 @@ FROM default.t_test;
                                   
                                 
                                   
-                                    
-                                  
                                 
                                   
                                 
@@ -484,17 +517,6 @@ FROM default.t_test;
                                 
                                   
                                 
-                                  
-                                
-                                  
-                                
-                                  
-                                    
-                                        
-                                        
-                                            <li><a href="/connect-to-database">Connection to DataBase in Python, R</a></li>
-                                        
-                                    
                                   
                                 
                                   
@@ -502,9 +524,9 @@ FROM default.t_test;
                             </ul>
                         </div>
                         <footer class="read-next-card-footer">
-                            <a href="/tag/database/">
+                            <a href="/tag/scala/">
                                 
-                                    See all 2 posts  →
+                                    See all 5 posts  →
                                 
                             </a>
                         </footer>
@@ -517,61 +539,6 @@ FROM default.t_test;
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
             
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/sparkscala1">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/scala-banner-post.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/sparkscala1">
-                <header class="post-card-header">
-                    
-                        
-                            
-                               <span class="post-card-tags">Scala</span>
-                            
-                        
-                            
-                                <span class="post-card-tags">Hadoop</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">Learning Apache Spark 3 with Scala (Section1)</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>Learning Apache Spark 3 with Scala (Section1)
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      5 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-            
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
             
@@ -579,26 +546,26 @@ FROM default.t_test;
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/spark-overwrite-partition">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/spark-overwrite-partition.jpg)"></div>
+            <a class="post-card-image-link" href="/airflow1">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/airflow/airflow.png)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/spark-overwrite-partition">
+            <a class="post-card-content-link" href="/airflow1">
                 <header class="post-card-header">
                     
                         
                             
-                                <span class="post-card-tags">Hadoop</span>
+                                <span class="post-card-tags">Airflow</span>
                             
                         
                     
 
-                    <h2 class="post-card-title">Overwrite Partition in Spark</h2>
+                    <h2 class="post-card-title">What is Airflow?</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>Spark를 이용하여 특정 파티션만 overwrite하기
+                        <p>Basic Concepts of Airflow
 
 </p>
                     
@@ -618,7 +585,7 @@ FROM default.t_test;
                 <span class="reading-time">
                     
                     
-                      3 min read
+                      2 min read
                     
                 </span>
             </footer>
@@ -640,18 +607,18 @@ FROM default.t_test;
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">EXP-SUM-LOG / LOG-SUM-EXP</div>
+    <div class="floating-header-title">Learning Apache Spark 3 with Scala (Section6)</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=EXP-SUM-LOG+%2F+LOG-SUM-EXP&amp;url=https://gyuhoonk.github.ioEXP-LOG-SUM"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Learning+Apache+Spark+3+with+Scala+%28Section6%29&amp;url=https://gyuhoonk.github.iosparkscala6"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.ioEXP-LOG-SUM"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iosparkscala6"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 
@@ -843,30 +810,5 @@ $(document).ready(function () {
     <!-- ghost_foot -->
     <!-- math LaTex-->
     
-     <script type="text/x-mathjax-config">
-	MathJax.Hub.Config({
-	TeX: {
-		equationNumbers: {
-		autoNumber: "AMS"
-		}
-	},
-	tex2jax: {
-		inlineMath: [ ['$', '$'] ],
-		displayMath: [ ['$$', '$$'] ],
-		processEscapes: true,
-		}
-	});
-	MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-	MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-</script>
-
-<script type="text/javascript" async
-	src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
-</script>
-
 </body>
 </html>

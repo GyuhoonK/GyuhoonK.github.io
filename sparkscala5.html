@@ -44,29 +44,7 @@
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Learning Apache Spark 3 with Scala (Section5)" />
-    <meta property="og:description" content="Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)
-
-broadcast
-
-34.
-
-sparkSQL is NOT always Faster than RDD
-
-40.
-
-cache, persist
-
-41.
-
-Collaborative Filtering
-
-42.
-
-[참고]
-
-Learning Apache Spark 3 with Scala
-
-" />
+    <meta property="og:description" content="Learning Apache Spark 3 with Scala (Section5 - Spark Progamming) broadcast broadcast를 이용하면 모든 executor에 해당 객체(object)를 보낼 수 있습니다. broadcast를 이용하는 방법은 간단합니다. sparkConetxt 객체에 서 broadcast 함수를 사용하면 됩니다. 각 executor에서는 .values를 사용하여 해당 객체를 조회하고 사용할 수 있습니다. Using the broadcast functionality available in SparkContext can greatly" />
     <meta property="og:url" content="https://gyuhoonk.github.io/sparkscala5" />
     <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
@@ -76,29 +54,7 @@ Learning Apache Spark 3 with Scala
     <meta property="article:tag" content="Scala" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Learning Apache Spark 3 with Scala (Section5)" />
-    <meta name="twitter:description" content="Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)
-
-broadcast
-
-34.
-
-sparkSQL is NOT always Faster than RDD
-
-40.
-
-cache, persist
-
-41.
-
-Collaborative Filtering
-
-42.
-
-[참고]
-
-Learning Apache Spark 3 with Scala
-
-" />
+    <meta name="twitter:description" content="Learning Apache Spark 3 with Scala (Section5 - Spark Progamming) broadcast broadcast를 이용하면 모든 executor에 해당 객체(object)를 보낼 수 있습니다. broadcast를 이용하는 방법은 간단합니다. sparkConetxt 객체에 서 broadcast 함수를 사용하면 됩니다. 각 executor에서는 .values를 사용하여 해당 객체를 조회하고 사용할 수 있습니다. Using the broadcast functionality available in SparkContext can greatly" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
     <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
     <meta name="twitter:label1" content="Written by" />
@@ -130,29 +86,7 @@ Learning Apache Spark 3 with Scala
         "@type": "WebPage",
         "@id": "https://gyuhoonk.github.io/sparkscala5"
     },
-    "description": "Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)
-
-broadcast
-
-34.
-
-sparkSQL is NOT always Faster than RDD
-
-40.
-
-cache, persist
-
-41.
-
-Collaborative Filtering
-
-42.
-
-[참고]
-
-Learning Apache Spark 3 with Scala
-
-"
+    "description": "Learning Apache Spark 3 with Scala (Section5 - Spark Progamming) broadcast broadcast를 이용하면 모든 executor에 해당 객체(object)를 보낼 수 있습니다. broadcast를 이용하는 방법은 간단합니다. sparkConetxt 객체에 서 broadcast 함수를 사용하면 됩니다. 각 executor에서는 .values를 사용하여 해당 객체를 조회하고 사용할 수 있습니다. Using the broadcast functionality available in SparkContext can greatly"
 }
     </script>
 
@@ -269,24 +203,155 @@ into the {body} of the default.hbs template -->
 
 <h2 id="broadcast">broadcast</h2>
 
-<p>34.</p>
+<p><code class="language-plaintext highlighter-rouge">broadcast</code>를 이용하면 모든 executor에 해당 객체(object)를 보낼 수 있습니다. <code class="language-plaintext highlighter-rouge">broadcast</code>를 이용하는 방법은 간단합니다. <code class="language-plaintext highlighter-rouge">sparkConetxt</code> 객체에 서 <code class="language-plaintext highlighter-rouge">broadcast</code> 함수를 사용하면 됩니다. 각 executor에서는 <code class="language-plaintext highlighter-rouge">.values</code>를 사용하여 해당 객체를 조회하고 사용할 수 있습니다.</p>
+
+<blockquote>
+  <p>Using the <a href="https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#broadcast-variables">broadcast functionality</a> available in <code class="language-plaintext highlighter-rouge">SparkContext</code> can greatly reduce <strong>the size of each serialized task</strong>, and <strong>the cost of launching a job</strong> over a cluster. If your tasks use any large object from the driver program inside of them (e.g. a static lookup table), consider turning it into a broadcast variable. Spark prints the serialized size of each task on the master, so you can look at that to decide whether your tasks are too large; in general tasks larger than about 20 KiB are probably worth optimizing.</p>
+
+</blockquote>
+
+<p><code class="language-plaintext highlighter-rouge">broadcast</code> 함수를 이용하면, 하나의 노드에서만 해당 객체에 대한 연산을 수행하고 저장하고 있으므로, 메모리 사용을 줄이고 수행 시간을 줄일 수 있습니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">loadMovieNames</span><span class="o">()</span> <span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+
+  <span class="c1">// Handle character encoding issues:</span>
+  <span class="k">implicit</span> <span class="k">val</span> <span class="nv">codec</span><span class="k">:</span> <span class="kt">Codec</span> <span class="o">=</span> <span class="nc">Codec</span><span class="o">(</span><span class="s">"ISO-8859-1"</span><span class="o">)</span> <span class="c1">// This is the current encoding of u.item, not UTF-8.</span>
+
+  <span class="c1">// Create a Map of Ints to Strings, and populate it from u.item.</span>
+  <span class="k">var</span> <span class="n">movieNames</span><span class="k">:</span><span class="kt">Map</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">()</span>
+
+  <span class="k">val</span> <span class="nv">lines</span> <span class="k">=</span> <span class="nv">Source</span><span class="o">.</span><span class="py">fromFile</span><span class="o">(</span><span class="s">"data/ml-100k/u.item"</span><span class="o">)</span>
+  <span class="nf">for</span> <span class="o">(</span><span class="n">line</span> <span class="k">&lt;-</span> <span class="nv">lines</span><span class="o">.</span><span class="py">getLines</span><span class="o">())</span> <span class="o">{</span>
+    <span class="k">val</span> <span class="nv">fields</span> <span class="k">=</span> <span class="nv">line</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="sc">'|'</span><span class="o">)</span>
+    <span class="nf">if</span> <span class="o">(</span><span class="nv">fields</span><span class="o">.</span><span class="py">length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">movieNames</span> <span class="o">+=</span> <span class="o">(</span><span class="nf">fields</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="py">toInt</span> <span class="o">-&gt;</span> <span class="nf">fields</span><span class="o">(</span><span class="mi">1</span><span class="o">))</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+  <span class="nv">lines</span><span class="o">.</span><span class="py">close</span><span class="o">()</span>
+  <span class="n">movieNames</span>
+<span class="o">}</span>
+
+<span class="k">val</span> <span class="nv">nameDict</span> <span class="k">=</span> <span class="nv">spark</span><span class="o">.</span><span class="py">sparkContext</span><span class="o">.</span><span class="py">broadcast</span><span class="o">(</span><span class="nf">loadMovieNames</span><span class="o">())</span>
+<span class="c1">// nameDict is a broadcast variable.</span>
+<span class="o">...</span>
+
+<span class="k">val</span> <span class="nv">lookupName</span> <span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="nc">String</span> <span class="k">=</span> <span class="o">(</span><span class="n">movieID</span><span class="k">:</span><span class="kt">Int</span><span class="o">)=&gt;{</span>
+      <span class="nv">nameDict</span><span class="o">.</span><span class="py">value</span><span class="o">(</span><span class="n">movieID</span><span class="o">)</span>
+    <span class="o">}</span>
+<span class="c1">// broadcast variable을 호출할 때는 .value 사용</span>
+</code></pre></div></div>
 
 <h2 id="sparksql-is-not-always-faster-than-rdd">sparkSQL is NOT always Faster than RDD</h2>
 
-<p>40.</p>
+<p>코드 작성의 편이성과 속도의 측면에서 sparkSQL을 사용하여 코드를 작성하는 것을 권장하지만, 이것이 항상 sparkSQL이 RDD보다 빠르다는 이야기는 아닙니다. 경우에 따라서는 RDD를 이용하는 것이 속도가 더 빠르기도 합니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Code</th>
+      <th>Execution Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Dataset</td>
+      <td><a href="https://github.com/GyuhoonK/sparkscala/blob/main/src/main/scala/com/sundogsoftware/spark/DegreesOfSeparationDataset.scala">Dataset Code</a></td>
+      <td>7s</td>
+    </tr>
+    <tr>
+      <td>RDD</td>
+      <td><a href="https://github.com/GyuhoonK/sparkscala/blob/main/src/main/scala/com/sundogsoftware/spark/DegreesOfSeparation.scala">RDD Code</a></td>
+      <td>3s</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>위 처럼 Dataset API를 이용하는 경우보다 RDD API를 이용하여 작성한 경우가 2배 이상 빠른 경우도 있습니다. 상황에 맞는 API를 선택하여 활용해야합니다.</p>
+
+<p>Dataset, DataFrame API는 전통적인 데이터 분석 문제를 다루는데 효율적입니다. 즉 SQL 명령어를 활용하여 분석이 가능한 문제라면 sprakSQL API를 활용하는 것이 좋습니다.</p>
+
+<p>반면, 새로운 프레임을 만들어 데이터 분석을 해야하는 경우에는 RDD와 같이 저수준 API에서 더 좋은 결과를 얻을 수 있습니다.</p>
 
 <h2 id="cache-persist">cache, persist</h2>
 
-<p>41.</p>
+<p>모든 노드에서 자주 사용해야하는 데이터에 대해서는 <code class="language-plaintext highlighter-rouge">broadcast</code>가 아니라 <code class="language-plaintext highlighter-rouge">cache</code>, <code class="language-plaintext highlighter-rouge">persist</code>를 사용합니다.</p>
 
-<h2 id="collaborative-filtering">Collaborative Filtering</h2>
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">cache</code></td>
+      <td>lets you cache dataset to memory</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">persist</code></td>
+      <td>optionally lets you cache dataset to not jus memory but also disk</td>
+    </tr>
+  </tbody>
+</table>
 
-<p>42.</p>
+<p>아래와 같은 storage level에 대해서 선택이 가능합니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Storage Level</th>
+      <th style="text-align: left">Meaning</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">MEMORY_ONLY</td>
+      <td style="text-align: left">Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, some partitions will not be cached and will be recomputed on the fly each time they’re needed. This is the default level.</td>
+      <td>The <code class="language-plaintext highlighter-rouge">cache()</code> method is a shorthand for using the default storage level, which is <code class="language-plaintext highlighter-rouge">StorageLevel.MEMORY_ONLY</code> (store deserialized objects in memory).</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">MEMORY_AND_DISK</td>
+      <td style="text-align: left">Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, store the partitions that don’t fit on disk, and read them from there when they’re needed.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">MEMORY_ONLY_SER (Java and Scala)</td>
+      <td style="text-align: left">Store RDD as <em>serialized</em> Java objects (one byte array per partition). This is generally more space-efficient than deserialized objects, especially when using a <a href="https://spark.apache.org/docs/latest/tuning.html">fast serializer</a>, but more CPU-intensive to read.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">MEMORY_AND_DISK_SER (Java and Scala)</td>
+      <td style="text-align: left">Similar to MEMORY_ONLY_SER, but spill partitions that don’t fit in memory to disk instead of recomputing them on the fly each time they’re needed.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">DISK_ONLY</td>
+      <td style="text-align: left">Store the RDD partitions only on disk.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">MEMORY_ONLY_2, MEMORY_AND_DISK_2, etc.</td>
+      <td style="text-align: left">Same as the levels above, but replicate each partition on two cluster nodes.</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left">OFF_HEAP (experimental)</td>
+      <td style="text-align: left">Similar to MEMORY_ONLY_SER, but store the data in <a href="https://spark.apache.org/docs/latest/configuration.html#memory-management">off-heap memory</a>. This requires off-heap memory to be enabled.</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
 
 <p>[참고]</p>
 
 <p><a href="https://www.udemy.com/course/best-scala-apache-spark/">Learning Apache Spark 3 with Scala</a></p>
 
+<p><a href="https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#broadcast-variables">Broadcast Variables</a></p>
+
+<p><a href="https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#rdd-persistence">RDD Persistence</a></p>
 
                 </div>
             </section>
@@ -387,6 +452,15 @@ into the {body} of the default.hbs template -->
                                 
                                 
                                   
+                                    
+                                        
+                                        
+                                            <li><a href="/sparkscala6">Learning Apache Spark 3 with Scala (Section6)</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
                                 
                                   
                                     
@@ -421,8 +495,6 @@ into the {body} of the default.hbs template -->
                                   
                                     
                                         
-                                        
-                                            <li><a href="/sparkscala2">Learning Apache Spark 3 with Scala (Scala Basic)</a></li>
                                         
                                     
                                   
@@ -461,7 +533,7 @@ into the {body} of the default.hbs template -->
                         <footer class="read-next-card-footer">
                             <a href="/tag/scala/">
                                 
-                                    See all 4 posts  →
+                                    See all 5 posts  →
                                 
                             </a>
                         </footer>

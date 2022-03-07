@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-03-01T20:16:29+09:00</updated>
+  <updated>2022-03-07T17:24:47+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/hadoop/feed.xml</id>
 
   
@@ -32,6 +32,187 @@
 
   
     <entry>
+      <title type="html">Learning Apache Spark 3 with Scala (Section6)</title>
+      <link href="https://gyuhoonk.github.io/sparkscala6" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section6)" />
+      <published>2022-03-06T22:30:00+09:00</published>
+      <updated>2022-03-06T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/sparkscala6</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala6">&lt;p&gt;Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)&lt;/p&gt;
+
+&lt;h2 id=&quot;download-spark&quot;&gt;Download Spark&lt;/h2&gt;
+
+&lt;p&gt;IntelliJ 환경이 아닌, 클러스터 환경에서 spark-submit 명령어를 통해 스크립트를 실행해보겠습니다. 먼저 spark 실행 파일을 다운로드 받습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://spark.apache.org/downloads.html&quot;&gt;Download Apache Spark&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;파일을 다운로드 받아 압축을 해제한 뒤, 기억하기 쉬운 경로에 옮겨두었습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@Gyuhoonui-MacBookAir ~ % &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; ~
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@Gyuhoonui-MacBookAir ~ % &lt;span class=&quot;nb&quot;&gt;ls
+&lt;/span&gt;spark-3.0.3-bin-hadoop2.7
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@Gyuhoonui-MacBookAir ~ % &lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;spark-3.0.3-bin-hadoop2.7 
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@Gyuhoonui-MacBookAir spark-3.0.3-bin-hadoop2.7 % &lt;span class=&quot;nb&quot;&gt;ls
+&lt;/span&gt;LICENSE		README.md	conf		jars		python
+NOTICE		RELEASE		data		kubernetes	sbin
+R		bin		examples	licenses	yarn
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;spark-submit&quot;&gt;spark-submit&lt;/h2&gt;
+
+&lt;p&gt;spark-submit을 하기 전에, 우리는 jar 파일을 만들어야합니다. 현재 강의에서 사용하고 있는 SparkCourse 디렉토리를 jar파일로 압축해보겠습니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;IntelliJ에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Project Structure&lt;/code&gt;를 선택합니다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/scala/jar1.png&quot; alt=&quot;image&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Artifacts&lt;/code&gt;에서 + 버튼을 클릭합니다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/scala/jar2.png&quot; alt=&quot;image&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;JAR &amp;gt; empty&lt;/code&gt;를 선택합니다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/scala/jar3.png&quot; alt=&quot;image&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Name&lt;/code&gt;에 원하는 이름을 입력합니다. 저는 SparkCourse로 하겠습니다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/scala/jar4.png&quot; alt=&quot;image&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Avaliable Elements&lt;/code&gt; 항목에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SparkScalaCourse compile output&lt;/code&gt;을 선택합니다. 이는 컴파일이 완료된 byte-code입니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Include in project build&lt;/code&gt; 항목도 체크해줍니다. (프로젝트 내에서 사용하고 있는 의존성 패키지는 모두 spark에 설치되어 있으므로 제외했습니다)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/scala/jar5.png&quot; alt=&quot;image&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;p&gt;마지막으로 하단의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OK&lt;/code&gt; 버튼을 눌러줍니다.&lt;/p&gt;
+
+    &lt;p&gt;&lt;img src=&quot;../../assets/built/images/scala/jar6.png&quot; alt=&quot;image&quot; style=&quot;zoom:50%;&quot; /&gt;&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;위 과정을 순서대로 따르면, 우리가 입력했던 경로인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/Users/gyuhoonkim/Documents/SparkScalaCourse/out/artifacts/SparkCourse&lt;/code&gt; 폴더 내에 jar 파일이 생성된 것을 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;아래와 같은 명령어로 우리가 만든 jar 파일에서 원하는 class를 실행할 수 있습니다.  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HelloWorld.scala&lt;/code&gt; 를 실행해보겠습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@Gyuhoonui-MacBookAir ~ % ~/spark-3.0.3-bin-hadoop2.7/bin/spark-submit &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;--class&lt;/span&gt; com.sundogsoftware.spark.HelloWorld &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+SparkScalaCourse/out/artifacts/SparkCourse/SparkCourse.jar 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;sbt&quot;&gt;sbt&lt;/h2&gt;
+
+&lt;p&gt;프로젝트에서 사용하는 모든 패키지와 모든 의존성을 한번에 jar 파일로 패키징할 수 있는 방법이 있습니다. sbt를 이용하는 방법입니다. sbt는 scala를 위한 maven 정도로 생각하면 됩니다. sbt는 라이브러리와 의존성 트리를 관리합니다. 필요로 되는 라이브러리 혹은 jar파일에 의존하는 스크립트를 가지고 있다면 자동으로 검색하여 컴파일하는 jar파일에 패키지합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.scala-sbt.org/download.html&quot;&gt;Download sbt&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;저는 M1 맥북이라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;brew&lt;/code&gt;로는 설치할 수가 없었고, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sdk&lt;/code&gt;로 설치했습니다.&lt;/p&gt;
+
+&lt;p&gt;이후 아래 디렉토리 구조를 셋업합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.
+├── build.sbt
+├── project
+│   └── assembly.sbt
+└── src
+    └── main
+        └── scala
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;root 위치에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.sbt&lt;/code&gt; 파일이 존재해야합니다. 이는 가장 중요한 역할을 합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;name := &quot;MinTemperaturesDataset&quot;
+
+version := &quot;1.0&quot;
+
+organization := &quot;com.sundogsoftware&quot;
+
+scalaVersion := &quot;2.12.10&quot;
+
+libraryDependencies ++= Seq(
+&quot;org.apache.spark&quot; %% &quot;spark-core&quot; % &quot;3.0.3&quot; % &quot;provided&quot;,
+&quot;org.apache.spark&quot; %% &quot;spark-sql&quot; % &quot;3.0.3&quot; % &quot;provided&quot;
+)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ScalaVersion&lt;/code&gt; : 사용하는 Spark에 따라 scala 버전이 달라질 수 있습니다. 항상 패키지 전에 Spark 버전을 확인하고 그에 맞는 scala 버전을 확인해야합니다.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;libraryDependencies&lt;/code&gt; :  라이브러리 의존성은 Seq 자료형으로 컴마(,)를 기준으로 나누어 필요한만큼 추가작성할 수 있습니다. 위처럼 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;provided&lt;/code&gt;라 적혀있는 경우에는 해당 패키지가 사용 환경에서 이미 설치되었음을 알려주는 명령어입니다. Spark가 이미 설치된 환경에서 배포할 jar 파일을 컴파일하는 경우에는 spark 패키지를 포함할 필요가 없을 것입니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;src/min/scala&lt;/code&gt; 디렉토리 내에 패키징할 scala 파일을 위치하면 됩니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;project&lt;/code&gt; 디렉토리 내에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;assembly.sbt&lt;/code&gt; 파일이 존재해야합니다. 해당 파일은 아래와 같이 작성되어있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;addSbtPlugin(&quot;com.eed3si9n&quot; % &quot;sbt-assembly&quot; % &quot;0.14.10&quot;)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이는 어떤 플러그인을 사용할 지 결정합니다.&lt;/p&gt;
+
+&lt;p&gt;이러한 설정을 마치고, 컴파일할 스크립트를 올바르게 위치시켰으면 root 위치에서 아래 명령어를 가지고 패키징합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@Gyuhoonui-MacBookAir sbt % sbt assmbly
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;target 디렉토리가 새로 생성되고 해당 scala 버전에 맞는 디렉토리 내에 jar 파일이 생성됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sbt/target
+├── MinTemperaturesDataset-assembly-1.0.jar
+├── classes
+├── &lt;span class=&quot;nb&quot;&gt;sync&lt;/span&gt;
+├── test-sync
+├── update
+└── zinc
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;컴파일이 완료된 jar 파일은 아래처럼 spark-submit에 제출하면 실행됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@Gyuhoonui-MacBookAir ~ % ~/spark-3.0.3-bin-hadoop2.7/bin/spark-submit &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+MinTemperaturesDataset-assembly-1.0.jar
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="scala" />
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html">Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
       <title type="html">Learning Apache Spark 3 with Scala (Section5)</title>
       <link href="https://gyuhoonk.github.io/sparkscala5" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section5)" />
       <published>2022-02-21T22:30:00+09:00</published>
@@ -41,23 +222,155 @@
 
 &lt;h2 id=&quot;broadcast&quot;&gt;broadcast&lt;/h2&gt;
 
-&lt;p&gt;34.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broadcast&lt;/code&gt;를 이용하면 모든 executor에 해당 객체(object)를 보낼 수 있습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broadcast&lt;/code&gt;를 이용하는 방법은 간단합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sparkConetxt&lt;/code&gt; 객체에 서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broadcast&lt;/code&gt; 함수를 사용하면 됩니다. 각 executor에서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.values&lt;/code&gt;를 사용하여 해당 객체를 조회하고 사용할 수 있습니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Using the &lt;a href=&quot;https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#broadcast-variables&quot;&gt;broadcast functionality&lt;/a&gt; available in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SparkContext&lt;/code&gt; can greatly reduce &lt;strong&gt;the size of each serialized task&lt;/strong&gt;, and &lt;strong&gt;the cost of launching a job&lt;/strong&gt; over a cluster. If your tasks use any large object from the driver program inside of them (e.g. a static lookup table), consider turning it into a broadcast variable. Spark prints the serialized size of each task on the master, so you can look at that to decide whether your tasks are too large; in general tasks larger than about 20 KiB are probably worth optimizing.&lt;/p&gt;
+
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broadcast&lt;/code&gt; 함수를 이용하면, 하나의 노드에서만 해당 객체에 대한 연산을 수행하고 저장하고 있으므로, 메모리 사용을 줄이고 수행 시간을 줄일 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-scala highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;loadMovieNames&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;, &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;// Handle character encoding issues:&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;codec&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Codec&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Codec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ISO-8859-1&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// This is the current encoding of u.item, not UTF-8.&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;// Create a Map of Ints to Strings, and populate it from u.item.&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;movieNames&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;, &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;lines&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;fromFile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;data/ml-100k/u.item&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nf&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;lines&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;getLines&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;fields&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sc&quot;&gt;'|'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;nf&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;n&quot;&gt;movieNames&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;toInt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;lines&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;movieNames&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;nameDict&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;sparkContext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;broadcast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;loadMovieNames&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// nameDict is a broadcast variable.&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;lookupName&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;movieID&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)=&amp;gt;{&lt;/span&gt;
+      &lt;span class=&quot;nv&quot;&gt;nameDict&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;movieID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;// broadcast variable을 호출할 때는 .value 사용&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;sparksql-is-not-always-faster-than-rdd&quot;&gt;sparkSQL is NOT always Faster than RDD&lt;/h2&gt;
 
-&lt;p&gt;40.&lt;/p&gt;
+&lt;p&gt;코드 작성의 편이성과 속도의 측면에서 sparkSQL을 사용하여 코드를 작성하는 것을 권장하지만, 이것이 항상 sparkSQL이 RDD보다 빠르다는 이야기는 아닙니다. 경우에 따라서는 RDD를 이용하는 것이 속도가 더 빠르기도 합니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;Code&lt;/th&gt;
+      &lt;th&gt;Execution Time&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Dataset&lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;https://github.com/GyuhoonK/sparkscala/blob/main/src/main/scala/com/sundogsoftware/spark/DegreesOfSeparationDataset.scala&quot;&gt;Dataset Code&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;7s&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;RDD&lt;/td&gt;
+      &lt;td&gt;&lt;a href=&quot;https://github.com/GyuhoonK/sparkscala/blob/main/src/main/scala/com/sundogsoftware/spark/DegreesOfSeparation.scala&quot;&gt;RDD Code&lt;/a&gt;&lt;/td&gt;
+      &lt;td&gt;3s&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;위 처럼 Dataset API를 이용하는 경우보다 RDD API를 이용하여 작성한 경우가 2배 이상 빠른 경우도 있습니다. 상황에 맞는 API를 선택하여 활용해야합니다.&lt;/p&gt;
+
+&lt;p&gt;Dataset, DataFrame API는 전통적인 데이터 분석 문제를 다루는데 효율적입니다. 즉 SQL 명령어를 활용하여 분석이 가능한 문제라면 sprakSQL API를 활용하는 것이 좋습니다.&lt;/p&gt;
+
+&lt;p&gt;반면, 새로운 프레임을 만들어 데이터 분석을 해야하는 경우에는 RDD와 같이 저수준 API에서 더 좋은 결과를 얻을 수 있습니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;cache-persist&quot;&gt;cache, persist&lt;/h2&gt;
 
-&lt;p&gt;41.&lt;/p&gt;
+&lt;p&gt;모든 노드에서 자주 사용해야하는 데이터에 대해서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broadcast&lt;/code&gt;가 아니라 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cache&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;persist&lt;/code&gt;를 사용합니다.&lt;/p&gt;
 
-&lt;h2 id=&quot;collaborative-filtering&quot;&gt;Collaborative Filtering&lt;/h2&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cache&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;lets you cache dataset to memory&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;persist&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;optionally lets you cache dataset to not jus memory but also disk&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
-&lt;p&gt;42.&lt;/p&gt;
+&lt;p&gt;아래와 같은 storage level에 대해서 선택이 가능합니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Storage Level&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;Meaning&lt;/th&gt;
+      &lt;th&gt; &lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;MEMORY_ONLY&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, some partitions will not be cached and will be recomputed on the fly each time they’re needed. This is the default level.&lt;/td&gt;
+      &lt;td&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cache()&lt;/code&gt; method is a shorthand for using the default storage level, which is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StorageLevel.MEMORY_ONLY&lt;/code&gt; (store deserialized objects in memory).&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;MEMORY_AND_DISK&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, store the partitions that don’t fit on disk, and read them from there when they’re needed.&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;MEMORY_ONLY_SER (Java and Scala)&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Store RDD as &lt;em&gt;serialized&lt;/em&gt; Java objects (one byte array per partition). This is generally more space-efficient than deserialized objects, especially when using a &lt;a href=&quot;https://spark.apache.org/docs/latest/tuning.html&quot;&gt;fast serializer&lt;/a&gt;, but more CPU-intensive to read.&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;MEMORY_AND_DISK_SER (Java and Scala)&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Similar to MEMORY_ONLY_SER, but spill partitions that don’t fit in memory to disk instead of recomputing them on the fly each time they’re needed.&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;DISK_ONLY&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Store the RDD partitions only on disk.&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;MEMORY_ONLY_2, MEMORY_AND_DISK_2, etc.&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Same as the levels above, but replicate each partition on two cluster nodes.&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;OFF_HEAP (experimental)&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Similar to MEMORY_ONLY_SER, but store the data in &lt;a href=&quot;https://spark.apache.org/docs/latest/configuration.html#memory-management&quot;&gt;off-heap memory&lt;/a&gt;. This requires off-heap memory to be enabled.&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;</content>
+&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#broadcast-variables&quot;&gt;Broadcast Variables&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#rdd-persistence&quot;&gt;RDD Persistence&lt;/a&gt;&lt;/p&gt;</content>
 
       
       
@@ -1760,220 +2073,6 @@
 
       
         <summary type="html">HDFS에서 작은 용량의 파일들을 하나의 파일로 합치기</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">Bucket in Hive, Spark</title>
-      <link href="https://gyuhoonk.github.io/bucket-hive-spark" rel="alternate" type="text/html" title="Bucket in Hive, Spark" />
-      <published>2021-10-09T22:30:00+09:00</published>
-      <updated>2021-10-09T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/bucket-hive-spark</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/bucket-hive-spark">&lt;p&gt;Hive와 Spark에서 Bucket 차이점에 대하여&lt;/p&gt;
-
-&lt;h1 id=&quot;bucketting&quot;&gt;Bucketting&lt;/h1&gt;
-
-&lt;p&gt;Bucket은 쿼리 성능 향상을 위해 사용됩니다. 특히 Join에서 사용되는 key column을 기준으로 bucketting 할 경우 큰 성능 향상을 얻을 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;Bucket의 기본 아이디어는 지정된 칼럼을 기준으로 hash function을 통해 만들어진 값에 해당하는 bucket file에 데이터를 저장하는 것입니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/bucketing-in-hive.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h1 id=&quot;bucket-in-hive&quot;&gt;Bucket in Hive&lt;/h1&gt;
-
-&lt;p&gt;HiveQL로 Partition, Bucket이 선언된 테이블을 선언하는 쿼리는 아래와 같습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bucketed_tbl&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- EXTERNAL TABLE로 생성&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;timestamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- COLUMN을 선언, PARTITION으로 사용되는 COLUMN은 제외함&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;PARTITIONED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p_date&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- PARTITION 기준 선언&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;CLUSTERED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- HASH FUNCTION에 사용할 기준 선언&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;SORTED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- BUCKET 내에서 정렬 기준 선언&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BUEKCTS&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- BUCKET FILE 개수 선언&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'parquet'&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;LOCATION&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/user/hive/warehouse/default.db/bucketed_tbl'&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- EXTERNAL TABLE의 저장 위치&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;해당 테이블에 INSERT는 아래와 같은 쿼리로 실행합니다(STATIC PARTITION).&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;INSERT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;buckted_tbl&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PARTITION&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p_date&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'20211010'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; 
-	&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;20211010&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_source&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;INSERT 이후 LOCATION에는 아래처럼 파일이 저장됩니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/bucketed_tbl
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_0
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_1
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_2
-...
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_31
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;p_date=20211010&lt;/code&gt; partition을 한번 더 INSERT하면, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_copy1&lt;/code&gt;이 붙은 bucket file들이 저장됩니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-sh highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/bucketed_tbl
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_0
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_0_copy_1
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_1
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_1_copy_1
-...
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_31
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/000000_31_copy_1
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;bucket-in-sparkpyspark&quot;&gt;Bucket in Spark(pyspark)&lt;/h1&gt;
-
-&lt;p&gt;Spark에서도 partition, bucket 기능을 제공합니다. 위에서 실행했던 HiveQL 쿼리는 아래 pyspark 코드와 같은 표면적으로는 같은 의미를 지닙니다. 즉 HiveQL이나 아래 pyspark 코드는 모두 1) External 2) Partition 3) Bucket 을 선언하고 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;32개의 bucket 파일이 생성될 것 같지만, 이렇게 저장한 경우에 매우 많은 parquet file이 생성된다는 겁니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Bucket in Hive에서 저장된 파일들은 모두 삭제했다고 가정하고 조회&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/bucketed_tbl
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/part-000000-xxxx-xxxx.parquet
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/part-000001-xxxx-xxxx.parquet
-...
-/user/hive/warehouse/default.db/bucketed_tbl/p_date&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;20211010/part-012415-xxxx-xxxx.parquet
-&lt;span class=&quot;c&quot;&gt;# 12416개의 bucket file&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;왜 이렇게 많은 bucket들이 생성되는 것일까요?&lt;/p&gt;
-
-&lt;p&gt;이는 spark에서 bucketting을 할 경우 각 MAP 별로 bucekt file을 만들기 때문입니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hive-spark-bucket.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;위 그림처럼, Hive에서는 Reducer 하나가 하나의 bucket을 만드는데 비해, Spark에서는 각 task가 자신의 bucket을 만들고 이를 테이블 경로(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path&lt;/code&gt;)에 저장합니다.&lt;/p&gt;
-
-&lt;p&gt;계산해보면 \(32 * 388 = 12416\)입니다. 즉, 388개의 task가 각각 bucket file을 생성하였기 때문에 위와 같이 12416개의 bucket file이 저장된 것입니다. 따라서 Spark를 통해 bucketting을 할 때는 이러한 부분에 주의해야합니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;hive-bucket-vs-spark-bucket&quot;&gt;Hive Bucket vs. Spark Bucket&lt;/h1&gt;
-
-&lt;p&gt;더 큰 문제는 Hive Bucket과 Spark Bucket이 양립할 수 없다는 것입니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;spark를-통해-생성된-bucketed-table은-hive에서-조회-불가능하다&quot;&gt;Spark를 통해 생성된 Bucketed Table은 Hive에서 조회 불가능하다&lt;/h2&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;pyspark로 위와 같이 적재에 성공하더라도, 테이블을 조회하는 쿼리를 실행할 경우 에러를 발생시킵니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;SELECT * FROM default.bucketed_tbl&quot;&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# Error&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;hiveql로-생성된-bucketed-table에는-spark를-통해-insert할-수-없다&quot;&gt;HiveQL로 생성된 Bucketed Table에는 Spark를 통해 INSERT할 수 없다&lt;/h2&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;
-    &lt;p&gt;먼저 Bucketed Table을 생성하는 아래 쿼리를 실행합니다.&lt;/p&gt;
-
-    &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bucketed_tbl&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- EXTERNAL TABLE로 생성&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;timestamp&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- COLUMN을 선언, PARTITION으로 사용되는 COLUMN은 제외함&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;PARTITIONED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;p_date&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- PARTITION 기준 선언&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;CLUSTERED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- HASH FUNCTION에 사용할 기준 선언&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;SORTED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;birthday&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- BUCKET 내에서 정렬 기준 선언&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;INTO&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BUEKCTS&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- BUCKET FILE 개수 선언&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'parquet'&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;LOCATION&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/user/hive/warehouse/default.db/bucketed_tbl'&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;-- EXTERNAL TABLE의 저장 위치&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;pyspark를 이용하여 Bucketed Table에 데이터를 append(INSERT)합니다.&lt;/p&gt;
-
-    &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-
-    &lt;p&gt;아래와 같은 에러 메시지를 확인할 수 있습니다.&lt;/p&gt;
-
-    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;The format of the existing table default.bucketed_tbl is 'HiveFormat'.
-It doesn't match the specified format 'ParquetFileFormat'.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-
-    &lt;p&gt;HiveQL로 생성한 Bucketed Table은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HiveFormat&lt;/code&gt;으로 저장되어 있어 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ParquetFileFormat&lt;/code&gt; 으로 파일을 적재할 수 없다는 메시지입니다.&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;
-    &lt;p&gt;이번에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;HiveFormat&lt;/code&gt;으로 적재해보았습니다.&lt;/p&gt;
-
-    &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM 20211010_soucre&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;source&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'hive'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;partitionBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'p_date'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bucketBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;32&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'name'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sortBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'birthday'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'append'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/default.db/buckted_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-      &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default.bucketed_tbl'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-
-    &lt;p&gt;이번에는 다른 에러 메시지가 확인됩니다.&lt;/p&gt;
-
-    &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Creating buckted Hive Serde table is not supported yet.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-
-    &lt;p&gt;Spark가 아직 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Bucketed Hive Serde&lt;/code&gt;를 생성하는 기능을 지원하지 않고 있다는 내용입니다. 제가 테스트에 사용했던 spark 버전은 &lt;strong&gt;2.3&lt;/strong&gt;입니다.&lt;/p&gt;
-
-    &lt;p&gt;현재는 3.0 이상의 버전이 릴리즈된 것으로 알고 있는데 현재 이 기능이 구현되었는지는 확인해보아야할 것 같습니다.&lt;/p&gt;
-  &lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;[참고]&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://medium.com/analytics-vidhya/spark-bucketing-is-not-as-simple-as-it-looks-c74f105f4af0&quot;&gt;Spark Bucketing is not as simple as it looks&lt;/a&gt;&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="hadoop" />
-      
-
-      
-        <summary type="html">Hive와 Spark에서 Bucket 차이점에 대하여</summary>
       
 
       
