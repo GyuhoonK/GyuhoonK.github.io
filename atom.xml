@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>repartition in Spark</title>
+        
+          <description>&lt;p&gt;repartition에 대해 알아보기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 12 Mar 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/spark-repartition</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-repartition</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Learning Apache Spark 3 with Scala (Section6)</title>
         
           <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)&lt;/p&gt;
@@ -250,7 +265,7 @@
       <item>
         <title>Merge Files in HDFS</title>
         
-          <description>&lt;p&gt;HDFS에서 작은 용량의 파일들을 하나의 파일로 합치기&lt;/p&gt;
+          <description>&lt;p&gt;HDFS에서 작은 용량의 파일들을 합쳐보자&lt;/p&gt;
 
 </description>
         
