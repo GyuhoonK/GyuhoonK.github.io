@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2022-03-07T17:24:47+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>Data Engineering</subtitle><entry><title type="html">Learning Apache Spark 3 with Scala (Section6)</title><link href="https://gyuhoonk.github.io/sparkscala6" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section6)" /><published>2022-03-06T22:30:00+09:00</published><updated>2022-03-06T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/sparkscala6</id><content type="html" xml:base="https://gyuhoonk.github.io/sparkscala6">&lt;p&gt;Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2022-03-12T22:45:12+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>Data Engineering</subtitle><entry><title type="html">Learning Apache Spark 3 with Scala (Section6)</title><link href="https://gyuhoonk.github.io/sparkscala6" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section6)" /><published>2022-03-06T22:30:00+09:00</published><updated>2022-03-06T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/sparkscala6</id><content type="html" xml:base="https://gyuhoonk.github.io/sparkscala6">&lt;p&gt;Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)&lt;/p&gt;
 
 &lt;h2 id=&quot;download-spark&quot;&gt;Download Spark&lt;/h2&gt;
 
@@ -21,7 +21,7 @@ R		bin		examples	licenses	yarn
 
 &lt;h2 id=&quot;spark-submit&quot;&gt;spark-submit&lt;/h2&gt;
 
-&lt;p&gt;spark-submit을 하기 전에, 우리는 jar 파일을 만들어야합니다. 현재 강의에서 사용하고 있는 SparkCourse 디렉토리를 jar파일로 압축해보겠습니다.&lt;/p&gt;
+&lt;p&gt;spark-submit을 하기 전에, 우리는 jar 파일을 만들어야합니다. interlliJ를 이용하여 SparkCourse에서 사용 중인 전체 코드를 jar파일로 패키징해보겠습니다.&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;IntelliJ에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Project Structure&lt;/code&gt;를 선택합니다.&lt;/li&gt;
@@ -72,7 +72,7 @@ SparkScalaCourse/out/artifacts/SparkCourse/SparkCourse.jar
 
 &lt;h2 id=&quot;sbt&quot;&gt;sbt&lt;/h2&gt;
 
-&lt;p&gt;프로젝트에서 사용하는 모든 패키지와 모든 의존성을 한번에 jar 파일로 패키징할 수 있는 방법이 있습니다. sbt를 이용하는 방법입니다. sbt는 scala를 위한 maven 정도로 생각하면 됩니다. sbt는 라이브러리와 의존성 트리를 관리합니다. 필요로 되는 라이브러리 혹은 jar파일에 의존하는 스크립트를 가지고 있다면 자동으로 검색하여 컴파일하는 jar파일에 패키지합니다.&lt;/p&gt;
+&lt;p&gt;위처럼 intelliJ의 기능을 이용할 수도 있지만, 더 일반적인 방법은 sbt를 사용하여 패키징하는 것입니다. sbt는 scala를 위한 maven 정도로 생각하면 됩니다. sbt는 라이브러리와 의존성 트리를 관리합니다. 필요로 되는 라이브러리나 특정 jar파일에 의존하는 스크립트가 있는 경우, 자동으로 검색하여 컴파일하는 jar파일에 포함시켜 패키징합니다.&lt;/p&gt;
 
 &lt;p&gt;&lt;a href=&quot;https://www.scala-sbt.org/download.html&quot;&gt;Download sbt&lt;/a&gt;&lt;/p&gt;
 
@@ -80,10 +80,11 @@ SparkScalaCourse/out/artifacts/SparkCourse/SparkCourse.jar
 
 &lt;p&gt;이후 아래 디렉토리 구조를 셋업합니다.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;.
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt;
 ├── build.sbt
 ├── project
-│   └── assembly.sbt
+│   ├── assembly.sbt
+│   └── build.properties
 └── src
     └── main
         └── scala
@@ -91,18 +92,18 @@ SparkScalaCourse/out/artifacts/SparkCourse/SparkCourse.jar
 
 &lt;p&gt;root 위치에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.sbt&lt;/code&gt; 파일이 존재해야합니다. 이는 가장 중요한 역할을 합니다.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;name := &quot;MinTemperaturesDataset&quot;
+&lt;div class=&quot;language-scala highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;testProject&quot;&lt;/span&gt;
 
-version := &quot;1.0&quot;
+&lt;span class=&quot;n&quot;&gt;version&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;1.0&quot;&lt;/span&gt;
 
-organization := &quot;com.sundogsoftware&quot;
+&lt;span class=&quot;n&quot;&gt;organization&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;com.sundogsoftware&quot;&lt;/span&gt;
 
-scalaVersion := &quot;2.12.10&quot;
+&lt;span class=&quot;n&quot;&gt;scalaVersion&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;2.12.10&quot;&lt;/span&gt;
 
-libraryDependencies ++= Seq(
-&quot;org.apache.spark&quot; %% &quot;spark-core&quot; % &quot;3.0.3&quot; % &quot;provided&quot;,
-&quot;org.apache.spark&quot; %% &quot;spark-sql&quot; % &quot;3.0.3&quot; % &quot;provided&quot;
-)
+&lt;span class=&quot;n&quot;&gt;libraryDependencies&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;++=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Seq&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;&quot;org.apache.spark&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;spark-core&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;3.0.3&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;provided&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;&quot;org.apache.spark&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;spark-sql&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;3.0.3&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;provided&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;ul&gt;
@@ -112,22 +113,28 @@ libraryDependencies ++= Seq(
 
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;src/min/scala&lt;/code&gt; 디렉토리 내에 패키징할 scala 파일을 위치하면 됩니다.&lt;/p&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;project&lt;/code&gt; 디렉토리 내에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;assembly.sbt&lt;/code&gt; 파일이 존재해야합니다. 해당 파일은 아래와 같이 작성되어있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;project&lt;/code&gt; 디렉토리 내에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;assembly.sbt&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.properties&lt;/code&gt; 파일이 존재해야합니다. 해당 파일은 아래와 같이 작성되어있습니다.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;addSbtPlugin(&quot;com.eed3si9n&quot; % &quot;sbt-assembly&quot; % &quot;0.14.10&quot;)
+&lt;div class=&quot;language-scala highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// assembly.sbt&lt;/span&gt;
+&lt;span class=&quot;nf&quot;&gt;addSbtPlugin&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;com.eed3si9n&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;sbt-assembly&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;%&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;0.14.10&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;// build.properties&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;sbt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;version&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.6&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;이는 어떤 플러그인을 사용할 지 결정합니다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;assembly.sbt&lt;/code&gt;는 사용할 플러그인을 결정하고, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.properties&lt;/code&gt;는 sbt build 시 사용할 sbt 버전을 결정합니다.&lt;/p&gt;
 
 &lt;p&gt;이러한 설정을 마치고, 컴파일할 스크립트를 올바르게 위치시켰으면 root 위치에서 아래 명령어를 가지고 패키징합니다.&lt;/p&gt;
 
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@Gyuhoonui-MacBookAir sbt % sbt assmbly
+&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@Gyuhoonui-MacBookAir sbt % sbt assembly
+&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@Gyuhoonui-MacBookAir sbt % sbt package
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;p&gt;target 디렉토리가 새로 생성되고 해당 scala 버전에 맞는 디렉토리 내에 jar 파일이 생성됩니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;sbt/target
-├── MinTemperaturesDataset-assembly-1.0.jar
+├── testProject-assembly-1.0.jar
+├── testProject-1.0.jar
 ├── classes
 ├── &lt;span class=&quot;nb&quot;&gt;sync&lt;/span&gt;
 ├── test-sync
@@ -135,15 +142,62 @@ libraryDependencies ++= Seq(
 └── zinc
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;cmd&lt;/th&gt;
+      &lt;th&gt;result&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;sbt assembly&lt;/td&gt;
+      &lt;td&gt;testProject-assembly-1.0.jar&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;sbt package&lt;/td&gt;
+      &lt;td&gt;testProject-1.0.jar&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
 &lt;p&gt;컴파일이 완료된 jar 파일은 아래처럼 spark-submit에 제출하면 실행됩니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;base&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; gyuhoonkim@Gyuhoonui-MacBookAir ~ % ~/spark-3.0.3-bin-hadoop2.7/bin/spark-submit &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
 MinTemperaturesDataset-assembly-1.0.jar
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;h2 id=&quot;sbt-assembly-vs-sbt-package&quot;&gt;sbt-assembly vs. sbt-package&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sbt assembly&lt;/code&gt; :  소스코드(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;src/main/scala/&lt;/code&gt;)뿐만 아니라  dependency가 있는 라이브러러리까지 포함하여 jar 파일로 패키징합니다. 즉, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.sbt&lt;/code&gt; 의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;libraryDependencies&lt;/code&gt;에 작성했던 목록을 포함하여 작성한 코드를 실행하기 위해 필요한 모든 라이브러리들이 jar 파일에 포함되어있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;vi target/scala-2.11/| testProject-assembly-1.0.jar |
+META-INF/MANIFEST.MF
+...
+scala/util/matching/Regex&lt;span class=&quot;nv&quot;&gt;$MatchIterator&lt;/span&gt;.class
+scala/util/matching/Regex&lt;span class=&quot;nv&quot;&gt;$Replacement$class&lt;/span&gt;.class
+scala/util/matching/Regex&lt;span class=&quot;nv&quot;&gt;$Replacement&lt;/span&gt;.class
+scala/util/matching/Regex.class
+scala/util/matching/UnanchoredRegex&lt;span class=&quot;nv&quot;&gt;$class&lt;/span&gt;.class
+scala/util/matching/UnanchoredRegex.class
+scala/volatile.class
+sparkTest&lt;span class=&quot;nv&quot;&gt;$.&lt;/span&gt;class
+sparkTest.class
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sbt package&lt;/code&gt; : 소스코드만 jar 파일로 생성합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;src/main/scala/&lt;/code&gt; 내부에 존재하는 소스코드만을 jar 파일에 포함시켜 패키징합니다. dependency가 있는 라이브러리는 포함되어있지 않음을 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;~&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;vi target/scala-2.11/test_2.11-1.0.jar
+META-INF/MANIFEST.MF
+sparkTest&lt;span class=&quot;nv&quot;&gt;$.&lt;/span&gt;class
+sparkTest.class
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><category term="hadoop" /><summary type="html">Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)</summary></entry><entry><title type="html">What is Airflow?</title><link href="https://gyuhoonk.github.io/airflow1" rel="alternate" type="text/html" title="What is Airflow?" /><published>2022-02-28T22:30:00+09:00</published><updated>2022-02-28T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/airflow1</id><content type="html" xml:base="https://gyuhoonk.github.io/airflow1">&lt;p&gt;Basic Concepts of Airflow&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://stackoverflow.com/questions/22556499/what-are-key-differences-between-sbt-pack-and-sbt-assembly&quot;&gt;what-are-key-differences-between-sbt-pack-and-sbt-assembly&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><summary type="html">Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)</summary></entry><entry><title type="html">What is Airflow?</title><link href="https://gyuhoonk.github.io/airflow1" rel="alternate" type="text/html" title="What is Airflow?" /><published>2022-02-28T22:30:00+09:00</published><updated>2022-02-28T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/airflow1</id><content type="html" xml:base="https://gyuhoonk.github.io/airflow1">&lt;p&gt;Basic Concepts of Airflow&lt;/p&gt;
 
 &lt;h2 id=&quot;orchestrator&quot;&gt;Orchestrator&lt;/h2&gt;
 
@@ -214,7 +268,7 @@ MinTemperaturesDataset-assembly-1.0.jar
   &lt;li&gt;Operator
     &lt;ul&gt;
       &lt;li&gt;Action Operator : 실제로 함수나 명령을 실행합니다&lt;/li&gt;
-      &lt;li&gt;Transfoer Operator : source에서 destination으로 데이터를 전송합니다&lt;/li&gt;
+      &lt;li&gt;Transfer Operator : source에서 destination으로 데이터를 전송합니다&lt;/li&gt;
       &lt;li&gt;Sensor Operator : 다음 작업을 실행하기 전에, 특정 작업이 완료되는 것을 기다립니다&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
@@ -384,7 +438,7 @@ MinTemperaturesDataset-assembly-1.0.jar
 
 &lt;p&gt;&lt;a href=&quot;https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#broadcast-variables&quot;&gt;Broadcast Variables&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#rdd-persistence&quot;&gt;RDD Persistence&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><category term="hadoop" /><summary type="html">Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)</summary></entry><entry><title type="html">Learning Apache Spark 3 with Scala (Section4)</title><link href="https://gyuhoonk.github.io/sparkscala4" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section4)" /><published>2022-02-21T22:30:00+09:00</published><updated>2022-02-21T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/sparkscala4</id><content type="html" xml:base="https://gyuhoonk.github.io/sparkscala4">&lt;p&gt;Learning Apache Spark 3 with Scala (Section4 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#rdd-persistence&quot;&gt;RDD Persistence&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><summary type="html">Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)</summary></entry><entry><title type="html">Learning Apache Spark 3 with Scala (Section4)</title><link href="https://gyuhoonk.github.io/sparkscala4" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section4)" /><published>2022-02-21T22:30:00+09:00</published><updated>2022-02-21T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/sparkscala4</id><content type="html" xml:base="https://gyuhoonk.github.io/sparkscala4">&lt;p&gt;Learning Apache Spark 3 with Scala (Section4 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;)&lt;/p&gt;
 
 &lt;h2 id=&quot;sparksql&quot;&gt;SparkSQL&lt;/h2&gt;
 
@@ -483,7 +537,7 @@ MinTemperaturesDataset-assembly-1.0.jar
 
 &lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://stackoverflow.com/questions/42427388/what-is-the-output-of-a-some-string-in-scala&quot;&gt;what is the output of a $ some string in scala&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><category term="hadoop" /><summary type="html">Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp;amp; Dataset)</summary></entry><entry><title type="html">누적 합(Prefix Sum)</title><link href="https://gyuhoonk.github.io/prefix-sum" rel="alternate" type="text/html" title="누적 합(Prefix Sum)" /><published>2022-02-14T22:30:00+09:00</published><updated>2022-02-14T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/prefix-sum</id><content type="html" xml:base="https://gyuhoonk.github.io/prefix-sum">&lt;p&gt;누적 합(Prefix Sum) 알고리즘 (2022 KAKAO BLIND RECRUITMENT 6 파괴되지 않은 건물)&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://stackoverflow.com/questions/42427388/what-is-the-output-of-a-some-string-in-scala&quot;&gt;what is the output of a $ some string in scala&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><summary type="html">Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp;amp; Dataset)</summary></entry><entry><title type="html">누적 합(Prefix Sum)</title><link href="https://gyuhoonk.github.io/prefix-sum" rel="alternate" type="text/html" title="누적 합(Prefix Sum)" /><published>2022-02-14T22:30:00+09:00</published><updated>2022-02-14T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/prefix-sum</id><content type="html" xml:base="https://gyuhoonk.github.io/prefix-sum">&lt;p&gt;누적 합(Prefix Sum) 알고리즘 (2022 KAKAO BLIND RECRUITMENT 6 파괴되지 않은 건물)&lt;/p&gt;
 
 &lt;h2 id=&quot;index별-합-구하기&quot;&gt;index별 합 구하기&lt;/h2&gt;
 
@@ -1318,7 +1372,7 @@ MinTemperaturesDataset-assembly-1.0.jar
 
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><category term="hadoop" /><summary type="html">Learning Apache Spark 3 with Scala (Section3 - RDD &amp;amp; RDD Action)</summary></entry><entry><title type="html">DataBase Connection Pool</title><link href="https://gyuhoonk.github.io/DBCP" rel="alternate" type="text/html" title="DataBase Connection Pool" /><published>2022-01-06T22:30:00+09:00</published><updated>2022-01-06T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/DBCP</id><content type="html" xml:base="https://gyuhoonk.github.io/DBCP">&lt;p&gt;DBCP(DataBase Connection Pool)에 대해서&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><summary type="html">Learning Apache Spark 3 with Scala (Section3 - RDD &amp;amp; RDD Action)</summary></entry><entry><title type="html">DataBase Connection Pool</title><link href="https://gyuhoonk.github.io/DBCP" rel="alternate" type="text/html" title="DataBase Connection Pool" /><published>2022-01-06T22:30:00+09:00</published><updated>2022-01-06T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/DBCP</id><content type="html" xml:base="https://gyuhoonk.github.io/DBCP">&lt;p&gt;DBCP(DataBase Connection Pool)에 대해서&lt;/p&gt;
 
 &lt;h1 id=&quot;database-connection&quot;&gt;DataBase Connection&lt;/h1&gt;
 
