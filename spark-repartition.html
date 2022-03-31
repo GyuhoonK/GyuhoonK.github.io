@@ -44,11 +44,7 @@
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="repartition in Spark" />
-    <meta property="og:description" content="repartition에 대해 알아보기
-
-[참고]
-
-" />
+    <meta property="og:description" content="repartition 파헤치기 Repartition ? Spark에서 RDD, Dataset, DataFrame의 작업 최소단위는 partition입니다. 데이터에 Job을 적용할 때 Spark는 최소 단위인 partition으로 쪼개서 task을 수행합니다.하나의 executor가 하나의 task, 즉 하나의 partition에 대해 작업을 수행합니다. 이때, 해당 데이터셋(Dataset, DataFrame) 내부의 partition의 개수, 사이즈, 정렬상태는 task 수행에 영향을 줍니다. 예를 들어 아래와 같은 상황이라면 partition" />
     <meta property="og:url" content="https://gyuhoonk.github.io/spark-repartition" />
     <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/repartition-cover.jpg" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
@@ -58,11 +54,7 @@
     <meta property="article:tag" content="Hadoop" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="repartition in Spark" />
-    <meta name="twitter:description" content="repartition에 대해 알아보기
-
-[참고]
-
-" />
+    <meta name="twitter:description" content="repartition 파헤치기 Repartition ? Spark에서 RDD, Dataset, DataFrame의 작업 최소단위는 partition입니다. 데이터에 Job을 적용할 때 Spark는 최소 단위인 partition으로 쪼개서 task을 수행합니다.하나의 executor가 하나의 task, 즉 하나의 partition에 대해 작업을 수행합니다. 이때, 해당 데이터셋(Dataset, DataFrame) 내부의 partition의 개수, 사이즈, 정렬상태는 task 수행에 영향을 줍니다. 예를 들어 아래와 같은 상황이라면 partition" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
     <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/repartition-cover.jpg" />
     <meta name="twitter:label1" content="Written by" />
@@ -94,11 +86,7 @@
         "@type": "WebPage",
         "@id": "https://gyuhoonk.github.io/spark-repartition"
     },
-    "description": "repartition에 대해 알아보기
-
-[참고]
-
-"
+    "description": "repartition 파헤치기 Repartition ? Spark에서 RDD, Dataset, DataFrame의 작업 최소단위는 partition입니다. 데이터에 Job을 적용할 때 Spark는 최소 단위인 partition으로 쪼개서 task을 수행합니다.하나의 executor가 하나의 task, 즉 하나의 partition에 대해 작업을 수행합니다. 이때, 해당 데이터셋(Dataset, DataFrame) 내부의 partition의 개수, 사이즈, 정렬상태는 task 수행에 영향을 줍니다. 예를 들어 아래와 같은 상황이라면 partition"
 }
     </script>
 
@@ -207,10 +195,269 @@ into the {body} of the default.hbs template -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>repartition에 대해 알아보기</p>
+                    <p>repartition 파헤치기</p>
+
+<h1 id="repartition-">Repartition ?</h1>
+
+<p>Spark에서 RDD, Dataset, DataFrame의 작업 최소단위는 partition입니다. 데이터에 Job을 적용할 때 Spark는 최소 단위인 partition으로 쪼개서 task을 수행합니다.하나의 executor가 하나의 task, 즉 하나의 partition에 대해 작업을 수행합니다.</p>
+
+<p>이때, 해당 데이터셋(<code class="language-plaintext highlighter-rouge">Dataset</code>, <code class="language-plaintext highlighter-rouge">DataFrame</code>) 내부의 partition의 개수, 사이즈, 정렬상태는 task 수행에 영향을 줍니다. 예를 들어 아래와 같은 상황이라면 partition A를 전달받은 executor는 OOM을 피할 수 없을 것입니다.</p>
+
+<p><img src="../../assets/built/images/hadoop/partition_example.png" alt="image" /></p>
+
+<p>이러한 상황을 피하기 위해, partition들이 동일한 크기를 갖도록 조절(rebalancing)할 수 있는데 이를 <code class="language-plaintext highlighter-rouge">repartition</code>이라고 부릅니다. <code class="language-plaintext highlighter-rouge">repartition</code>은 필수적으로 shuffle을 동반하는 무거운 작업입니다. 따라서 <code class="language-plaintext highlighter-rouge">repartition</code>이 필요한지 심사숙고하여 적절한 수치로 적용해야합니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">data_repartitioned</span> <span class="k">=</span> <span class="nv">data</span><span class="o">.</span><span class="py">repartition</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">data_rdd</span> <span class="k">=</span> <span class="nv">data_repartitioned</span><span class="o">.</span><span class="py">rdd</span>
+<span class="k">val</span> <span class="nv">partitions</span> <span class="k">=</span> <span class="nv">data_rdd</span><span class="o">.</span><span class="py">glom</span><span class="o">.</span><span class="py">collect</span><span class="o">()</span>
+<span class="nf">for</span> <span class="o">(</span><span class="n">idx</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">to</span> <span class="mi">3</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nf">println</span><span class="o">(</span><span class="s">"partition"</span><span class="o">+</span><span class="n">idx</span><span class="o">+</span> <span class="s">" has "</span><span class="o">+</span> <span class="nf">partitions</span><span class="o">(</span><span class="n">idx</span><span class="o">).</span><span class="py">size</span> <span class="o">+</span><span class="s">" rows"</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>partition0 has 1362 rows
+
+partition1 has 1362 rows
+
+partition2 has 1361 rows
+
+partition3 has 1362 rows
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">repartition</code> 을 적용한 결과 각 partition이 같은 row 수를 갖도록 shuffle하여 각 partition에 재분배했습니다.</p>
+
+<p><img src="../../assets/built/images/hadoop/repartition.png" alt="image" /></p>
+
+<h1 id="repartition-by-specific-column">Repartition by Specific Column</h1>
+
+<p>위에서 보았던 예시처럼 단순히 데이터 사이즈만 분배하는 것이 목적은 아닙니다. partition 전략을 적용할 수 있습니다. 특정 column(Key)을 기준으로 전략을 수립합니다. 전략을 적용한다는 것은 위 예시처럼 partition에 데이터를 무작위로 shuffle하는 것이 아니라 규칙에 따라 partition에 데이터를 shuffle하는 것입니다. 이러한 전략으로 hash partitoin, range partition은 Spark에서 기본으로 제공하고있고, 필요하다면 자신이 직접 전략을 만들어 적용할 수도 있습니다(custom partitioner).</p>
+
+<p>이러한 전략을 적용하게 되면, 이후 partition 기준으로 사용된 column을 사용한 집계/조건 적용 시 쿼리 성능이 향상됩니다.</p>
+
+<h2 id="hash-partition">Hash Partition</h2>
+
+<p><img src="../../assets/built/images/hadoop/hash_repartition.png" alt="image" /></p>
+
+<p>hash partition은 Key에 hash function을 적용하여 계산된 hash value가 같은 값들을 같은 partition에 분배하는 것입니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">data_hash_repartitioned</span> <span class="k">=</span> <span class="nv">data</span><span class="o">.</span><span class="py">repartition</span><span class="o">(</span><span class="mi">8</span><span class="o">,</span> <span class="n">$</span><span class="s">"Day"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">data_rdd</span> <span class="k">=</span> <span class="nv">data_hash_repartitioned</span><span class="o">.</span><span class="py">rdd</span>
+<span class="k">val</span> <span class="nv">partitions</span> <span class="k">=</span> <span class="nv">data_rdd</span><span class="o">.</span><span class="py">glom</span><span class="o">.</span><span class="py">collect</span><span class="o">()</span>
+<span class="nf">for</span> <span class="o">(</span><span class="n">idx</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">to</span> <span class="mi">7</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nf">println</span><span class="o">(</span><span class="s">"partition"</span><span class="o">+</span><span class="n">idx</span><span class="o">+</span> <span class="s">" has "</span><span class="o">+</span> <span class="nf">partitions</span><span class="o">(</span><span class="n">idx</span><span class="o">).</span><span class="py">size</span> <span class="o">+</span><span class="s">" rows"</span><span class="o">)</span>
+    <span class="nf">println</span><span class="o">(</span><span class="s">"partition key is "</span> <span class="o">+</span> <span class="nf">partitions</span><span class="o">(</span><span class="n">idx</span><span class="o">).</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nf">x</span><span class="o">(</span><span class="mi">2</span><span class="o">)).</span><span class="py">toSet</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>partition0 has 716 rows
+partition key is Set(12, 13, 14, 18)
+
+partition1 has 895 rows
+partition key is Set(6, 9, 17, 16, 23)
+
+partition2 has 462 rows
+partition key is Set(5, 10, 31)
+
+partition3 has 1074 rows
+partition key is Set(1, 27, 7, 3, 11, 26)
+
+partition4 has 179 rows
+partition key is Set(25)
+
+partition5 has 867 rows
+partition key is Set(20, 29, 30, 19, 15)
+
+partition6 has 717 rows
+partition key is Set(2, 4, 22, 28)
+
+partition7 has 537 rows
+partition key is Set(8, 21, 24)
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">data</code> 를 8개 partition으로 repartition하였습니다. 각각의 partition에 row가 몇 개나 존재하고, repartition 기준으로 사용한 column인 <code class="language-plaintext highlighter-rouge">Day</code> 값을 확인할 수 있습니다. 예를 들어, <code class="language-plaintext highlighter-rouge">partition0</code>에는 716 rows가 포함되었고, partition key로 사용된 값은 <code class="language-plaintext highlighter-rouge">12, 13, 14, 18</code>입니다. 즉,  Day 값이 <code class="language-plaintext highlighter-rouge">12, 13, 14, 18</code>인 row는 반드시 <code class="language-plaintext highlighter-rouge">partition0</code> 에 속합니다.</p>
+
+<h2 id="range-partition">Range Partition</h2>
+
+<p>range partition은 Key를 지정된 개수만큼의 범위로 나누고, 각각의 범위에 속하는 값을 같은 partition에 분배합니다. <code class="language-plaintext highlighter-rouge">pairRDD</code>에 <code class="language-plaintext highlighter-rouge">RangePartitioner</code>를 적용하는 방법과 <code class="language-plaintext highlighter-rouge">Dataset</code>에서 <code class="language-plaintext highlighter-rouge">repartitionByRange</code>를 이용하는 방법이 있습니다.</p>
+
+<p><a href="https://spark.apache.org/docs/latest/api/scala/org/apache/spark/Partitioner.html"><code class="language-plaintext highlighter-rouge">Partitioner</code></a>를 이용하기 위해서는 반드시 <code class="language-plaintext highlighter-rouge">pairRDD</code>이어야만 합니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">scala.collection.SortedSet</span>
+<span class="k">def</span> <span class="nf">sortSet</span><span class="o">[</span><span class="kt">A</span><span class="o">](</span><span class="n">unsortedSet</span><span class="k">:</span> <span class="kt">Set</span><span class="o">[</span><span class="kt">A</span><span class="o">])(</span><span class="k">implicit</span> <span class="n">ordering</span><span class="k">:</span> <span class="kt">Ordering</span><span class="o">[</span><span class="kt">A</span><span class="o">])</span><span class="k">:</span> <span class="kt">SortedSet</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="k">=</span> 
+    <span class="nv">SortedSet</span><span class="o">.</span><span class="py">empty</span><span class="o">[</span><span class="kt">A</span><span class="o">]</span> <span class="o">++</span> <span class="n">unsortedSet</span>
+
+<span class="c1">// RDD</span>
+<span class="k">val</span> <span class="nv">dataRDD</span> <span class="k">=</span> <span class="nv">data</span><span class="o">.</span><span class="py">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="nv">x</span><span class="o">.</span><span class="py">getInt</span><span class="o">(</span><span class="mi">3</span><span class="o">),</span> <span class="nv">x</span><span class="o">.</span><span class="py">getDouble</span><span class="o">(</span><span class="mi">4</span><span class="o">)))</span> <span class="c1">// key-value RDD(pair RDD)</span>
+<span class="k">val</span> <span class="nv">rangePartitioner</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">RangePartitioner</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="n">dataRDD</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">rangedData</span> <span class="k">=</span> <span class="nv">dataRDD</span><span class="o">.</span><span class="py">partitionBy</span><span class="o">(</span><span class="n">rangePartitioner</span><span class="o">)</span>
+
+<span class="k">val</span> <span class="nv">partitions</span> <span class="k">=</span> <span class="nv">rangedData</span><span class="o">.</span><span class="py">glom</span><span class="o">.</span><span class="py">collect</span><span class="o">()</span>
+<span class="nf">for</span> <span class="o">(</span><span class="n">idx</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">to</span> <span class="mi">4</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nf">println</span><span class="o">(</span><span class="s">"partition"</span><span class="o">+</span><span class="n">idx</span><span class="o">+</span> <span class="s">" has "</span><span class="o">+</span> <span class="nf">partitions</span><span class="o">(</span><span class="n">idx</span><span class="o">).</span><span class="py">size</span> <span class="o">+</span><span class="s">" rows"</span><span class="o">)</span>
+    <span class="nf">println</span><span class="o">(</span><span class="s">"partition key is "</span> <span class="o">+</span> <span class="nf">sortSet</span><span class="o">(</span><span class="nf">partitions</span><span class="o">(</span><span class="n">idx</span><span class="o">).</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nv">x</span><span class="o">.</span><span class="py">_1</span><span class="o">).</span><span class="py">toSet</span><span class="o">))</span>
+<span class="o">}</span>
+
+<span class="c1">// Dataset</span>
+<span class="k">val</span> <span class="nv">rangedDataset</span> <span class="k">=</span> <span class="nv">data</span><span class="o">.</span><span class="py">repartitionByRange</span><span class="o">(</span><span class="mi">5</span><span class="o">,</span> <span class="n">$</span><span class="s">"Hour"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">rangedRDD</span> <span class="k">=</span> <span class="nv">rangedDataset</span><span class="o">.</span><span class="py">rdd</span>
+<span class="k">val</span> <span class="nv">partitions</span> <span class="k">=</span> <span class="nv">rangedRDD</span><span class="o">.</span><span class="py">glom</span><span class="o">.</span><span class="py">collect</span><span class="o">()</span>
+<span class="nf">for</span> <span class="o">(</span><span class="n">idx</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">to</span> <span class="mi">4</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nf">println</span><span class="o">(</span><span class="s">"partition"</span><span class="o">+</span><span class="n">idx</span><span class="o">+</span> <span class="s">" has "</span><span class="o">+</span> <span class="nf">partitions</span><span class="o">(</span><span class="n">idx</span><span class="o">).</span><span class="py">size</span> <span class="o">+</span><span class="s">" rows"</span><span class="o">)</span>
+    <span class="nf">println</span><span class="o">(</span><span class="s">"partition key is "</span> <span class="o">+</span> <span class="nf">sortSet</span><span class="o">(</span><span class="nf">partitions</span><span class="o">(</span><span class="n">idx</span><span class="o">).</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nv">x</span><span class="o">.</span><span class="py">getInt</span><span class="o">(</span><span class="mi">3</span><span class="o">)).</span><span class="py">toSet</span><span class="o">))</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>partition0 has 954 rows
+partition key is TreeSet(0, 2, 3)
+
+partition1 has 1460 rows
+partition key is TreeSet(5, 6, 8, 9)
+
+partition2 has 730 rows
+partition key is TreeSet(11, 12)
+
+partition3 has 1460 rows
+partition key is TreeSet(14, 15, 17, 18)
+
+partition4 has 843 rows
+partition key is TreeSet(20, 21, 23)
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">RangePartitioner</code>는 <code class="language-plaintext highlighter-rouge">RDD</code>에 적용할 수 있기 때문에 위처럼 <code class="language-plaintext highlighter-rouge">DataFrame</code>을 <code class="language-plaintext highlighter-rouge">RDD</code>로 변환하여 적용해야합니다. <code class="language-plaintext highlighter-rouge">Dataset</code>은 <code class="language-plaintext highlighter-rouge">repartitionByRange</code>를 이용하여 적용할 수도 있습니다.<code class="language-plaintext highlighter-rouge">Hour</code> column에 해당하는 <code class="language-plaintext highlighter-rouge">x.getInt(3)</code> 을 기준으로  Range partition을 적용했습니다. 각 partition은 <code class="language-plaintext highlighter-rouge">0~3, 5~9, 11~12, 14~18, 20~23</code>의 5개 구간으로 나뉘어 구간에 해당하는 값들이 partition에 포함되었습니다.</p>
+
+<h2 id="custom-partitioner">Custom Partitioner</h2>
+
+<p>Hash, Range가 아닌 자신이 직접 규칙을 정의하여 reaprtition에 적용시킬 수도 있습니다. 저는 key를 <code class="language-plaintext highlighter-rouge">Day</code> 로 두고, 10으로 나눈 나머지를 partition 기준으로 결정하는 <code class="language-plaintext highlighter-rouge">CustomPartitioner</code>를 정의하고 적용해보겠습니다. 해당 데이터는 매일 같은 양이 수집된 데이터이므로,  <code class="language-plaintext highlighter-rouge">Day</code>에 이와 같은 규칙을 적용하면  rebalancing 효과도 나타날 것으로 기대됩니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CustomPartitioner</span><span class="o">()</span> <span class="k">extends</span> <span class="nc">Partitioner</span> <span class="o">{</span>
+
+        <span class="k">override</span> <span class="k">def</span> <span class="nf">numPartitions</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="mi">10</span>
+        <span class="k">override</span> <span class="k">def</span> <span class="nf">getPartition</span><span class="o">(</span><span class="n">key</span><span class="k">:</span> <span class="kt">Any</span><span class="o">)</span><span class="k">:</span> <span class="kt">Int</span> <span class="o">=</span> <span class="o">{</span>
+          <span class="k">val</span> <span class="nv">code</span> <span class="k">=</span> <span class="nv">key</span><span class="o">.</span><span class="py">hashCode</span><span class="o">()</span> <span class="o">%</span> <span class="n">numPartitions</span>
+          <span class="nf">if</span> <span class="o">(</span><span class="n">code</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">code</span> <span class="o">+</span> <span class="n">numPartitions</span>
+          <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="n">code</span>
+          <span class="o">}</span>
+        <span class="o">}</span>
+  			<span class="k">override</span> <span class="k">def</span> <span class="nf">equals</span><span class="o">(</span><span class="n">other</span><span class="k">:</span> <span class="kt">scala.Any</span><span class="o">)</span><span class="k">:</span> <span class="kt">Boolean</span> <span class="o">=</span> <span class="n">other</span> <span class="k">match</span> <span class="o">{</span>
+          <span class="k">case</span> <span class="n">custom</span><span class="k">:</span> <span class="kt">CustomPartitioner</span> <span class="o">=&gt;</span> <span class="nv">custom</span><span class="o">.</span><span class="py">numPartitions</span> <span class="o">==</span> <span class="n">numPartitions</span>
+          <span class="k">case</span> <span class="k">_</span> <span class="k">=&gt;</span> <span class="kc">false</span>
+        <span class="o">}</span>
+      <span class="o">}</span>
+<span class="c1">// https://m.blog.naver.com/syung1104/221103154997</span>
+
+<span class="k">val</span> <span class="nv">dataRDD</span> <span class="k">=</span> <span class="nv">data</span><span class="o">.</span><span class="py">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="nv">x</span><span class="o">.</span><span class="py">getInt</span><span class="o">(</span><span class="mi">2</span><span class="o">),</span> <span class="nv">x</span><span class="o">.</span><span class="py">getDouble</span><span class="o">(</span><span class="mi">4</span><span class="o">)))</span> <span class="c1">// pairRDD</span>
+<span class="k">val</span> <span class="nv">customedData</span> <span class="k">=</span> <span class="nv">dataRDD</span><span class="o">.</span><span class="py">partitionBy</span><span class="o">(</span><span class="k">new</span> <span class="nc">CustomPartitioner</span><span class="o">())</span>
+<span class="k">val</span> <span class="nv">partitions</span> <span class="k">=</span> <span class="nv">customedData</span><span class="o">.</span><span class="py">glom</span><span class="o">.</span><span class="py">collect</span><span class="o">()</span>
+<span class="nf">for</span> <span class="o">(</span><span class="n">idx</span> <span class="k">&lt;-</span> <span class="mi">0</span> <span class="n">to</span> <span class="mi">9</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nf">println</span><span class="o">(</span><span class="s">"partition"</span><span class="o">+</span><span class="n">idx</span><span class="o">+</span> <span class="s">" has "</span><span class="o">+</span> <span class="nf">partitions</span><span class="o">(</span><span class="n">idx</span><span class="o">).</span><span class="py">size</span> <span class="o">+</span><span class="s">" rows"</span><span class="o">)</span>
+    <span class="nf">println</span><span class="o">(</span><span class="s">"partition key is "</span> <span class="o">+</span> <span class="nf">sortSet</span><span class="o">(</span><span class="nf">partitions</span><span class="o">(</span><span class="n">idx</span><span class="o">).</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nv">x</span><span class="o">.</span><span class="py">_1</span><span class="o">).</span><span class="py">toSet</span><span class="o">))</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>partition0 has 523 rows
+partition key is TreeSet(10, 20, 30)
+
+partition1 has 641 rows
+partition key is TreeSet(1, 11, 21, 31)
+
+partition2 has 537 rows
+partition key is TreeSet(2, 12, 22)
+
+partition3 has 537 rows
+partition key is TreeSet(3, 13, 23)
+
+partition4 has 537 rows
+partition key is TreeSet(4, 14, 24)
+
+partition5 has 537 rows
+partition key is TreeSet(5, 15, 25)
+
+partition6 has 537 rows
+partition key is TreeSet(6, 16, 26)
+
+partition7 has 537 rows
+partition key is TreeSet(7, 17, 27)
+
+partition8 has 538 rows
+partition key is TreeSet(8, 18, 28)
+
+partition9 has 523 rows
+partition key is TreeSet(9, 19, 29)
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Day</code> 는 1~ 31까지 존재하고, 이들을 10으로 나눈 나머지(일의 자리)는 0~9까지 존재합니다. 따라서 10개 partition을 생성하였습니다. 위에서 살펴보았던 Hash, Range에 비해 reblancing이 꽤나 잘 되었습니다.</p>
+
+<h2 id="rebalancing-is-not-guaranteed">Rebalancing is not guaranteed</h2>
+
+<p>위 방법들을 적용했을 때 rebalancing이 항상 보장되는 것은 아닙니다. <code class="language-plaintext highlighter-rouge">repartition</code>을 사용하는 경우, 각 partition의 데이터 사이즈가 동일하도록 데이터를 셔플하지만,  hash, range, custom repartition은 규칙을 적용할 뿐 rebalancing을 고려하지 않습니다. 위를 비교해보면  hash, range를 적용했을 때는 partiton의 데이터 분포가 불균형합니다. 이에 비해 <code class="language-plaintext highlighter-rouge">Day</code>의 특성을 이용하여 <code class="language-plaintext highlighter-rouge">repartition</code>을 적용했기에 각 partition의 데이터 분포가 hash, range에 비해 균등합니다.</p>
+
+<h1 id="sort-in-partition">Sort in Partition</h1>
+
+<p>partition 내부를 정렬시킬 수도 있습니다. 예를 들어, 위의  Hash Partition을 적용한 결과 중 하나의 partition 내부를 살펴보겠습니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">data_repartitioned</span> <span class="k">=</span> <span class="nv">data</span><span class="o">.</span><span class="py">repartition</span><span class="o">(</span><span class="mi">4</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">data_rdd</span> <span class="k">=</span> <span class="nv">data_repartitioned</span><span class="o">.</span><span class="py">rdd</span>
+<span class="k">val</span> <span class="nv">partitions</span> <span class="k">=</span> <span class="nv">data_rdd</span><span class="o">.</span><span class="py">glom</span><span class="o">.</span><span class="py">collect</span><span class="o">()</span>
+<span class="nf">partitions</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="py">foreach</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nf">println</span><span class="o">(</span><span class="n">x</span><span class="o">))</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Year, Month, Day, Hour, Pressure, WetTemp, DryTemp, Humidity, Direction, Speed, City]
+[89,1,12,2,944.4,8.2,6.6,5,0,0,Canberra]
+[89,1,12,5,945.8,7.9,6.3,4,0,0,Canberra]
+[89,1,12,8,948.5,13.2,8.3,2,7,4,Canberra]
+[89,1,12,11,948.3,18.1,11.5,5,16,4,Canberra]
+[89,1,12,14,947.9,21.4,12.2,2,9,6,Canberra]
+...
+[89,1,13,2,953.2,14.1,12.4,11,0,0,Canberra]
+[89,1,13,5,953.5,13.1,11.1,9,0,0,Canberra]
+[89,1,13,8,954.9,15.6,11.8,8,6,5,Canberra]
+[89,1,13,11,954.8,18.6,12.7,7,0,0,Canberra]
+...
+[89,12,18,5,1014.0,16.2,15.3,15,2,18,Gabo Island]
+[89,12,18,8,1014.4,18.8,17.4,16,2,22,Gabo Island]
+[89,12,18,11,1013.5,20.7,17.9,16,2,24,Gabo Island]
+[89,12,18,14,1011.6,20.2,18.0,16,2,24,Gabo Island]
+[89,12,18,17,1010.1,20.5,18.1,16,2,24,Gabo Island]
+[89,12,18,20,1010.5,18.5,17.2,16,2,20,Gabo Island]
+
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Day</code>가 <code class="language-plaintext highlighter-rouge">12, 13, 14, 18</code>인 Row들이 partition 내부에 존재하지만, 정렬되어있지는 않습니다. 이들을 <code class="language-plaintext highlighter-rouge">Day</code>, <code class="language-plaintext highlighter-rouge">Hour</code>를 기준으로 정렬해놓는다면 추후에 실행되는 작업들에서 실행 시간을 아낄 수 있을 것 같습니다. 이는 <code class="language-plaintext highlighter-rouge">sortWithinPartitions</code>를 통해 가능합니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">data_repartitioned_sorted</span> <span class="k">=</span> <span class="nv">data_repartitioned</span><span class="o">.</span><span class="py">sortWithinPartitions</span><span class="o">(</span><span class="n">$</span><span class="s">"Day"</span><span class="o">,</span> <span class="n">$</span><span class="s">"Hour"</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">data_rdd</span> <span class="k">=</span> <span class="nv">data_repartitioned_sorted</span><span class="o">.</span><span class="py">rdd</span>
+<span class="k">val</span> <span class="nv">partitions</span> <span class="k">=</span> <span class="nv">data_rdd</span><span class="o">.</span><span class="py">glom</span><span class="o">.</span><span class="py">collect</span><span class="o">()</span>
+<span class="nf">partitions</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="py">foreach</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="nf">println</span><span class="o">(</span><span class="n">x</span><span class="o">))</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Year, Month, Day, Hour, Pressure, WetTemp, DryTemp, Humidity, Direction, Speed, City]
+[89,4,12,0,945.5,11.1,10.0,9,0,0,Canberra]
+[89,5,12,0,952.7,8.2,7.4,6,0,0,Canberra]
+[89,6,12,0,948.8,7.4,6.0,4,9,6,Canberra]
+[89,7,12,0,944.8,3.8,3.1,2,0,0,Canberra]
+[89,8,12,0,957.7,2.0,0.5,-2,8,12,Canberra]
+...
+[89,1,18,23,942.6,16.0,14.5,13,0,0,Canberra]
+[89,3,18,23,955.8,15.8,13.9,13,0,0,Canberra]
+[89,11,18,23,945.9,12.3,11.5,11,4,2,Canberra]
+[89,12,18,23,947.8,17.8,12.0,6,0,0,Canberra]
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">Day</code>, <code class="language-plaintext highlighter-rouge">Hour</code>를 기준으로 partition 내부가 정렬되어 있음을 확인할 수 있습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">repartitionAndSortWithinPartitions</code>(<a href="https://spark.apache.org/docs/1.6.1/api/scala/index.html#org.apache.spark.rdd.OrderedRDDFunctions">link</a>)는 repartition과 sort를 동시에 적용해줍니다. piarRDD에서만 사용할 수 있습니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">dataRDD</span> <span class="k">=</span> <span class="nv">data</span><span class="o">.</span><span class="py">rdd</span><span class="o">.</span><span class="py">map</span><span class="o">(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="o">(</span><span class="nv">x</span><span class="o">.</span><span class="py">getInt</span><span class="o">(</span><span class="mi">2</span><span class="o">),</span> <span class="nv">x</span><span class="o">.</span><span class="py">getDouble</span><span class="o">(</span><span class="mi">4</span><span class="o">)))</span>
+<span class="k">val</span> <span class="nv">dataRepartitionedSorted</span> <span class="k">=</span> <span class="nv">dataRDD</span><span class="o">.</span><span class="py">repartitionAndSortWithinPartitions</span><span class="o">(</span><span class="k">new</span> <span class="nc">HashPartitioner</span><span class="o">(</span><span class="mi">5</span><span class="o">))</span>
+</code></pre></div></div>
 
 <p>[참고]</p>
 
+<p>https://m.blog.naver.com/syung1104/221103154997</p>
+
+<p>https://techvidvan.com/tutorials/spark-partition/</p>
 
                 </div>
             </section>
