@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-04-01T00:00:47+09:00</updated>
+  <updated>2022-04-05T23:15:46+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/hadoop/feed.xml</id>
 
   
@@ -297,9 +297,9 @@ partition key is TreeSet(9, 19, 29)
 
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;p&gt;https://m.blog.naver.com/syung1104/221103154997&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://m.blog.naver.com/syung1104/221103154997&quot;&gt;[Spark] Apache Spark 사용해보기 - 7. Partitioning&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;https://techvidvan.com/tutorials/spark-partition/&lt;/p&gt;</content>
+&lt;p&gt;&lt;a href=&quot;https://techvidvan.com/tutorials/spark-partition/&quot;&gt;Apache Spark Partitioning and Spark Partition&lt;/a&gt;&lt;/p&gt;</content>
 
       
       

@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/algorithm/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-04-01T00:00:47+09:00</updated>
+  <updated>2022-04-05T23:15:46+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/algorithm/feed.xml</id>
 
   
@@ -30,6 +30,64 @@
   
   
 
+  
+    <entry>
+      <title type="html">Softeer 거리 합 구하기</title>
+      <link href="https://gyuhoonk.github.io/Subtree" rel="alternate" type="text/html" title="Softeer 거리 합 구하기" />
+      <published>2022-04-01T22:30:00+09:00</published>
+      <updated>2022-04-01T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/Subtree</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/Subtree">&lt;p&gt;Subtree를 이용한 거리 합 구하기&lt;/p&gt;
+
+&lt;h1 id=&quot;문제&quot;&gt;문제&lt;/h1&gt;
+
+&lt;p&gt;https://softeer.ai/practice/info.do?eventIdx=1&amp;amp;psProblemId=635&lt;/p&gt;
+
+&lt;h1 id=&quot;잘못된-접근-방법---모든-노드에서-dfs를-실행&quot;&gt;잘못된 접근 방법 - 모든 노드에서 DFS를 실행&lt;/h1&gt;
+
+&lt;h1 id=&quot;올바른-접근---subtree-개념을-이용&quot;&gt;올바른 접근 - Subtree 개념을 이용&lt;/h1&gt;
+
+&lt;h2 id=&quot;subtree&quot;&gt;Subtree?&lt;/h2&gt;
+
+&lt;p&gt;Tree에서 어떤 한 노드를 기준으로 해당 노드의 Child로 이루어진 tree를 subtree라고 부릅니다. 이 정의에 따르면 전체 노드를 포함하는 트리(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;subtree 1a&lt;/code&gt;)도 subtree로 정의됩니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/algorithm/subtree.png&quot; alt=&quot;images&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;subtree-size&quot;&gt;Subtree Size&lt;/h2&gt;
+
+&lt;h2 id=&quot;dfs-실행-시-각-노드의-subtree를-계산&quot;&gt;DFS 실행 시 각 노드의 subtree를 계산&lt;/h2&gt;
+
+&lt;p&gt;##&lt;/p&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.geeksforgeeks.org/sum-of-subtree-depths-for-every-node-of-a-given-binary-tree/&quot;&gt;Sum of subtree depths for every node of a given Binary Tree&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="algorithm" />
+      
+
+      
+        <summary type="html">Subtree를 이용한 거리 합 구하기</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">누적 합(Prefix Sum)</title>

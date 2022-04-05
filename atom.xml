@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Softeer 거리 합 구하기</title>
+        
+          <description>&lt;p&gt;Subtree를 이용한 거리 합 구하기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Fri, 01 Apr 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/Subtree</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/Subtree</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>repartition in Spark</title>
         
           <description>&lt;p&gt;repartition 파헤치기&lt;/p&gt;
