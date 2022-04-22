@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="http://localhost:4000/tag/datascience/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2022-04-22T00:30:43+09:00</updated>
-  <id>http://localhost:4000/tag/datascience/feed.xml</id>
+  <link href="https://gyuhoonk.github.io/tag/datascience/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2022-04-23T00:06:39+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/datascience/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">Gaussian Kernel</title>
-      <link href="http://localhost:4000/gaussian_kernel" rel="alternate" type="text/html" title="Gaussian Kernel" />
+      <link href="https://gyuhoonk.github.io/gaussian_kernel" rel="alternate" type="text/html" title="Gaussian Kernel" />
       <published>2021-10-08T22:30:00+09:00</published>
       <updated>2021-10-08T22:30:00+09:00</updated>
-      <id>http://localhost:4000/gaussian_kernel</id>
-      <content type="html" xml:base="http://localhost:4000/gaussian_kernel">&lt;p&gt;Gaussian Kernel(RBF) 기본 개념에 대하여&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/gaussian_kernel</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/gaussian_kernel">&lt;p&gt;Gaussian Kernel(RBF) 기본 개념에 대하여&lt;/p&gt;
 
 &lt;h1 id=&quot;gaussian-kernel-&quot;&gt;Gaussian Kernel ?&lt;/h1&gt;
 

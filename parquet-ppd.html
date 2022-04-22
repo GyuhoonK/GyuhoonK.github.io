@@ -36,8 +36,8 @@
     <!-- This tag outputs SEO meta+structured data and other important settings -->
     </script>
 <meta name="description" content="Data Engineering" />
-    <link rel="shortcut icon" href="http://localhost:4000/assets/built/images/favicon.jpg" type="image/png" />
-    <link rel="canonical" href="http://localhost:4000/parquet-ppd" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/parquet-ppd" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
@@ -45,8 +45,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Parquet and Predicate PushDown" />
     <meta property="og:description" content="parquet 포맷과 predicate pushdown에 대해서 Apache Parquet Apache Parquet은 중첩 데이터를 효율적으로 저장할 수 있는 컬럼 기준 저장 포맷입니다. 컬럼 기준 저장 포맷은 파일 크기와 쿼리 성능 측면에서 모두 효율성이 높습니다. 동일한 컬럼의 값을 나란히 모아서 저장하기 때문에 인코딩 효율이 높기 때문에 row 기반 포맷(ex. csv)에 비해 파일 크기가 작습니다." />
-    <meta property="og:url" content="http://localhost:4000/parquet-ppd" />
-    <meta property="og:image" content="http://localhost:4000/assets/built/images/hadoop/parquet-logo.png" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/parquet-ppd" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/parquet-logo.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
     <meta property="article:published_time" content="2022-04-21T22:30:00+09:00" />
@@ -55,8 +55,8 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Parquet and Predicate PushDown" />
     <meta name="twitter:description" content="parquet 포맷과 predicate pushdown에 대해서 Apache Parquet Apache Parquet은 중첩 데이터를 효율적으로 저장할 수 있는 컬럼 기준 저장 포맷입니다. 컬럼 기준 저장 포맷은 파일 크기와 쿼리 성능 측면에서 모두 효율성이 높습니다. 동일한 컬럼의 값을 나란히 모아서 저장하기 때문에 인코딩 효율이 높기 때문에 row 기반 포맷(ex. csv)에 비해 파일 크기가 작습니다." />
-    <meta name="twitter:url" content="http://localhost:4000/" />
-    <meta name="twitter:image" content="http://localhost:4000/assets/built/images/hadoop/parquet-logo.png" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/parquet-logo.png" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
@@ -73,18 +73,18 @@
     "publisher": {
         "@type": "Organization",
         "name": "Gyuhoon Kim",
-        "logo": "http://localhost:4000/"
+        "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "http://localhost:4000/parquet-ppd",
+    "url": "https://gyuhoonk.github.io/parquet-ppd",
     "image": {
         "@type": "ImageObject",
-        "url": "http://localhost:4000/assets/built/images/hadoop/parquet-logo.png",
+        "url": "https://gyuhoonk.github.io/assets/built/images/hadoop/parquet-logo.png",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "http://localhost:4000/parquet-ppd"
+        "@id": "https://gyuhoonk.github.io/parquet-ppd"
     },
     "description": "parquet 포맷과 predicate pushdown에 대해서 Apache Parquet Apache Parquet은 중첩 데이터를 효율적으로 저장할 수 있는 컬럼 기준 저장 포맷입니다. 컬럼 기준 저장 포맷은 파일 크기와 쿼리 성능 측면에서 모두 효율성이 높습니다. 동일한 컬럼의 값을 나란히 모아서 저장하기 때문에 인코딩 효율이 높기 때문에 row 기반 포맷(ex. csv)에 비해 파일 크기가 작습니다."
 }
@@ -118,7 +118,7 @@ into the {body} of the default.hbs template -->
     <div class="site-nav-left">
         
             
-                <a class="site-nav-logo" href="http://localhost:4000/">Gyuhoon Kim</a>
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
             
         
         
@@ -199,7 +199,7 @@ into the {body} of the default.hbs template -->
 
 <h1 id="apache-parquet">Apache Parquet</h1>
 
-<p><a href="https://parquet.apache.org/">Apache Parquet</a>은 중첩 데이터를 효율적으로 저장할 수 있는 컬럼 기준 저장 포맷입니다. 컬럼 기준 저장 포맷은 파일 크기와 쿼리 성능 측면에서 모두 효율성이 높습니다. 동일한 컬럼의 값을 나란히 모아서 저장하기 때문에 인코딩 효율이 높기 때문에 row 기반 포맷(ex. csv)에 비해 파일 크기가 작습니다. ㄷ또한 쿼리 실행에 필요하지 않은 컬럼은 처리하지 않기 때문에 쿼리 성능이 높습니다.</p>
+<p><a href="https://parquet.apache.org/">Apache Parquet</a>은 중첩 데이터를 효율적으로 저장할 수 있는 컬럼 기준 저장 포맷입니다. 컬럼 기준 저장 포맷은 파일 크기와 쿼리 성능 측면에서 모두 효율성이 높습니다. 동일한 컬럼의 값을 나란히 모아서 저장하기 때문에 인코딩 효율이 높기 때문에 row 기반 포맷(ex. csv)에 비해 파일 크기가 작습니다. 또한 쿼리 실행에 필요하지 않은 컬럼은 처리하지 않기 때문에 쿼리 성능이 높습니다.</p>
 
 <h2 id="datatype">DataType</h2>
 
@@ -289,9 +289,178 @@ message m{
 
 <p>parquet은 크게 header, block, footer로 구성됩니다.</p>
 
+<h3 id="header">header</h3>
+
+<p>header는 parquet 파일 포맷임을 알려주는 4 byte 길이의 Magic Number인 PAR1만을 포함하고 있습니다.</p>
+
+<h3 id="block">block</h3>
+
+<p>각 블록은 Row group을 저장합니다. Row group은 column chunk로 구성되어 있고 각 column chunk는 page에 데이터를 기록합니다.</p>
+
+<p>parquet은 저장 시에 Row Group 내에서 각 column의 min, max, null count를 계산하여 저장해둡니다. 이는 Row group skip에 사용됩니다.</p>
+
+<p>각 page는 하나의 column에 대한 값만 포함하고 있습니다. 따라서 page 내에 기록되는 값은 비슷한 값을 갖는 경향이 있으므로 압축에 유리합니다.</p>
+
+<p>압축은 두 가지 과정을 거칩니다. 먼저 값을 인코딩하여 저장합니다. 값의 차이를 저장하는 delta encoding, 값의 연속되는 반복횟수를 저장하는 run-length encoding, dictionary를 만들어 index를 나타내는 정수로 해당 값을 저장하는 dictionary encoding을 지원합니다. 이외에도 작은 몇 개의 값을 한 바이트에 저장하여 공간을 절약하는 bit packing과 같은 방법이 적용되기도 합니다.</p>
+
+<p>인코딩 선정은 column의 자료형을 기준으로 자동으로 선택됩니다. Boolean은 RLE, Bit Packing이 주로 사용되고 이외에 대부분의 자료형은 dictionary가 사용됩니다. 단, 인코딩할 때 dictionary의 사이즈가 너무 커지면 일반 인코딩으로 대체되어 압축 효율을 확보할 수 없습니다. dictionary size는 page size까지 허용될 수 있으며 이를 넘어설 경우 일반 인코딩으로 대체됩니다.</p>
+
+<p>다음으로, page byte에 표준 압축 알고리즘을 추가로 적용할 수 있습니다. snappy, gzip, LZO와 같은 압축 알고리즘을 적용할 수 있습니다.</p>
+
+<p>parquet 설정에는 다음과 같은 항목들이 고려될 수 있습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>option</th>
+      <th>type</th>
+      <th>default</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>parquet.block.size</td>
+      <td>int</td>
+      <td>134217728(128MB)</td>
+    </tr>
+    <tr>
+      <td>parquet.page.size</td>
+      <td>int</td>
+      <td>1048576(1MB)</td>
+    </tr>
+    <tr>
+      <td>parquet.dictionary.page.size</td>
+      <td>int</td>
+      <td>1048576(1MB)</td>
+    </tr>
+    <tr>
+      <td>parquet.enable.dictionary</td>
+      <td>boolean</td>
+      <td>true</td>
+    </tr>
+    <tr>
+      <td>parquet.compression</td>
+      <td>string</td>
+      <td>UNCOMPRESSED</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>block size가 커지면, Row group이 더 많은 row(record)를 저장하게 됩니다. 따라서, 스캔 효율성이 높아질 수 있습니다. 그러나 메모리에 저장해야하는 사이즈가 커지므로(block 단위로 메모리에 저장하므로) block size를 계속해서 올릴 수는 없습니다. 참고로 parquet block은 HDFS block/DataNode 1개에서 읽을 수 있어야므로 Parquet block size가 HDFS block(128MB)보다 커지는 경우에는 parquet 자체를 읽을 수 없을 것입니다.</p>
+
+<p>page size는 단일 row 검색 효율과 관련있습니다. page는 parquet의 최소 저장 단위이고, 원하는 row(record) 하나를 찾고자 한다면 page의 압축을 풀고 디코딩해야합니다. 따라서 단일 row를 찾고자한다면 page.size가 작을수록 효율적입니다. 압축 해제와 디코딩 과정이 줄어들기 때문입니다. 그러나, page size가 줄어들게 되면 page 개수가 늘어나게 되고 이는 메타데이터(offset, dictionary)의 증가로 이어질 수 있습니다.</p>
+
+<h3 id="footer">footer</h3>
+
+<p>version, schema, extra key-value pair, block(row group 및 column)에 대한 메타데이터(FileMetaData)가 footer에 저장됩니다. footer의 마지막 두 필드는 FileMetaData의 길이를 인코딩한 Footer length와 PAR1입니다.</p>
+
+<h1 id="predicate-pushdown">Predicate PushDown</h1>
+
+<p>Spark, Hive에서는 Parquet 파일을 읽어들일 때, Predicate PushDown을 적용합니다. Predicate PushDown의 목적은 필요한 row만 빠르게 읽어들이는 것입니다. 앞서 parquet은 파일 저장 시 Row group 단위로 min, max, null count를 저장한다고 말씀드렸습니다. ppd는 row group에 저장된 min/max 저장값을 바탕으로 필요한 row group만을 스캔합니다.</p>
+
+<p>예를 들어, parquet 파일의 메타 데이터가 아래와 같다고 가정해보겠습니다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>parquet-tools meta sample.parquet
+...
+row group 1 : RC:100
+<span class="nt">-----------------------------------------</span>
+A: INT32 ... <span class="o">[</span>min: 1, max : 5, num_nulls: 0]
+B: ...
+row group 2 : RC:150
+<span class="nt">-----------------------------------------</span>
+A: INT32 ... <span class="o">[</span>min: 3, max : 6, num_nulls: 0]
+B: ...
+</code></pre></div></div>
+
+<p>위 메타 데이터를 해석하면 아래와 같습니다.</p>
+
+<blockquote>
+  <p>row group 1에는 100개 row에 대한 데이터를 저장하고 있으며, 해당 row들의 컬럼 A에 대한 최소값은 1, 최대값은 5이다.</p>
+
+  <p>row group 2에는 150개 row가 존재하고, 컬럼 A에 대해서 최소값은 3, 최대값은 6이다.</p>
+</blockquote>
+
+<p>해당 parquet 파일에 대해서 아래와 같은 spark 코드를 실행한다면 어떤 일이 발생할까요?</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">read</span><span class="p">.</span><span class="n">parquet</span><span class="p">(</span><span class="s">"sample.parquet"</span><span class="p">)</span>
+<span class="n">df</span><span class="p">.</span><span class="nb">filter</span><span class="p">(</span><span class="n">df</span><span class="p">.</span><span class="n">A</span><span class="o">&gt;</span><span class="mi">5</span><span class="p">).</span><span class="n">show</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>컬럼 A가 5보다 큰 row를 찾는다면, row group 1에서는 찾을 필요가 없습니다. 왜냐하면 최대값이 5이므로 row group 1 내부에는 <code class="language-plaintext highlighter-rouge">A&gt;5</code> 를 만족하는 row가 존재하지 않기 때문입니다. 이처럼 row group 단위로 계산된 통계값을 바탕으로 확인할 필요가 없는 row group은 메모리에 올리지 않고 넘어가는 것(skip)이 parquet에서 발생하는 predicate pushdown이며 row group skip이라고도 불립니다.</p>
+
+<p>Spark의 실행 계획 중 <code class="language-plaintext highlighter-rouge">Physical Plan</code>에서 이러한 predicate pushdown(<code class="language-plaintext highlighter-rouge">PushedFilters</code>)을 확인해볼 수 있습니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>== Parsed Logical Plan ==
+...
+== Analyzed Logical Plan ==
+...
+== Optimized Logical Plan ==
+...
+== Physical Plan ==
+...
+...PushedFilters: [IsNotNull(A), GreaterThan(A, 5)]
+...
+</code></pre></div></div>
+
+<p>이러한 옵션은 대체로 기본값이 true로 설정되어 있으며 아래와 같은 옵션으로 확인할 수 있습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>engine</th>
+      <th>option</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>hive</td>
+      <td>hive.optimize.ppd</td>
+      <td>setting controls whether predicate pushdown optimizations are enabled at all</td>
+    </tr>
+    <tr>
+      <td>hive</td>
+      <td>hive.optimize.ppd.storage</td>
+      <td>setting controls whether predicates are pushed to the storage layer (the parquet-mr library)</td>
+    </tr>
+    <tr>
+      <td>spark</td>
+      <td>spark.sql.parquet.filterPushdown</td>
+      <td>setting controls pushing down predicates to Parquet for discarding individual records</td>
+    </tr>
+    <tr>
+      <td>spark</td>
+      <td>spark.hadoop.parquet.filter.stats.enabled</td>
+      <td>discarding whole row groups</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="sorting">sorting</h2>
+
+<p>predicate pushdown의 효율을 높이기 위해서는 filter에 사용되는 컬럼을 기준으로 정렬할 필요가 있습니다. 위에서 예시로 보여드렸던 <code class="language-plaintext highlighter-rouge">test.parqeut</code> 을 컬럼 A를 기준으로 정렬하여 저장한 뒤 메타 데이터를 확인해보겠습니다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>parquet-tools meta sample_sorted.parquet
+...
+row group 1 : RC:125
+<span class="nt">-----------------------------------------</span>
+A: INT32 ... <span class="o">[</span>min: 1, max : 3, num_nulls: 0]
+B: ...
+row group 2 : RC:125
+<span class="nt">-----------------------------------------</span>
+A: INT32 ... <span class="o">[</span>min: 4, max : 6, num_nulls: 0]
+B: ...
+</code></pre></div></div>
+
+<p>만약 <code class="language-plaintext highlighter-rouge">df.filter(df.A &gt; 4).show()</code>라는 쿼리를 실행했다면, 정렬되지 않았던 <code class="language-plaintext highlighter-rouge">test.parquet</code> 에서는 row group 1, row group 2를 모두 스캔해야합니다. 그러나 <code class="language-plaintext highlighter-rouge">sorted_test.parquet</code> 에서는 오직 row group 2만 스캔하면 됩니다. 이처럼 row group 단위의 min/max 값이 범위가 겹치지 않도록 해당 컬럼에 대해 정렬하여 저장하면 predicate pushdown의 효율을 극대화할 수 있습니다.</p>
+
 <p>[참고]</p>
 
-<p>하둡 완벽 가이드</p>
+<p>하둡 완벽 가이드, 한빛미디어</p>
+
+<p><a href="https://engineering.vcnc.co.kr/2018/05/parquet-and-spark/">Apache Spark에서 컬럼 기반 저장 포맷 Parquet(파케이) 제대로 활용하기</a></p>
+
+<p><a href="https://docs.cloudera.com/documentation/enterprise/6/6.3/topics/cdh_ig_predicate_pushdown_parquet.html">Predicate Pushdown in Parquet</a></p>
 
                 </div>
             </section>
@@ -346,7 +515,7 @@ message m{
                     <div id="disqus_thread"></div>
                     <script>
                         var disqus_config = function () {
-                            var this_page_url = 'http://localhost:4000/parquet-ppd';
+                            var this_page_url = 'https://gyuhoonk.github.io/parquet-ppd';
                             var this_page_identifier = '/parquet-ppd';
                             var this_page_title = 'Parquet and Predicate PushDown';
                         };
@@ -569,7 +738,7 @@ message m{
 <!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
 <div class="floating-header">
     <div class="floating-header-logo">
-        <a href="http://localhost:4000/">
+        <a href="https://gyuhoonk.github.io/">
             
             <span>Gyuhoon Kim</span>
         </a>
@@ -611,7 +780,7 @@ message m{
         <!-- The footer at the very bottom of the screen -->
         <footer class="site-footer outer">
             <div class="site-footer-content inner">
-                <section class="copyright"><a href="http://localhost:4000/">Gyuhoon Kim</a> &copy; 2022</section>
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2022</section>
                 <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
                     <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
                     <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
