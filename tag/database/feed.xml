@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="https://gyuhoonk.github.io/tag/database/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-04-12T23:52:16+09:00</updated>
-  <id>https://gyuhoonk.github.io/tag/database/feed.xml</id>
+  <link href="http://localhost:4000/tag/database/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2022-04-22T00:30:43+09:00</updated>
+  <id>http://localhost:4000/tag/database/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">DataBase Connection Pool</title>
-      <link href="https://gyuhoonk.github.io/DBCP" rel="alternate" type="text/html" title="DataBase Connection Pool" />
+      <link href="http://localhost:4000/DBCP" rel="alternate" type="text/html" title="DataBase Connection Pool" />
       <published>2022-01-06T22:30:00+09:00</published>
       <updated>2022-01-06T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/DBCP</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/DBCP">&lt;p&gt;DBCP(DataBase Connection Pool)에 대해서&lt;/p&gt;
+      <id>http://localhost:4000/DBCP</id>
+      <content type="html" xml:base="http://localhost:4000/DBCP">&lt;p&gt;DBCP(DataBase Connection Pool)에 대해서&lt;/p&gt;
 
 &lt;h1 id=&quot;database-connection&quot;&gt;DataBase Connection&lt;/h1&gt;
 
@@ -202,11 +202,11 @@
   
     <entry>
       <title type="html">EXP-SUM-LOG / LOG-SUM-EXP</title>
-      <link href="https://gyuhoonk.github.io/EXP-LOG-SUM" rel="alternate" type="text/html" title="EXP-SUM-LOG / LOG-SUM-EXP" />
+      <link href="http://localhost:4000/EXP-LOG-SUM" rel="alternate" type="text/html" title="EXP-SUM-LOG / LOG-SUM-EXP" />
       <published>2021-12-29T22:30:00+09:00</published>
       <updated>2021-12-29T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/EXP-LOG-SUM</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/EXP-LOG-SUM">&lt;p&gt;EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서&lt;/p&gt;
+      <id>http://localhost:4000/EXP-LOG-SUM</id>
+      <content type="html" xml:base="http://localhost:4000/EXP-LOG-SUM">&lt;p&gt;EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서&lt;/p&gt;
 
 &lt;h1 id=&quot;sum-in-sql&quot;&gt;SUM in SQL&lt;/h1&gt;
 
@@ -354,11 +354,11 @@ FROM default.t_test;
   
     <entry>
       <title type="html">Connection to DataBase in Python, R</title>
-      <link href="https://gyuhoonk.github.io/connect-to-database" rel="alternate" type="text/html" title="Connection to DataBase in Python, R" />
+      <link href="http://localhost:4000/connect-to-database" rel="alternate" type="text/html" title="Connection to DataBase in Python, R" />
       <published>2021-09-06T22:30:00+09:00</published>
       <updated>2021-09-06T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/connect-to-database</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/connect-to-database">&lt;p&gt;python, R에서 Database Server와 연결하기&lt;/p&gt;
+      <id>http://localhost:4000/connect-to-database</id>
+      <content type="html" xml:base="http://localhost:4000/connect-to-database">&lt;p&gt;python, R에서 Database Server와 연결하기&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/odbc-architecture.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 

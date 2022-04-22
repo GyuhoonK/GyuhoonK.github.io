@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="https://gyuhoonk.github.io/tag/scala/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-04-12T23:52:16+09:00</updated>
-  <id>https://gyuhoonk.github.io/tag/scala/feed.xml</id>
+  <link href="http://localhost:4000/tag/scala/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2022-04-22T00:30:43+09:00</updated>
+  <id>http://localhost:4000/tag/scala/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">Learning Apache Spark 3 with Scala (Section6)</title>
-      <link href="https://gyuhoonk.github.io/sparkscala6" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section6)" />
+      <link href="http://localhost:4000/sparkscala6" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section6)" />
       <published>2022-03-06T22:30:00+09:00</published>
       <updated>2022-03-06T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/sparkscala6</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala6">&lt;p&gt;Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)&lt;/p&gt;
+      <id>http://localhost:4000/sparkscala6</id>
+      <content type="html" xml:base="http://localhost:4000/sparkscala6">&lt;p&gt;Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)&lt;/p&gt;
 
 &lt;h2 id=&quot;download-spark&quot;&gt;Download Spark&lt;/h2&gt;
 
@@ -266,11 +266,11 @@ sparkTest.class
   
     <entry>
       <title type="html">Learning Apache Spark 3 with Scala (Section5)</title>
-      <link href="https://gyuhoonk.github.io/sparkscala5" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section5)" />
+      <link href="http://localhost:4000/sparkscala5" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section5)" />
       <published>2022-02-21T22:30:00+09:00</published>
       <updated>2022-02-21T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/sparkscala5</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala5">&lt;p&gt;Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)&lt;/p&gt;
+      <id>http://localhost:4000/sparkscala5</id>
+      <content type="html" xml:base="http://localhost:4000/sparkscala5">&lt;p&gt;Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)&lt;/p&gt;
 
 &lt;h2 id=&quot;broadcast&quot;&gt;broadcast&lt;/h2&gt;
 
@@ -452,11 +452,11 @@ sparkTest.class
   
     <entry>
       <title type="html">Learning Apache Spark 3 with Scala (Section4)</title>
-      <link href="https://gyuhoonk.github.io/sparkscala4" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section4)" />
+      <link href="http://localhost:4000/sparkscala4" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section4)" />
       <published>2022-02-21T22:30:00+09:00</published>
       <updated>2022-02-21T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/sparkscala4</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala4">&lt;p&gt;Learning Apache Spark 3 with Scala (Section4 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;)&lt;/p&gt;
+      <id>http://localhost:4000/sparkscala4</id>
+      <content type="html" xml:base="http://localhost:4000/sparkscala4">&lt;p&gt;Learning Apache Spark 3 with Scala (Section4 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;)&lt;/p&gt;
 
 &lt;h2 id=&quot;sparksql&quot;&gt;SparkSQL&lt;/h2&gt;
 
@@ -585,11 +585,11 @@ sparkTest.class
   
     <entry>
       <title type="html">Learning Apache Spark 3 with Scala (Section3)</title>
-      <link href="https://gyuhoonk.github.io/sparkscala3" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section3)" />
+      <link href="http://localhost:4000/sparkscala3" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section3)" />
       <published>2022-01-15T22:30:00+09:00</published>
       <updated>2022-01-15T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/sparkscala3</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala3">&lt;p&gt;Learning Apache Spark 3 with Scala (Section3 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD Action&lt;/code&gt;)&lt;/p&gt;
+      <id>http://localhost:4000/sparkscala3</id>
+      <content type="html" xml:base="http://localhost:4000/sparkscala3">&lt;p&gt;Learning Apache Spark 3 with Scala (Section3 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD Action&lt;/code&gt;)&lt;/p&gt;
 
 &lt;h1 id=&quot;what-is-rdd&quot;&gt;What is RDD?&lt;/h1&gt;
 
@@ -775,11 +775,11 @@ sparkTest.class
   
     <entry>
       <title type="html">Learning Apache Spark 3 with Scala (Scala Basic)</title>
-      <link href="https://gyuhoonk.github.io/sparkscala2" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Scala Basic)" />
+      <link href="http://localhost:4000/sparkscala2" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Scala Basic)" />
       <published>2022-01-03T22:30:00+09:00</published>
       <updated>2022-01-03T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/sparkscala2</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala2">&lt;p&gt;Learning Apache Spark 3 with Scala (Scala Basic)&lt;/p&gt;
+      <id>http://localhost:4000/sparkscala2</id>
+      <content type="html" xml:base="http://localhost:4000/sparkscala2">&lt;p&gt;Learning Apache Spark 3 with Scala (Scala Basic)&lt;/p&gt;
 
 &lt;h1 id=&quot;var--val&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;var&lt;/code&gt; / &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;val&lt;/code&gt;&lt;/h1&gt;
 
@@ -1061,11 +1061,11 @@ sparkTest.class
   
     <entry>
       <title type="html">Learning Apache Spark 3 with Scala (Section1)</title>
-      <link href="https://gyuhoonk.github.io/sparkscala1" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section1)" />
+      <link href="http://localhost:4000/sparkscala1" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section1)" />
       <published>2021-12-30T22:30:00+09:00</published>
       <updated>2021-12-30T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/sparkscala1</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala1">&lt;p&gt;Learning Apache Spark 3 with Scala (Section1)&lt;/p&gt;
+      <id>http://localhost:4000/sparkscala1</id>
+      <content type="html" xml:base="http://localhost:4000/sparkscala1">&lt;p&gt;Learning Apache Spark 3 with Scala (Section1)&lt;/p&gt;
 
 &lt;h1 id=&quot;spark-component&quot;&gt;Spark Component&lt;/h1&gt;
 

@@ -36,8 +36,8 @@
     <!-- This tag outputs SEO meta+structured data and other important settings -->
     </script>
 <meta name="description" content="Data Engineering" />
-    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/hive-merge-query" />
+    <link rel="shortcut icon" href="http://localhost:4000/assets/built/images/favicon.jpg" type="image/png" />
+    <link rel="canonical" href="http://localhost:4000/hive-merge-query" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
@@ -45,8 +45,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Merge Files in HDFS" />
     <meta property="og:description" content="HDFS에서 작은 용량의 파일들을 합쳐보자 Blocks in HDFS 데이터는 HDFS 상에서 Block이라는 단위로 저장됩니다. 일반적으로 하나의 Block에 128MB를 저장합니다. 따라서 Block Size, 128MB를 넘는 데이터는 여러 개의 Block으로 쪼개서 저장하게 됩니다. 아래는 518MB 파일이 Block으로 쪼개져서 저장되는 예시입니다. 각 Block은 안정성을 위해 서로 다른 노드에 Block replication을 저장하고, Name Node에는" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/hive-merge-query" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/merge-files.svg" />
+    <meta property="og:url" content="http://localhost:4000/hive-merge-query" />
+    <meta property="og:image" content="http://localhost:4000/assets/built/images/merge-files.svg" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
     <meta property="article:published_time" content="2021-10-24T22:30:00+09:00" />
@@ -55,8 +55,8 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Merge Files in HDFS" />
     <meta name="twitter:description" content="HDFS에서 작은 용량의 파일들을 합쳐보자 Blocks in HDFS 데이터는 HDFS 상에서 Block이라는 단위로 저장됩니다. 일반적으로 하나의 Block에 128MB를 저장합니다. 따라서 Block Size, 128MB를 넘는 데이터는 여러 개의 Block으로 쪼개서 저장하게 됩니다. 아래는 518MB 파일이 Block으로 쪼개져서 저장되는 예시입니다. 각 Block은 안정성을 위해 서로 다른 노드에 Block replication을 저장하고, Name Node에는" />
-    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/merge-files.svg" />
+    <meta name="twitter:url" content="http://localhost:4000/" />
+    <meta name="twitter:image" content="http://localhost:4000/assets/built/images/merge-files.svg" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
@@ -73,18 +73,18 @@
     "publisher": {
         "@type": "Organization",
         "name": "Gyuhoon Kim",
-        "logo": "https://gyuhoonk.github.io/"
+        "logo": "http://localhost:4000/"
     },
-    "url": "https://gyuhoonk.github.io/hive-merge-query",
+    "url": "http://localhost:4000/hive-merge-query",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/merge-files.svg",
+        "url": "http://localhost:4000/assets/built/images/merge-files.svg",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/hive-merge-query"
+        "@id": "http://localhost:4000/hive-merge-query"
     },
     "description": "HDFS에서 작은 용량의 파일들을 합쳐보자 Blocks in HDFS 데이터는 HDFS 상에서 Block이라는 단위로 저장됩니다. 일반적으로 하나의 Block에 128MB를 저장합니다. 따라서 Block Size, 128MB를 넘는 데이터는 여러 개의 Block으로 쪼개서 저장하게 됩니다. 아래는 518MB 파일이 Block으로 쪼개져서 저장되는 예시입니다. 각 Block은 안정성을 위해 서로 다른 노드에 Block replication을 저장하고, Name Node에는"
 }
@@ -118,7 +118,7 @@ into the {body} of the default.hbs template -->
     <div class="site-nav-left">
         
             
-                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+                <a class="site-nav-logo" href="http://localhost:4000/">Gyuhoon Kim</a>
             
         
         
@@ -482,7 +482,7 @@ into the {body} of the default.hbs template -->
                     <div id="disqus_thread"></div>
                     <script>
                         var disqus_config = function () {
-                            var this_page_url = 'https://gyuhoonk.github.io/hive-merge-query';
+                            var this_page_url = 'http://localhost:4000/hive-merge-query';
                             var this_page_identifier = '/hive-merge-query';
                             var this_page_title = 'Merge Files in HDFS';
                         };
@@ -528,6 +528,15 @@ into the {body} of the default.hbs template -->
                                 
                                 
                                   
+                                    
+                                        
+                                        
+                                            <li><a href="/parquet-ppd">Parquet and Predicate PushDown</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
                                 
                                   
                                     
@@ -560,8 +569,6 @@ into the {body} of the default.hbs template -->
                                   
                                     
                                         
-                                        
-                                            <li><a href="/hadoop-distcp">hadoop distcp</a></li>
                                         
                                     
                                   
@@ -623,7 +630,7 @@ into the {body} of the default.hbs template -->
                         <footer class="read-next-card-footer">
                             <a href="/tag/hadoop/">
                                 
-                                    See all 7 posts  →
+                                    See all 8 posts  →
                                 
                             </a>
                         </footer>
@@ -749,7 +756,7 @@ into the {body} of the default.hbs template -->
 <!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
 <div class="floating-header">
     <div class="floating-header-logo">
-        <a href="https://gyuhoonk.github.io/">
+        <a href="http://localhost:4000/">
             
             <span>Gyuhoon Kim</span>
         </a>
@@ -791,7 +798,7 @@ into the {body} of the default.hbs template -->
         <!-- The footer at the very bottom of the screen -->
         <footer class="site-footer outer">
             <div class="site-footer-content inner">
-                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2022</section>
+                <section class="copyright"><a href="http://localhost:4000/">Gyuhoon Kim</a> &copy; 2022</section>
                 <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
                     <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
                     <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>

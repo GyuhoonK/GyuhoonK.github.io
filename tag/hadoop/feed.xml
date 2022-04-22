@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="https://gyuhoonk.github.io/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-04-12T23:52:16+09:00</updated>
-  <id>https://gyuhoonk.github.io/tag/hadoop/feed.xml</id>
+  <link href="http://localhost:4000/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2022-04-22T00:30:43+09:00</updated>
+  <id>http://localhost:4000/tag/hadoop/feed.xml</id>
 
   
   
@@ -32,12 +32,142 @@
 
   
     <entry>
+      <title type="html">Parquet and Predicate PushDown</title>
+      <link href="http://localhost:4000/parquet-ppd" rel="alternate" type="text/html" title="Parquet and Predicate PushDown" />
+      <published>2022-04-21T22:30:00+09:00</published>
+      <updated>2022-04-21T22:30:00+09:00</updated>
+      <id>http://localhost:4000/parquet-ppd</id>
+      <content type="html" xml:base="http://localhost:4000/parquet-ppd">&lt;p&gt;parquet 포맷과 predicate pushdown에 대해서&lt;/p&gt;
+
+&lt;h1 id=&quot;apache-parquet&quot;&gt;Apache Parquet&lt;/h1&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://parquet.apache.org/&quot;&gt;Apache Parquet&lt;/a&gt;은 중첩 데이터를 효율적으로 저장할 수 있는 컬럼 기준 저장 포맷입니다. 컬럼 기준 저장 포맷은 파일 크기와 쿼리 성능 측면에서 모두 효율성이 높습니다. 동일한 컬럼의 값을 나란히 모아서 저장하기 때문에 인코딩 효율이 높기 때문에 row 기반 포맷(ex. csv)에 비해 파일 크기가 작습니다. ㄷ또한 쿼리 실행에 필요하지 않은 컬럼은 처리하지 않기 때문에 쿼리 성능이 높습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;datatype&quot;&gt;DataType&lt;/h2&gt;
+
+&lt;p&gt;parquet 포맷의 가장 큰 장점은 중첩 구조의 데이터를 저장할 수 있다는 것입니다. 이는 Dremel의 &lt;a href=&quot;https://storage.googleapis.com/pub-tools-public-publication-data/pdf/36632.pdf&quot;&gt;논문&lt;/a&gt;에서 소개한 기술을 적용한 결과입니다. 결과적으로 parquet은 중첩된 필드를 다른 필드와 상관없이 독립적으로 읽을 수 있으며 이를 통해 성능을 향상시킬 수 있었습니다.&lt;/p&gt;
+
+&lt;p&gt;parquet은 다음와 같은 기본자료형을 갖습니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;type&lt;/th&gt;
+      &lt;th&gt;description&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;boolea&lt;/td&gt;
+      &lt;td&gt;바이너리 값&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;int32&lt;/td&gt;
+      &lt;td&gt;부호 있는 32비트 정수&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;int64&lt;/td&gt;
+      &lt;td&gt;부호 있는 64비트 정수&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;int96&lt;/td&gt;
+      &lt;td&gt;부호 있는 96비트 정수&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;float&lt;/td&gt;
+      &lt;td&gt;single precision(32비트) IEEE 754 부동소수점 숫자&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;double&lt;/td&gt;
+      &lt;td&gt;double precision(64비트) IEEE 754 부동소수점 숫자&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;binary&lt;/td&gt;
+      &lt;td&gt;순차 8비트 부호 없는 바이트&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;fixed_len_byte_array&lt;/td&gt;
+      &lt;td&gt;고정길이 8비트 부호 없는 바이트&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;각 필드는 반복자(required, optional, repeated), type, name으로 구성됩니다. 간단한 parquet schema 예시는 다음과 같습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;message WeatherRecord{
+	required int32 year;
+	required int32 temperature;
+	required binary stationID(UTF8);
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;특이하게, 문자열 자료형이 존재하지 않습니다. 위의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;stationID&lt;/code&gt; 는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;binary&lt;/code&gt;에 대한 해석 방법으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UTF8&lt;/code&gt; 을 사용할 것을 지정하고 있습니다. 이처럼 parquet은 기본자료형에 대해 해석 방식을 정의하는 논리 자료형을 정의하고 있습니다.&lt;/p&gt;
+
+&lt;p&gt;논리 자료형 중에 특히 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LIST&lt;/code&gt;와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MAP&lt;/code&gt; 은 중첩 스키마를 가능하게 합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;message m{
+	required group a (LIST){
+		repeated group list {
+			required int32 element;
+		}
+	}
+}
+
+message m{
+	required group a (MAP) {
+		repeated group key_value {
+			required binary key (UTF8);
+			optional int32 value;
+		}
+	}
+}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이러한 중첩 구조를 저장할 때 Dremel이 제안한 인코딩 방법을 사용합니다. 스키마의 모든 기본자료형 필드의 값을 별도의 컬럼에 저장하고 그 구조는 명세 수준과 반복 수준의 두 정수로 인코딩합니다. 단층 레코드는 null을 사용하고 중첩이나 반복 수준이 올라가면 null이 아닌 값을 사용해서 비트 필드를 인코딩하는 일반적인 기법으로 명세 수준과 반복 수준을 젖아합니다. 이러한 방법으로 중첩 컬럼을 포함한 어떤 컬럼도 다른 컬럼과 상관없이 읽을 수 있습니다. 특히 parquet은 맵의 어떤 value도 읽지 않고 key만 읽을 수도 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;structure&quot;&gt;Structure&lt;/h2&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/parquet-structure.gif&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;parquet은 크게 header, block, footer로 구성됩니다.&lt;/p&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;하둡 완벽 가이드&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html">parquet 포맷과 predicate pushdown에 대해서</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
       <title type="html">repartition in Spark</title>
-      <link href="https://gyuhoonk.github.io/spark-repartition" rel="alternate" type="text/html" title="repartition in Spark" />
+      <link href="http://localhost:4000/spark-repartition" rel="alternate" type="text/html" title="repartition in Spark" />
       <published>2022-03-12T22:30:00+09:00</published>
       <updated>2022-03-12T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/spark-repartition</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/spark-repartition">&lt;p&gt;repartition 파헤치기&lt;/p&gt;
+      <id>http://localhost:4000/spark-repartition</id>
+      <content type="html" xml:base="http://localhost:4000/spark-repartition">&lt;p&gt;repartition 파헤치기&lt;/p&gt;
 
 &lt;h1 id=&quot;repartition-&quot;&gt;Repartition ?&lt;/h1&gt;
 
@@ -329,11 +459,11 @@ partition key is TreeSet(9, 19, 29)
   
     <entry>
       <title type="html">Partition, Spill in Spark</title>
-      <link href="https://gyuhoonk.github.io/spark-shuffle-partition" rel="alternate" type="text/html" title="Partition, Spill in Spark" />
+      <link href="http://localhost:4000/spark-shuffle-partition" rel="alternate" type="text/html" title="Partition, Spill in Spark" />
       <published>2022-02-09T22:30:00+09:00</published>
       <updated>2022-02-09T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/spark-shuffle-partition</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/spark-shuffle-partition">&lt;p&gt;Partition, Spill in Spark&lt;/p&gt;
+      <id>http://localhost:4000/spark-shuffle-partition</id>
+      <content type="html" xml:base="http://localhost:4000/spark-shuffle-partition">&lt;p&gt;Partition, Spill in Spark&lt;/p&gt;
 
 &lt;h2 id=&quot;spark-needs-performance-tuning&quot;&gt;Spark Needs Performance Tuning&lt;/h2&gt;
 
@@ -580,11 +710,11 @@ partition key is TreeSet(9, 19, 29)
   
     <entry>
       <title type="html">hadoop distcp</title>
-      <link href="https://gyuhoonk.github.io/hadoop-distcp" rel="alternate" type="text/html" title="hadoop distcp" />
+      <link href="http://localhost:4000/hadoop-distcp" rel="alternate" type="text/html" title="hadoop distcp" />
       <published>2022-01-20T22:30:00+09:00</published>
       <updated>2022-01-20T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/hadoop-distcp</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/hadoop-distcp">&lt;p&gt;hadoop distcp 명령어&lt;/p&gt;
+      <id>http://localhost:4000/hadoop-distcp</id>
+      <content type="html" xml:base="http://localhost:4000/hadoop-distcp">&lt;p&gt;hadoop distcp 명령어&lt;/p&gt;
 
 &lt;h1 id=&quot;distcp&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;distcp&lt;/code&gt;&lt;/h1&gt;
 
@@ -807,11 +937,11 @@ partition key is TreeSet(9, 19, 29)
   
     <entry>
       <title type="html">Overwrite Partition in Spark</title>
-      <link href="https://gyuhoonk.github.io/spark-overwrite-partition" rel="alternate" type="text/html" title="Overwrite Partition in Spark" />
+      <link href="http://localhost:4000/spark-overwrite-partition" rel="alternate" type="text/html" title="Overwrite Partition in Spark" />
       <published>2021-12-21T22:30:00+09:00</published>
       <updated>2021-12-21T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/spark-overwrite-partition</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/spark-overwrite-partition">&lt;p&gt;Spark를 이용하여 특정 파티션만 overwrite하기&lt;/p&gt;
+      <id>http://localhost:4000/spark-overwrite-partition</id>
+      <content type="html" xml:base="http://localhost:4000/spark-overwrite-partition">&lt;p&gt;Spark를 이용하여 특정 파티션만 overwrite하기&lt;/p&gt;
 
 &lt;h1 id=&quot;partitioned-table-in-hive&quot;&gt;Partitioned Table in Hive&lt;/h1&gt;
 
@@ -1081,11 +1211,11 @@ partition key is TreeSet(9, 19, 29)
   
     <entry>
       <title type="html">Melt in Pyspark</title>
-      <link href="https://gyuhoonk.github.io/melt-in-pyspark" rel="alternate" type="text/html" title="Melt in Pyspark" />
+      <link href="http://localhost:4000/melt-in-pyspark" rel="alternate" type="text/html" title="Melt in Pyspark" />
       <published>2021-11-25T22:30:00+09:00</published>
       <updated>2021-11-25T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/melt-in-pyspark</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/melt-in-pyspark">&lt;p&gt;pyspark로 melt function 구현하기&lt;/p&gt;
+      <id>http://localhost:4000/melt-in-pyspark</id>
+      <content type="html" xml:base="http://localhost:4000/melt-in-pyspark">&lt;p&gt;pyspark로 melt function 구현하기&lt;/p&gt;
 
 &lt;h1 id=&quot;melt&quot;&gt;Melt&lt;/h1&gt;
 
@@ -1273,11 +1403,11 @@ partition key is TreeSet(9, 19, 29)
   
     <entry>
       <title type="html">Merge Files in HDFS</title>
-      <link href="https://gyuhoonk.github.io/hive-merge-query" rel="alternate" type="text/html" title="Merge Files in HDFS" />
+      <link href="http://localhost:4000/hive-merge-query" rel="alternate" type="text/html" title="Merge Files in HDFS" />
       <published>2021-10-24T22:30:00+09:00</published>
       <updated>2021-10-24T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/hive-merge-query</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/hive-merge-query">&lt;p&gt;HDFS에서 작은 용량의 파일들을 합쳐보자&lt;/p&gt;
+      <id>http://localhost:4000/hive-merge-query</id>
+      <content type="html" xml:base="http://localhost:4000/hive-merge-query">&lt;p&gt;HDFS에서 작은 용량의 파일들을 합쳐보자&lt;/p&gt;
 
 &lt;h1 id=&quot;blocks-in-hdfs&quot;&gt;Blocks in HDFS&lt;/h1&gt;
 
@@ -1539,11 +1669,11 @@ partition key is TreeSet(9, 19, 29)
   
     <entry>
       <title type="html">Bucket in Hive, Spark</title>
-      <link href="https://gyuhoonk.github.io/bucket-hive-spark" rel="alternate" type="text/html" title="Bucket in Hive, Spark" />
+      <link href="http://localhost:4000/bucket-hive-spark" rel="alternate" type="text/html" title="Bucket in Hive, Spark" />
       <published>2021-10-09T22:30:00+09:00</published>
       <updated>2021-10-09T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/bucket-hive-spark</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/bucket-hive-spark">&lt;p&gt;Hive와 Spark에서 Bucket 차이점에 대하여&lt;/p&gt;
+      <id>http://localhost:4000/bucket-hive-spark</id>
+      <content type="html" xml:base="http://localhost:4000/bucket-hive-spark">&lt;p&gt;Hive와 Spark에서 Bucket 차이점에 대하여&lt;/p&gt;
 
 &lt;h1 id=&quot;bucketting&quot;&gt;Bucketting&lt;/h1&gt;
 
@@ -1753,11 +1883,11 @@ It doesn't match the specified format 'ParquetFileFormat'.
   
     <entry>
       <title type="html">CREATE Statement in Hive</title>
-      <link href="https://gyuhoonk.github.io/hive-create-stmt" rel="alternate" type="text/html" title="CREATE Statement in Hive" />
+      <link href="http://localhost:4000/hive-create-stmt" rel="alternate" type="text/html" title="CREATE Statement in Hive" />
       <published>2021-09-16T22:30:00+09:00</published>
       <updated>2021-09-16T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/hive-create-stmt</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/hive-create-stmt">&lt;p&gt;HiveQL - CREATE Statement구조에 대하여&lt;/p&gt;
+      <id>http://localhost:4000/hive-create-stmt</id>
+      <content type="html" xml:base="http://localhost:4000/hive-create-stmt">&lt;p&gt;HiveQL - CREATE Statement구조에 대하여&lt;/p&gt;
 
 &lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;TEMPORARY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IF&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;NOT&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXISTS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.]&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;table_name&lt;/span&gt;
   &lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col_name&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data_type&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;column_constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;COMMENT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;constraint_specification&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])]&lt;/span&gt;
