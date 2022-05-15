@@ -1,4 +1,177 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2022-05-15T18:42:30+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>Data Engineering</subtitle><entry><title type="html">Parquet and Predicate PushDown</title><link href="https://gyuhoonk.github.io/parquet-ppd" rel="alternate" type="text/html" title="Parquet and Predicate PushDown" /><published>2022-04-21T22:30:00+09:00</published><updated>2022-04-21T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/parquet-ppd</id><content type="html" xml:base="https://gyuhoonk.github.io/parquet-ppd">&lt;p&gt;parquet 포맷과 predicate pushdown에 대해서&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2022-05-15T23:36:17+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>Data Engineering</subtitle><entry><title type="html">merge vs. rebase</title><link href="https://gyuhoonk.github.io/merge-rebase" rel="alternate" type="text/html" title="merge vs. rebase" /><published>2022-05-14T22:30:00+09:00</published><updated>2022-05-14T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/merge-rebase</id><content type="html" xml:base="https://gyuhoonk.github.io/merge-rebase">&lt;p&gt;merge와 rebase 비교하기&lt;/p&gt;
+
+&lt;h1 id=&quot;merge--rebase&quot;&gt;Merge &amp;amp; Rebase&lt;/h1&gt;
+
+&lt;p&gt;Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 갖습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;git-merge&quot;&gt;git merge&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Join two or more development histories together&lt;/p&gt;
+
+  &lt;p&gt;Incorporates changes from the named commits (since the time their histories diverged from the current branch) into the current branch. This command is used by &lt;em&gt;git pull&lt;/em&gt; to incorporate changes from another repository and can be used by hand to merge changes from one branch into another.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;대상 브랜치의 커밋 내용을 현재 브랜치로 포함시킨다는 것이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 의 가장 큰 특징입니다.  서로 다른 브랜치 간에서만 사용되는 것이 아니라, 저장소 간의 내용을 하나로 통합하는 경우에도 사용됩니다. 즉, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git pull&lt;/code&gt;에서도 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt;를 이용합니다.&lt;/p&gt;
+
+&lt;p&gt;git document는 아래와 같은 상황을 예시로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 를 설명합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	    A---B---C topic
+	   /
+D---E---F---G master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이 때, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt;의 공통 조상이 되는 commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E&lt;/code&gt; 를 &lt;strong&gt;base&lt;/strong&gt;라고 부릅니다.&lt;/p&gt;
+
+&lt;p&gt;현재 브랜치(current branch)가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 일 때, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge topic&lt;/code&gt; 을 실행하면, 아래와 같은 브랜치 히스토리가 생성됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout master
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git merge topic
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	    A---B---C topic
+  	 /         \
+D---E---F---G---H master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt;로부터 현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt; 브랜치의 current commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C&lt;/code&gt;까지의 모든 변화(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E-A-B-C&lt;/code&gt;)를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치의 current commit이었던 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt;로부터 재실행하게 됩니다. 그리고 이를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;H&lt;/code&gt; 라는 commit으로 생성합니다.&lt;/p&gt;
+
+&lt;p&gt;이 때, 충돌(conflict)가 발생하게 되면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 를 입력한 사용자는 충돌을 해결하고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt; 를 이어가거나(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge --continue&lt;/code&gt;), 이전 상태로 되돌려야만 합니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge --abort&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h2 id=&quot;git-rebase&quot;&gt;git rebase&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt; 는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;upstream&amp;gt;, &amp;lt;branch&amp;gt;&lt;/code&gt;를 명시할 수 있습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;branch&amp;gt;&lt;/code&gt; 옵션은 명시하지 않으면 현재 명령어를 실행하는 브랜치(current branch)로 입력됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase &amp;lt;upstream&amp;gt; &amp;lt;branch&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Reapply commits on top of another base tip&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;If &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[branch]&lt;/code&gt; is specified, &lt;em&gt;git rebase&lt;/em&gt; will perform an automatic &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch [branch]&lt;/code&gt; before doing anything else. Otherwise it remains on the current branch. All changes made by commits in the current branch but that are not in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt; are saved to a temporary area.The commits that were previously saved into the temporary area are then reapplied to the current branch, one by one, in order. Note that any commits in HEAD which introduce the same textual changes as a commit in HEAD..&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt; are omitted (i.e., a patch already accepted upstream with a different commit message or timestamp will be skipped).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt;에 존재하지 않고, current branch(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[branch]&lt;/code&gt;)에 존재하는 commit은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;라는 임시 공간에 저장됩니다.  이후 해당 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;에 저장되있는 commit은 &lt;strong&gt;순서대로&lt;/strong&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream&lt;/code&gt;의 current commit에서부터 적용됩니다. 이 과정은 공통 commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt; 를 upstream의 current commit으로 변경하는 작업으로 이해할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      A---B---C topic
+     /
+D---E---F---G master 위와 같은 상황에서 아래 명령어를 실행하면,  `topic` 브랜치의 base를  `master` 의 current commit `G` 로 변경합니다.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout topic
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase master &lt;span class=&quot;c&quot;&gt;# git rebase master topic&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;              A'--B'--C' topic
+             /
+D---E---F---G master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;current branch인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt; 의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A-B-C&lt;/code&gt; 커밋들은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt; 에 잠시 저장되어 있다가, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt; 에서부터  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;의 커밋 내용들을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치에 &lt;strong&gt;순서대로&lt;/strong&gt; 적용합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt;가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A-B-C&lt;/code&gt;를  &lt;strong&gt;한번에&lt;/strong&gt; 적용하여 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G--H&lt;/code&gt; 로 commit했던 것과 다른 부분입니다.&lt;/p&gt;
+
+&lt;p&gt;이 때, 만약 upstream(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;matser&lt;/code&gt;)의 커밋 중 일부가 branch(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;)의 커밋 내용을 포함하고 있는 경우, 해당 커밋 내용은 건너뛰고(skipped) 진행됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;       A---B---C topic
+      /
+ D---E---A'---F master
+ # A in topic is same to A' in master 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;               B'---C' topic
+              /
+D---E---A'---F master
+# A in topic is skipped when `git rebase master`
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;하나의 브랜치(upstream)으로 부터 여러 개의 브랜치가 생성되었을 때, rebase는 이를 간결하게 표현해 줄 수 있습니다. 이는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--onto&lt;/code&gt;옵션을 이용합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The current branch is reset to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt;, or [newbase] if the –onto option was supplied. This has the exact same effect as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git reset --hard &lt;/code&gt;[upstream]`` (or [newbase]). ORIG_HEAD is set to point at the tip of the branch before the reset.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;–onto [newbase]&lt;/p&gt;
+
+  &lt;p&gt;Starting point at which to create the new commits. If the –onto option is not specified, the starting point is &lt;upstream&gt;. May be any valid commit, and not just an existing branch name.&lt;/upstream&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;o---o---o---o---o  master
+     \
+      o---o---o---o---o  next
+                       \
+                        o---o---o  topic
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;만약   &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;의 변화 내용만을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 에 병합하고 싶다면 우리는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치로부터 분화(forked)된 것으로 변경해야합니다. rebase의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--onto&lt;/code&gt; 옵션을 이용하면  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topcic&lt;/code&gt; 의 base branch를  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt;로 변경할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase &lt;span class=&quot;nt&quot;&gt;--onto&lt;/span&gt; master next topic
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;newbase인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치로부터 새로운 커밋들을 rebase하게 됩니다. 이 경우, topic이 master로부터 forked되지 않았으므로 수정되게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;즉, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치가  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;의 base로 변경됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;o---o---o---o---o  master
+    |            \
+    |             o'--o'--o'  topic
+     \
+      o---o---o---o---o  next
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;아래의 경우처럼 브랜치 간 관계가 복잡한 경우에도 rebase를 이용하면 관계를 단순하게 조작할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;                        H---I---J topicB
+                       /
+              E---F---G  topicA
+             /
+A---B---C---D  master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase &lt;span class=&quot;nt&quot;&gt;--onto&lt;/span&gt; master topicA topicB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;             H'--I'--J'  topicB
+            /
+            | E---F---G  topicA
+            |/
+A---B---C---D  master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;purpose&quot;&gt;Purpose&lt;/h1&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt;와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt;는 두 개 이상의 브랜치를 합친다는 공통점은 있지만 동작 방식과 그 결과는 다릅니다. 따라서 목적에 따라 다르게 사용해야합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h4 id=&quot;git-rebase-1&quot;&gt;Git Rebase&lt;/h4&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;Streamlines a potentially complex history.&lt;/li&gt;
+    &lt;li&gt;Avoids merge commit “noise” in busy repos with busy branches.&lt;/li&gt;
+    &lt;li&gt;Cleans intermediate commits by making them a single commit, which can be helpful for DevOps teams.&lt;/li&gt;
+  &lt;/ul&gt;
+
+  &lt;h4 id=&quot;git-merge-1&quot;&gt;Git Merge&lt;/h4&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;Simple and familiar.&lt;/li&gt;
+    &lt;li&gt;Preserves complete history and chronological order.&lt;/li&gt;
+    &lt;li&gt;Maintains the context of the branch.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt;는 복잡한 히스토리를 단순화하는데 주요한 목적이 있으나, 이러한 과정에서 정확한 forked 정보는 소실될 수 있습니다. 또한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt;에 비해서 사용이 어렵고 복잡합니다.&lt;/p&gt;
+
+&lt;p&gt;반대로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt;는 fork, commit, merge에 대한 모든 히스토리가 그대로 남아있어 추후에 트래킹에서의 이점이 있을 수 있습니다. 그러나 모든 히스토리가 남기 때문에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt;에 비해 히스토리가 복잡해지는 단점이 있습니다.&lt;/p&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://git-scm.com/&quot;&gt;Git Document&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.perforce.com/blog/vcs/git-rebase-vs-git-merge-which-better&quot;&gt;Git Rebase vs. Git Merge: Which Is Better?&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="git" /><summary type="html">merge와 rebase 비교하기</summary></entry><entry><title type="html">Parquet and Predicate PushDown</title><link href="https://gyuhoonk.github.io/parquet-ppd" rel="alternate" type="text/html" title="Parquet and Predicate PushDown" /><published>2022-04-21T22:30:00+09:00</published><updated>2022-04-21T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/parquet-ppd</id><content type="html" xml:base="https://gyuhoonk.github.io/parquet-ppd">&lt;p&gt;parquet 포맷과 predicate pushdown에 대해서&lt;/p&gt;
 
 &lt;h1 id=&quot;apache-parquet&quot;&gt;Apache Parquet&lt;/h1&gt;
 
@@ -1901,197 +2074,4 @@ sparkTest.class
 
 &lt;p&gt;&lt;a href=&quot;https://community.cloudera.com/t5/Support-Questions/Spark-shuffle-spill-Memory/td-p/186859&quot;&gt;Spark shuffle spill (Memory)&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://medium.com/road-to-data-engineering/spark-performance-optimization-series-2-spill-685126e9d21f&quot;&gt;Spark Performance Optimization Series: #2. Spill&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">Partition, Spill in Spark</summary></entry><entry><title type="html">hadoop distcp</title><link href="https://gyuhoonk.github.io/hadoop-distcp" rel="alternate" type="text/html" title="hadoop distcp" /><published>2022-01-20T22:30:00+09:00</published><updated>2022-01-20T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/hadoop-distcp</id><content type="html" xml:base="https://gyuhoonk.github.io/hadoop-distcp">&lt;p&gt;hadoop distcp 명령어&lt;/p&gt;
-
-&lt;h1 id=&quot;distcp&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;distcp&lt;/code&gt;&lt;/h1&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;distcp&lt;/code&gt; 명령어는 효율적인 병렬 처리를 통해 파일을 복사합니다. 아래와 같은 명령어로 실행합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 파일 복사&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp file1 file2
-&lt;span class=&quot;c&quot;&gt;# hadoop fs -cp file1 file2 와 같은 결과이지만&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# distcp를 이용하는 경우에는 '병렬 처리'하여 복사함&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# 디렉토리 복사&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp dir1 dir2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;discp&lt;/code&gt;는 내부적으로는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hadoop fs -cp&lt;/code&gt;명령을 클라이언트가 직접 수행하는 방식이기 때문에 큰 파일의 복사에 더 적합합니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;options&quot;&gt;options&lt;/h1&gt;
-&lt;p&gt;&lt;a href=&quot;https://hadoop.apache.org/docs/stable/hadoop-distcp/DistCp.html&quot;&gt;DistCp Guide&lt;/a&gt;&lt;/p&gt;
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# overwrite&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hdfs dfs &lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; 
-&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; dir1 dir2
-
-
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp dir1 dir2
-&lt;span class=&quot;c&quot;&gt;# 이미 dir2가 존재하고 있으므로, dir2의 하위에 dir1을 복사함&lt;/span&gt;
-
-
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; dir1 dir2
-&lt;span class=&quot;c&quot;&gt;# overwrite 옵션이 있으므로 dir2에 dir1을 덮어씌움&lt;/span&gt;
-
-
-
-&lt;span class=&quot;c&quot;&gt;# update&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 디렉토리 내에 변경이 있는 파일들만 복사하여 동기화시킵니다.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-update&lt;/span&gt; dir1 dir2
-&lt;span class=&quot;c&quot;&gt;# dir1 내 파일과 dir2 내 파일을 비교하여 변경된 부분만 dir2에 동기화시킴&lt;/span&gt;
-
-
-
-&lt;span class=&quot;c&quot;&gt;# delete&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 원본 경로에는 존재하지 않고, 타겟 경로에만 존재하는 파일들을 지우도록 하는 옵션입니다.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-delete&lt;/span&gt; dir1 dir2
-&lt;span class=&quot;c&quot;&gt;# dir1, dir2를 비교하여 dir2에만 존재하는 파일들은 삭제한 뒤 distcp를 수행&lt;/span&gt;
-
-
-
-&lt;span class=&quot;c&quot;&gt;# m&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 몇 개의 mapper를 사용할지 결정합니다. &lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 기본적으로 distcp는 Map-Reduce Job으로 구현되어있으며 &lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 클러스터 전반에 걸쳐 병렬로 수행되는 Map Task를 이용하여 복사 작업을 수행합니다.&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 단, Reducer를 사용하지 않으며 각 파일은 Mapper에서 복사합니다. &lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 이 때 bucketing을 통해 각 Mapper에 거의 같은 양의 데이터를 제공하고자 합니다. &lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;# 기본값으로 최대 20개의 Mapper가 사용됩니다.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; 100 file1 file2
-&lt;span class=&quot;c&quot;&gt;# 100개 Mapper를 사용하여 distcp 수행&lt;/span&gt;
-
-
-
-&lt;span class=&quot;c&quot;&gt;# p&lt;/span&gt;
-&lt;span class=&quot;c&quot;&gt;#복제 시 파일의 권한, 블록 사이즈 등 파일 속성 정보를 보전하려는 경우에 사용됩니다. &lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-p&lt;/span&gt; file1 file2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;다른-클러스터namenode간-복사&quot;&gt;다른 클러스터(namenode)간 복사&lt;/h1&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp webhdfs://namenode1:14000/foo webhdfs://namenode2:14000/foo
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;위처럼 namenode1에서 namenode2로 파일을 복사할 수 있습니다. 이 경우에 webHDFS 프로토콜을 이용합니다. webHDFS 프로토콜 대신에 HttpFs 프록시 방식으로 distcp의 소스 혹은 타깃을 변경할 수도 있다. HttpFs 프록시 방식은 방화벽, 대역폭 설정을 할 수 있다는 장점이 있습니다.&lt;/p&gt;
-
-&lt;p&gt;참고로 HDFS에 접근 가능한 인터페이스는 아래와 같습니다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;webHDFS&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;HDFS는 REST API를 이용하여 파일을 조회, 생성, 수정, 삭제(CRUD)를 지원합니다. 이러한 기능을 제공하는 API가 webHDFS이며  FileSystem API입니다. 해당 프로토콜은 Java FileSystem Class에 작성되어 있습니다. 그리고 이를 바탕으로 다른 FileSystem을 이용할 수도 있습니다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Http&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;JAVA로 작성되지 않은 애플리케이션이 HDFS에 접근할 수 있도록 WebHDFS 프로토콜을 기반으로 하여 HTTP REST API를 사용할 수 있습니다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;C - libhdfs library&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;JAVA FileSystem Class를 모방하여 작성된 라이브러리입니다. 모든 HDFS(Local, S3 등)에 접근 가능합니다. JNI(Java Native Interface)를 사용하여 JAVA FileSystem Class를 호출합니다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;NFS&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;NFSv3 게이트웨이를 이용하여 로컬 클라이언트 파일시스템에 HDFS를 마운트할 수 있습니다. 또한, ls, cat과 같은 unix 명령어를 이용할 수 있습니다. 참고로, HDFS는 파일의 끝에만 쓰기를 허용하므로 파일에 추가하는 작업은 가능하지만, 파일의 임의 위치에 있는 데이터를 수정하는 것은 지원하지 않습니다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;FUSE(Filesystem in Userspace)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;사용자 공간과 유닉스 파일 시스템을 통합한 파일 시스템을 지원합니다. 하둡의 Fuse-DFS contrib 모듈은 표준 로컬 파일시스템에 HDFS를 마운트할 수 있는 기능을 제공합니다. Fuse-DFS는 C로 작성된 libhdfs로 HDFS 인터페이스를 구현했습니다. 참고로 NFS가 Fuse-DFS보다 안전하며 선호되는 방법입니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;클러스터간-테이블-이동&quot;&gt;클러스터간 테이블 이동&lt;/h1&gt;
-
-&lt;p&gt;예를 들어, namenode1에 아래와 같은 테이블이 있다고 가정해보겠습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'SELECT * FROM default.table_1'&lt;/span&gt;
-+-------+---------+
-| col1  |  col2   |
-+-------+---------+
-| a     | apple   |
-| b     | banana  |
-| c     | car     |
-+-------+---------+
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;namenode2로 default.table_1을 이동하기 위해서는 아래와 같은 과정이 필요합니다.&lt;/p&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/user/hive/warehouse/default.db/table_1&lt;/code&gt; 디렉토리 이동&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# namenode1에서 실행&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hadoop distcp &lt;span class=&quot;nt&quot;&gt;-overwrite&lt;/span&gt; webhdfs://namenode1:14000/user/hive/warehouse/default.db/table_1 webhdfs://namenode2:14000/user/hive/warehouse/default.db/table_1
-
-&lt;span class=&quot;c&quot;&gt;#namenode2에서 distcp 결과 확인&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode2~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/table_1
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive          0 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/_SUCCESS
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        340 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00000-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        544 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00166-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        549 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00333-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt;+  3 gyuhoonK hive        534 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00499-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;create statement 확인&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'SHOW CREATE TABLE default.table_1'&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;----------------------------------------------------+&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;                   &lt;span class=&quot;n&quot;&gt;createtab_stmt&lt;/span&gt;                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;----------------------------------------------------+&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;CREATE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;EXTERNAL&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;TABLE&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;`default.table_1`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;           &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;nv&quot;&gt;`col1`&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;                                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;nv&quot;&gt;`col2`&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;string&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;                                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ROW&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FORMAT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SERDE&lt;/span&gt;                                   &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;WITH&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SERDEPROPERTIES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;                             &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'path'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'hdfs://nameservice1/user/hive/warehouse/default.db/table_1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;                                          &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;STORED&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;INPUTFORMAT&lt;/span&gt;                              &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;OUTPUTFORMAT&lt;/span&gt;                                       &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;LOCATION&lt;/span&gt;                                           &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'hdfs://nameservice1/user/hive/warehouse/default.db/table_1'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;TBLPROPERTIES&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;                                    &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'bucketing_version'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'2'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;                         &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.create.version'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'2.3.1.3.0.1.0-187'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.sources.provider'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'parquet'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;          &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.sources.schema.numParts'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;         &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'spark.sql.sources.schema.part.0'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'{&quot;type&quot;:&quot;struct&quot;,&quot;fields&quot;:[{&quot;name&quot;:&quot;col1&quot;,&quot;type&quot;:&quot;string&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:{}},{&quot;name&quot;:&quot;col2&quot;,&quot;type&quot;:&quot;string&quot;,&quot;nullable&quot;:true,&quot;metadata&quot;:{}}]}'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;   &lt;span class=&quot;s1&quot;&gt;'transient_lastDdlTime'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;'1642640799'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;            &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;----------------------------------------------------+&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;아래와 같이 명령어를 조합하면 쿼리문만 파일로 저장할 수 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'show create table default.table_1'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/|//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/+//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'s/createtab_stmt//g'&lt;/span&gt; | &lt;span class=&quot;nb&quot;&gt;sed&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'/WARN/d'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; create.sql 2&amp;gt;/dev/null&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;';'&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&lt;/span&gt; create.sql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;create.sql&lt;/code&gt; 파일을 namenode2로 옮긴 뒤 namenode2에서 create statement 실행&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# namenode1&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode1~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;scp create.sql gyuhoonk@namenode2:/home/gyuhoonk/
-&lt;span class=&quot;c&quot;&gt;# namenode2&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode2~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hive &lt;span class=&quot;nt&quot;&gt;-f&lt;/span&gt; create.sql
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;ol&gt;
-  &lt;li&gt;Partitioned table인 경우에는 TABLE REPAIR 실행&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;div class=&quot;language-shell highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;gyuhoonk@namenode2~]&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hive &lt;span class=&quot;nt&quot;&gt;-e&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;'MSCK REPAIR TABLE defulat.table_1'&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;[참고]&lt;/p&gt;
-
-&lt;p&gt;하둡 완벽 가이드, 한빛미디어&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://hadoop.apache.org/docs/r1.2.1/distcp.html&quot;&gt;DistCp Guide&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">hadoop distcp 명령어</summary></entry></feed>
+&lt;p&gt;&lt;a href=&quot;https://medium.com/road-to-data-engineering/spark-performance-optimization-series-2-spill-685126e9d21f&quot;&gt;Spark Performance Optimization Series: #2. Spill&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="hadoop" /><summary type="html">Partition, Spill in Spark</summary></entry></feed>

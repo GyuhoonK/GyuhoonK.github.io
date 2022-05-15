@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>merge vs. rebase</title>
+        
+          <description>&lt;p&gt;merge와 rebase 비교하기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 14 May 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/merge-rebase</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/merge-rebase</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Parquet and Predicate PushDown</title>
         
           <description>&lt;p&gt;parquet 포맷과 predicate pushdown에 대해서&lt;/p&gt;
