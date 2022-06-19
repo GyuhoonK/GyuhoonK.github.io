@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-05-15T23:36:17+09:00</updated>
+  <updated>2022-06-19T19:32:32+09:00</updated>
   <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
 
   
@@ -32,6 +32,168 @@
 
   
     <entry>
+      <title type="html">enableHiveSupport</title>
+      <link href="https://gyuhoonk.github.io/enableHiveSupport" rel="alternate" type="text/html" title="enableHiveSupport" />
+      <published>2022-06-16T22:30:00+09:00</published>
+      <updated>2022-06-16T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/enableHiveSupport</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/enableHiveSupport">&lt;p&gt;Spark enableHiveSupport(Hive metaStore)&lt;/p&gt;
+
+&lt;h1 id=&quot;hive-table-in-spark&quot;&gt;Hive Table in Spark&lt;/h1&gt;
+
+&lt;p&gt;spark에서 Hive table에 접근할 수 있도록 설정하기 위해서 ‘enableHiveSupport()’를 주로 사용하는데요.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SparkSession&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enableHiveSupport&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getOrCreate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;df&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
+SELECT *
+FROM default.test1
+&quot;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enableHiveSupport()&lt;/code&gt;의 의미가 무엇인지 생각해보지 않았던 것 같아서 한번 조사해보았습니다.&lt;/p&gt;
+
+&lt;p&gt;이에 대해 알기 위해서는 Hive Table Location에 대해서 먼저 알아야합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;hive---table-location&quot;&gt;Hive - Table Location&lt;/h2&gt;
+
+&lt;p&gt;예를 들어 defualt.test_1 이라는 테이블이 있다고 가정하면, 해당 테이블은 HDFS 상에서 ‘/usre/hive/warehouse/default.db/test_1’ 경로에 저장되어 있습니다.&lt;/p&gt;
+
+&lt;p&gt;이를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TABLE LOACTION&lt;/code&gt;이라고 합니다.&lt;/p&gt;
+
+&lt;p&gt;나아가, PARTITIONED TABLE의 경우에는 해당 LOCATION 하위에 PARTITION DIR이 더 존재합니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;구분&lt;/th&gt;
+      &lt;th&gt;TABLE&lt;/th&gt;
+      &lt;th&gt;HDFS LOCATION&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Table&lt;/td&gt;
+      &lt;td&gt;default.table1&lt;/td&gt;
+      &lt;td&gt;/user/hive/warehouse/default.db/table1&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Partitioned Table&lt;/td&gt;
+      &lt;td&gt;default.table2 PARTITION (col1=a)&lt;/td&gt;
+      &lt;td&gt;/user/hive/warehouse/default.db/table2/col1=a&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;우리가 Hive에 쿼리를 작성하여 테이블을 조회하는 것은 사실 HDFS에서 LOCATION에 존재하는 파일을 읽는 것입니다.&lt;/p&gt;
+
+&lt;p&gt;따라서, 우리가 아래 쿼리를 실행하면&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;default&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Hive는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;default.table1&lt;/code&gt;에 해당하는 LOCATION에 저장된 파일로부터 데이터를 읽어 결과를 출력합니다. 즉, 아래 커맨드로 확인할 수 있는 파일들을 스캔합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;hdfs dfs &lt;span class=&quot;nt&quot;&gt;-ls&lt;/span&gt; /user/hive/warehouse/default.db/table1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;hive-metastore&quot;&gt;Hive metaStore&lt;/h2&gt;
+
+&lt;p&gt;그렇다면 TABLE의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LOCATION&lt;/code&gt;과 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PARTITION&lt;/code&gt; 정보 즉, &lt;strong&gt;hive metastore&lt;/strong&gt;는 어디에 저장하고 있을까요? &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hive-stie.xml&lt;/code&gt;에서 hive metastore의 저장 위치를 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;hive metastore는 1) 임베디드, 2) 로컬, 3) 원격 셋 중에 하나로 구성할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;아래는 hive metastore를 3) 원격으로 저장했을 경우 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hive-site.xml&lt;/code&gt; 예시입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/hive/hive-site.xml
+...
+&amp;lt;property&amp;gt;
+      &amp;lt;name&amp;gt;hive.metastore.uris&amp;lt;/name&amp;gt;
+      &amp;lt;value&amp;gt;thrift://host.example:9083&amp;lt;/value&amp;gt;
+ &amp;lt;/property&amp;gt; 
+...
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;host.example:9083&lt;/code&gt;에 hive metastore가 저장되어있음을 확인할 수 있습니다. 즉, 해당 경로에 hive table들의 location, partition 같은 메타 데이터들이 저장되어 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;enablehivesupport&quot;&gt;enableHiveSupport&lt;/h2&gt;
+
+&lt;p&gt;spark의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enableHiveSupport()&lt;/code&gt;는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hive.metastore.uris&lt;/code&gt; 설정 값에 접근하여 hive metastore를 사용하겠다 라는 의미입니다.&lt;/p&gt;
+
+&lt;p&gt;default로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hive-site.xml&lt;/code&gt;에서 정의된 값을 사용하고, 정의되어있지 않다면  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.sql.warehouse.dir&lt;/code&gt; 로 전달된 경로에서 metastore를 검색합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;When working with Hive, one must instantiate SparkSession with Hive support, including connectivity to a persistent Hive metastore, support for Hive serdes, and Hive user-defined functions. Users who do not have an existing Hive deployment can still enable Hive support. When not configured by the hive-site.xml, the context automatically creates metastore_db in the current directory and creates a directory configured by &lt;strong&gt;spark.sql.warehouse.dir&lt;/strong&gt;, which defaults to the directory spark-warehouse in the current directory that the Spark application is started. Note that the hive.metastore.warehouse.dir property in hive-site.xml is deprecated since Spark 2.0.0. Instead, use spark.sql.warehouse.dir to specify the default location of database in warehouse. You may need to grant write privilege to the user who starts the Spark application.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;위의 정보를 종합해보면 spark가 hive table을 읽어오는 과정은 다음과 같습니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;enableHiveSupport()&lt;/code&gt;를 선언한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sparkSession&lt;/code&gt;에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.sql&lt;/code&gt;을 이용하여 테이블(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;default.test1&lt;/code&gt;)을 조회합니다.&lt;/li&gt;
+  &lt;li&gt;spark는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hive-site.xml&lt;/code&gt;  혹은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.sql.warehouse.dir&lt;/code&gt; 에서 hive metastore가 저장된 경로를 참조합니다.&lt;/li&gt;
+  &lt;li&gt;hive metastore로부터 해당 테이블의 경로(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/user/hive/warehouse/default.db/test1&lt;/code&gt;)를 알아냅니다.&lt;/li&gt;
+  &lt;li&gt;이후 해당 테이블 위치(location)에서 파일(데이터)를 읽어옵니다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;따라서 아래 두 방법은 기본적으로 같은 동작을 수행합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# query
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
+SELECT *
+FROM default.test1
+&quot;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# file scan
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parquet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/user/hive/warehouse/default.db/test1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Partitioned Table도 위와 크게 다르지 않습니다. 단지 table location에 partition column이 추가될 뿐입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# query
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
+SELECT *
+FROM default.test1
+WHERE col1 = 'a'
+&quot;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# file scan
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parquet&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;/user/hive/warehouse/default.db/test1/col1=a&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://wikidocs.net/28353&quot;&gt;5-메타스토어&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html&quot;&gt;sql-data-sources-hive-tables&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html">Spark enableHiveSupport(Hive metaStore)</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
       <title type="html">merge vs. rebase</title>
       <link href="https://gyuhoonk.github.io/merge-rebase" rel="alternate" type="text/html" title="merge vs. rebase" />
       <published>2022-05-14T22:30:00+09:00</published>
@@ -41,13 +203,15 @@
 
 &lt;h1 id=&quot;merge--rebase&quot;&gt;Merge &amp;amp; Rebase&lt;/h1&gt;
 
-&lt;p&gt;Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 갖습니다.&lt;/p&gt;
+&lt;p&gt;Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 보입니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;git-merge&quot;&gt;git merge&lt;/h2&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Join two or more development histories together&lt;/p&gt;
+&lt;/blockquote&gt;
 
+&lt;blockquote&gt;
   &lt;p&gt;Incorporates changes from the named commits (since the time their histories diverged from the current branch) into the current branch. This command is used by &lt;em&gt;git pull&lt;/em&gt; to incorporate changes from another repository and can be used by hand to merge changes from one branch into another.&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -55,8 +219,8 @@
 
 &lt;p&gt;git document는 아래와 같은 상황을 예시로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 를 설명합니다.&lt;/p&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	    A---B---C topic
-	   /
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      A---B---C topic
+     /
 D---E---F---G master
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
@@ -68,14 +232,14 @@ D---E---F---G master
 &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git merge topic
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;	    A---B---C topic
-  	 /         \
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      A---B---C topic
+     /         \
 D---E---F---G---H master
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt;로부터 현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt; 브랜치의 current commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C&lt;/code&gt;까지의 모든 변화(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E-A-B-C&lt;/code&gt;)를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치의 current commit이었던 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt;로부터 재실행하게 됩니다. 그리고 이를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;H&lt;/code&gt; 라는 commit으로 생성합니다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt;로부터 현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt; 브랜치의 current commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C&lt;/code&gt;까지의 모든 변화(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E-A-B-C&lt;/code&gt;)를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치의 current commit이었던 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt;로부터 재실행합니다. 그리고 이를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;H&lt;/code&gt; 라는 commit으로 생성합니다.&lt;/p&gt;
 
-&lt;p&gt;이 때, 충돌(conflict)가 발생하게 되면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 를 입력한 사용자는 충돌을 해결하고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt; 를 이어가거나(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge --continue&lt;/code&gt;), 이전 상태로 되돌려야만 합니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge --abort&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;이 때, 충돌(conflict)이 발생하게 되면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 를 입력한 사용자는 충돌을 해결하고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt; 를 이어가거나(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge --continue&lt;/code&gt;), 이전 상태로 되돌려야만 합니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge --abort&lt;/code&gt;).&lt;/p&gt;
 
 &lt;h2 id=&quot;git-rebase&quot;&gt;git rebase&lt;/h2&gt;
 
@@ -92,11 +256,11 @@ D---E---F---G---H master
   &lt;p&gt;If &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[branch]&lt;/code&gt; is specified, &lt;em&gt;git rebase&lt;/em&gt; will perform an automatic &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch [branch]&lt;/code&gt; before doing anything else. Otherwise it remains on the current branch. All changes made by commits in the current branch but that are not in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt; are saved to a temporary area.The commits that were previously saved into the temporary area are then reapplied to the current branch, one by one, in order. Note that any commits in HEAD which introduce the same textual changes as a commit in HEAD..&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt; are omitted (i.e., a patch already accepted upstream with a different commit message or timestamp will be skipped).&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt;에 존재하지 않고, current branch(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[branch]&lt;/code&gt;)에 존재하는 commit은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;라는 임시 공간에 저장됩니다.  이후 해당 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;에 저장되있는 commit은 &lt;strong&gt;순서대로&lt;/strong&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream&lt;/code&gt;의 current commit에서부터 적용됩니다. 이 과정은 공통 commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt; 를 upstream의 current commit으로 변경하는 작업으로 이해할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt;에 존재하지 않고, current branch(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[branch]&lt;/code&gt;)에 존재하는 commit은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;라는 임시 공간에 저장됩니다.  이후 해당 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;에 저장되있는 commit은 &lt;strong&gt;순서대로&lt;/strong&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream&lt;/code&gt;의 current commit에서부터 적용됩니다. 이 과정은 공통 commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt; 를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream의&lt;/code&gt; current commit으로 변경하는 작업으로 이해할 수 있습니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      A---B---C topic
      /
-D---E---F---G master 위와 같은 상황에서 아래 명령어를 실행하면,  `topic` 브랜치의 base를  `master` 의 current commit `G` 로 변경합니다.
+D---E---F---G master 위와 같은 상황에서 아래 명령어를 실행하면, `topic` 브랜치의 base를  `master` 의 current commit `G` 로 변경합니다.
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout topic
@@ -108,7 +272,7 @@ D---E---F---G master 위와 같은 상황에서 아래 명령어를 실행하면
 D---E---F---G master
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;current branch인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt; 의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A-B-C&lt;/code&gt; 커밋들은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt; 에 잠시 저장되어 있다가, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt; 에서부터  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;의 커밋 내용들을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치에 &lt;strong&gt;순서대로&lt;/strong&gt; 적용합니다.&lt;/p&gt;
+&lt;p&gt;current branch인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt; 의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E-A-B-C&lt;/code&gt; 커밋들은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt; 에 잠시 저장되어 있다가, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt; 에서부터  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;의 커밋 내용들을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치에 &lt;strong&gt;순서대로&lt;/strong&gt; 적용합니다.&lt;/p&gt;
 
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt;가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A-B-C&lt;/code&gt;를  &lt;strong&gt;한번에&lt;/strong&gt; 적용하여 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G--H&lt;/code&gt; 로 commit했던 것과 다른 부분입니다.&lt;/p&gt;
 
@@ -126,7 +290,7 @@ D---E---A'---F master
 # A in topic is skipped when `git rebase master`
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;하나의 브랜치(upstream)으로 부터 여러 개의 브랜치가 생성되었을 때, rebase는 이를 간결하게 표현해 줄 수 있습니다. 이는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--onto&lt;/code&gt;옵션을 이용합니다.&lt;/p&gt;
+&lt;p&gt;하나의 브랜치(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream&lt;/code&gt;)로 부터 여러 개의 브랜치가 생성되었을 때, rebase는 이를 간결하게 표현해 줄 수 있습니다. 이는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--onto&lt;/code&gt;옵션을 이용합니다.&lt;/p&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;The current branch is reset to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt;, or [newbase] if the –onto option was supplied. This has the exact same effect as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git reset --hard &lt;/code&gt;[upstream]`` (or [newbase]). ORIG_HEAD is set to point at the tip of the branch before the reset.&lt;/p&gt;
@@ -134,7 +298,9 @@ D---E---A'---F master
 
 &lt;blockquote&gt;
   &lt;p&gt;–onto [newbase]&lt;/p&gt;
+&lt;/blockquote&gt;
 
+&lt;blockquote&gt;
   &lt;p&gt;Starting point at which to create the new commits. If the –onto option is not specified, the starting point is &lt;upstream&gt;. May be any valid commit, and not just an existing branch name.&lt;/upstream&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
 
@@ -192,7 +358,9 @@ A---B---C---D  master
     &lt;li&gt;Avoids merge commit “noise” in busy repos with busy branches.&lt;/li&gt;
     &lt;li&gt;Cleans intermediate commits by making them a single commit, which can be helpful for DevOps teams.&lt;/li&gt;
   &lt;/ul&gt;
+&lt;/blockquote&gt;
 
+&lt;blockquote&gt;
   &lt;h4 id=&quot;git-merge-1&quot;&gt;Git Merge&lt;/h4&gt;
 
   &lt;ul&gt;
@@ -208,9 +376,9 @@ A---B---C---D  master
 
 &lt;p&gt;[참고]&lt;/p&gt;
 
-&lt;p&gt;&lt;a href=&quot;https://git-scm.com/&quot;&gt;Git Document&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://www.perforce.com/blog/vcs/git-rebase-vs-git-merge-which-better&quot;&gt;Git Rebase vs. Git Merge: Which Is Better?&lt;/a&gt;&lt;/p&gt;</content>
+&lt;p&gt;&lt;a href=&quot;https://git-scm.com/docs/git-merge&quot;&gt;Git Document - merge&lt;/a&gt; &lt;br /&gt;
+&lt;a href=&quot;https://git-scm.com/docs/git-rebase&quot;&gt;Git Document - rebase&lt;/a&gt; &lt;br /&gt;
+&lt;a href=&quot;https://www.perforce.com/blog/vcs/git-rebase-vs-git-merge-which-better&quot;&gt;Git Rebase vs. Git Merge: Which Is Better?&lt;/a&gt;&lt;/p&gt;</content>
 
       
       
@@ -2190,257 +2358,6 @@ sparkTest.class
 
       
         <summary type="html">누적 합(Prefix Sum) 알고리즘 (2022 KAKAO BLIND RECRUITMENT 6 파괴되지 않은 건물)</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">Partition, Spill in Spark</title>
-      <link href="https://gyuhoonk.github.io/spark-shuffle-partition" rel="alternate" type="text/html" title="Partition, Spill in Spark" />
-      <published>2022-02-09T22:30:00+09:00</published>
-      <updated>2022-02-09T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/spark-shuffle-partition</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/spark-shuffle-partition">&lt;p&gt;Partition, Spill in Spark&lt;/p&gt;
-
-&lt;h2 id=&quot;spark-needs-performance-tuning&quot;&gt;Spark Needs Performance Tuning&lt;/h2&gt;
-
-&lt;p&gt;Spark로 작성된 Application은 실행을 넘어, 최적화가 필요합니다. 이는 Partition 단위로 작업을 실행하는 Spark 특성 때문입니다. 특히, Partition 간 shuffle이 발생하는 경우에 많은 자원과 시간을 소모하게 됩니다. 따라서, Spark Tuning(Optimization)이란 Shuffle 작업 속도를 빠르게 만드는 것과 다름 없습니다.&lt;/p&gt;
-
-&lt;p&gt;Shuffle 속도를 향상시키기 위해서는 partition 개수를 적절하게 조절해주어야합니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;input-shuffle-read-shuffle-write-output&quot;&gt;Input, Shuffle Read, Shuffle Write, Output&lt;/h4&gt;
-
-&lt;p&gt;Spark Job은 여러 Stage로 나뉘게 되고, 각 Stage는 Input, Shuffle Read, Shuffle Write, Ouput로 구성됩니다. 모든 Stage는 partition을 처리하는 과정이며, 아래와 같이 설명됩니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Shuffling means the reallocation of data between multiple Spark stages. “Shuffle Write” is the sum of all written serialized data on all executors before transmitting (normally at the end of a stage) and “Shuffle Read” means the sum of read serialized data on all executors at the beginning of a stage. (&lt;a href=&quot;https://stackoverflow.com/questions/27276884/what-is-shuffle-read-shuffle-write-in-apache-spark&quot;&gt;What is shuffle read &amp;amp; shuffle write in Apache Spark&lt;/a&gt;)&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Stage&lt;/th&gt;
-      &lt;th&gt;설명&lt;/th&gt;
-      &lt;th&gt;구분&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Input&lt;/td&gt;
-      &lt;td&gt;Task 수행을 위해 외부 데이터를 SparkSession, SparkContext로 로드함&lt;/td&gt;
-      &lt;td&gt;Partition Read&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Shuffle Read&lt;/td&gt;
-      &lt;td&gt;Task 수행을 위해 SparkSession, SparkContext 내부(executors)의 Serialized Data를 읽어들임&lt;/td&gt;
-      &lt;td&gt;Partition Read&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Shuffle Write&lt;/td&gt;
-      &lt;td&gt;Task 수행 결과를 SparkSession, SparkContext 내부(executors)의 Serialzied Data로 내보냄&lt;/td&gt;
-      &lt;td&gt;Partition Write&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Output&lt;/td&gt;
-      &lt;td&gt;Task 수행 결과를 SparkSession, SparkContext 외부에 작성함&lt;/td&gt;
-      &lt;td&gt;Partition Write&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;하나의 Stage는 Partiton Read와 Partition Write로 이루어져있습니다. Partition을 읽고, 읽어들여온 Partition에 대해 Task를 수행하고(Shuffle) 그 결과를 다시 Partition으로 작성합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;df1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM default.table_1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;df2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM default.table_2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;df1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;df1.col1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;df1.col2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;df1.col3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;joined_agg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groupBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;col1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;col2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;agg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;F&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;col3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;cnt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;table&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;default.joined&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;joined_agg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'overwrite'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;path&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.db/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;예를 들어 위 코드는 아래와 같은 stages를 구성하고, 실행됩니다. Input이 2번 있었고, Input하여 shuffle write된 DataFrame(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;df1&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;df2&lt;/code&gt;)에 대해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;join&lt;/code&gt;과 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;saveAsTable&lt;/code&gt;이 실행되었습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/stages1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;왼쪽의 &lt;strong&gt;Task: Succeeded/Total&lt;/strong&gt;은 Stage 내에서 Task 수행 시 몇 개의 Task가 수행되었는지 표시합니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.sql&lt;/code&gt;을 사용하여 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; 객체를 만드는 경우에는 해당 테이블의 파일 개수만큼(61228, 29684) Task를 실행했습니다. 따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;df1&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;df2&lt;/code&gt;의 파티션 개수도 각각 61228, 29684개 입니다.&lt;/p&gt;
-
-&lt;p&gt;맨 위에 &lt;strong&gt;1000/1000 (112 failed)&lt;/strong&gt;는 1000개 작업 중에 중간에 112개 task를 실패했었음을 의미합니다. 1000개 task가 실행된 이유는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.sql.shuffle.partitions&lt;/code&gt;를 1000으로 설정했기 때문입니다.&lt;/p&gt;
-
-&lt;p&gt;해당 값은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.default.parallelism&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.sql.shuffle.partitions&lt;/code&gt;를 통해 변경할수 있습니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;spark-partitionsparkdefaultparallelism-sparksqlshufflepartitions&quot;&gt;Spark Partition(spark.default.parallelism, spark.sql.shuffle.partitions)&lt;/h4&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.default.parallelism&lt;/code&gt; – Default number of partitions in resilient distributed datasets (RDDs) returned by transformations like &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;join&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;reduceByKey&lt;/code&gt;, and &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;parallelize&lt;/code&gt; when no partition number is set by the user.&lt;/p&gt;
-
-  &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.sql.shuffle.partitions&lt;/code&gt; – Sets the number of partitions for joins and aggregations.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Spark에서 사용하는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;은 모두 Partition을 가장 작은 단위(객체)로 갖습니다. 이 Partition을 단위로 각 Executor의 Core는 작업(Task)를 적용합니다. 이중에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt;는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.default.parallelism&lt;/code&gt;에 의해서 partition 값이 결정됩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;의 경우에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.sql.shuffle.partitions&lt;/code&gt;에 의해 partition 개수가 결정됩니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyspark.sql&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SparkSession&lt;/span&gt;
-&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyspark&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SparkConf&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SparkConf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setAppName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'spark_partition_test'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;setMaster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;yarn&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;c1&quot;&gt;## 5 cores per executor
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.executor.cores&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;5&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.driver.cores&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;5&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;## 30 executors
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.executor.instances&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;30&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;## 10 GB per executor -&amp;gt; 2GB per core
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.driver.memory&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;10G&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.executor.memory&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;10G&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;## SparkSession has 30 * 5 cores, which each core has 2GB mem.
-## So, spark.default.parallelism is 150(# of cores), and spark.sql.shuffle.partitions is 200(default)
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SparkSession&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enableHiveSupport&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getOrCreate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;df1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM default.table_1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;df2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM default.table_2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-
-&lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;df1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;df1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;df2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;select&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;df1.col1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;df1.col2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;df1.col3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;joined_agg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groupBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;col1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;col2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;agg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;F&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;col3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;alias&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;cnt&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;table&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;default.joined&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;joined_agg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'overwrite'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;option&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;path&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'/user/hive/warehouse/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.db/&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;\
-    &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;saveAsTable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;따로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.default.parallelism&lt;/code&gt;을 지정하지 않으면 core 개수만큼으로 partition 개수를 지정합니다. 따라서, 기본적으로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt;는 150(5 cores * 30 executors)개의 partition으로 분할처리될 것입니다. core 개수와 partiton 개수가 같으므로 1 task per 1 core로 분산 처리하게 될 것입니다. 한편, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.sql.shuffle.partitions&lt;/code&gt;는 기본값이 200이기 때문에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;은 200개의 partition으로 분할처리 될 것입니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/stages2.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;그러나, 200 partitions로 설정하여 코드를 실행하는 경우 계속해서 fail task가 발생하고 결과적으로 App이 중간에 종료되어버렸습니다. Fail 발생을 줄이고 app이 성공적으로 실행을 완료하기 위해서는 튜닝이 필요합니다.&lt;/p&gt;
-
-&lt;p&gt;일반적으로 전체 core 개수의 2배~3배 정도까지 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.default.parallelism&lt;/code&gt;을 설정해줄 것을 권장합니다. 따라서 위의 conf setting은 아래 항목을 추가해주어야합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;## SparkSession has 30 * 5 cores, So proper number of partitions is 150 * 2 or 150 * 3.
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.sql.shuffle.partitions&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;450&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SparkSession&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enableHiveSupport&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getOrCreate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/stages3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;450 tasks가 수행됩니다. 그러나 어젼히 Shuffle Spill이 발생하고 있습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/shuffle-spill1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;what-makes-spark-slower&quot;&gt;What makes Spark Slower?&lt;/h2&gt;
-
-&lt;p&gt;가장 큰 이유는 &lt;strong&gt;Shuffle Spill&lt;/strong&gt; 때문입니다. partition이 너무 커서 하나의 core(RAM)에 모두 담을 수 없는 경우에 Spill이 발생합니다. 이 때 발생한 Spill은 Disk에 저장되었다가, 연산 필요 시 다시 RAM으로 전달됩니다. 이러한 과정에서 직렬화(serialize)와 역직렬화(deserialize) 과정을 거치기 때문에 Spill이 발생한 Task(즉 partition)은 수행 시간이 늘어나고 Fail이 발생할 확률이 늘어납니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;em&gt;Spill is the term used to refer to the act of moving an RDD from RAM to disk, and later back into RAM again.&lt;/em&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Shuffle Spill(Disk) 와  Shuffle Spill(Memory)가 있습니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;“Shuffle spill (memory) is the size of the deserialized form of the data in memory at the time when we spill it, whereas shuffle spill (disk) is the size of the serialized form of the data on disk after we spill it. This is why the latter tends to be much smaller than the former. Note that both metrics are aggregated over the entire duration of the task (i.e. within each task you can spill multiple times).”&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;RAM(=memory)에서 Spill이 발생하게 되면 이를 직렬화(serialize)하여 disk에 임시로 저장해둡니다. 직렬화하는 과정에서 데이터 사이즈는 줄어들게 되므로 일반적으로 Shuffle Spill(Disk)가 Shuffle Spill(Memory)보다 작은 값을 갖습니다.&lt;/p&gt;
-
-&lt;p&gt;이후에, Task에서 Disk로 Spill한 데이터를 연산에 사용하기 위해서는 역직렬화(deserialize)하여 RAM으로 로드합니다. 따라서 I/O의 증가, 직렬화/역직렬화 과정이 추가되면서 Task 수행 시간은 늘어나게 됩니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/spill-water.jpg&quot; alt=&quot;image&quot; style=&quot;zoom:33%;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;​							       컵이 물을 모두 담아내지 못하는 것처럼 memory가 partition을 담아내지 못하고 흘려버리는 것과 같습니다&lt;/p&gt;
-
-&lt;h4 id=&quot;how-to-remove-spill&quot;&gt;How to remove Spill?&lt;/h4&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Memory Size를 늘린다&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Task 수행에 사용되는 Core에게 더 큰 RAM을 할당해주면, Shuffle Spill이 발생하지 않을 수 있습니다. 이는 물과 컵에 비유하자면 컵의 크기를 늘리는 방법입니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;## 5 cores per executor
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.executor.cores&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;5&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.driver.cores&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;5&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;## 30 executors
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.executor.instances&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;30&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;## 15 GB per executor -&amp;gt; 3GB per core
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.driver.memory&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;15G&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.executor.memory&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;15G&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;## SparkSession has 30 * 5 cores, which each core has 2GB mem.
-## So, spark.default.parallelism is 150(# of cores), and spark.sql.shuffle.partitions is 200(default)
-&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SparkSession&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enableHiveSupport&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getOrCreate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;기존에 Core에 2GB를 할당했었지만, 3GB로 증가시켰습니다. 일반적으로 Shuffle Read가 600GB 이상인 경우에는 core size가 4GB 이상으로 설정할 것을 권장합니다.&lt;/p&gt;
-
-&lt;p&gt;Shuffle Read가 600GB가 넘지 않는 경우에는 core size를 늘리는 것보다 아래의 방법을 사용합니다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;partition size를 줄인다 ( # partition을 늘린다 )&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Core에게 전달되는 partition size를 줄여서 Shuffle Spill을 방지할 수 있습니다. 물을 조금씩(smaller partition size) 자주 컵에 담는다면 물이 넘치지않겠죠. Shuffle Read는 데이터가 변하지 않는다면 고정되어있으므로 partition size를 줄인다는 것은 partition 개수를 늘리는 것과 동일합니다. Shuffle Partition의 크기를 100MB~200MB로 설정하는 것이 최적으로 알려져있습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.default.paralleism&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.sql.shuffle.partitions&lt;/code&gt;와 같은 conf option이 사용될 수 있습니다. 혹은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;df.repartition()&lt;/code&gt;처럼 명시적으로 partition 개수를 늘려주는 방법도 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;spark.sql.shuffle.partitions&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;1000&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;spark&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;SparkSession&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;builder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enableHiveSupport&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;().&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getOrCreate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;Shuffle Spill이 발생하지 않고 수행 시간도 줄어들었음을 확인할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/shuffle-spill2.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;마치며&quot;&gt;마치며&lt;/h2&gt;
-
-&lt;p&gt;애매하게 알고 있었던 partition, shuffle, spill의 개념을 정리할 수 있었습니다. 다만, 위에서 가정한 상황은 모든 partition에 데이터가 고루 분배되는 이상적인 상황입니다. 실제 상황에서는 skewed dataset 때문에 straggler task가 발생하기도 합니다. 이러한 경우에는 먼저 필터링하거나, partition 개수를 더욱 늘리는 방법(partition size가 100MB보다 작도록)으로 대처해야합니다.&lt;/p&gt;
-
-&lt;p&gt;[참고]&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;http://people.csail.mit.edu/matei/papers/2012/nsdi_spark.pdf&quot;&gt;Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://tech.kakao.com/2021/10/08/spark-shuffle-partition/&quot;&gt;Spark Shuffle Partition과 최적화&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://luminousmen.com/post/spark-partitions&quot;&gt;Spark Partitions&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://jaemunbro.medium.com/apache-spark-partition-%EA%B0%9C%EC%88%98%EC%99%80-%ED%81%AC%EA%B8%B0-%EC%A0%95%ED%95%98%EA%B8%B0-3a790bd4675d&quot;&gt;[Apache Spark] Partition 개수와 크기 정하기&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://aws.amazon.com/ko/blogs/big-data/best-practices-for-successfully-managing-memory-for-apache-spark-applications-on-amazon-emr/&quot;&gt;Best practices for successfully managing memory for Apache Spark applications on Amazon EMR&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://community.cloudera.com/t5/Support-Questions/Spark-shuffle-spill-Memory/td-p/186859&quot;&gt;Spark shuffle spill (Memory)&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://medium.com/road-to-data-engineering/spark-performance-optimization-series-2-spill-685126e9d21f&quot;&gt;Spark Performance Optimization Series: #2. Spill&lt;/a&gt;&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="hadoop" />
-      
-
-      
-        <summary type="html">Partition, Spill in Spark</summary>
       
 
       

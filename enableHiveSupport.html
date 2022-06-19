@@ -11,7 +11,7 @@
 
 
 
-    <title>EXP-SUM-LOG / LOG-SUM-EXP</title>
+    <title>enableHiveSupport</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,30 +37,30 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/EXP-LOG-SUM" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/enableHiveSupport" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="EXP-SUM-LOG / LOG-SUM-EXP" />
-    <meta property="og:description" content="EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서 SUM in SQL SQL은 SUM 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다. 아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다. SELECT * FROM default.t_test; +---+ | a| +---+ | 1| | 2| | 3| | 4| | 5| +---+ SELECT SUM(a) FROM default.t_test; +------+" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/EXP-LOG-SUM" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/overflow-banner.jpg" />
+    <meta property="og:title" content="enableHiveSupport" />
+    <meta property="og:description" content="Spark enableHiveSupport(Hive metaStore) Hive Table in Spark spark에서 Hive table에 접근할 수 있도록 설정하기 위해서 ‘enableHiveSupport()’를 주로 사용하는데요. spark = SparkSession.builder.enableHiveSupport().config(conf=conf).getOrCreate() df = spark.sql(""" SELECT * FROM default.test1 """) enableHiveSupport()의 의미가 무엇인지 생각해보지 않았던 것 같아서 한번 조사해보았습니다. 이에 대해 알기 위해서는 Hive Table Location에 대해서 먼저 알아야합니다. Hive -" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/enableHiveSupport" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/sparkhive.jpeg" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2021-12-29T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2021-12-29T22:30:00+09:00" />
-    <meta property="article:tag" content="Database" />
+    <meta property="article:published_time" content="2022-06-16T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2022-06-16T22:30:00+09:00" />
+    <meta property="article:tag" content="Hadoop" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="EXP-SUM-LOG / LOG-SUM-EXP" />
-    <meta name="twitter:description" content="EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서 SUM in SQL SQL은 SUM 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다. 아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다. SELECT * FROM default.t_test; +---+ | a| +---+ | 1| | 2| | 3| | 4| | 5| +---+ SELECT SUM(a) FROM default.t_test; +------+" />
+    <meta name="twitter:title" content="enableHiveSupport" />
+    <meta name="twitter:description" content="Spark enableHiveSupport(Hive metaStore) Hive Table in Spark spark에서 Hive table에 접근할 수 있도록 설정하기 위해서 ‘enableHiveSupport()’를 주로 사용하는데요. spark = SparkSession.builder.enableHiveSupport().config(conf=conf).getOrCreate() df = spark.sql(""" SELECT * FROM default.test1 """) enableHiveSupport()의 의미가 무엇인지 생각해보지 않았던 것 같아서 한번 조사해보았습니다. 이에 대해 알기 위해서는 Hive Table Location에 대해서 먼저 알아야합니다. Hive -" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/overflow-banner.jpg" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/sparkhive.jpeg" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Database" />
+    <meta name="twitter:data2" content="Hadoop" />
     <meta name="twitter:site" content="@" />
     <meta name="twitter:creator" content="@" />
     <meta property="og:image:width" content="1400" />
@@ -75,18 +75,18 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/EXP-LOG-SUM",
+    "url": "https://gyuhoonk.github.io/enableHiveSupport",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/overflow-banner.jpg",
+        "url": "https://gyuhoonk.github.io/assets/built/images/hadoop/sparkhive.jpeg",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/EXP-LOG-SUM"
+        "@id": "https://gyuhoonk.github.io/enableHiveSupport"
     },
-    "description": "EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서 SUM in SQL SQL은 SUM 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다. 아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다. SELECT * FROM default.t_test; +---+ | a| +---+ | 1| | 2| | 3| | 4| | 5| +---+ SELECT SUM(a) FROM default.t_test; +------+"
+    "description": "Spark enableHiveSupport(Hive metaStore) Hive Table in Spark spark에서 Hive table에 접근할 수 있도록 설정하기 위해서 ‘enableHiveSupport()’를 주로 사용하는데요. spark = SparkSession.builder.enableHiveSupport().config(conf=conf).getOrCreate() df = spark.sql(""" SELECT * FROM default.test1 """) enableHiveSupport()의 의미가 무엇인지 생각해보지 않았던 것 같아서 한번 조사해보았습니다. 이에 대해 알기 위해서는 Hive Table Location에 대해서 먼저 알아야합니다. Hive -"
 }
     </script>
 
@@ -99,7 +99,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="EXP-SUM-LOG / LOG-SUM-EXP" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="enableHiveSupport" href="/feed.xml" />
 
     
 </head>
@@ -171,150 +171,159 @@ into the {body} of the default.hbs template -->
 <main id="site-main" class="site-main outer" role="main">
     <div class="inner">
 
-        <article class="post-full  tag-database post tag-database ">
+        <article class="post-full  tag-hadoop post tag-hadoop ">
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="29 December 2021">29 December 2021</time>
+                    <time class="post-full-meta-date" datetime="16 June 2022">16 June 2022</time>
                     
                         <span class="date-divider">/</span>
                         
                             
-                               <a href='/tag/database/'>DATABASE</a>
+                               <a href='/tag/hadoop/'>HADOOP</a>
                             
                         
                     
                 </section>
-                <h1 class="post-full-title">EXP-SUM-LOG / LOG-SUM-EXP</h1>
+                <h1 class="post-full-title">enableHiveSupport</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/overflow-banner.jpg)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/hadoop/sparkhive.jpeg)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서</p>
+                    <p>Spark enableHiveSupport(Hive metaStore)</p>
 
-<h1 id="sum-in-sql">SUM in SQL</h1>
+<h1 id="hive-table-in-spark">Hive Table in Spark</h1>
 
-<p>SQL은 <code class="language-plaintext highlighter-rouge">SUM</code> 함수를 이용하여 하나의 컬럼 값을 모두 더할 수 있습니다.</p>
+<p>spark에서 Hive table에 접근할 수 있도록 설정하기 위해서 ‘enableHiveSupport()’를 주로 사용하는데요.</p>
 
-<p>아래와 같은 간단한 테이블에 대해서 예시를 들어보겠습니다.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">enableHiveSupport</span><span class="p">().</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span> 
-<span class="k">FROM</span> <span class="k">default</span><span class="p">.</span><span class="n">t_test</span><span class="p">;</span>
-<span class="o">+</span><span class="c1">---+</span>
-<span class="o">|</span>  <span class="n">a</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">---+</span>
-<span class="o">|</span>  <span class="mi">1</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">2</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">3</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">4</span><span class="o">|</span>
-<span class="o">|</span>  <span class="mi">5</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">---+</span>
-
-<span class="k">SELECT</span> <span class="k">SUM</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> 
-<span class="k">FROM</span> <span class="k">default</span><span class="p">.</span><span class="n">t_test</span><span class="p">;</span>
-<span class="o">+</span><span class="c1">------+</span>
-<span class="o">|</span><span class="k">sum</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">------+</span>
-<span class="o">|</span>    <span class="mi">15</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">------+</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"""
+SELECT *
+FROM default.test1
+"""</span><span class="p">)</span>
 </code></pre></div></div>
 
-<h1 id="multiplication-in-sql">Multiplication in SQL</h1>
+<p><code class="language-plaintext highlighter-rouge">enableHiveSupport()</code>의 의미가 무엇인지 생각해보지 않았던 것 같아서 한번 조사해보았습니다.</p>
 
-<p><code class="language-plaintext highlighter-rouge">SUM</code>함수는 기본으로 제공되지만, column의 값을 모두 곱하는 기능은 기본으로 제공되지 않습니다. 이는 <code class="language-plaintext highlighter-rouge">EXP-SUM-LOG</code>를 이용해 구현 가능합니다.</p>
+<p>이에 대해 알기 위해서는 Hive Table Location에 대해서 먼저 알아야합니다.</p>
 
-<p>EXP-SUM-LOG로 column곱을 구현할 수 있는 이유는 아래와 같은 log의 성질 때문입니다.</p>
+<h2 id="hive---table-location">Hive - Table Location</h2>
 
-\[log(xy) = log(x) + log(y)\\
-x = exp(log(x))\]
+<p>예를 들어 defualt.test_1 이라는 테이블이 있다고 가정하면, 해당 테이블은 HDFS 상에서 ‘/usre/hive/warehouse/default.db/test_1’ 경로에 저장되어 있습니다.</p>
 
-<p>따라서 아래와 같은 수식이 성립합니다.</p>
+<p>이를 <code class="language-plaintext highlighter-rouge">TABLE LOACTION</code>이라고 합니다.</p>
 
-\[\sum_{i=1}^nlog(x_i)=log(x_1x_2...x_n)\\
-\therefore exp[\sum_{i=1}^nlog(x_i)] = x_1x_2...x_n\]
+<p>나아가, PARTITIONED TABLE의 경우에는 해당 LOCATION 하위에 PARTITION DIR이 더 존재합니다.</p>
 
-<p>이를 쿼리로 작성하여 실행하면, 아래와 같은 결과가 출력됩니다.</p>
+<table>
+  <thead>
+    <tr>
+      <th>구분</th>
+      <th>TABLE</th>
+      <th>HDFS LOCATION</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Table</td>
+      <td>default.table1</td>
+      <td>/user/hive/warehouse/default.db/table1</td>
+    </tr>
+    <tr>
+      <td>Partitioned Table</td>
+      <td>default.table2 PARTITION (col1=a)</td>
+      <td>/user/hive/warehouse/default.db/table2/col1=a</td>
+    </tr>
+  </tbody>
+</table>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">EXP</span><span class="p">(</span><span class="k">SUM</span><span class="p">(</span><span class="n">LOG</span><span class="p">(</span><span class="n">a</span><span class="p">)))</span> <span class="k">AS</span> <span class="n">multiplication</span>
-<span class="k">FROM</span> <span class="k">default</span><span class="p">.</span><span class="n">t_test</span><span class="p">;</span>
-<span class="o">+</span><span class="c1">--------------+</span>
-<span class="o">|</span><span class="n">multiplication</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">--------------+</span>
-<span class="o">|</span><span class="mi">119</span><span class="p">.</span><span class="mi">9999999</span><span class="p">...</span><span class="o">|</span>
-<span class="o">+</span><span class="c1">--------------+</span>
+<p>우리가 Hive에 쿼리를 작성하여 테이블을 조회하는 것은 사실 HDFS에서 LOCATION에 존재하는 파일을 읽는 것입니다.</p>
+
+<p>따라서, 우리가 아래 쿼리를 실행하면</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="o">*</span>
+<span class="k">FROM</span> <span class="k">default</span><span class="p">.</span><span class="n">table1</span>
 </code></pre></div></div>
 
-<p>1~5를 곱한 값은 120이지만, 계산된 값은 119.9999로 다소 오차가 발생했습니다. 이는 LOG를 거치며 정수가 소수로 변환될 때 부동소수점으로 표현이 되고 이에 따라 소수값 연산에 오차가 발생하기 때문입니다.</p>
+<p>Hive는 <code class="language-plaintext highlighter-rouge">default.table1</code>에 해당하는 LOCATION에 저장된 파일로부터 데이터를 읽어 결과를 출력합니다. 즉, 아래 커맨드로 확인할 수 있는 파일들을 스캔합니다.</p>
 
-<p>따라서 정확한 계산 결과를 반환하려면 아래와 같이 ROUND를 적용해주어야합니다.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>hdfs dfs <span class="nt">-ls</span> /user/hive/warehouse/default.db/table1
+</code></pre></div></div>
 
-<pre><code class="language-SQL">SELECT ROUND(EXP(SUM(LOG(a))), 1) AS multiplication
-FROM default.t_test;
-+--------------+
-|multiplication|
-+--------------+
-|           120|
-+--------------+
-</code></pre>
+<h2 id="hive-metastore">Hive metaStore</h2>
 
-<h1 id="log-sum-exp-trick">LOG-SUM-EXP trick</h1>
+<p>그렇다면 TABLE의 <code class="language-plaintext highlighter-rouge">LOCATION</code>과 <code class="language-plaintext highlighter-rouge">PARTITION</code> 정보 즉, <strong>hive metastore</strong>는 어디에 저장하고 있을까요? <code class="language-plaintext highlighter-rouge">hive-stie.xml</code>에서 hive metastore의 저장 위치를 확인할 수 있습니다.</p>
 
-<p>반대로, <code class="language-plaintext highlighter-rouge">LOG-SUM-EXP</code>를 이용한 트릭도 존재합니다. 이는 너무 큰 수를 연산하는 경우에 발생하는 <strong>overflow</strong>, 혹은 너무 작은 수를 연산하는 경우엔 발생하는 <strong>underflow</strong>를 피하기 위한 트릭입니다.</p>
+<p>hive metastore는 1) 임베디드, 2) 로컬, 3) 원격 셋 중에 하나로 구성할 수 있습니다.</p>
 
-<p>\(exp(100) + exp(200)\)을 계산하는 과정을 수식으로 보면 아래와 같습니다.</p>
+<p>아래는 hive metastore를 3) 원격으로 저장했을 경우 <code class="language-plaintext highlighter-rouge">hive-site.xml</code> 예시입니다.</p>
 
-\[exp(100) + exp(200) \\
-=\dfrac {exp(100) + exp(200)}{exp(100)} * exp(100)\\
-=[exp(0)+exp(100)]*exp(100)\\
-=exp(log([1+exp(100)]*exp(100)))\\
-=exp(log[1+exp(100)] + log(exp(100)))\\
-=exp(log[1+exp(100)] + 100)\]
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cat</span> /etc/hive/hive-site.xml
+...
+&lt;property&gt;
+      &lt;name&gt;hive.metastore.uris&lt;/name&gt;
+      &lt;value&gt;thrift://host.example:9083&lt;/value&gt;
+ &lt;/property&gt; 
+...
+</code></pre></div></div>
 
-<p>간단하게 python으로 이를 확인해보았습니다.</p>
+<p><code class="language-plaintext highlighter-rouge">host.example:9083</code>에 hive metastore가 저장되어있음을 확인할 수 있습니다. 즉, 해당 경로에 hive table들의 location, partition 같은 메타 데이터들이 저장되어 있습니다.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">log</span> 
-<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">exp</span>
+<h2 id="enablehivesupport">enableHiveSupport</h2>
 
-<span class="n">num1</span> <span class="o">=</span> <span class="mi">3</span>
-<span class="n">num2</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="k">print</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="p">)</span><span class="o">+</span><span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="p">))</span>
-<span class="c1"># 74.68368695633191
-</span>
-<span class="n">exp1</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
-<span class="n">exp2</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
-<span class="k">print</span><span class="p">(</span><span class="n">exp</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">exp1</span><span class="o">+</span><span class="n">exp2</span><span class="p">)</span> <span class="o">+</span> <span class="n">num1</span><span class="p">))</span>
-<span class="c1"># 74.68368695633188
-</span></code></pre></div></div>
+<p>spark의 <code class="language-plaintext highlighter-rouge">enableHiveSupport()</code>는 <code class="language-plaintext highlighter-rouge">hive.metastore.uris</code> 설정 값에 접근하여 hive metastore를 사용하겠다 라는 의미입니다.</p>
 
-<p>부동소수점 계산에 따른 오차는 있으나, 같은 값이라 봐도 무방할 값이 나왔습니다. 이러한 방식의 계산트릭은 underflow, overflow가 발생하는 경우에 이를 회피하여 값을 기록하는 트릭으로 이용될 수 있습니다.</p>
+<p>default로 <code class="language-plaintext highlighter-rouge">hive-site.xml</code>에서 정의된 값을 사용하고, 정의되어있지 않다면  <code class="language-plaintext highlighter-rouge">spark.sql.warehouse.dir</code> 로 전달된 경로에서 metastore를 검색합니다.</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">num1</span> <span class="o">=</span> <span class="mi">750</span>
-<span class="n">num2</span> <span class="o">=</span> <span class="mi">751</span>
+<blockquote>
+  <p>When working with Hive, one must instantiate SparkSession with Hive support, including connectivity to a persistent Hive metastore, support for Hive serdes, and Hive user-defined functions. Users who do not have an existing Hive deployment can still enable Hive support. When not configured by the hive-site.xml, the context automatically creates metastore_db in the current directory and creates a directory configured by <strong>spark.sql.warehouse.dir</strong>, which defaults to the directory spark-warehouse in the current directory that the Spark application is started. Note that the hive.metastore.warehouse.dir property in hive-site.xml is deprecated since Spark 2.0.0. Instead, use spark.sql.warehouse.dir to specify the default location of database in warehouse. You may need to grant write privilege to the user who starts the Spark application.</p>
+</blockquote>
 
-<span class="k">print</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="p">)</span><span class="o">+</span><span class="n">np</span><span class="p">.</span><span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="p">))</span>
-<span class="c1"># inf
-</span>
-<span class="n">exp1</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num1</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
-<span class="n">exp2</span> <span class="o">=</span> <span class="n">exp</span><span class="p">(</span><span class="n">num2</span><span class="o">-</span><span class="n">num1</span><span class="p">)</span>
+<p>위의 정보를 종합해보면 spark가 hive table을 읽어오는 과정은 다음과 같습니다.</p>
 
-<span class="k">print</span><span class="p">(</span><span class="n">log</span><span class="p">(</span><span class="n">exp1</span><span class="o">+</span><span class="n">exp2</span><span class="p">)</span> <span class="o">+</span> <span class="n">num1</span><span class="p">)</span>
-<span class="c1"># 751.3132616875182
-</span>
-<span class="c1"># exp(750)+exp(751)은 계산된 적 없으나 
-# 계산결과가 exp(751.3132616875182)이라는 사실은 알 수 있습니다.
-</span></code></pre></div></div>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">enableHiveSupport()</code>를 선언한 <code class="language-plaintext highlighter-rouge">sparkSession</code>에서 <code class="language-plaintext highlighter-rouge">spark.sql</code>을 이용하여 테이블(<code class="language-plaintext highlighter-rouge">default.test1</code>)을 조회합니다.</li>
+  <li>spark는 <code class="language-plaintext highlighter-rouge">hive-site.xml</code>  혹은 <code class="language-plaintext highlighter-rouge">spark.sql.warehouse.dir</code> 에서 hive metastore가 저장된 경로를 참조합니다.</li>
+  <li>hive metastore로부터 해당 테이블의 경로(<code class="language-plaintext highlighter-rouge">/user/hive/warehouse/default.db/test1</code>)를 알아냅니다.</li>
+  <li>이후 해당 테이블 위치(location)에서 파일(데이터)를 읽어옵니다.</li>
+</ol>
+
+<p>따라서 아래 두 방법은 기본적으로 같은 동작을 수행합니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># query
+</span><span class="n">df1</span><span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"""
+SELECT *
+FROM default.test1
+"""</span><span class="p">)</span>
+
+<span class="c1"># file scan
+</span><span class="n">df2</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">read</span><span class="p">.</span><span class="n">parquet</span><span class="p">(</span><span class="s">"/user/hive/warehouse/default.db/test1"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Partitioned Table도 위와 크게 다르지 않습니다. 단지 table location에 partition column이 추가될 뿐입니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># query
+</span><span class="n">df1</span><span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"""
+SELECT *
+FROM default.test1
+WHERE col1 = 'a'
+"""</span><span class="p">)</span>
+
+<span class="c1"># file scan
+</span><span class="n">df2</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">read</span><span class="p">.</span><span class="n">parquet</span><span class="p">(</span><span class="s">"/user/hive/warehouse/default.db/test1/col1=a"</span><span class="p">)</span>
+</code></pre></div></div>
 
 <p>[참고]</p>
 
-<p><a href="https://www.py4u.net/discuss/823103">Multiplication aggregate operator in SQL</a></p>
+<p><a href="https://wikidocs.net/28353">5-메타스토어</a></p>
 
-<p><a href="https://basicstatistics.tistory.com/entry/logsumexp-trick">log-sum-exp trick</a></p>
-
+<p><a href="https://spark.apache.org/docs/latest/sql-data-sources-hive-tables.html">sql-data-sources-hive-tables</a></p>
 
                 </div>
             </section>
@@ -369,9 +378,9 @@ FROM default.t_test;
                     <div id="disqus_thread"></div>
                     <script>
                         var disqus_config = function () {
-                            var this_page_url = 'https://gyuhoonk.github.io/EXP-LOG-SUM';
-                            var this_page_identifier = '/EXP-LOG-SUM';
-                            var this_page_title = 'EXP-SUM-LOG / LOG-SUM-EXP';
+                            var this_page_url = 'https://gyuhoonk.github.io/enableHiveSupport';
+                            var this_page_identifier = '/enableHiveSupport';
+                            var this_page_title = 'enableHiveSupport';
                         };
                         (function() {
                             var d = document, s = d.createElement('script');
@@ -405,7 +414,7 @@ FROM default.t_test;
                         <header class="read-next-card-header">
                             <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
                             
-                                <h3 class="read-next-card-header-title"><a href="/tag/database/">Database</a></h3>
+                                <h3 class="read-next-card-header-title"><a href="/tag/hadoop/">Hadoop</a></h3>
                             
                         </header>
                         <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
@@ -415,19 +424,29 @@ FROM default.t_test;
                                 
                                 
                                   
-                                
+                                    
                                   
                                 
                                   
                                 
                                   
-                                
+                                    
+                                        
+                                        
+                                            <li><a href="/parquet-ppd">Parquet and Predicate PushDown</a></li>
+                                        
+                                    
                                   
                                 
                                   
                                 
                                   
-                                
+                                    
+                                        
+                                        
+                                            <li><a href="/spark-repartition">repartition in Spark</a></li>
+                                        
+                                    
                                   
                                 
                                   
@@ -444,23 +463,16 @@ FROM default.t_test;
                                     
                                         
                                         
-                                            <li><a href="/DBCP">DataBase Connection Pool</a></li>
+                                            <li><a href="/spark-shuffle-partition">Partition, Spill in Spark</a></li>
                                         
                                     
                                   
                                 
                                   
-                                
-                                  
-                                
-                                  
                                     
-                                  
-                                
-                                  
-                                
-                                  
-                                
+                                        
+                                        
+                                    
                                   
                                 
                                   
@@ -477,9 +489,43 @@ FROM default.t_test;
                                     
                                         
                                         
-                                            <li><a href="/connect-to-database">Connection to DataBase in Python, R</a></li>
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
                                         
                                     
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
                                   
                                 
                                   
@@ -487,9 +533,9 @@ FROM default.t_test;
                             </ul>
                         </div>
                         <footer class="read-next-card-footer">
-                            <a href="/tag/database/">
+                            <a href="/tag/hadoop/">
                                 
-                                    See all 2 posts  →
+                                    See all 9 posts  →
                                 
                             </a>
                         </footer>
@@ -502,57 +548,6 @@ FROM default.t_test;
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
             
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/sparkscala1">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/scala-banner-post.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/sparkscala1">
-                <header class="post-card-header">
-                    
-                        
-                            
-                                <span class="post-card-tags">Scala</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">Learning Apache Spark 3 with Scala (Section1)</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>Learning Apache Spark 3 with Scala (Section1)
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      5 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-            
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
             
@@ -560,26 +555,26 @@ FROM default.t_test;
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/spark-overwrite-partition">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/spark-overwrite-partition.jpg)"></div>
+            <a class="post-card-image-link" href="/merge-rebase">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/git/merge-rebase.png)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/spark-overwrite-partition">
+            <a class="post-card-content-link" href="/merge-rebase">
                 <header class="post-card-header">
                     
                         
                             
-                                <span class="post-card-tags">Hadoop</span>
+                                <span class="post-card-tags">Git</span>
                             
                         
                     
 
-                    <h2 class="post-card-title">Overwrite Partition in Spark</h2>
+                    <h2 class="post-card-title">merge vs. rebase</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>Spark를 이용하여 특정 파티션만 overwrite하기
+                        <p>merge와 rebase 비교하기
 
 </p>
                     
@@ -599,7 +594,7 @@ FROM default.t_test;
                 <span class="reading-time">
                     
                     
-                      3 min read
+                      4 min read
                     
                 </span>
             </footer>
@@ -621,18 +616,18 @@ FROM default.t_test;
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">EXP-SUM-LOG / LOG-SUM-EXP</div>
+    <div class="floating-header-title">enableHiveSupport</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=EXP-SUM-LOG+%2F+LOG-SUM-EXP&amp;url=https://gyuhoonk.github.ioEXP-LOG-SUM"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=enableHiveSupport&amp;url=https://gyuhoonk.github.ioenableHiveSupport"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.ioEXP-LOG-SUM"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.ioenableHiveSupport"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 

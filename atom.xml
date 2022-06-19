@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>enableHiveSupport</title>
+        
+          <description>&lt;p&gt;Spark enableHiveSupport(Hive metaStore)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Thu, 16 Jun 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/enableHiveSupport</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/enableHiveSupport</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>merge vs. rebase</title>
         
           <description>&lt;p&gt;merge와 rebase 비교하기&lt;/p&gt;

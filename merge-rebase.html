@@ -44,7 +44,7 @@
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="merge vs. rebase" />
-    <meta property="og:description" content="merge와 rebase 비교하기 Merge &amp; Rebase Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 갖습니다. git merge Join two or more development histories together Incorporates changes from the named commits (since the time their histories" />
+    <meta property="og:description" content="merge와 rebase 비교하기 Merge &amp; Rebase Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 보입니다. git merge Join two or more development histories together Incorporates changes from the named commits (since the time their histories" />
     <meta property="og:url" content="https://gyuhoonk.github.io/merge-rebase" />
     <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/git/merge-rebase.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
@@ -54,7 +54,7 @@
     <meta property="article:tag" content="Git" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="merge vs. rebase" />
-    <meta name="twitter:description" content="merge와 rebase 비교하기 Merge &amp; Rebase Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 갖습니다. git merge Join two or more development histories together Incorporates changes from the named commits (since the time their histories" />
+    <meta name="twitter:description" content="merge와 rebase 비교하기 Merge &amp; Rebase Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 보입니다. git merge Join two or more development histories together Incorporates changes from the named commits (since the time their histories" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
     <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/git/merge-rebase.png" />
     <meta name="twitter:label1" content="Written by" />
@@ -86,7 +86,7 @@
         "@type": "WebPage",
         "@id": "https://gyuhoonk.github.io/merge-rebase"
     },
-    "description": "merge와 rebase 비교하기 Merge &amp; Rebase Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 갖습니다. git merge Join two or more development histories together Incorporates changes from the named commits (since the time their histories"
+    "description": "merge와 rebase 비교하기 Merge &amp; Rebase Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 보입니다. git merge Join two or more development histories together Incorporates changes from the named commits (since the time their histories"
 }
     </script>
 
@@ -199,13 +199,15 @@ into the {body} of the default.hbs template -->
 
 <h1 id="merge--rebase">Merge &amp; Rebase</h1>
 
-<p>Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 갖습니다.</p>
+<p>Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 보입니다.</p>
 
 <h2 id="git-merge">git merge</h2>
 
 <blockquote>
   <p>Join two or more development histories together</p>
+</blockquote>
 
+<blockquote>
   <p>Incorporates changes from the named commits (since the time their histories diverged from the current branch) into the current branch. This command is used by <em>git pull</em> to incorporate changes from another repository and can be used by hand to merge changes from one branch into another.</p>
 </blockquote>
 
@@ -213,8 +215,8 @@ into the {body} of the default.hbs template -->
 
 <p>git document는 아래와 같은 상황을 예시로 <code class="language-plaintext highlighter-rouge">git merge</code> 를 설명합니다.</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	    A---B---C topic
-	   /
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      A---B---C topic
+     /
 D---E---F---G master
 </code></pre></div></div>
 
@@ -226,14 +228,14 @@ D---E---F---G master
 <span class="nv">$ </span>git merge topic
 </code></pre></div></div>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	    A---B---C topic
-  	 /         \
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      A---B---C topic
+     /         \
 D---E---F---G---H master
 </code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">base</code>로부터 현재 <code class="language-plaintext highlighter-rouge">topic</code> 브랜치의 current commit인 <code class="language-plaintext highlighter-rouge">C</code>까지의 모든 변화(<code class="language-plaintext highlighter-rouge">E-A-B-C</code>)를 <code class="language-plaintext highlighter-rouge">master</code> 브랜치의 current commit이었던 <code class="language-plaintext highlighter-rouge">G</code>로부터 재실행하게 됩니다. 그리고 이를 <code class="language-plaintext highlighter-rouge">H</code> 라는 commit으로 생성합니다.</p>
+<p><code class="language-plaintext highlighter-rouge">base</code>로부터 현재 <code class="language-plaintext highlighter-rouge">topic</code> 브랜치의 current commit인 <code class="language-plaintext highlighter-rouge">C</code>까지의 모든 변화(<code class="language-plaintext highlighter-rouge">E-A-B-C</code>)를 <code class="language-plaintext highlighter-rouge">master</code> 브랜치의 current commit이었던 <code class="language-plaintext highlighter-rouge">G</code>로부터 재실행합니다. 그리고 이를 <code class="language-plaintext highlighter-rouge">H</code> 라는 commit으로 생성합니다.</p>
 
-<p>이 때, 충돌(conflict)가 발생하게 되면 <code class="language-plaintext highlighter-rouge">git merge</code> 를 입력한 사용자는 충돌을 해결하고 <code class="language-plaintext highlighter-rouge">merge</code> 를 이어가거나(<code class="language-plaintext highlighter-rouge">git merge --continue</code>), 이전 상태로 되돌려야만 합니다(<code class="language-plaintext highlighter-rouge">git merge --abort</code>).</p>
+<p>이 때, 충돌(conflict)이 발생하게 되면 <code class="language-plaintext highlighter-rouge">git merge</code> 를 입력한 사용자는 충돌을 해결하고 <code class="language-plaintext highlighter-rouge">merge</code> 를 이어가거나(<code class="language-plaintext highlighter-rouge">git merge --continue</code>), 이전 상태로 되돌려야만 합니다(<code class="language-plaintext highlighter-rouge">git merge --abort</code>).</p>
 
 <h2 id="git-rebase">git rebase</h2>
 
@@ -250,11 +252,11 @@ D---E---F---G---H master
   <p>If <code class="language-plaintext highlighter-rouge">[branch]</code> is specified, <em>git rebase</em> will perform an automatic <code class="language-plaintext highlighter-rouge">git switch [branch]</code> before doing anything else. Otherwise it remains on the current branch. All changes made by commits in the current branch but that are not in <code class="language-plaintext highlighter-rouge">[upstream]</code> are saved to a temporary area.The commits that were previously saved into the temporary area are then reapplied to the current branch, one by one, in order. Note that any commits in HEAD which introduce the same textual changes as a commit in HEAD..<code class="language-plaintext highlighter-rouge">[upstream]</code> are omitted (i.e., a patch already accepted upstream with a different commit message or timestamp will be skipped).</p>
 </blockquote>
 
-<p><code class="language-plaintext highlighter-rouge">[upstream]</code>에 존재하지 않고, current branch(<code class="language-plaintext highlighter-rouge">[branch]</code>)에 존재하는 commit은 <code class="language-plaintext highlighter-rouge">patch</code>라는 임시 공간에 저장됩니다.  이후 해당 <code class="language-plaintext highlighter-rouge">patch</code>에 저장되있는 commit은 <strong>순서대로</strong> <code class="language-plaintext highlighter-rouge">upstream</code>의 current commit에서부터 적용됩니다. 이 과정은 공통 commit인 <code class="language-plaintext highlighter-rouge">base</code> 를 upstream의 current commit으로 변경하는 작업으로 이해할 수 있습니다.</p>
+<p><code class="language-plaintext highlighter-rouge">[upstream]</code>에 존재하지 않고, current branch(<code class="language-plaintext highlighter-rouge">[branch]</code>)에 존재하는 commit은 <code class="language-plaintext highlighter-rouge">patch</code>라는 임시 공간에 저장됩니다.  이후 해당 <code class="language-plaintext highlighter-rouge">patch</code>에 저장되있는 commit은 <strong>순서대로</strong> <code class="language-plaintext highlighter-rouge">upstream</code>의 current commit에서부터 적용됩니다. 이 과정은 공통 commit인 <code class="language-plaintext highlighter-rouge">base</code> 를 <code class="language-plaintext highlighter-rouge">upstream의</code> current commit으로 변경하는 작업으로 이해할 수 있습니다.</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      A---B---C topic
      /
-D---E---F---G master 위와 같은 상황에서 아래 명령어를 실행하면,  `topic` 브랜치의 base를  `master` 의 current commit `G` 로 변경합니다.
+D---E---F---G master 위와 같은 상황에서 아래 명령어를 실행하면, `topic` 브랜치의 base를  `master` 의 current commit `G` 로 변경합니다.
 </code></pre></div></div>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>git checkout topic
@@ -266,7 +268,7 @@ D---E---F---G master 위와 같은 상황에서 아래 명령어를 실행하면
 D---E---F---G master
 </code></pre></div></div>
 
-<p>current branch인 <code class="language-plaintext highlighter-rouge">topic</code> 의 <code class="language-plaintext highlighter-rouge">A-B-C</code> 커밋들은 <code class="language-plaintext highlighter-rouge">patch</code> 에 잠시 저장되어 있다가, <code class="language-plaintext highlighter-rouge">G</code> 에서부터  <code class="language-plaintext highlighter-rouge">patch</code>의 커밋 내용들을 <code class="language-plaintext highlighter-rouge">master</code> 브랜치에 <strong>순서대로</strong> 적용합니다.</p>
+<p>current branch인 <code class="language-plaintext highlighter-rouge">topic</code> 의 <code class="language-plaintext highlighter-rouge">E-A-B-C</code> 커밋들은 <code class="language-plaintext highlighter-rouge">patch</code> 에 잠시 저장되어 있다가, <code class="language-plaintext highlighter-rouge">G</code> 에서부터  <code class="language-plaintext highlighter-rouge">patch</code>의 커밋 내용들을 <code class="language-plaintext highlighter-rouge">master</code> 브랜치에 <strong>순서대로</strong> 적용합니다.</p>
 
 <p><code class="language-plaintext highlighter-rouge">git merge</code>가 <code class="language-plaintext highlighter-rouge">A-B-C</code>를  <strong>한번에</strong> 적용하여 <code class="language-plaintext highlighter-rouge">G--H</code> 로 commit했던 것과 다른 부분입니다.</p>
 
@@ -284,7 +286,7 @@ D---E---A'---F master
 # A in topic is skipped when `git rebase master`
 </code></pre></div></div>
 
-<p>하나의 브랜치(upstream)으로 부터 여러 개의 브랜치가 생성되었을 때, rebase는 이를 간결하게 표현해 줄 수 있습니다. 이는 <code class="language-plaintext highlighter-rouge">--onto</code>옵션을 이용합니다.</p>
+<p>하나의 브랜치(<code class="language-plaintext highlighter-rouge">upstream</code>)로 부터 여러 개의 브랜치가 생성되었을 때, rebase는 이를 간결하게 표현해 줄 수 있습니다. 이는 <code class="language-plaintext highlighter-rouge">--onto</code>옵션을 이용합니다.</p>
 
 <blockquote>
   <p>The current branch is reset to <code class="language-plaintext highlighter-rouge">[upstream]</code>, or [newbase] if the –onto option was supplied. This has the exact same effect as <code class="language-plaintext highlighter-rouge">git reset --hard </code>[upstream]`` (or [newbase]). ORIG_HEAD is set to point at the tip of the branch before the reset.</p>
@@ -292,7 +294,9 @@ D---E---A'---F master
 
 <blockquote>
   <p>–onto [newbase]</p>
+</blockquote>
 
+<blockquote>
   <p>Starting point at which to create the new commits. If the –onto option is not specified, the starting point is <upstream>. May be any valid commit, and not just an existing branch name.</upstream></p>
 </blockquote>
 
@@ -350,7 +354,9 @@ A---B---C---D  master
     <li>Avoids merge commit “noise” in busy repos with busy branches.</li>
     <li>Cleans intermediate commits by making them a single commit, which can be helpful for DevOps teams.</li>
   </ul>
+</blockquote>
 
+<blockquote>
   <h4 id="git-merge-1">Git Merge</h4>
 
   <ul>
@@ -366,9 +372,9 @@ A---B---C---D  master
 
 <p>[참고]</p>
 
-<p><a href="https://git-scm.com/">Git Document</a></p>
-
-<p><a href="https://www.perforce.com/blog/vcs/git-rebase-vs-git-merge-which-better">Git Rebase vs. Git Merge: Which Is Better?</a></p>
+<p><a href="https://git-scm.com/docs/git-merge">Git Document - merge</a> <br />
+<a href="https://git-scm.com/docs/git-rebase">Git Document - rebase</a> <br />
+<a href="https://www.perforce.com/blog/vcs/git-rebase-vs-git-merge-which-better">Git Rebase vs. Git Merge: Which Is Better?</a></p>
 
                 </div>
             </section>
@@ -454,6 +460,57 @@ A---B---C---D  master
             
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/enableHiveSupport">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/sparkhive.jpeg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/enableHiveSupport">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">enableHiveSupport</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Spark enableHiveSupport(Hive metaStore)
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      2 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
             
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
