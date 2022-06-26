@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/scala/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2022-06-25T16:40:11+09:00</updated>
+  <updated>2022-06-26T22:16:04+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/scala/feed.xml</id>
 
   
@@ -34,10 +34,10 @@
     <entry>
       <title type="html">Learning Apache Spark 3 with Scala (Section7)</title>
       <link href="https://gyuhoonk.github.io/sparkscala7" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section7)" />
-      <published>2022-03-06T22:30:00+09:00</published>
-      <updated>2022-03-06T22:30:00+09:00</updated>
+      <published>2022-06-24T22:30:00+09:00</published>
+      <updated>2022-06-24T22:30:00+09:00</updated>
       <id>https://gyuhoonk.github.io/sparkscala7</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala7">&lt;p&gt;Learning Apache Spark 3 with Scala (Section6 - Machine Learning Library)&lt;/p&gt;
+      <content type="html" xml:base="https://gyuhoonk.github.io/sparkscala7">&lt;p&gt;Learning Apache Spark 3 with Scala (Section7 - Machine Learning Library)&lt;/p&gt;
 
 &lt;h1 id=&quot;machine-learning-in-spark&quot;&gt;machine learning in Spark&lt;/h1&gt;
 
@@ -49,7 +49,7 @@
 
 &lt;h3 id=&quot;gpu-in-spark&quot;&gt;GPU in Spark?&lt;/h3&gt;
 
-&lt;p&gt;클러스터의 CPU만으로 처리할 수 없는 대용량의 데이터가 존재할 수 있습니다. 이런 경우에는 각 클러스터의 GPU까지 동원하며 클러스터 내부에서도 병렬 작업을 실행할 수 있도록 해야합니다. spark 3.x부터 GPU 가속을 사용할 수 있습니다(https://www.nvidia.com/ko-kr/ai-data-science/spark-ebook/gpu-accelerated-spark-3/).&lt;/p&gt;
+&lt;p&gt;클러스터의 CPU만으로 처리할 수 없는 대용량의 데이터가 존재할 수 있습니다. 이런 경우에는 각 클러스터의 GPU까지 동원하며 클러스터 내부에서도 병렬 작업을 실행할 수 있도록 해야합니다. spark 3.x부터 GPU 가속을 사용할 수 있습니다(&lt;a href=&quot;https://www.nvidia.com/ko-kr/ai-data-science/spark-ebook/gpu-accelerated-spark-3/&quot;&gt;데이터 사이언스 가이드&lt;/a&gt;).&lt;/p&gt;
 
 &lt;h2 id=&quot;machine-learning-packages-in-spark&quot;&gt;machine learning packages in Spark&lt;/h2&gt;
 
@@ -83,7 +83,7 @@
 
 &lt;h3 id=&quot;특정-데이터-구조&quot;&gt;특정 데이터 구조?&lt;/h3&gt;
 
-&lt;p&gt;특정 데이터 구조는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Vector&lt;/code&gt;를 의미합니다. 아래와 같이 분류됩니다(https://spark.apache.org/docs/latest/mllib-data-types.html).&lt;/p&gt;
+&lt;p&gt;특정 데이터 구조는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Vector&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Point&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Matrix&lt;/code&gt;를 의미합니다. 아래와 같이 분류됩니다(&lt;a href=&quot;https://spark.apache.org/docs/latest/mllib-data-types.html&quot;&gt;mllib-data-types&lt;/a&gt;).&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;&lt;a href=&quot;https://spark.apache.org/docs/latest/mllib-data-types.html#local-vector&quot;&gt;Local vector&lt;/a&gt;&lt;/li&gt;
@@ -112,7 +112,7 @@
 &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;clusters&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;KMeans&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;train&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;parsedData&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numClusters&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;numIterations&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;RDD를 데이터를 특정 Vector로 변경해주어야 머신러닝 모델에 사용할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;RDD를 데이터를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Vector&lt;/code&gt;로 변경하여(parse) 클러스터링을 적용하였습니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;newer-libsparkml-in-spark3&quot;&gt;newer Lib(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;spark.ml&lt;/code&gt;) in Spark3&lt;/h2&gt;
 
@@ -260,7 +260,7 @@
       
 
       
-        <summary type="html">Learning Apache Spark 3 with Scala (Section6 - Machine Learning Library)</summary>
+        <summary type="html">Learning Apache Spark 3 with Scala (Section7 - Machine Learning Library)</summary>
       
 
       
