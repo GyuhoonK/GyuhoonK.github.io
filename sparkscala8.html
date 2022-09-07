@@ -11,7 +11,7 @@
 
 
 
-    <title>Learning Apache Spark 3 with Scala (Section4)</title>
+    <title>Learning Apache Spark 3 with Scala (Section8)</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,24 +37,24 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/sparkscala4" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/sparkscala8" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Learning Apache Spark 3 with Scala (Section4)" />
-    <meta property="og:description" content="Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp; Dataset) SparkSQL SparkSQL와 함께 DataFrame, Dataset이라는 현대적인 API가 등장했습니다. 이들 API는 대부분의 데이터 분석 문제가 SQL 명령어로 해결되는 것처럼, Spark내에서도 SQL 명령어를 사용할 수 있게끔 지원합니다. Spark 2가 도입되면서 SparkSQL 인터페이스를 더 강조하기 시작했습니다. 그리고 Spark2부터 DataFrame, Dataset이 적극적으로 개발되었습니다." />
-    <meta property="og:url" content="https://gyuhoonk.github.io/sparkscala4" />
+    <meta property="og:title" content="Learning Apache Spark 3 with Scala (Section8)" />
+    <meta property="og:description" content="Learning Apache Spark 3 with Scala (Section8 -Spark Streaming) Spark Streaming 한 번에 많은 데이터를 처리하는 Batch Process와 달리 Streaming은 실시간으로 유입되는 데이터를 모니터링하고 처리합니다. 대표적으로 웹사이트, 서버에서 발생하는 로그 데이터 처리가 Streaming에 해당합니다. 실시간으로 데이터를 처리하는 것 뿐 아니라, 유입되는 데이터를 특정 간격 단위(interval, window)로 계산(aggregate)하고 분석(analyze)할 것입니다. Streaming에서" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/sparkscala8" />
     <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2022-02-21T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2022-02-21T22:30:00+09:00" />
+    <meta property="article:published_time" content="2022-08-27T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2022-08-27T22:30:00+09:00" />
     <meta property="article:tag" content="Scala" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Learning Apache Spark 3 with Scala (Section4)" />
-    <meta name="twitter:description" content="Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp; Dataset) SparkSQL SparkSQL와 함께 DataFrame, Dataset이라는 현대적인 API가 등장했습니다. 이들 API는 대부분의 데이터 분석 문제가 SQL 명령어로 해결되는 것처럼, Spark내에서도 SQL 명령어를 사용할 수 있게끔 지원합니다. Spark 2가 도입되면서 SparkSQL 인터페이스를 더 강조하기 시작했습니다. 그리고 Spark2부터 DataFrame, Dataset이 적극적으로 개발되었습니다." />
+    <meta name="twitter:title" content="Learning Apache Spark 3 with Scala (Section8)" />
+    <meta name="twitter:description" content="Learning Apache Spark 3 with Scala (Section8 -Spark Streaming) Spark Streaming 한 번에 많은 데이터를 처리하는 Batch Process와 달리 Streaming은 실시간으로 유입되는 데이터를 모니터링하고 처리합니다. 대표적으로 웹사이트, 서버에서 발생하는 로그 데이터 처리가 Streaming에 해당합니다. 실시간으로 데이터를 처리하는 것 뿐 아니라, 유입되는 데이터를 특정 간격 단위(interval, window)로 계산(aggregate)하고 분석(analyze)할 것입니다. Streaming에서" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
     <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
     <meta name="twitter:label1" content="Written by" />
@@ -75,7 +75,7 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/sparkscala4",
+    "url": "https://gyuhoonk.github.io/sparkscala8",
     "image": {
         "@type": "ImageObject",
         "url": "https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png",
@@ -84,9 +84,9 @@
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/sparkscala4"
+        "@id": "https://gyuhoonk.github.io/sparkscala8"
     },
-    "description": "Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp; Dataset) SparkSQL SparkSQL와 함께 DataFrame, Dataset이라는 현대적인 API가 등장했습니다. 이들 API는 대부분의 데이터 분석 문제가 SQL 명령어로 해결되는 것처럼, Spark내에서도 SQL 명령어를 사용할 수 있게끔 지원합니다. Spark 2가 도입되면서 SparkSQL 인터페이스를 더 강조하기 시작했습니다. 그리고 Spark2부터 DataFrame, Dataset이 적극적으로 개발되었습니다."
+    "description": "Learning Apache Spark 3 with Scala (Section8 -Spark Streaming) Spark Streaming 한 번에 많은 데이터를 처리하는 Batch Process와 달리 Streaming은 실시간으로 유입되는 데이터를 모니터링하고 처리합니다. 대표적으로 웹사이트, 서버에서 발생하는 로그 데이터 처리가 Streaming에 해당합니다. 실시간으로 데이터를 처리하는 것 뿐 아니라, 유입되는 데이터를 특정 간격 단위(interval, window)로 계산(aggregate)하고 분석(analyze)할 것입니다. Streaming에서"
 }
     </script>
 
@@ -99,7 +99,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="Learning Apache Spark 3 with Scala (Section4)" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Learning Apache Spark 3 with Scala (Section8)" href="/feed.xml" />
 
     
 </head>
@@ -175,7 +175,7 @@ into the {body} of the default.hbs template -->
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="21 February 2022">21 February 2022</time>
+                    <time class="post-full-meta-date" datetime="27 August 2022">27 August 2022</time>
                     
                         <span class="date-divider">/</span>
                         
@@ -185,7 +185,7 @@ into the {body} of the default.hbs template -->
                         
                     
                 </section>
-                <h1 class="post-full-title">Learning Apache Spark 3 with Scala (Section4)</h1>
+                <h1 class="post-full-title">Learning Apache Spark 3 with Scala (Section8)</h1>
             </header>
 
             <!-- 
@@ -195,106 +195,76 @@ into the {body} of the default.hbs template -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>Learning Apache Spark 3 with Scala (Section4 - <code class="language-plaintext highlighter-rouge">DataFrame</code> &amp; <code class="language-plaintext highlighter-rouge">Dataset</code>)</p>
+                    <p>Learning Apache Spark 3 with Scala (Section8 -Spark Streaming)</p>
 
-<h2 id="sparksql">SparkSQL</h2>
+<h1 id="spark-streaming">Spark Streaming</h1>
 
-<p>SparkSQL와 함께 <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>이라는 현대적인 API가 등장했습니다. 이들 API는 대부분의 데이터 분석 문제가 SQL 명령어로 해결되는 것처럼, Spark내에서도 SQL 명령어를 사용할 수 있게끔 지원합니다.</p>
+<p>한 번에 많은 데이터를 처리하는 Batch Process와 달리 Streaming은 실시간으로 유입되는 데이터를 모니터링하고 처리합니다. 대표적으로 웹사이트, 서버에서 발생하는 로그 데이터 처리가 Streaming에 해당합니다. 실시간으로 데이터를 처리하는 것 뿐 아니라, 유입되는 데이터를 특정 간격 단위(interval, window)로 계산(aggregate)하고 분석(analyze)할 것입니다.</p>
 
-<p>Spark 2가 도입되면서 SparkSQL 인터페이스를 더 강조하기 시작했습니다. 그리고 Spark2부터  <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>이 적극적으로 개발되었습니다.</p>
+<p>Streaming에서 데이터는 끊임없이 유입됩니다. 따라서  streaming data는 로우 파일(raw file)로 유입되지 않을 수 있습니다. TCP 데이터를 받는 포트, Amazon의 Kinesis, HDFS와 같은 분산 처리 시스템, Kafka, Flume과 같이 다양한 데이터 소스들로부터 발생하는 데이터를 처리할 수 있어야합니다.</p>
 
-<h2 id="dataframe"><code class="language-plaintext highlighter-rouge">DataFrame</code></h2>
+<p>Spark Streaming은 이러한 모든 데이터 소스를 통합(integrate)하고, 보내지는 데이터를 분석(analyze)할 수 있습니다. 뿐만 아니라 데이터를 변형(transform)하여 다른 데이터 소스로 전송할 수도 있습니다. 대부분의 경우 로그 데이터를 가져와서, 특정 정보를 추출하고, 원하는 곳에 저장하는 케이스일 것입니다.</p>
 
-<p>RDD를 <code class="language-plaintext highlighter-rouge">DataFrame</code> 객체로 확장합니다. <code class="language-plaintext highlighter-rouge">DataFrame</code>은 RDB와 비슷한 점이 많습니다. <code class="language-plaintext highlighter-rouge">DataFrame</code>은 <code class="language-plaintext highlighter-rouge">Row</code> 객체와 Schema라는 두 가지 특징을 갖습니다.  먼저, <code class="language-plaintext highlighter-rouge">DataFrame</code>은 <code class="language-plaintext highlighter-rouge">Row</code> 객체로 나뉘어집니다. <code class="language-plaintext highlighter-rouge">Row</code> 객체는 구조화된 정보(structured information)를 담고 있습니다. 두번째로, schema를 가지고 있기에 효율적으로 정보를 저장할 수 있습니다. 그리고 스키마와 <code class="language-plaintext highlighter-rouge">Row</code>가 있기 때문에 우리는 <code class="language-plaintext highlighter-rouge">DataFrame</code>을 DB처럼 다룰 수 있고, SQL 커맨드를 실행할 수 있습니다.</p>
+<h2 id="checkpoint">Checkpoint</h2>
 
-<p><code class="language-plaintext highlighter-rouge">DataFrame</code>은 RDB와 비슷해 보이기 때문에, RDB와의 상호운영성(inter-operability)을 확보할 수 있습니다. 이는 Json, Hive, Parquet과 같은 다양한 데이터 소스로부터 파일/데이터를 읽고 쓸 수 있음을 의미합니다. 이외에도 JDBC/ODBC 인터페이스나 Taleau에 직접 작업도 가능합니다.</p>
+<p>Spark Streaming의 가장 강력한 기능은 <code class="language-plaintext highlighter-rouge">checkpoint</code>입니다. <code class="language-plaintext highlighter-rouge">checkpoint</code> 는 fault tolerance를 위해 제공되는 기능입니다. 만약 streaming을 실행중인 클러스터가 다운되거나, streaming이 다운된다고 가정해봅시다. 이러한 경우에 <code class="language-plaintext highlighter-rouge">checkpoint</code> 는 자동으로 다시 시작해야할 지점을 선택해줍니다.</p>
 
-<p>SQL 쿼리로 접근할 수 있다는 사실은 쿼리 최적화(query optimization)을 <code class="language-plaintext highlighter-rouge">DataFrame</code>에 적용할 수 있다는 의미이기도 합니다.</p>
+<h1 id="dstream-api">DStream API</h1>
 
-<p>그래서 보통 DAG(Directed Acyclic Graph) 최적화 이후, 실행되는 SQL 쿼리를 볼 수 있고 해당 쿼리에 RDB에 시도하는 것처럼 쿼리 최적화를 적용해볼 수도 있습니다.</p>
+<p>Spark Steaming은 DStream에서 시작되었습니다. DStream은 RDD에 기반한 API입니다. RDD에 기반하고 있다는 특징 때문에, DStream은 microbatch와 같은 작업에 특화되어있습니다. 즉, RDD로 표현되는 데이터 덩어리(chunks of data)를 다루고 처리할 수 있습니다. 이러한 작업은 data field나 row-by-row같은 방법으로 작동하지 않습니다. microbatch를 통해 데이터를 한 덩어리(chunk)로 만듭니다.</p>
 
-<h2 id="dataset"><code class="language-plaintext highlighter-rouge">Dataset</code></h2>
+<p>그러나 현재 DStream은 잘 사용되지 않습니다. 최근 Application들이 즉각적인 데이터 처리를 지원하는 데에 비해 몇 초 정도의 지연이 있지만 이러한 부분이 문제가 되는 것은 아닙니다. DStream을 사용하지 않게 된 가장 큰 이유는 시간이 지나며 Spark Stream의 인터페이스로부터 배척되었기 때문입니다. DStream보다 최신 API가 등장했고 이에 따라 Dstream은 사용하지 않는 추세입니다.</p>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="k">class</span> <span class="nc">Person</span><span class="o">(</span><span class="n">id</span><span class="k">:</span><span class="kt">Int</span><span class="o">,</span> <span class="n">name</span><span class="k">:</span><span class="kt">String</span><span class="o">,</span> <span class="n">age</span><span class="k">:</span><span class="kt">Int</span><span class="o">,</span> <span class="n">friends</span><span class="k">:</span><span class="kt">Int</span><span class="o">)</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">stream</span> <span class="k">=</span> <span class="k">new</span> <span class="nc">StreamingContext</span><span class="o">(</span><span class="n">conf</span><span class="o">,</span> <span class="nc">Seconds</span><span class="o">(</span><span class="mi">1</span><span class="o">))</span>
+<span class="k">val</span> <span class="nv">lines</span> <span class="k">=</span> <span class="nv">stream</span><span class="o">.</span><span class="py">socketTextStream</span><span class="o">(</span><span class="s">"localhost"</span><span class="o">,</span> <span class="mi">8888</span><span class="o">)</span>
+<span class="k">val</span> <span class="nv">errors</span> <span class="k">=</span> <span class="nv">lines</span><span class="o">.</span><span class="py">filter</span><span class="o">(</span><span class="nv">_</span><span class="o">.</span><span class="py">contains</span><span class="o">(</span><span class="s">"error"</span><span class="o">))</span>
+<span class="nv">error</span><span class="o">.</span><span class="py">print</span><span class="o">()</span>
 
-<span class="k">import</span> <span class="nn">spark.implicits._</span>
-<span class="k">val</span> <span class="nv">schemaPeople</span> <span class="k">=</span> <span class="nv">spark</span><span class="o">.</span><span class="py">read</span>
-      <span class="o">.</span><span class="py">option</span><span class="o">(</span><span class="s">"header"</span><span class="o">,</span> <span class="s">"true"</span><span class="o">)</span>
-      <span class="o">.</span><span class="py">option</span><span class="o">(</span><span class="s">"inferSchema"</span><span class="o">,</span> <span class="s">"true"</span><span class="o">)</span>
-      <span class="o">.</span><span class="py">csv</span><span class="o">(</span><span class="s">"data/fakefriends.csv"</span><span class="o">)</span>
-      <span class="o">.</span><span class="py">as</span><span class="o">[</span><span class="kt">Person</span><span class="o">]</span>
+<span class="nv">stream</span><span class="o">.</span><span class="py">start</span><span class="o">()</span> <span class="c1">// start streaming</span>
+<span class="nv">streama</span><span class="o">.</span><span class="py">awaitTermination</span><span class="o">()</span> <span class="c1">// wait for termination</span>
 </code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">Dataset</code>은 <code class="language-plaintext highlighter-rouge">DataFrame</code>과 같은 종류입니다. 기술적으로, <code class="language-plaintext highlighter-rouge">DataFrame</code>은 <code class="language-plaintext highlighter-rouge">Row</code> 객체로 이루어진 <code class="language-plaintext highlighter-rouge">Dataset</code>의 하나 일뿐입니다. 차이점은 <code class="language-plaintext highlighter-rouge">Dataset</code>이 명확한 타입(Expicit Type)을 갖고 있으며 컴파일 타임에 이를 검사한다는 사실입니다. 다시 말해, <code class="language-plaintext highlighter-rouge">DataFrame</code>은 실행 단계에서 스키마를 적용하지만, <code class="language-plaintext highlighter-rouge">Dataset</code>이 컴파일 타임에 스키마를 검사합니다.</p>
+<p>DStream에서는 <code class="language-plaintext highlighter-rouge">SparkContext</code>가 아니라, <code class="language-plaintext highlighter-rouge">StreamingContext</code>를 선언합니다. 위 예시의 경우 1초에 한번 씩, job을 처리하도록 셋팅되었습니다. 즉 1초마다 microbatch를 실행합니다.</p>
 
-<p>이러한 차이점 때문에 <code class="language-plaintext highlighter-rouge">DataFrame</code>은 <code class="language-plaintext highlighter-rouge">Row</code> 객체가 존재하고, <code class="language-plaintext highlighter-rouge">Row</code>를 정의할 때까지 무엇이든 담을 수 있는 것에 비해 <code class="language-plaintext highlighter-rouge">Dataset</code>은 스키마를 통해 명확한 타입을 지정했으므로 <code class="language-plaintext highlighter-rouge">Row</code> 객체에 담을 수 있는 자료형이 분명합니다(제한됩니다). 따라서, <code class="language-plaintext highlighter-rouge">Dataset</code>은 컴파일 타임에 이미 스키마를 알고 있으므로 스크립트 실행 시가 아니라 스크립트 <strong>빌드</strong> 시에 Type Error를 발견할 수 있습니다. 클러스터에서 스크립트 실행 시 많은 비용을 요구하기 때문에 실행 전에 미리 이러한 에러를 알아챌 수 있는 것은 큰 장점입니다. 또한 <code class="language-plaintext highlighter-rouge">Dataset</code>을 이용하면 더 나은 최적화를 가능하게 합니다. 런타임이 아니라, 컴파일하는 동안 최적화가 진행되기 때문입니다.</p>
+<p>1초마다 microbatch는 localhost의 8888 포트로 텍스트 데이터를 전송합니다. 이때, 에러가 발생하는 경우 필터링하여 에러가 있는 텍스트 라인을 출력하고 있습니다.</p>
 
-<p>그러나, 이러한 작업들은 컴파일 타임에 이루어지기 때문에 컴파일된 언어(Java, Scala)로만 사용이 가능합니다. python은 컴파일 타임 최적화가 불가능합니다.</p>
+<p>위 코드는 하나의 데이터 청크(a single chunk of data)를 처리하지 않습니다. 반복적으로 1초마다 유입되는 데이터들을 전송하고, 필터링하는 과정을 거칩니다. DStream에서 microbatch마다 처리하는 RDD는 유입되는 데이터의 하나의 작은 청크(one little chunk)입니다.</p>
 
-<p><a href="">현재</a> Spark 개발의 전반적인 트렌드는 RDD를 적게 사용하고 <code class="language-plaintext highlighter-rouge">Dataset</code>을 더 많이 사용하는 것입니다. RDD에 비해 <code class="language-plaintext highlighter-rouge">Dataset</code>이 갖는 장점은 먼저, <code class="language-plaintext highlighter-rouge">Dataset</code>은 매우 효율적으로 직렬화(serialized)됩니다. 컴파일 타임에 실행되는 실행 계획(execution plan)때문 입니다. 그리고 상호운영성(interoperability)가 뛰어납니다. RDB, 외부 파일 형식(parquet, json)과 호환될 수 있습니다. JDBC, ODBC에도 접근하여 데이터를 로드할 수 있습니다. 이는 spark를 수평적으로 확장된 데이터베이스(horizontally-scalable database)처럼 작동하게 만듭니다. 마지막으로 <code class="language-plaintext highlighter-rouge">Dataset</code>은 Spark MLLib과 Streaming에서 주로 사용됩니다. RDD로는 이들 라이브러리에 데이터를 전달할 수 없습니다.</p>
+<h2 id="window">Window</h2>
 
-<h2 id="sparksession">SparkSession</h2>
+<p>Windowed operations을 사용하면, 다수의 배치로부터 발생한 결과를 결합시킬 수 있습니다. <code class="language-plaintext highlighter-rouge">window(), reduceByWindow(), reduceByKeyAndWindow()</code>와 같은 함수가 존재하고, 이들을 이용하여 일정 시간 동안의 데이터를 reduce할 수 있습니다. 몇 분, 몇 시간, 며칠과 같은 기간 동안의 데이터를 모아 reduce시킵니다. 기본적으로 window size는 batch와 일치할 필요가 없습니다. batch보다 클 수도 있습니다.</p>
 
-<p>RDD로 작업할 때는 <code class="language-plaintext highlighter-rouge">SparkContext를</code> 이용했습니다. 그러나 sparkSQL을 사용하려면 <code class="language-plaintext highlighter-rouge">SparkSession</code>을 사용해야합니다. 이는 DataBase Session과 유사한 개념입니다.</p>
+<h2 id="updatestatebykey">updateStateByKey</h2>
 
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">spark</span> <span class="k">=</span> <span class="nc">SparkSession</span>
-            <span class="o">.</span><span class="py">builder</span>
-            <span class="o">.</span><span class="py">appName</span><span class="o">(</span><span class="s">"SparkSession_test"</span><span class="o">)</span>
-            <span class="o">.</span><span class="py">master</span><span class="o">(</span><span class="s">"local[*]"</span><span class="o">)</span>
-            <span class="o">.</span><span class="py">getOrCreate</span><span class="o">()</span>
+<p><code class="language-plaintext highlighter-rouge">updateStateByKey()</code>를 이용하면 시간이 흘러도, 많은 배치 작업들 간의 스테이트(state)를 유지할 수 있습니다. 따라서, window, batch에 따른  running state를 추적해야한다면 <code class="language-plaintext highlighter-rouge">updateStateByKey()</code>를 사용해야합니다. count가 필요한 경우가 대표적인 <code class="language-plaintext highlighter-rouge">updateStateByKey()</code>가 사용되는 예입니다.</p>
+
+<h1 id="structrued-streaming">Structrued Streaming</h1>
+
+<p>DStream이 Spark의 오리지날 스트리밍 API이긴 하지만, 최근에는 <code class="language-plaintext highlighter-rouge">Structured Streaming</code> 이 주로 사용되고 있습니다. <code class="language-plaintext highlighter-rouge">Structured Streaming</code>은 <code class="language-plaintext highlighter-rouge">DataSets</code>를 사용합니다. <code class="language-plaintext highlighter-rouge">DataSets</code>를 기반으로 스트리밍 작업을 구현하기 때문에 쿼리를 작성하여 실행할 수도 있습니다. 또한 새로운 정보가 들어올 때마다 <code class="language-plaintext highlighter-rouge">DataSets</code>에 실시간으로  row를 추가하는 방식으로 작업을 단순화시킬 수도 있습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Structured Streaming</code>에서 다루는 <code class="language-plaintext highlighter-rouge">DataSets</code>는 지금까지 다루었던 <code class="language-plaintext highlighter-rouge">DataSet</code>과 큰 차이가 없습니다. 따라서 지금까지 배웠던 API를 배치 작업에 거의 그대로 사용할 수 있습니다.</p>
+
+<p>코드로 이를 구현하는 것 또한 매우 간단합니다. <code class="language-plaintext highlighter-rouge">spark.read</code>를 <code class="language-plaintext highlighter-rouge">spark.readStream</code>으로만 교체하면 됩니다.</p>
+
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">val</span> <span class="nv">inputDF</span> <span class="k">=</span> <span class="nv">spark</span><span class="o">.</span><span class="py">readStream</span><span class="o">.</span><span class="py">json</span><span class="o">(</span><span class="s">"s3://logs"</span><span class="o">)</span>
+<span class="nv">inputDF</span><span class="o">.</span><span class="py">groupBy</span><span class="o">(</span><span class="n">$</span><span class="s">"action"</span><span class="o">,</span> <span class="nf">window</span><span class="o">(</span><span class="n">$</span><span class="s">"time"</span><span class="o">,</span> <span class="s">"1 hour"</span><span class="o">)).</span><span class="py">count</span><span class="o">()</span>
+	<span class="o">.</span><span class="py">writeStream</span><span class="o">.</span><span class="py">format</span><span class="o">(</span><span class="s">"jdbc"</span><span class="o">).</span><span class="py">start</span><span class="o">(</span><span class="s">"jdcb:mysql//..."</span><span class="o">)</span>
 </code></pre></div></div>
 
-<p>이제 <code class="language-plaintext highlighter-rouge">SparkSession</code> 객체로부터 <code class="language-plaintext highlighter-rouge">SparkContext를</code> 얻을 수 있고 <code class="language-plaintext highlighter-rouge">Dataset</code>에 쿼리를 날릴 수 있습니다.</p>
+<p>위 코드는 <strong>실시간으로</strong> s3 storage로부터 log 파일을 읽어 들이고,  <code class="language-plaintext highlighter-rouge">groupBy</code>, <code class="language-plaintext highlighter-rouge">window</code>를 적용하여 그 결과를 mysql DB에 저장합니다. 이러한 작업을 작성하는데 <code class="language-plaintext highlighter-rouge">DataSet</code>에서 사용했던 API가 그대로 사용되었습니다.</p>
 
-<h2 id="sparksql-api">sparkSQL API</h2>
+<h2 id="window-1">Window</h2>
 
-<p><code class="language-plaintext highlighter-rouge">show</code>, <code class="language-plaintext highlighter-rouge">select</code>, <code class="language-plaintext highlighter-rouge">filter</code>, <code class="language-plaintext highlighter-rouge">groupBy</code> 같은 쿼리를 실행할 수 있습니다.</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="nv">myResultDataSet</span><span class="o">.</span><span class="py">show</span><span class="o">()</span>
-	<span class="nv">myResultDataSet</span><span class="o">.</span><span class="py">select</span><span class="o">(</span><span class="s">"FieldName"</span><span class="o">)</span>
-	<span class="nv">myResultDataSet</span><span class="o">.</span><span class="py">filter</span><span class="o">(</span><span class="nf">myResultDataset</span><span class="o">(</span><span class="s">"FieldName"</span><span class="o">)&gt;</span><span class="mi">200</span><span class="o">)</span>
-	<span class="nv">myResultDataset</span><span class="o">.</span><span class="py">groupBy</span><span class="o">(</span><span class="nf">myResultDataset</span><span class="o">(</span><span class="s">"FieldName"</span><span class="o">)).</span><span class="py">mean</span><span class="o">()</span>
-	<span class="nv">myRestulDataset</span><span class="o">.</span><span class="py">rdd</span><span class="o">().</span><span class="py">map</span><span class="o">(</span><span class="n">mapperFunction</span><span class="o">)</span>
+<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">dataset</span><span class="o">.</span><span class="py">groupBy</span><span class="o">(</span><span class="nf">window</span><span class="o">(</span><span class="nf">col</span><span class="o">(</span><span class="s">"timestampColumnName"</span><span class="o">),</span>
+<span class="n">windowDuration</span> <span class="k">=</span> <span class="s">"10 minutes"</span><span class="o">,</span> <span class="n">slideDuration</span> <span class="k">=</span> <span class="s">"5 minutes"</span><span class="o">),</span> <span class="nf">col</span><span class="o">(</span><span class="s">"columnWeAreGroupngBy"</span><span class="o">))</span>
 </code></pre></div></div>
 
-<p>마지막 라인처럼,  RDD로 다시 변환해서 자신이 만든 map Function을 적용해볼 수도 있습니다.</p>
-
-<h2 id="udfuser-defined-function">UDF(User Defined Function)</h2>
-
-<p>사용자 정의 함수(UDF)가 있습니다. 데이터베이스에서 정의하여 사용하는 UDF와 비슷한 개념입니다.</p>
-
-<p><code class="language-plaintext highlighter-rouge">org.apache.spark.sql.functions.udf</code>를 임포트해서 간단한 사용자 정의 함수를 만들 수 있습니다.</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nn">org.apache.spark.sql.functions.udf</span>
-<span class="k">val</span> <span class="nv">square</span> <span class="k">=</span> <span class="n">udf</span><span class="o">{(</span><span class="n">x</span> <span class="k">=&gt;</span> <span class="n">x</span><span class="o">*</span><span class="n">x</span><span class="o">)}</span>
-<span class="n">squaredDF</span> <span class="k">=</span> <span class="nv">df</span><span class="o">.</span><span class="py">withColumn</span><span class="o">(</span><span class="s">"square"</span><span class="o">,</span> <span class="nf">square</span><span class="o">(</span><span class="s">"value"</span><span class="o">))</span>
-</code></pre></div></div>
-
-<h2 id="-before-string-in-scalaspark">$ before string in Scala(Spark)</h2>
-
-<p>scala를 이용하여 spark 코드를 작성하다 보면 아래와 같이 $이 string 앞에 쓰이는 것을 자주 마주칩니다.</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// example1</span>
-<span class="k">val</span> <span class="nv">words</span> <span class="k">=</span> <span class="n">input</span>
-      <span class="o">.</span><span class="py">select</span><span class="o">(</span><span class="nf">explode</span><span class="o">(</span><span class="nf">split</span><span class="o">(</span><span class="n">$</span><span class="s">"value"</span><span class="o">,</span> <span class="s">"\\W+"</span><span class="o">)).</span><span class="py">alias</span><span class="o">(</span><span class="s">"word"</span><span class="o">))</span>
-<span class="c1">// example2</span>
-<span class="nv">df</span><span class="o">.</span><span class="py">select</span><span class="o">(</span><span class="n">$</span><span class="s">"name"</span><span class="o">,</span> <span class="n">$</span><span class="s">"age"</span> <span class="o">+</span> <span class="mi">1</span><span class="o">).</span><span class="py">show</span><span class="o">()</span>
-</code></pre></div></div>
-
-<p>이는 scala에서 사용되는 문법이라기 보다, spark에서 사용되는 <code class="language-plaintext highlighter-rouge">column</code> 객체 표현 방법입니다. 또한 <code class="language-plaintext highlighter-rouge">$"age"+1</code>처럼 <code class="language-plaintext highlighter-rouge">column</code>에 연산을 실행하는 경우에 이와 같은 표현이 사용됩니다.</p>
-
-<p>scala는 아래와 같이 작성하는 경우에 에러가 발생합니다.</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">dataframe</span><span class="o">.</span><span class="py">select</span><span class="o">(</span><span class="s">"age"</span><span class="o">+</span><span class="mi">1</span><span class="o">).</span><span class="py">show</span><span class="o">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="nv">org</span><span class="o">.</span><span class="py">apache</span><span class="o">.</span><span class="py">spark</span><span class="o">.</span><span class="py">sql</span><span class="o">.</span><span class="py">AnalysisException</span><span class="k">:</span> <span class="kt">cannot</span> <span class="kt">resolve</span> <span class="kt">'`age1`'</span> <span class="kt">given</span> <span class="kt">input</span> <span class="kt">columns:</span> <span class="err">[</span><span class="kt">age</span><span class="o">,</span> <span class="n">name</span><span class="err">]</span><span class="o">;;</span>
-<span class="ss">'Project</span> <span class="o">[</span><span class="kt">'age1</span><span class="o">]</span>
-</code></pre></div></div>
+<p>window 설정을 위와 같은 포맷으로 지정할 수 있습니다.</p>
 
 <p>[참고]</p>
 
 <p><a href="https://www.udemy.com/course/best-scala-apache-spark/">Learning Apache Spark 3 with Scala</a></p>
 
-<p><a href="https://stackoverflow.com/questions/42427388/what-is-the-output-of-a-some-string-in-scala">what is the output of a $ some string in scala</a></p>
 
                 </div>
             </section>
@@ -349,9 +319,9 @@ into the {body} of the default.hbs template -->
                     <div id="disqus_thread"></div>
                     <script>
                         var disqus_config = function () {
-                            var this_page_url = 'https://gyuhoonk.github.io/sparkscala4';
-                            var this_page_identifier = '/sparkscala4';
-                            var this_page_title = 'Learning Apache Spark 3 with Scala (Section4)';
+                            var this_page_url = 'https://gyuhoonk.github.io/sparkscala8';
+                            var this_page_identifier = '/sparkscala8';
+                            var this_page_title = 'Learning Apache Spark 3 with Scala (Section8)';
                         };
                         (function() {
                             var d = document, s = d.createElement('script');
@@ -396,11 +366,6 @@ into the {body} of the default.hbs template -->
                                 
                                   
                                     
-                                        
-                                        
-                                            <li><a href="/sparkscala8">Learning Apache Spark 3 with Scala (Section8)</a></li>
-                                        
-                                    
                                   
                                 
                                   
@@ -437,10 +402,15 @@ into the {body} of the default.hbs template -->
                                     
                                         
                                         
+                                            <li><a href="/sparkscala5">Learning Apache Spark 3 with Scala (Section5)</a></li>
+                                        
                                     
                                   
                                 
                                   
+                                    
+                                        
+                                        
                                     
                                   
                                 
@@ -513,16 +483,19 @@ into the {body} of the default.hbs template -->
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
             
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
                 
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/sparkscala5">
+            <a class="post-card-image-link" href="/sparkscala7">
                 <div class="post-card-image" style="background-image: url(/assets/built/images/scala-banner-post.png)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/sparkscala5">
+            <a class="post-card-content-link" href="/sparkscala7">
                 <header class="post-card-header">
                     
                         
@@ -532,65 +505,11 @@ into the {body} of the default.hbs template -->
                         
                     
 
-                    <h2 class="post-card-title">Learning Apache Spark 3 with Scala (Section5)</h2>
+                    <h2 class="post-card-title">Learning Apache Spark 3 with Scala (Section7)</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      3 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-            
-
-            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
-            
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/prefix-sum">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/algorithm/2dim-prefix-sum-cache2.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/prefix-sum">
-                <header class="post-card-header">
-                    
-                        
-                            
-                                <span class="post-card-tags">Algorithm</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">누적 합(Prefix Sum)</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>누적 합(Prefix Sum) 알고리즘 (2022 KAKAO BLIND RECRUITMENT 6 파괴되지 않은 건물)
+                        <p>Learning Apache Spark 3 with Scala (Section7 - Machine Learning Library)
 
 </p>
                     
@@ -632,18 +551,18 @@ into the {body} of the default.hbs template -->
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">Learning Apache Spark 3 with Scala (Section4)</div>
+    <div class="floating-header-title">Learning Apache Spark 3 with Scala (Section8)</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Learning+Apache+Spark+3+with+Scala+%28Section4%29&amp;url=https://gyuhoonk.github.iosparkscala4"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Learning+Apache+Spark+3+with+Scala+%28Section8%29&amp;url=https://gyuhoonk.github.iosparkscala8"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iosparkscala4"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iosparkscala8"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 
