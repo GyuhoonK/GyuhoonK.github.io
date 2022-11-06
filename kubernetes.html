@@ -11,7 +11,7 @@
 
 
 
-    <title>Gaussian Kernel</title>
+    <title>AWS S3와 zip 파일</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,30 +37,38 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/gaussian_kernel" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/kubernetes" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Gaussian Kernel" />
-    <meta property="og:description" content="Gaussian Kernel(RBF) 기본 개념에 대하여 Gaussian Kernel ? Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다. What is Kernel ? 먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/gaussian_kernel" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/gaussian-kernel-formula.jpeg" />
+    <meta property="og:title" content="AWS S3와 zip 파일" />
+    <meta property="og:description" content="kubernetes
+
+[참고] 
+Working with really large objects in S3
+" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/kubernetes" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/amazon-s3-banner.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2021-10-08T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2021-10-08T22:30:00+09:00" />
-    <meta property="article:tag" content="Datascience" />
+    <meta property="article:published_time" content="2021-09-01T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2021-09-01T22:30:00+09:00" />
+    <meta property="article:tag" content="Kubernetes" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Gaussian Kernel" />
-    <meta name="twitter:description" content="Gaussian Kernel(RBF) 기본 개념에 대하여 Gaussian Kernel ? Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다. What is Kernel ? 먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후" />
+    <meta name="twitter:title" content="AWS S3와 zip 파일" />
+    <meta name="twitter:description" content="kubernetes
+
+[참고] 
+Working with really large objects in S3
+" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/gaussian-kernel-formula.jpeg" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/amazon-s3-banner.png" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Datascience" />
+    <meta name="twitter:data2" content="Kubernetes" />
     <meta name="twitter:site" content="@" />
     <meta name="twitter:creator" content="@" />
     <meta property="og:image:width" content="1400" />
@@ -75,18 +83,22 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/gaussian_kernel",
+    "url": "https://gyuhoonk.github.io/kubernetes",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/gaussian-kernel-formula.jpeg",
+        "url": "https://gyuhoonk.github.io/assets/built/images/amazon-s3-banner.png",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/gaussian_kernel"
+        "@id": "https://gyuhoonk.github.io/kubernetes"
     },
-    "description": "Gaussian Kernel(RBF) 기본 개념에 대하여 Gaussian Kernel ? Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다. What is Kernel ? 먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후"
+    "description": "kubernetes
+
+[참고] 
+Working with really large objects in S3
+"
 }
     </script>
 
@@ -99,7 +111,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="Gaussian Kernel" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="AWS S3와 zip 파일" href="/feed.xml" />
 
     
 </head>
@@ -171,122 +183,34 @@ into the {body} of the default.hbs template -->
 <main id="site-main" class="site-main outer" role="main">
     <div class="inner">
 
-        <article class="post-full  tag-datascience post tag-datascience ">
+        <article class="post-full  tag-kubernetes post tag-kubernetes ">
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime=" 8 October 2021"> 8 October 2021</time>
+                    <time class="post-full-meta-date" datetime=" 1 September 2021"> 1 September 2021</time>
                     
                         <span class="date-divider">/</span>
                         
                             
-                               <a href='/tag/datascience/'>DATASCIENCE</a>
+                               <a href='/tag/kubernetes/'>KUBERNETES</a>
                             
                         
                     
                 </section>
-                <h1 class="post-full-title">Gaussian Kernel</h1>
+                <h1 class="post-full-title">AWS S3와 zip 파일</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/gaussian-kernel-formula.jpeg)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/amazon-s3-banner.png)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>Gaussian Kernel(RBF) 기본 개념에 대하여</p>
+                    <p>kubernetes</p>
 
-<h1 id="gaussian-kernel-">Gaussian Kernel ?</h1>
-
-<p>Gaussian Kernel, 혹은 RBF(Radial Basis Function)라고도 불리우는 이 기법은 커널 함수(Kernel Function) 중 저차원에서 고차원으로 매핑시키는 기법(mapping function) 중 하나입니다. 특히, Gaussian Kernel은 데이터 사이의 거리를 무한차원 벡터공간에서 측정합니다.</p>
-
-<h1 id="what-is-kernel-">What is Kernel ?</h1>
-
-<p>먼저, 저차원에서 고차원으로 mapping하기 위해서는 사용되는 function은 매핑 이후 고차원에서 데이터의 위치를 확인하는 것이 목적이 아닙니다. 결과적으로 확인하고 싶은 값은 고차원으로 매핑된 이후 두 데이터의 내적값(inner product)입니다. 내적값은 스칼라값으로 반환되고 이를 통해 고차원에 매핑된 두 벡터 사이의 거리를 측정할수 있습니다.</p>
-
-<p><img src="../../assets/built/images/inner-product.png" alt="image" /></p>
-
-<p>그러나 고차원 매핑 이후 내적(inner product)를 계산하여 두 벡터 간의 거리를 측정하는 방법은 계산량이 매우 높아 비효율적입니다.</p>
-
-<p>이러한 문제를 해결하기 위해 Kernel Trick이 이용됩니다. Kernel Trick은 고차원 매핑과 내적 계산을 한번에 수행합니다. 그리고 이러한 동시 연산을 가능하게 하는 것이 Kernel입니다.</p>
-
-<p>저차원(m)에서 고차원(n)으로 매핑시켜주는 함수를 다음과 같이 정의합니다.</p>
-
-\[\phi(x) = Ax \\
-A : n * m (n&gt;m)\\
-x : m * 1\]
-
-<p>위 함수는  m차원 벡터를 n차원으로 매핑시켜줍니다. 이 때, Φ는 선형변환(Linear Transformation)이고, 행렬 𝐴(n x m)는 선형변환에 사용되는 표준행렬입니다.</p>
-
-<p>위에서 말했듯이, 이러한 매핑이후 우리가 계산하고 하는 것은 두 벡터의 변환 이후 내적값입니다. 아래와 같은 수식으로 𝐾(Kernel)을 정의할 수 있습니다.</p>
-
-\[K(x_{i}, x_{j}) = \phi(x_{i})^T \phi(x_{j})
-							  =  (Ax_{i})^T (Ax_{j})
-							  = x_{i}^TA^TAx_{j}\]
-
-<p>이 때, 위 식에서 사용되는 변수들의 차원은 아래와 같습니다.</p>
-
-\[x_{i}^T : 1 * m \\
-A^T : m * n\\
-A : n * m \\
-x_{j} : m * 1\]
-
-<p>결과적으로 𝐾는 스칼라값을 반환하게 됨을 알 수 있습니다. 𝐾가 두 벡터간의 거리(유사도)를 측정한다는 점에서 아래 두 가지 조건을 만족해야합니다.</p>
-
-\[i) K(x_{i}, x_{j}) = K(x_{j}, x_{i}) \\
-ii) K(x_i, x_i) &gt;= 0\]
-
-<p>즉, 교환법칙이 성립해야하고 자기자신과의 거리를 계산했을 때에는 음수값이 나와서는 안된다는 조건입니다.</p>
-
-<p>이러한 조건을 만족하기 위한 조건을 계산해보면, 𝐾를 이루는 행렬들이</p>
-
-<p>​	𝐢) 대칭행렬(symetric matrix)</p>
-
-<p>​	𝐢𝐢) positive semi-definite matrix</p>
-
-<p>를 동시에 만족해야합니다. 그리고 이와 관련된 조건은 <strong>Mercer’s Theorem</strong>으로 확인할 수 있습니다.</p>
-
-<p><img src="../../assets/built/images/mercer.png" alt="image" /></p>
-
-<p>이러한 조건을 만족하는 커널에는 <em>Linear, polynomial, sigmoid</em> 그리고 지금 우리가 살펴보고 있는 <strong><em>gaussian</em></strong>이 있습니다.</p>
-
-<h2 id="gaussian-kernel---infinite-dimensional-vector">Gaussian Kernel - Infinite-dimensional vector</h2>
-
-<p>Gaussian Kernel의 가장 큰 특징은 무한차원으로 매핑시킨다는 점입니다. 아래 식을 통해 간단한 예를 확인할 수 있습니다. 계산 편의성을 위해 \(\sigma^2=\dfrac {1}{2}\)인 경우를 예시로 선택했습니다.</p>
-
-\[K(x_{i}, x_{j}) = exp(-\dfrac {||x_i - x_j||^2}{2\sigma^2})\\
-K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} \text{)}\\
-=exp(-x_i^2)exp(-x_j^2)exp(2x_ix_j)\\
-\text {By Taylor's theorem,  } exp(2x_ix_j) = \Sigma_{k=0}^{\infty}(\dfrac {2^kx_i^kx_j^k}{k!})\]
-
-<h2 id="gaussian-kernel---purpose-of-𝛔">Gaussian Kernel - Purpose of 𝛔</h2>
-
-<p>𝛔는 무한차원으로 확장된 벡터 사이의 거리 계산 시 얼마나 민감하게 반응하는지 결정하는 매개변수입니다.</p>
-
-<p><img src="../../assets/built/images/gaussian-plot.png" alt="image" /></p>
-
-<p>위 그림처럼, \(K(x)\) 즉 Gaussian Kernel의 계산 결과는 𝛔가 클수록 벡터 간 거리 \(x\)의 차이에 둔감해집니다. 반대로 𝛔가 작아지면, 벡터 간 거리 \(x\)에 민감하게 반응합니다.</p>
-
-<h1 id="how-to-use-">How to Use ?</h1>
-
-<p>Kernel SVM, Kernel Regression에서 사용됩니다. 각각 예를 살펴보겠습니다.</p>
-
-<h2 id="kernel-svm">Kernel SVM</h2>
-
-<p>SVM Classification은 비선형 분류를 만들 수 없다는 한계를 가지고 있습니다. 이를 극복하기 위해 저차원 공간의 데이터를 고차원 공간으로 매핑시켜 초평면을 찾아 SVM의 한계를 극복하고자 합니다.</p>
-
-<p><img src="../../assets/built/images/kernel-svm.png" alt="image" /></p>
-
-<h2 id="kernel-regression">Kernel Regression</h2>
-
-<p>[업데이트 예정]</p>
-
-<p>[참고]</p>
-
-<p><a href="https://ratsgo.github.io/machine%20learning/2017/05/30/SVM3/">Kernel-SVM</a></p>
-
-<p><a href="https://tensorflow.blog/%ED%8C%8C%EC%9D%B4%EC%8D%AC-%EB%A8%B8%EC%8B%A0%EB%9F%AC%EB%8B%9D/2-3-7-%EC%BB%A4%EB%84%90-%EC%84%9C%ED%8F%AC%ED%8A%B8-%EB%B2%A1%ED%84%B0-%EB%A8%B8%EC%8B%A0/">h2.3.7 커널 서포트 벡터 머신</a></p>
+<p>[참고] 
+<a href="https://alexwlchan.net/2019/02/working-with-large-s3-objects/">Working with really large objects in S3</a></p>
 
                 </div>
             </section>
@@ -341,9 +265,9 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
                     <div id="disqus_thread"></div>
                     <script>
                         var disqus_config = function () {
-                            var this_page_url = 'https://gyuhoonk.github.io/gaussian_kernel';
-                            var this_page_identifier = '/gaussian_kernel';
-                            var this_page_title = 'Gaussian Kernel';
+                            var this_page_url = 'https://gyuhoonk.github.io/kubernetes';
+                            var this_page_identifier = '/kubernetes';
+                            var this_page_title = 'AWS S3와 zip 파일';
                         };
                         (function() {
                             var d = document, s = d.createElement('script');
@@ -377,26 +301,26 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/bucket-hive-spark">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/bucket-banner.jpg)"></div>
+            <a class="post-card-image-link" href="/boto3-zipfile">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/amazon-s3-banner.png)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/bucket-hive-spark">
+            <a class="post-card-content-link" href="/boto3-zipfile">
                 <header class="post-card-header">
                     
                         
                             
-                                <span class="post-card-tags">Hadoop</span>
+                                <span class="post-card-tags">Python</span>
                             
                         
                     
 
-                    <h2 class="post-card-title">Bucket in Hive, Spark</h2>
+                    <h2 class="post-card-title">AWS S3와 zip 파일</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>Hive와 Spark에서 Bucket 차이점에 대하여
+                        <p>AWS S3 내 zip 파일을 다운로드 받지 않고, 내용물만 다운로드 받기
 
 </p>
                     
@@ -416,7 +340,7 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
                 <span class="reading-time">
                     
                     
-                      3 min read
+                      5 min read
                     
                 </span>
             </footer>
@@ -426,57 +350,6 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
             
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
-            
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/hive-create-stmt">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/hive-banner.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/hive-create-stmt">
-                <header class="post-card-header">
-                    
-                        
-                            
-                                <span class="post-card-tags">Hadoop</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">CREATE Statement in Hive</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>HiveQL - CREATE Statement구조에 대하여
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      13 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
             
 
         </div>
@@ -492,18 +365,18 @@ K(x_{i}, x_{j}) = exp(-{||x_i - x_j||^2}) \text{ (when } \sigma^2=\dfrac {1}{2} 
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">Gaussian Kernel</div>
+    <div class="floating-header-title">AWS S3와 zip 파일</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Gaussian+Kernel&amp;url=https://gyuhoonk.github.iogaussian_kernel"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=AWS+S3%EC%99%80+zip+%ED%8C%8C%EC%9D%BC&amp;url=https://gyuhoonk.github.iokubernetes"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iogaussian_kernel"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iokubernetes"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 
