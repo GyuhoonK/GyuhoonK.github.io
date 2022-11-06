@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>나의 첫 컨트리뷰션(Retrospect on my first contribution)</title>
+        
+          <description>&lt;p&gt;오픈소스 컨트리뷰션 회고&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 05 Nov 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/first-contributor</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/first-contributor</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Learning Apache Spark 3 with Scala (Section8)</title>
         
           <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section8 -Spark Streaming)&lt;/p&gt;

@@ -1,4 +1,108 @@
-<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2022-09-07T22:51:51+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>Data Engineering</subtitle><entry><title type="html">Learning Apache Spark 3 with Scala (Section8)</title><link href="https://gyuhoonk.github.io/sparkscala8" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section8)" /><published>2022-08-27T22:30:00+09:00</published><updated>2022-08-27T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/sparkscala8</id><content type="html" xml:base="https://gyuhoonk.github.io/sparkscala8">&lt;p&gt;Learning Apache Spark 3 with Scala (Section8 -Spark Streaming)&lt;/p&gt;
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/atom+xml" /><link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" /><updated>2022-11-06T18:40:56+09:00</updated><id>https://gyuhoonk.github.io/feed.xml</id><title type="html">Gyuhoon Kim</title><subtitle>Data Engineering</subtitle><entry><title type="html">나의 첫 컨트리뷰션(Retrospect on my first contribution)</title><link href="https://gyuhoonk.github.io/first-contributor" rel="alternate" type="text/html" title="나의 첫 컨트리뷰션(Retrospect on my first contribution)" /><published>2022-11-05T22:30:00+09:00</published><updated>2022-11-05T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/first-contributor</id><content type="html" xml:base="https://gyuhoonk.github.io/first-contributor">&lt;p&gt;오픈소스 컨트리뷰션 회고&lt;/p&gt;
+
+&lt;h1 id=&quot;datahub&quot;&gt;DataHub&lt;/h1&gt;
+
+&lt;p&gt;저의 첫 컨트리뷰션의 대상이 된 오픈소스는 &lt;a href=&quot;https://datahubproject.io/&quot;&gt;DataHub&lt;/a&gt;입니다. DataHub는 데이터 디스커버리 플랫폼입니다. &lt;a href=&quot;https://demo.datahubproject.io/&quot;&gt;Demo 사이트&lt;/a&gt; 에 접속해보시면 어떤 역할을 하는 플랫폼인지 직관적으로 이해할 수 있습니다. 수 많은 데이터들이 다양한 데이터베이스에 저장되고, 데이터베이스 내에서도 수 많은 테이블로 저장되고 있습니다. DataHub는 이러한 데이터들의 메타데이터를 한 곳에 모아 한눈에 볼 수 있는 기능을 제공합니다.&lt;/p&gt;
+
+&lt;p&gt;저는 DataHub를 사내에 도입하는 과정에서 수정이 필요한 부분을 발견했습니다. 물론 사내에 도입하는 과정에서 해당 부분을 수정하여 배포하였습니다. 여기에 추가로 제가 수정한 부분을 컨트리뷰션해보았습니다!&lt;/p&gt;
+
+&lt;h1 id=&quot;what-to-contribute&quot;&gt;What to Contribute?&lt;/h1&gt;
+
+&lt;h2 id=&quot;1-typo-in-guide&quot;&gt;1. typo in guide&lt;/h2&gt;
+
+&lt;p&gt;가장 먼저 컨트리뷰션 한 내용은 오타 수정입니다. DataHub는 Airflow의 DAG 메타 정보(tag, run list 등)를 입력받을 수 있습니다. 이를 위해서는 Airflow에 DataHub에서 개발한 라이브러리를 설치하고 Airflow와 DataHub를 연결하는 connection을 생성해야합니다.&lt;/p&gt;
+
+&lt;p&gt;connection은 DataHub의 GMS 컴포넌트 혹은 DataHub와 연결된 Kafka 중 하나를 선택해야합니다. 저는 Kafka와 연결하기를 희망했고 이 과정에서 공식문서를 참고하여 수정을 진행했습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/retrospect/datahub-typo1.png&quot; alt=&quot;typo1&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;airflow.cfg&lt;/code&gt; 를 아래와 같이 수정했지만, Kafka와 연결되지 않았고 여전히 GMS와 연결되고 있었습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;# airflow.cfg
+[datahub]
+datahub_conn_id = datahub_kafka_default
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위와 같이 config 파일을 수정하는 것이 맞는지 DataHub에서 운영하는 커뮤니티 채널 중 Slack에 문의했고, 개발자로부터 아래와 같은 답변을 받았습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/retrospect/datahub-typo2.png&quot; alt=&quot;typo2&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;datahub_conn_id&lt;/code&gt;가 아니라 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn_id&lt;/code&gt;로 입력한 결과 Airflow가 Kafka와 연결되는 것을 확인할 수 있었습니다. 즉시 수정이 가능한 간단한 부분이라 PR을 생성하여 문서 수정을 요청하였습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/retrospect/datahub-typo3.png&quot; alt=&quot;typo3&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;명백한 오타였고, 개발자와 나눈 대화를 첨부했기에 따로 질문 없이 거의 즉시 approval되어 반영되었습니다. 현재는 수정된 상태인 것을 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/retrospect/datahub-typo4.png&quot; alt=&quot;typo4&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;2-bug-fix&quot;&gt;2. bug fix&lt;/h2&gt;
+
+&lt;h3 id=&quot;problem&quot;&gt;Problem&lt;/h3&gt;
+
+&lt;p&gt;두번째 케이스는 위보다는 조금 복잡합니다. Datahub Usage Analytics, Data Landscape Summary가 문제였습니다. 먼저, Datahub Usage Analytics는 DataHub 유저 로그를 트래킹하여 분석 결과를 제공합니다. &lt;a href=&quot;https://demo.datahubproject.io/analytics&quot;&gt;analytics 탭&lt;/a&gt;에서 확인할 수 있는데, 접속한 유저수, 검색량, 검색 쿼리, 액션과 같은 데이터를 제공합니다. Data Landscape Summary 역시 analytics 탭에 접속하여 확인해야하는데 해당 기능이 제공하는 정보는 현재 DataHub에서 관리되고 있는 메타데이터에 대한 개요(summary)를 보여줍니다.&lt;/p&gt;
+
+&lt;p&gt;위 2개의 기능은  모두 analytics 탭을 통해 접근하여 확인해야한다는 공통점이 있지만, 개발자의 입장에서 볼 때 서로 관련이 있는 기능은 아닙니다.&lt;/p&gt;
+
+&lt;p&gt;DataHub Usage Anlytics의 경우에는 배포 시에 helm chart에서  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;global.datahub_analytics_enabled&lt;/code&gt; 을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;true&lt;/code&gt;로 셋팅하는 경우에만 유저 트래킹을 할 수 있습니다. 해당 옵션이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;true&lt;/code&gt;로 설정되면 ElasticSearch 내부에서  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;data_stream&lt;/code&gt; 기능을 사용하는 인덱스(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;datahub_usage_event&lt;/code&gt;)를 생성하여 해당 인덱스로부터 대쉬보드에 정보를 뿌려줍니다.&lt;/p&gt;
+
+&lt;p&gt;반대로 Data Landscape Summary는 사용을 위해 따로 기능이 필요하지 않습니다. 이미 ingestion이 완료된(DataHub에 주입이 완료된) 메타데이터들을 바탕으로 어떤 소스로부터 몇 개의 메타데이터가 존재하는 지를 보여주는 기능이기 때문에 ElasticSearch와 관련이 없고, 단지 MySQL에 저장된 정보를 참고할 뿐입니다.&lt;/p&gt;
+
+&lt;p&gt;저는 DataHub Usage Analytics 기능을 사용하길 원치 않았습니다. 제가 사용하는 ElasticSearch에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;data_streams&lt;/code&gt;가 지원되지 않았기 때문에 사용이 불가능했다가 정확한 표현입니다. DataHub Usage Analytics 기능을 사용하지 않기 위해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;global.datahub_analytics_enabled&lt;/code&gt;을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;false&lt;/code&gt;로 설정했을 때 제가 의도치 않은 버그가 발생했습니다. analytics 탭을 누르면 아예 에러 코드가 발생하고, Data Landscape Summary도 확인이 불가능했습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/retrospect/datahub-bugfix-error.png&quot; alt=&quot;error&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;cause&quot;&gt;Cause&lt;/h3&gt;
+
+&lt;p&gt;이러한 문제의 원인은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;global.datahub_analytcis_enabled&lt;/code&gt;를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;false&lt;/code&gt;로 설정할 경우 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;datahub_usage_event&lt;/code&gt; 라는 인덱스를 생성하지 않는데 프론트엔드의 구현에서는 analytics 탭을 클릭할 때 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;datahub_usage_event&lt;/code&gt; 를 반드시 검색하도록 설정되어있기 때문이었습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Caused by: org.elasticsearch.ElasticsearchStatusException: Elasticsearch exception[type=index_not_found_exception, reason=no such index [datahub_usage_event]]                                                                                                                                                     
+     at org.elasticsearch.rest.BytesRestResponse.errorFromXContent(BytesRestResponse.java:187)                                                               
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이러한 구현은 문제가 있다고 생각했습니다. 유저 트래킹 기능을 사용하지 않더라도 Data LandScape Smmary은 확인할 수 있어야합니다. 둘은 독립된 기능으로 서로 영향을 주고 받지 않기 때문입니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;solution&quot;&gt;Solution&lt;/h3&gt;
+
+&lt;p&gt;여러 가지 해결책이 있을 수 있겠으나 제가 생각한 가장 간단한 방법은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;global.datahub_analytics_enabled&lt;/code&gt;가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;false&lt;/code&gt;로 설정되었을 때에도 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;datahub_usage_event&lt;/code&gt; 를 생성하는 것입니다. 해당 인덱스는 어떤 데이터를 저장하지도 않고, 데이터를 fetch할 일도 없으므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;data_streams&lt;/code&gt; 도 사용하지 않고  dummy index를 생성했습니다. 이렇게 dummy로 인덱스를 생성했더니 analytics 탭에 접속했을 때 에러도 발생하지 않고 data landscape summary도 확인할 수 있었습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;contribute&quot;&gt;contribute&lt;/h3&gt;
+
+&lt;p&gt;확인된 내용을 바탕으로, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;docker/elasticsearch-setup/create-indices.sh&lt;/code&gt; 파일을 수정하여 커밋했습니다. DataHub 개발자는 본인이 이해한 내용이 맞는지, 왜 해당 기능이 필요한 것인지, 왜 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;data_streams&lt;/code&gt; 기능을 사용하지 못하는 경우가 존재하는지와 같은 내용을 질문했고 코멘트를 받을 때마다 열심히 답변했습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/retrospect/datahub-bugfix-commit.png&quot; alt=&quot;contribute&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;버그의 발견, 해결 방법을 생각해내고 구현해내는 것보다 개발자에게 이 기능이 필요한 이유와 어떤 이유 때문에 버그가 발생했는지를 설명하는 것이 더 어려웠던 것 같습니다. 그래도 포기하지 않고 끊임없이 질문해주시고 제 생각을 물어보려고 하는 모습을 보며 인류애를 느꼈습니다. 이러한 &lt;strong&gt;친절함&lt;/strong&gt;이 오픈소스가 성공하고 있는 이유가 아닐까요?&lt;/p&gt;
+
+&lt;h3 id=&quot;approve&quot;&gt;approve&lt;/h3&gt;
+
+&lt;p&gt;부족한 영어 실력을 가지고 열심히 해당 PR이 필요한 이유를 설명한 결과, 약 일주일 정도 걸려서 approve를 받고 해당 PR 내용이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;v0.9.0&lt;/code&gt;에 포함되었습니다!&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/retrospect/datahub-approve.png&quot; alt=&quot;approve&quot; /&gt;&lt;/p&gt;
+
+&lt;h1 id=&quot;retrospect&quot;&gt;Retrospect&lt;/h1&gt;
+
+&lt;p&gt;이미 성숙한 오픈소스에 컨트리뷰터로 기여하기는 어려울 것이라 생각합니다. 사용자가 많을수록 많은 버그가 발견되고 이미 많은 솔루션이 제시되었을 것이기 때문입니다. DataHub는 아직 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;v1.0.0&lt;/code&gt;도 배포되지 않은 초기 오픈소스이기 때문에 아직 많은 버그들이 존재하며 버그를 발견해도 이를 해결하여 컨트리뷰트해주는 사람이 많지 않았기에 제게도 컨트리뷰션을 할 기회가 다가왔다고 생각합니다.&lt;/p&gt;
+
+&lt;p&gt;컨트리뷰션 과정에서 나의 생각을 정리하는 것과 내가 겪고 있는 상황을 전달할 수 있는 커뮤니케이션 능력이 제 생각보다 훨씬 더 중요함을 깨달았습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;내가 제시하고 있는 솔루션은 어떤 논리적 흐름을 거쳤는지를 설명하는 것&lt;/li&gt;
+  &lt;li&gt;이러한 논리적 흐름이 발생하게 된 상황/배경이 어땠는지 중요 포인트를 요약하여 정리하는 것&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;컨트리뷰션 뿐만 아니라 개발자로서 일하고 성장하는데 있어서 매우 중요한 요소임을 직접 경험하게 된 것 같아 좋은 기회였습니다.&lt;/p&gt;
+
+&lt;p&gt;다른 한가지 깨달은 것은 답답해하지 않고 상대방의 생각과 상황을 이해하기 위해 질문하는 태도입니다. 아마 제 PR에 assignee였던 pedro93은 조금 답답했었지 않을까요? 어색한 영어 문장으로 현재 상황을 애매하게 기술해놓았기 때문에 읽으면서 답답한 기분이었을 것 같습니다. 그래도 포기하지 않고, 계속 질문하며 PR이 필요한 이유와 이러한 생각을 하게 된 원인을 물어봐주는 그에게 너무나도 감사했습니다. 제가 받은 친절함을 다른 누구에게도 베풀고 싶다는 생각입니다.&lt;/p&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://naver.github.io/OpenSourceGuide/book/BetterContribution/why-contribute-to-open-source.html&quot;&gt;컨트리뷰션 시작하기&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;[contributions]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/datahub-project/datahub/pull/5920&quot;&gt;docs: datahub_conn_id =&amp;gt; conn_id in Airflow Integration #5920&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/datahub-project/datahub/pull/5974&quot;&gt;fix(elasticsearch_index): create datahub_usage_event index where &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;datahub_analytics_enabled&lt;/code&gt; set to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;false&lt;/code&gt; #5974&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="retrospect" /><summary type="html">오픈소스 컨트리뷰션 회고</summary></entry><entry><title type="html">Learning Apache Spark 3 with Scala (Section8)</title><link href="https://gyuhoonk.github.io/sparkscala8" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section8)" /><published>2022-08-27T22:30:00+09:00</published><updated>2022-08-27T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/sparkscala8</id><content type="html" xml:base="https://gyuhoonk.github.io/sparkscala8">&lt;p&gt;Learning Apache Spark 3 with Scala (Section8 -Spark Streaming)&lt;/p&gt;
 
 &lt;h1 id=&quot;spark-streaming&quot;&gt;Spark Streaming&lt;/h1&gt;
 
@@ -1741,156 +1845,4 @@ sparkTest.class
 
 &lt;p&gt;Airflow로 대용량 데이터를 &lt;strong&gt;직접&lt;/strong&gt; 처리해서는 안됩니다. 데이터를 직접 처리하는 것은 각종 툴(예를 들어 Spark)이 맡아야하고 Airflow는 그러한 툴들의 순서를 관리하고 실행만을 지시하는 역할입니다.&lt;/p&gt;
 
-&lt;h2 id=&quot;how-airflow-works&quot;&gt;How Airflow works?&lt;/h2&gt;</content><author><name>GyuhoonK</name></author><category term="airflow" /><summary type="html">Basic Concepts of Airflow</summary></entry><entry><title type="html">Learning Apache Spark 3 with Scala (Section5)</title><link href="https://gyuhoonk.github.io/sparkscala5" rel="alternate" type="text/html" title="Learning Apache Spark 3 with Scala (Section5)" /><published>2022-02-21T22:30:00+09:00</published><updated>2022-02-21T22:30:00+09:00</updated><id>https://gyuhoonk.github.io/sparkscala5</id><content type="html" xml:base="https://gyuhoonk.github.io/sparkscala5">&lt;p&gt;Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)&lt;/p&gt;
-
-&lt;h2 id=&quot;broadcast&quot;&gt;broadcast&lt;/h2&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broadcast&lt;/code&gt;를 이용하면 모든 executor에 해당 객체(object)를 보낼 수 있습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broadcast&lt;/code&gt;를 이용하는 방법은 간단합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sparkConetxt&lt;/code&gt; 객체에 서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broadcast&lt;/code&gt; 함수를 사용하면 됩니다. 각 executor에서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.values&lt;/code&gt;를 사용하여 해당 객체를 조회하고 사용할 수 있습니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Using the &lt;a href=&quot;https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#broadcast-variables&quot;&gt;broadcast functionality&lt;/a&gt; available in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SparkContext&lt;/code&gt; can greatly reduce &lt;strong&gt;the size of each serialized task&lt;/strong&gt;, and &lt;strong&gt;the cost of launching a job&lt;/strong&gt; over a cluster. If your tasks use any large object from the driver program inside of them (e.g. a static lookup table), consider turning it into a broadcast variable. Spark prints the serialized size of each task on the master, so you can look at that to decide whether your tasks are too large; in general tasks larger than about 20 KiB are probably worth optimizing.&lt;/p&gt;
-
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broadcast&lt;/code&gt; 함수를 이용하면, 하나의 노드에서만 해당 객체에 대한 연산을 수행하고 저장하고 있으므로, 메모리 사용을 줄이고 수행 시간을 줄일 수 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-scala highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;loadMovieNames&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;, &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-  &lt;span class=&quot;c1&quot;&gt;// Handle character encoding issues:&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;implicit&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;codec&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Codec&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Codec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ISO-8859-1&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// This is the current encoding of u.item, not UTF-8.&lt;/span&gt;
-
-  &lt;span class=&quot;c1&quot;&gt;// Create a Map of Ints to Strings, and populate it from u.item.&lt;/span&gt;
-  &lt;span class=&quot;k&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;movieNames&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;, &lt;span class=&quot;kt&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-
-  &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;lines&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;Source&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;fromFile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;data/ml-100k/u.item&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-  &lt;span class=&quot;nf&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;line&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;&amp;lt;-&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;lines&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;getLines&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;fields&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;line&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;split&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sc&quot;&gt;'|'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;nf&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;length&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-      &lt;span class=&quot;n&quot;&gt;movieNames&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;toInt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fields&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-  &lt;span class=&quot;nv&quot;&gt;lines&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
-  &lt;span class=&quot;n&quot;&gt;movieNames&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;nameDict&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;spark&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;sparkContext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;broadcast&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;loadMovieNames&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;())&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// nameDict is a broadcast variable.&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;...&lt;/span&gt;
-
-&lt;span class=&quot;k&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;lookupName&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&amp;gt;&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;movieID&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;Int&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)=&amp;gt;{&lt;/span&gt;
-      &lt;span class=&quot;nv&quot;&gt;nameDict&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;py&quot;&gt;value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;movieID&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;// broadcast variable을 호출할 때는 .value 사용&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;sparksql-is-not-always-faster-than-rdd&quot;&gt;sparkSQL is NOT always Faster than RDD&lt;/h2&gt;
-
-&lt;p&gt;코드 작성의 편이성과 속도의 측면에서 sparkSQL을 사용하여 코드를 작성하는 것을 권장하지만, 이것이 항상 sparkSQL이 RDD보다 빠르다는 이야기는 아닙니다. 경우에 따라서는 RDD를 이용하는 것이 속도가 더 빠르기도 합니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt; &lt;/th&gt;
-      &lt;th&gt;Code&lt;/th&gt;
-      &lt;th&gt;Execution Time&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Dataset&lt;/td&gt;
-      &lt;td&gt;&lt;a href=&quot;https://github.com/GyuhoonK/sparkscala/blob/main/src/main/scala/com/sundogsoftware/spark/DegreesOfSeparationDataset.scala&quot;&gt;Dataset Code&lt;/a&gt;&lt;/td&gt;
-      &lt;td&gt;7s&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;RDD&lt;/td&gt;
-      &lt;td&gt;&lt;a href=&quot;https://github.com/GyuhoonK/sparkscala/blob/main/src/main/scala/com/sundogsoftware/spark/DegreesOfSeparation.scala&quot;&gt;RDD Code&lt;/a&gt;&lt;/td&gt;
-      &lt;td&gt;3s&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;위 처럼 Dataset API를 이용하는 경우보다 RDD API를 이용하여 작성한 경우가 2배 이상 빠른 경우도 있습니다. 상황에 맞는 API를 선택하여 활용해야합니다.&lt;/p&gt;
-
-&lt;p&gt;Dataset, DataFrame API는 전통적인 데이터 분석 문제를 다루는데 효율적입니다. 즉 SQL 명령어를 활용하여 분석이 가능한 문제라면 sprakSQL API를 활용하는 것이 좋습니다.&lt;/p&gt;
-
-&lt;p&gt;반면, 새로운 프레임을 만들어 데이터 분석을 해야하는 경우에는 RDD와 같이 저수준 API에서 더 좋은 결과를 얻을 수 있습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;cache-persist&quot;&gt;cache, persist&lt;/h2&gt;
-
-&lt;p&gt;모든 노드에서 자주 사용해야하는 데이터에 대해서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;broadcast&lt;/code&gt;가 아니라 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cache&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;persist&lt;/code&gt;를 사용합니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt; &lt;/th&gt;
-      &lt;th&gt;description&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cache&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;lets you cache dataset to memory&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;persist&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;optionally lets you cache dataset to not jus memory but also disk&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;아래와 같은 storage level에 대해서 선택이 가능합니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;Storage Level&lt;/th&gt;
-      &lt;th style=&quot;text-align: left&quot;&gt;Meaning&lt;/th&gt;
-      &lt;th&gt; &lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;MEMORY_ONLY&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, some partitions will not be cached and will be recomputed on the fly each time they’re needed. This is the default level.&lt;/td&gt;
-      &lt;td&gt;The &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cache()&lt;/code&gt; method is a shorthand for using the default storage level, which is &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;StorageLevel.MEMORY_ONLY&lt;/code&gt; (store deserialized objects in memory).&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;MEMORY_AND_DISK&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, store the partitions that don’t fit on disk, and read them from there when they’re needed.&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;MEMORY_ONLY_SER (Java and Scala)&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Store RDD as &lt;em&gt;serialized&lt;/em&gt; Java objects (one byte array per partition). This is generally more space-efficient than deserialized objects, especially when using a &lt;a href=&quot;https://spark.apache.org/docs/latest/tuning.html&quot;&gt;fast serializer&lt;/a&gt;, but more CPU-intensive to read.&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;MEMORY_AND_DISK_SER (Java and Scala)&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Similar to MEMORY_ONLY_SER, but spill partitions that don’t fit in memory to disk instead of recomputing them on the fly each time they’re needed.&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;DISK_ONLY&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Store the RDD partitions only on disk.&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;MEMORY_ONLY_2, MEMORY_AND_DISK_2, etc.&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Same as the levels above, but replicate each partition on two cluster nodes.&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;OFF_HEAP (experimental)&lt;/td&gt;
-      &lt;td style=&quot;text-align: left&quot;&gt;Similar to MEMORY_ONLY_SER, but store the data in &lt;a href=&quot;https://spark.apache.org/docs/latest/configuration.html#memory-management&quot;&gt;off-heap memory&lt;/a&gt;. This requires off-heap memory to be enabled.&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;[참고]&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://www.udemy.com/course/best-scala-apache-spark/&quot;&gt;Learning Apache Spark 3 with Scala&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#broadcast-variables&quot;&gt;Broadcast Variables&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#rdd-persistence&quot;&gt;RDD Persistence&lt;/a&gt;&lt;/p&gt;</content><author><name>GyuhoonK</name></author><category term="scala" /><summary type="html">Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)</summary></entry></feed>
+&lt;h2 id=&quot;how-airflow-works&quot;&gt;How Airflow works?&lt;/h2&gt;</content><author><name>GyuhoonK</name></author><category term="airflow" /><summary type="html">Basic Concepts of Airflow</summary></entry></feed>
