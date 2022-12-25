@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Oracle DB Connection String</title>
+        
+          <description>&lt;p&gt;oracle database connection String 설정에 대해 알아봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 24 Dec 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/oracle-connection</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/oracle-connection</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Linux 사용자 관리, 파일속성 그리고, 특수권한</title>
         
           <description>&lt;p&gt;Linux 사용자 관리, 파일속성 그리고, 특수권한에 대해서 알아봅니다.&lt;/p&gt;

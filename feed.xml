@@ -5,8 +5,21 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Sat, 19 Nov 2022 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sat, 24 Dec 2022 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>Oracle DB Connection String</title>
+        
+        
+            <description>&lt;p&gt;oracle database connection String 설정에 대해 알아봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 24 Dec 2022 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/oracle-connection</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/oracle-connection</guid>
+      </item>
+    
 	<item>
 		<title>Linux 사용자 관리, 파일속성 그리고, 특수권한</title>
         
@@ -122,19 +135,6 @@
         <pubDate>Sat, 12 Mar 2022 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/spark-repartition</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/spark-repartition</guid>
-      </item>
-    
-	<item>
-		<title>Learning Apache Spark 3 with Scala (Section6)</title>
-        
-        
-            <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sun, 06 Mar 2022 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/sparkscala6</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala6</guid>
       </item>
     
   </channel>
