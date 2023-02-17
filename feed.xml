@@ -5,8 +5,21 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Sat, 24 Dec 2022 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sun, 12 Feb 2023 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>Pod와 Container</title>
+        
+        
+            <description>&lt;p&gt;Container와 Pod의 기본개념을 확인해봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 12 Feb 2023 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/pod-container</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/pod-container</guid>
+      </item>
+    
 	<item>
 		<title>Oracle DB Connection String</title>
         
@@ -122,19 +135,6 @@
         <pubDate>Fri, 01 Apr 2022 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/Subtree</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/Subtree</guid>
-      </item>
-    
-	<item>
-		<title>repartition in Spark</title>
-        
-        
-            <description>&lt;p&gt;repartition 파헤치기&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sat, 12 Mar 2022 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/spark-repartition</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-repartition</guid>
       </item>
     
   </channel>

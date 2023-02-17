@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Pod와 Container</title>
+        
+          <description>&lt;p&gt;Container와 Pod의 기본개념을 확인해봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 12 Feb 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/pod-container</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/pod-container</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Oracle DB Connection String</title>
         
           <description>&lt;p&gt;oracle database connection String 설정에 대해 알아봅니다.&lt;/p&gt;
@@ -483,21 +498,6 @@
         <link>
         https://gyuhoonk.github.io/boto3-zipfile</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/boto3-zipfile</guid>
-      </item>
-      
-    
-      
-      <item>
-        <title>AWS S3와 zip 파일</title>
-        
-          <description>&lt;p&gt;kubernetes&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Wed, 01 Sep 2021 22:30:00 +0900</pubDate>
-        <link>
-        https://gyuhoonk.github.io/kubernetes</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/kubernetes</guid>
       </item>
       
     
