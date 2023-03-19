@@ -5,10 +5,23 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Sat, 11 Mar 2023 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sat, 18 Mar 2023 22:30:00 +0900</lastBuildDate>
 	
 	<item>
-		<title>Load Average란?(chagGPT로 알아보기)</title>
+		<title>변수를 전달하는 decorator</title>
+        
+        
+            <description>&lt;p&gt;변수를 생성해 함수로 전달하는 데코레이터 만들기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 18 Mar 2023 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/decorator</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/decorator</guid>
+      </item>
+    
+	<item>
+		<title>Load Average란?(chatGPT로 알아보기)</title>
         
         
             <description>&lt;p&gt;chatGPT로 load average로 파헤쳐보기&lt;/p&gt;
@@ -122,19 +135,6 @@
         <pubDate>Thu, 16 Jun 2022 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/enableHiveSupport</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/enableHiveSupport</guid>
-      </item>
-    
-	<item>
-		<title>merge vs. rebase</title>
-        
-        
-            <description>&lt;p&gt;merge와 rebase 비교하기&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sat, 14 May 2022 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/merge-rebase</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/merge-rebase</guid>
       </item>
     
   </channel>

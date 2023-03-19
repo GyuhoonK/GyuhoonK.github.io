@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/linux/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2023-03-12T23:32:49+09:00</updated>
+  <updated>2023-03-19T22:21:04+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/linux/feed.xml</id>
 
   
@@ -32,8 +32,8 @@
 
   
     <entry>
-      <title type="html">Load Average란?(chagGPT로 알아보기)</title>
-      <link href="https://gyuhoonk.github.io/load-avg" rel="alternate" type="text/html" title="Load Average란?(chagGPT로 알아보기)" />
+      <title type="html">Load Average란?(chatGPT로 알아보기)</title>
+      <link href="https://gyuhoonk.github.io/load-avg" rel="alternate" type="text/html" title="Load Average란?(chatGPT로 알아보기)" />
       <published>2023-03-11T22:30:00+09:00</published>
       <updated>2023-03-11T22:30:00+09:00</updated>
       <id>https://gyuhoonk.github.io/load-avg</id>
@@ -47,7 +47,7 @@
 &lt;h3 id=&quot;load-average가-뭐지&quot;&gt;Load Average가 뭐지?&lt;/h3&gt;
 &lt;p&gt;해당 알람을 받았지만.. 사실 Load Average가 무엇인지 정확히 몰랐습니다. 서버 구동 시에 관리되는 메트릭이구나, 일정 임계치를 넘어서면 문제가 되는구나, 지금 내가 실행한 작업에 의해 영향이 있을 수 있겠구나 정도만 파악했고 제 작업을 잠시 중단하니 Load Average가 낮아졌습니다.&lt;br /&gt;
 서버에서 구동 중인 작업(process)와 연관이 있겠구나 정도만 파악을 했고 정확히 알아보기 위해 검색을 시작했습니다. 운영체제를 좀 더 열심히 공부할 걸 하는 후회와 함께…
-그러다가 요즘 무엇인가 공부를 하는데에 chatGPT가 효율적이란 후기들이 생각났고 저도 chagGPT한테 load average에 대해서 물어봤습니다.&lt;/p&gt;
+그러다가 요즘 무엇인가 공부를 하는데에 chatGPT가 효율적이란 후기들이 생각났고 저도 chatGPT한테 load average에 대해서 물어봤습니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;chatgpt야-load-average가-뭐야&quot;&gt;chatGPT야, Load Average가 뭐야?&lt;/h3&gt;
 
@@ -72,7 +72,7 @@ chatGPT는 깔끔하게 답변해주어서 읽는 것만으로도 대강 어떤 
 여기서 조금 헷갈렸지만 다시 생각해보니 chatGPT가 조금 불친절해도 틀린 말은 하지 않았다는 걸 깨달았습니다. CPU 코어가 1개인 경우는 요즘에는 거의 없습니다. 제가 알람을 받았던 서버의 CPU도 24 core CPU였습니다. 24 core CPU에서 load average가 1이라면 CPU를 약 4% 정도만 사용하는 상태입니다. 따라서 대부분의 경우에 load average가 1인 것은 시스템이 정상일 확률이 높다는 설명입니다.&lt;br /&gt;
 더불어, chatGPT의 첫번째 답변은 1 core CPU를 상정하고 답변했던 것으로 보입니다. 1 core CPU에서 load average가 1이라면 100%로 사용 중이므로 시스템이 비정상적으로 작동할 것이기 때문입니다.&lt;/p&gt;
 
-&lt;p&gt;저의 이런 생각이 맞는지 확인하기 위해 구체적인 예시로 chagGPT에게 다시 질문했습니다.&lt;/p&gt;
+&lt;p&gt;저의 이런 생각이 맞는지 확인하기 위해 구체적인 예시로 chatGPT에게 다시 질문했습니다.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/linux/chatgpt4.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
@@ -93,7 +93,7 @@ chatGPT는 깔끔하게 답변해주어서 읽는 것만으로도 대강 어떤 
 &lt;p&gt;총 프로세스 개수가 582개이고, 580개가 sleeping(대기), 2개가 running(실행)인 상태였습니다. 그런데 chatGPT에 따르면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;실행 중인 프로세스 수=실행 중인 프로세스 수+실행 중인 스레드 수&lt;/code&gt;입니다. 따라서, 현재 실행 중인 스레드 수인 2934도 load average 계산에 포함해야합니다. &lt;br /&gt;
 그런데 이렇게 계산하면 (582+2394)/10=297.6으로 터무니없는 값이 나옵니다. 현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;top&lt;/code&gt; 명령어로 확인되는 load average(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2.92 3.99 4.07&lt;/code&gt;)과도 거의 100배 가까이 차이가 납니다.&lt;/p&gt;
 
-&lt;p&gt;이 이후부터는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;top&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uptime&lt;/code&gt; 명령어를 사용해가며 확인한 값(프로세스 수와 실제로 표시되는 load avg)을 chagGPT에 제공하며 실제로 load average가 어떻게 계산되는지 확인하려고 했지만 제가 의도한 답변을 받을 수 없었습니다. 그래서 포기하고, 이번엔 제가 직접 구글링해보았습니다.&lt;/p&gt;
+&lt;p&gt;이 이후부터는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;top&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uptime&lt;/code&gt; 명령어를 사용해가며 확인한 값(프로세스 수와 실제로 표시되는 load avg)을 chatGPT에 제공하며 실제로 load average가 어떻게 계산되는지 확인하려고 했지만 제가 의도한 답변을 받을 수 없었습니다. 그래서 포기하고, 이번엔 제가 직접 구글링해보았습니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;kernel에서-계산하는-load-avg&quot;&gt;kernel에서 계산하는 load avg&lt;/h3&gt;
 &lt;p&gt;실제로 커널에서 load average를 계산하는 함수는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;calc_load()&lt;/code&gt;라는 함수입니다. 
@@ -135,6 +135,7 @@ kernel 2.0.40의 함수가 가장 간단한 형태라 이해하기 편할 것 �
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;running&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uninterruptible&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nr_active()&lt;/code&gt;는 nr_running(TASK_RUNNING), nr_uninterruptible(TASK_UNINTERRUPTIBLE)인 프로세스의 개수를 더해서 리턴합니다. 즉, 실행 중인 프로세스와 대기 상태인 프로세스 개수를 계산합니다.&lt;br /&gt;
 따라서 지정된 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tick&lt;/code&gt; 단위마다, active task(RUNNING, UNINTERRUPTIBLE)를 계산하여 저장하고 이를 이용하여 load average를 계산한다는 것을 알 수 있습니다.&lt;br /&gt;
 이 부분에 대한 이해가 깊지는 않지만, 스레드에 대한 고려는 없는 것으로 보입니다. 따라서 chatGPT가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;실행 중인 스레드의 개수도 더해야한다&lt;/code&gt;고 설명한 부분은 틀린 답변이 아닌가 싶습니다.&lt;br /&gt;
@@ -155,6 +156,7 @@ kernel 2.0.40의 함수가 가장 간단한 형태라 이해하기 편할 것 �
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;p&gt;위 함수는 5개 값, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1분,5분,15분 로드평균 (실행 중인 task개수)/(전체 task 개수) (최근 실행된 task의 PID)&lt;/code&gt;를 보여줍니다.&lt;/p&gt;
 
 &lt;p&gt;그렇다면 실제로 보여지는 load average값은 어떻게 계산되는 걸까? tick마다 계산한 모든 값을 저장하고 있다가 평균을 계산할 수도 있겠지만 이런 방법은 너무 많은 자원을 소모합니다. 예를 들어 1초마다 load를 저장하는 경우 1분, 5분, 15분은 각각 60개, 150개, 900개의 값을 저장해야합니다. 따라서, 이전 load average값만을 이용하여 간단하게 계산하는 방법을 도입했고 리눅스는 EMA(Exponential Moving Average)를 사용합니다.&lt;/p&gt;
@@ -195,6 +197,7 @@ kernel 2.0.40의 함수가 가장 간단한 형태라 이해하기 편할 것 �
         load += n*(FIXED_1-exp); \
         load &amp;gt;&amp;gt;= FSHIFT;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;p&gt;load average를 EMA로 계산하기 위해 고정소수점(fixed-point)을 이용하고 있으며, 10 bit는 정수, 11bit는 소수에 할당됩니다.&lt;br /&gt;
 1분 load average를 계산하는 경우에, \(e^{-5/60}\)은 부동소수점으로 표현시 약 \(1884\)의 값을 갖습니다.&lt;/p&gt;
 

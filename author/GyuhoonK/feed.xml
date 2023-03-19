@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2023-03-12T23:32:49+09:00</updated>
+  <updated>2023-03-19T22:21:04+09:00</updated>
   <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
 
   
@@ -32,8 +32,190 @@
 
   
     <entry>
-      <title type="html">Load Average란?(chagGPT로 알아보기)</title>
-      <link href="https://gyuhoonk.github.io/load-avg" rel="alternate" type="text/html" title="Load Average란?(chagGPT로 알아보기)" />
+      <title type="html">변수를 전달하는 decorator</title>
+      <link href="https://gyuhoonk.github.io/decorator" rel="alternate" type="text/html" title="변수를 전달하는 decorator" />
+      <published>2023-03-18T22:30:00+09:00</published>
+      <updated>2023-03-18T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/decorator</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/decorator">&lt;p&gt;변수를 생성해 함수로 전달하는 데코레이터 만들기&lt;/p&gt;
+
+&lt;h2 id=&quot;decorator를-사용하고-싶었던-이유&quot;&gt;decorator를 사용하고 싶었던 이유&lt;/h2&gt;
+&lt;p&gt;요즘 작업 중인 업무 중에, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;connection&lt;/code&gt;을 선언한 뒤 해당 커넥션 객체를 이용하여 서버와 통신하는 작업을 많이 하고 있습니다. 예를 들어, DB와 연결하는 connection를 함수내에서 선언하고 이를 이용해서 작업하는 식입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyhive&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'hive-host'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# 무엇인가 작업을 작성함 #
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;그런데 위와 같은 함수를 꽤나 많이 작성해야했습니다. 그러면 매번 함수를 작성할 때마다 함수 내에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn&lt;/code&gt;을 선언해야했습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;func1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'hive-host'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# 무엇인가 작업을 작성함 #
+&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;func2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'hive-host'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                           &lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;# 무엇인가 작업을 작성함 #
+&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# 새로운 함수를 작성할 때마다 동일한 코드(conn을 선언)를 작성해야했다
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;클래스를 선언하고 클래스 커넥션 객체를 인스턴스 변수로 선언해놓은 뒤 위에서 선언한 함수를 메소드로 만들면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn&lt;/code&gt;을 여러번 선언해야하는 문제가 해결될 수 있긴합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;Class&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;HiveJob&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'hive-host'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                               &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                               &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                               &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                               &lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;func1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM TABLE1&quot;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;func2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;DROP TABLE TABLE1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이것이 해결책이 될 수도 있지만 제가 원하는 방향과는 맞지 않았습니다. 첫번째 이유는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;func1, func2&lt;/code&gt;와 같은 함수가 다른 코드에서는 사용되지 않고 전체 코드 실행 중에 거의 1회 정도만 실행되기 때문에 클래스에 적합하지 않는다고 생각했기 때문이고, 두번째는 이렇게 하나의 클래스로 모으기에는 이미 함수가 너무나도 많이 작성되어있는 상태였기때문입니다. 그렇다고 지금까지 작성된 함수는 그대로 두고, 앞으로 작성하려는 함수만 클래스에 모아서 메서드로 관리하게되면 이전에 작성된 함수는 코드 내에 함수로 남고, 앞으로 작성되는 함수만 클래스 내 메서드로 관리되는 이상한 상황이 될 것입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;decorator로-반복되는-코드를-없애자&quot;&gt;decorator로 반복되는 코드를 없애자&lt;/h2&gt;
+&lt;p&gt;위와 같은 이유로 (미리 이러한 상황을 예상하지 못한 탓에), 대체할 방법으로 앞으로도 함수로 작성하되 중복되는 코드를 줄일 방법을 고민했습니다. decorator를 사용하면 문제를 해결할 수 있을 것 같았습니다. decorator가 python에 도입된 이유는 함수를 정의한 이후에 필요한 기능을 추가하지 않고, 정의와 동시에 필요한 기능을 추가하기 위해서입니다.&lt;br /&gt;
+PEP-318에서는 아래와 같은 예시로 데코레이터의 편리성을 설명합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cls&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;synchronized&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;classmethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;### foo 함수를 선언한 뒤, 필요한 기능(sync, class) 추가를 위해 2줄이 더 붙습니다
+### foo 함수 정의를 위해 foo를 3번이나 더 적어야합니다
+&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;classmethod&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;synchronized&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lock&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;foo&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cls&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;pass&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;### 데코레이터를 이용하면 함수 선언만으로 기능 추가도 완료됩니다
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;제 상황에 대입하여 생각해보니 추가하고자 하는 기능은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn&lt;/code&gt; 객체를 만드는 것이고 함수 내부는 커넥션을 이용한 동작만 필요했습니다. 따라서 데코레이터를 사용한다면 아래와 같은 포맷을 생각했습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_connection&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;func1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM TABLE1&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_connection&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;func2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;DROP TABLE TABLE1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@get_connection&lt;/code&gt;만 있으면 함수 내부에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn&lt;/code&gt;이라는 이름의 커넥션 객체가 생성되고 이를 이용하여 동작하는 부분의 코드만 작성하고 싶었습니다! 위와 같은 사용 사례를 아직 본 적은 없었지만 왠지 가능할 것 같았습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;get_connection&lt;/code&gt; 데코레이터를 작성해보았습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; 
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;wrapper&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;hive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'hive-host'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                               &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;10000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                               &lt;span class=&quot;n&quot;&gt;username&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'username'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                               &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'password'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+                               &lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'default'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;func&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kwargs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wrapper&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_connection&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;func1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;query&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM TABLE1&quot;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pd&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_sql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_connection&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;func2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;DROP TABLE TABLE1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;func1, func2&lt;/code&gt;는 함수 내부에서 커넥션 객체(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn&lt;/code&gt;)를 생성하지는 않지만, 데코레이터 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;get_connection&lt;/code&gt;의 wrapper에서 생성한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn&lt;/code&gt;을 전달받습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn&lt;/code&gt;을 전달받기 위해 함수에 매개변수를 추가했습니다. 데코레이터 문법은 사실 아래처럼 함수를 재정의하는 것과 다름 없습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;func1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_connection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;func1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# get_connection 내부의 wrapper의 리턴이 최종적으로 리턴된다
+# 따라서 return result 가 없으면, None을 리턴한다
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;따라서, 함수(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;func&lt;/code&gt;)의 리턴(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;result&lt;/code&gt;)을 리턴해주지 않으면 값을 데코레이터 수식을 받은 함수의 리턴이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;None&lt;/code&gt;이 됩니다.&lt;/p&gt;
+
+&lt;p&gt;wrapper는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;*args, **kwargs&lt;/code&gt;로 데코레이터 수식을 받는 함수의 변수를 전달받아 다시 func에 전달하므로, 아래와 같이 변수를 입력해야하는 함수에도 데코레이터를 사용할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_connection&lt;/span&gt; 
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;drop_table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;DROP TABLE &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;아쉬운-점&quot;&gt;아쉬운 점&lt;/h3&gt;
+&lt;p&gt;함수 선언 시에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn&lt;/code&gt;을 매개변수로 반드시 추가해야한다는 점이 아쉽습니다. 데코레이터를 붙이기만 하면, 함수 내부에 어떤 변수(객체)가 생성되도록 하는 기능은 불가능한걸까요? 위에서 예시로 들었던 클래스로 구현하는 경우에는 메소드가 인스턴스 변수(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;self.conn&lt;/code&gt;)에 직접 접근할 수 있으므로 매개변수로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn&lt;/code&gt;을 받지 않았습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;## 메소드는 self.conn에 직접 접근 가능하므로 매개변수가 필요 없다
+&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;func1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;## 데코레이터에서 생성한 conn을 전달받기 위해 매개변수가 필요하다
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;func1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn&lt;/code&gt; 하나 넣는게 뭐가 불편하다고, 라고 생각하실 수도 있지만 지금까지 작성된 함수들에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;conn&lt;/code&gt; 객체 선언을 삭제하고, 데코레이터를 추가하려고 했더니 매개변수를 추가해야한다는 건 꽤나 큰 부담이었습니다(그래서 추가하지 못했습니다..)&lt;br /&gt;
+뭔가 스마트하게 추가할 수 있는 방법이 있다면 좋을텐데 일단은 현재로서도 제가 원했던 기능은 구현이 된 것 같아 추가 조사는 하지 않았습니다.&lt;/p&gt;
+
+&lt;p&gt;[참고]&lt;br /&gt;
+&lt;a href=&quot;https://peps.python.org/pep-0318/&quot;&gt;PEP 318 – Decorators for Functions and Methods&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://dojang.io/mod/page/view.php?id=2427&quot;&gt;데코레이터 만들기&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="python" />
+      
+
+      
+        <summary type="html">변수를 생성해 함수로 전달하는 데코레이터 만들기</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">Load Average란?(chatGPT로 알아보기)</title>
+      <link href="https://gyuhoonk.github.io/load-avg" rel="alternate" type="text/html" title="Load Average란?(chatGPT로 알아보기)" />
       <published>2023-03-11T22:30:00+09:00</published>
       <updated>2023-03-11T22:30:00+09:00</updated>
       <id>https://gyuhoonk.github.io/load-avg</id>
@@ -47,7 +229,7 @@
 &lt;h3 id=&quot;load-average가-뭐지&quot;&gt;Load Average가 뭐지?&lt;/h3&gt;
 &lt;p&gt;해당 알람을 받았지만.. 사실 Load Average가 무엇인지 정확히 몰랐습니다. 서버 구동 시에 관리되는 메트릭이구나, 일정 임계치를 넘어서면 문제가 되는구나, 지금 내가 실행한 작업에 의해 영향이 있을 수 있겠구나 정도만 파악했고 제 작업을 잠시 중단하니 Load Average가 낮아졌습니다.&lt;br /&gt;
 서버에서 구동 중인 작업(process)와 연관이 있겠구나 정도만 파악을 했고 정확히 알아보기 위해 검색을 시작했습니다. 운영체제를 좀 더 열심히 공부할 걸 하는 후회와 함께…
-그러다가 요즘 무엇인가 공부를 하는데에 chatGPT가 효율적이란 후기들이 생각났고 저도 chagGPT한테 load average에 대해서 물어봤습니다.&lt;/p&gt;
+그러다가 요즘 무엇인가 공부를 하는데에 chatGPT가 효율적이란 후기들이 생각났고 저도 chatGPT한테 load average에 대해서 물어봤습니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;chatgpt야-load-average가-뭐야&quot;&gt;chatGPT야, Load Average가 뭐야?&lt;/h3&gt;
 
@@ -72,7 +254,7 @@ chatGPT는 깔끔하게 답변해주어서 읽는 것만으로도 대강 어떤 
 여기서 조금 헷갈렸지만 다시 생각해보니 chatGPT가 조금 불친절해도 틀린 말은 하지 않았다는 걸 깨달았습니다. CPU 코어가 1개인 경우는 요즘에는 거의 없습니다. 제가 알람을 받았던 서버의 CPU도 24 core CPU였습니다. 24 core CPU에서 load average가 1이라면 CPU를 약 4% 정도만 사용하는 상태입니다. 따라서 대부분의 경우에 load average가 1인 것은 시스템이 정상일 확률이 높다는 설명입니다.&lt;br /&gt;
 더불어, chatGPT의 첫번째 답변은 1 core CPU를 상정하고 답변했던 것으로 보입니다. 1 core CPU에서 load average가 1이라면 100%로 사용 중이므로 시스템이 비정상적으로 작동할 것이기 때문입니다.&lt;/p&gt;
 
-&lt;p&gt;저의 이런 생각이 맞는지 확인하기 위해 구체적인 예시로 chagGPT에게 다시 질문했습니다.&lt;/p&gt;
+&lt;p&gt;저의 이런 생각이 맞는지 확인하기 위해 구체적인 예시로 chatGPT에게 다시 질문했습니다.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/linux/chatgpt4.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
@@ -93,7 +275,7 @@ chatGPT는 깔끔하게 답변해주어서 읽는 것만으로도 대강 어떤 
 &lt;p&gt;총 프로세스 개수가 582개이고, 580개가 sleeping(대기), 2개가 running(실행)인 상태였습니다. 그런데 chatGPT에 따르면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;실행 중인 프로세스 수=실행 중인 프로세스 수+실행 중인 스레드 수&lt;/code&gt;입니다. 따라서, 현재 실행 중인 스레드 수인 2934도 load average 계산에 포함해야합니다. &lt;br /&gt;
 그런데 이렇게 계산하면 (582+2394)/10=297.6으로 터무니없는 값이 나옵니다. 현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;top&lt;/code&gt; 명령어로 확인되는 load average(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2.92 3.99 4.07&lt;/code&gt;)과도 거의 100배 가까이 차이가 납니다.&lt;/p&gt;
 
-&lt;p&gt;이 이후부터는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;top&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uptime&lt;/code&gt; 명령어를 사용해가며 확인한 값(프로세스 수와 실제로 표시되는 load avg)을 chagGPT에 제공하며 실제로 load average가 어떻게 계산되는지 확인하려고 했지만 제가 의도한 답변을 받을 수 없었습니다. 그래서 포기하고, 이번엔 제가 직접 구글링해보았습니다.&lt;/p&gt;
+&lt;p&gt;이 이후부터는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;top&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uptime&lt;/code&gt; 명령어를 사용해가며 확인한 값(프로세스 수와 실제로 표시되는 load avg)을 chatGPT에 제공하며 실제로 load average가 어떻게 계산되는지 확인하려고 했지만 제가 의도한 답변을 받을 수 없었습니다. 그래서 포기하고, 이번엔 제가 직접 구글링해보았습니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;kernel에서-계산하는-load-avg&quot;&gt;kernel에서 계산하는 load avg&lt;/h3&gt;
 &lt;p&gt;실제로 커널에서 load average를 계산하는 함수는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;calc_load()&lt;/code&gt;라는 함수입니다. 
@@ -135,6 +317,7 @@ kernel 2.0.40의 함수가 가장 간단한 형태라 이해하기 편할 것 �
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;running&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uninterruptible&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nr_active()&lt;/code&gt;는 nr_running(TASK_RUNNING), nr_uninterruptible(TASK_UNINTERRUPTIBLE)인 프로세스의 개수를 더해서 리턴합니다. 즉, 실행 중인 프로세스와 대기 상태인 프로세스 개수를 계산합니다.&lt;br /&gt;
 따라서 지정된 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tick&lt;/code&gt; 단위마다, active task(RUNNING, UNINTERRUPTIBLE)를 계산하여 저장하고 이를 이용하여 load average를 계산한다는 것을 알 수 있습니다.&lt;br /&gt;
 이 부분에 대한 이해가 깊지는 않지만, 스레드에 대한 고려는 없는 것으로 보입니다. 따라서 chatGPT가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;실행 중인 스레드의 개수도 더해야한다&lt;/code&gt;고 설명한 부분은 틀린 답변이 아닌가 싶습니다.&lt;br /&gt;
@@ -155,6 +338,7 @@ kernel 2.0.40의 함수가 가장 간단한 형태라 이해하기 편할 것 �
         &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;p&gt;위 함수는 5개 값, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1분,5분,15분 로드평균 (실행 중인 task개수)/(전체 task 개수) (최근 실행된 task의 PID)&lt;/code&gt;를 보여줍니다.&lt;/p&gt;
 
 &lt;p&gt;그렇다면 실제로 보여지는 load average값은 어떻게 계산되는 걸까? tick마다 계산한 모든 값을 저장하고 있다가 평균을 계산할 수도 있겠지만 이런 방법은 너무 많은 자원을 소모합니다. 예를 들어 1초마다 load를 저장하는 경우 1분, 5분, 15분은 각각 60개, 150개, 900개의 값을 저장해야합니다. 따라서, 이전 load average값만을 이용하여 간단하게 계산하는 방법을 도입했고 리눅스는 EMA(Exponential Moving Average)를 사용합니다.&lt;/p&gt;
@@ -195,6 +379,7 @@ kernel 2.0.40의 함수가 가장 간단한 형태라 이해하기 편할 것 �
         load += n*(FIXED_1-exp); \
         load &amp;gt;&amp;gt;= FSHIFT;
 &lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
 &lt;p&gt;load average를 EMA로 계산하기 위해 고정소수점(fixed-point)을 이용하고 있으며, 10 bit는 정수, 11bit는 소수에 할당됩니다.&lt;br /&gt;
 1분 load average를 계산하는 경우에, \(e^{-5/60}\)은 부동소수점으로 표현시 약 \(1884\)의 값을 갖습니다.&lt;/p&gt;
 
@@ -1863,219 +2048,6 @@ WHERE col1 = 'a'
 
       
         <summary type="html">Spark enableHiveSupport(Hive metaStore)</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">merge vs. rebase</title>
-      <link href="https://gyuhoonk.github.io/merge-rebase" rel="alternate" type="text/html" title="merge vs. rebase" />
-      <published>2022-05-14T22:30:00+09:00</published>
-      <updated>2022-05-14T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/merge-rebase</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/merge-rebase">&lt;p&gt;merge와 rebase 비교하기&lt;/p&gt;
-
-&lt;h1 id=&quot;merge--rebase&quot;&gt;Merge &amp;amp; Rebase&lt;/h1&gt;
-
-&lt;p&gt;Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 보입니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;git-merge&quot;&gt;git merge&lt;/h2&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Join two or more development histories together&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Incorporates changes from the named commits (since the time their histories diverged from the current branch) into the current branch. This command is used by &lt;em&gt;git pull&lt;/em&gt; to incorporate changes from another repository and can be used by hand to merge changes from one branch into another.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;대상 브랜치의 커밋 내용을 현재 브랜치로 포함시킨다는 것이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 의 가장 큰 특징입니다.  서로 다른 브랜치 간에서만 사용되는 것이 아니라, 저장소 간의 내용을 하나로 통합하는 경우에도 사용됩니다. 즉, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git pull&lt;/code&gt;에서도 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt;를 이용합니다.&lt;/p&gt;
-
-&lt;p&gt;git document는 아래와 같은 상황을 예시로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 를 설명합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      A---B---C topic
-     /
-D---E---F---G master
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;이 때, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt;의 공통 조상이 되는 commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E&lt;/code&gt; 를 &lt;strong&gt;base&lt;/strong&gt;라고 부릅니다.&lt;/p&gt;
-
-&lt;p&gt;현재 브랜치(current branch)가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 일 때, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge topic&lt;/code&gt; 을 실행하면, 아래와 같은 브랜치 히스토리가 생성됩니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout master
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git merge topic
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      A---B---C topic
-     /         \
-D---E---F---G---H master
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt;로부터 현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt; 브랜치의 current commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C&lt;/code&gt;까지의 모든 변화(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E-A-B-C&lt;/code&gt;)를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치의 current commit이었던 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt;로부터 재실행합니다. 그리고 이를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;H&lt;/code&gt; 라는 commit으로 생성합니다.&lt;/p&gt;
-
-&lt;p&gt;이 때, 충돌(conflict)이 발생하게 되면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 를 입력한 사용자는 충돌을 해결하고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt; 를 이어가거나(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge --continue&lt;/code&gt;), 이전 상태로 되돌려야만 합니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge --abort&lt;/code&gt;).&lt;/p&gt;
-
-&lt;h2 id=&quot;git-rebase&quot;&gt;git rebase&lt;/h2&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt; 는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;upstream&amp;gt;, &amp;lt;branch&amp;gt;&lt;/code&gt;를 명시할 수 있습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;branch&amp;gt;&lt;/code&gt; 옵션은 명시하지 않으면 현재 명령어를 실행하는 브랜치(current branch)로 입력됩니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase &amp;lt;upstream&amp;gt; &amp;lt;branch&amp;gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Reapply commits on top of another base tip&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;If &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[branch]&lt;/code&gt; is specified, &lt;em&gt;git rebase&lt;/em&gt; will perform an automatic &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch [branch]&lt;/code&gt; before doing anything else. Otherwise it remains on the current branch. All changes made by commits in the current branch but that are not in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt; are saved to a temporary area.The commits that were previously saved into the temporary area are then reapplied to the current branch, one by one, in order. Note that any commits in HEAD which introduce the same textual changes as a commit in HEAD..&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt; are omitted (i.e., a patch already accepted upstream with a different commit message or timestamp will be skipped).&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt;에 존재하지 않고, current branch(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[branch]&lt;/code&gt;)에 존재하는 commit은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;라는 임시 공간에 저장됩니다.  이후 해당 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;에 저장되있는 commit은 &lt;strong&gt;순서대로&lt;/strong&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream&lt;/code&gt;의 current commit에서부터 적용됩니다. 이 과정은 공통 commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt; 를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream의&lt;/code&gt; current commit으로 변경하는 작업으로 이해할 수 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      A---B---C topic
-     /
-D---E---F---G master 위와 같은 상황에서 아래 명령어를 실행하면, `topic` 브랜치의 base를  `master` 의 current commit `G` 로 변경합니다.
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout topic
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase master &lt;span class=&quot;c&quot;&gt;# git rebase master topic&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;              A'--B'--C' topic
-             /
-D---E---F---G master
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;current branch인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt; 의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E-A-B-C&lt;/code&gt; 커밋들은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt; 에 잠시 저장되어 있다가, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt; 에서부터  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;의 커밋 내용들을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치에 &lt;strong&gt;순서대로&lt;/strong&gt; 적용합니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt;가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A-B-C&lt;/code&gt;를  &lt;strong&gt;한번에&lt;/strong&gt; 적용하여 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G--H&lt;/code&gt; 로 commit했던 것과 다른 부분입니다.&lt;/p&gt;
-
-&lt;p&gt;이 때, 만약 upstream(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;matser&lt;/code&gt;)의 커밋 중 일부가 branch(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;)의 커밋 내용을 포함하고 있는 경우, 해당 커밋 내용은 건너뛰고(skipped) 진행됩니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;       A---B---C topic
-      /
- D---E---A'---F master
- # A in topic is same to A' in master 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;               B'---C' topic
-              /
-D---E---A'---F master
-# A in topic is skipped when `git rebase master`
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;하나의 브랜치(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream&lt;/code&gt;)로 부터 여러 개의 브랜치가 생성되었을 때, rebase는 이를 간결하게 표현해 줄 수 있습니다. 이는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--onto&lt;/code&gt;옵션을 이용합니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;The current branch is reset to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt;, or [newbase] if the –onto option was supplied. This has the exact same effect as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git reset --hard &lt;/code&gt;[upstream]`` (or [newbase]). ORIG_HEAD is set to point at the tip of the branch before the reset.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;–onto [newbase]&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;Starting point at which to create the new commits. If the –onto option is not specified, the starting point is &lt;upstream&gt;. May be any valid commit, and not just an existing branch name.&lt;/upstream&gt;&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;o---o---o---o---o  master
-     \
-      o---o---o---o---o  next
-                       \
-                        o---o---o  topic
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;만약   &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;의 변화 내용만을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 에 병합하고 싶다면 우리는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치로부터 분화(forked)된 것으로 변경해야합니다. rebase의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--onto&lt;/code&gt; 옵션을 이용하면  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topcic&lt;/code&gt; 의 base branch를  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt;로 변경할 수 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase &lt;span class=&quot;nt&quot;&gt;--onto&lt;/span&gt; master next topic
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;newbase인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치로부터 새로운 커밋들을 rebase하게 됩니다. 이 경우, topic이 master로부터 forked되지 않았으므로 수정되게 됩니다.&lt;/p&gt;
-
-&lt;p&gt;즉, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치가  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;의 base로 변경됩니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;o---o---o---o---o  master
-    |            \
-    |             o'--o'--o'  topic
-     \
-      o---o---o---o---o  next
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;아래의 경우처럼 브랜치 간 관계가 복잡한 경우에도 rebase를 이용하면 관계를 단순하게 조작할 수 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;                        H---I---J topicB
-                       /
-              E---F---G  topicA
-             /
-A---B---C---D  master
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase &lt;span class=&quot;nt&quot;&gt;--onto&lt;/span&gt; master topicA topicB
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;             H'--I'--J'  topicB
-            /
-            | E---F---G  topicA
-            |/
-A---B---C---D  master
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;purpose&quot;&gt;Purpose&lt;/h1&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt;와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt;는 두 개 이상의 브랜치를 합친다는 공통점은 있지만 동작 방식과 그 결과는 다릅니다. 따라서 목적에 따라 다르게 사용해야합니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;h4 id=&quot;git-rebase-1&quot;&gt;Git Rebase&lt;/h4&gt;
-
-  &lt;ul&gt;
-    &lt;li&gt;Streamlines a potentially complex history.&lt;/li&gt;
-    &lt;li&gt;Avoids merge commit “noise” in busy repos with busy branches.&lt;/li&gt;
-    &lt;li&gt;Cleans intermediate commits by making them a single commit, which can be helpful for DevOps teams.&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;h4 id=&quot;git-merge-1&quot;&gt;Git Merge&lt;/h4&gt;
-
-  &lt;ul&gt;
-    &lt;li&gt;Simple and familiar.&lt;/li&gt;
-    &lt;li&gt;Preserves complete history and chronological order.&lt;/li&gt;
-    &lt;li&gt;Maintains the context of the branch.&lt;/li&gt;
-  &lt;/ul&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt;는 복잡한 히스토리를 단순화하는데 주요한 목적이 있으나, 이러한 과정에서 정확한 forked 정보는 소실될 수 있습니다. 또한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt;에 비해서 사용이 어렵고 복잡합니다.&lt;/p&gt;
-
-&lt;p&gt;반대로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt;는 fork, commit, merge에 대한 모든 히스토리가 그대로 남아있어 추후에 트래킹에서의 이점이 있을 수 있습니다. 그러나 모든 히스토리가 남기 때문에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt;에 비해 히스토리가 복잡해지는 단점이 있습니다.&lt;/p&gt;
-
-&lt;p&gt;[참고]&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;https://git-scm.com/docs/git-merge&quot;&gt;Git Document - merge&lt;/a&gt; &lt;br /&gt;
-&lt;a href=&quot;https://git-scm.com/docs/git-rebase&quot;&gt;Git Document - rebase&lt;/a&gt; &lt;br /&gt;
-&lt;a href=&quot;https://www.perforce.com/blog/vcs/git-rebase-vs-git-merge-which-better&quot;&gt;Git Rebase vs. Git Merge: Which Is Better?&lt;/a&gt;&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="git" />
-      
-
-      
-        <summary type="html">merge와 rebase 비교하기</summary>
       
 
       
