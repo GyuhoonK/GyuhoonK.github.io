@@ -5,8 +5,21 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Sat, 18 Mar 2023 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sat, 25 Mar 2023 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>jaydebeapi - Class not found Error</title>
+        
+        
+            <description>&lt;p&gt;jaydebeapi로 DB 연결 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TypeError: Class not found&lt;/code&gt; 원인 파악&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 25 Mar 2023 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/jaydebeapi_class_not_found</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/jaydebeapi_class_not_found</guid>
+      </item>
+    
 	<item>
 		<title>변수를 전달하는 decorator</title>
         
@@ -122,19 +135,6 @@
         <pubDate>Fri, 24 Jun 2022 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/sparkscala7</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala7</guid>
-      </item>
-    
-	<item>
-		<title>enableHiveSupport</title>
-        
-        
-            <description>&lt;p&gt;Spark enableHiveSupport(Hive metaStore)&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Thu, 16 Jun 2022 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/enableHiveSupport</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/enableHiveSupport</guid>
       </item>
     
   </channel>

@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>jaydebeapi - Class not found Error</title>
+        
+          <description>&lt;p&gt;jaydebeapi로 DB 연결 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TypeError: Class not found&lt;/code&gt; 원인 파악&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 25 Mar 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/jaydebeapi_class_not_found</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/jaydebeapi_class_not_found</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>변수를 전달하는 decorator</title>
         
           <description>&lt;p&gt;변수를 생성해 함수로 전달하는 데코레이터 만들기&lt;/p&gt;
