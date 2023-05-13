@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2023-05-13T10:09:24+09:00</updated>
+  <updated>2023-05-13T22:48:56+09:00</updated>
   <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
 
   
@@ -32,12 +32,12 @@
 
   
     <entry>
-      <title type="html">DataHub avro schema 공유 방식</title>
-      <link href="https://gyuhoonk.github.io/sharing-avro-schema" rel="alternate" type="text/html" title="DataHub avro schema 공유 방식" />
+      <title type="html">Sharing Avro Schema to Python</title>
+      <link href="https://gyuhoonk.github.io/avro-to-python" rel="alternate" type="text/html" title="Sharing Avro Schema to Python" />
       <published>2023-05-07T22:30:00+09:00</published>
       <updated>2023-05-07T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/sharing-avro-schema</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/sharing-avro-schema">&lt;p&gt;DataHub에서 avro schema 파일을 사용하는 방법&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/avro-to-python</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/avro-to-python">&lt;p&gt;DataHub에서 avro schema 파일(avsc)을 사용하는 방법&lt;/p&gt;
 
 &lt;h3 id=&quot;datahub-cli-패키지&quot;&gt;DataHub CLI 패키지&lt;/h3&gt;
 &lt;p&gt;DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. (https://pypi.org/project/acryl-datahub/)&lt;/p&gt;
@@ -46,23 +46,23 @@
 &lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;datahub ingest &lt;span class=&quot;nt&quot;&gt;-c&lt;/span&gt; ./examples/recipes/mssql_to_datahub.dhub.yml
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 모듈을 사용할 수 있습니다. 그리고 이중에는 DataHub에서 사용하는 모든 스키마를 정의해놓은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;schemaclass&lt;/code&gt;도 있습니다.&lt;/p&gt;
+&lt;p&gt;acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 모듈을 사용할 수 있습니다. 그리고 이중에는 DataHub에서 사용하는 모든 스키마를 정의해놓은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;schemaclass&lt;/code&gt; 모듈 도 있습니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;datahub.metadata.schema_classes&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;DatasetSnapshotClass&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;p&gt;그리고 위 패키지는 DataHub 중 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata-ingestion&lt;/code&gt;이라는 서브 프로젝트로 관리됩니다.&lt;/p&gt;
+
 &lt;h3 id=&quot;metadataschema_classes는-어디에-있는거지&quot;&gt;metadata.schema_classes는 어디에 있는거지?&lt;/h3&gt;
 
 &lt;p&gt;DataHub에서 사용하는 스키마가 궁금해서, 해당 파일을 참조하고 싶어 git에서 배포되고 있는 파일을 찾아보았습니다(https://github.com/acryldata/datahub/tree/master/metadata-ingestion/src/datahub)
-그런데 배포하고 있는 소스코드(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;datahub/metadata-ingestion/src/datahub&lt;/code&gt;)에서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;meatadata&lt;/code&gt;를 찾을 수가 없었습니다.&lt;/p&gt;
+그런데 배포하고 있는 서브 프로젝트의 소스코드(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;datahub/metadata-ingestion/src/datahub&lt;/code&gt;)에서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;meatadata&lt;/code&gt; 모듈을 찾을 수 없었습니다.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/python/datahub-src.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;meatadata&lt;/code&gt;를 미리 정의해놓지 않았고 어떤 과정에 의해 빌드되는 것이 아닌가 생각했습니다. 마침, metadata-ingestion의 루트 디렉토리(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;datahub/metadata-ingestion&lt;/code&gt;)에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.gradle&lt;/code&gt; 파일을 발견할 수 있었습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;meatadata&lt;/code&gt;를 미리 정의해놓지 않았고 어떤 과정에 의해 빌드되는 것으로 보입니다.  metadata-ingestion의 루트 디렉토리(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;datahub/metadata-ingestion&lt;/code&gt;)에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.gradle&lt;/code&gt; 파일을 발견할 수 있었습니다.&lt;/p&gt;
 
-&lt;h3 id=&quot;buildgradle--codegen-task&quot;&gt;build.gradle : codegen task&lt;/h3&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.gradle&lt;/code&gt;에 정의된 codegen task가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata&lt;/code&gt; 코드를 생성하는 것으로 보였습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.gradle&lt;/code&gt;에 정의된 codegen task에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata&lt;/code&gt; 모듈을 생성합니다.&lt;/p&gt;
 
 &lt;div class=&quot;language-gradle highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;codegen&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;type:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Exec&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;dependsOn:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;environmentSetup&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;installPackage&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;':metadata-events:mxe-schemas:build'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
   &lt;span class=&quot;n&quot;&gt;inputs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;files&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;project&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;fileTree&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;dir:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;../metadata-events/mxe-schemas/src/&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;include:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&quot;**/*.avsc&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;))&lt;/span&gt;
@@ -71,16 +71,121 @@
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
+&lt;p&gt;위 task는 아래처럼 간단하게 3가지 단계로 요약할 수 있습니다.&lt;/p&gt;
 &lt;ol&gt;
-  &lt;li&gt;metadata-events 내부의 avro schema 파일(avsc)을 읽는다&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata-events&lt;/code&gt; 내부의 avro schema 파일(avsc)을 읽는다&lt;/li&gt;
   &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;codegen.sh&lt;/code&gt;를 실행하여 1에서 읽은 파일을 python 파일로 변환한다&lt;/li&gt;
   &lt;li&gt;변환한 파일은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;src/datahub/metadata&lt;/code&gt;에 저장한다&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;위 3단계를 거치는 것으로 보이고, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;codegen.sh&lt;/code&gt;는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;avro_codegen.py&lt;/code&gt; 스크립트를 실행합니다. avsc에서 읽은 정보를 재조합하여 python 파일을 생성할 수 있는 로직을 담고 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;codegen.sh&lt;/code&gt;는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;avro_codegen.py&lt;/code&gt; 스크립트를 실행합니다. avsc에서 읽은 정보를 재조합하여 python 파일(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata&lt;/code&gt; 모듈)을 생성할 수 있는 로직을 담고 있습니다.&lt;/p&gt;
 
-&lt;h3 id=&quot;avro-schemaavsc-파일은-어디서&quot;&gt;Avro Schema(avsc) 파일은 어디서?&lt;/h3&gt;
-&lt;p&gt;python 패키지 빌드 시 사용하는 avsc 파일도 빌드를 통해 얻어야합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;datahub/metadata-events/mxe-schemas/build.gradle&lt;/code&gt;에서 실행하여 avsc파일을 생성하는 과정을 정의하고 있습니다.&lt;/p&gt;</content>
+&lt;p&gt;그렇다면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata-events&lt;/code&gt;에 avsc 파일이 존재할 것이라고 예측하고 해당 서브 프로젝트를 살펴보았습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;metadata-events-avro-schemaavsc-생성하기&quot;&gt;metadata-events: Avro Schema(avsc) 생성하기&lt;/h3&gt;
+&lt;p&gt;위 단계에서 python 패키지 빌드 시 사용하는 avsc 파일도 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata-events&lt;/code&gt;를 빌드하여 생성해야했습니다. 즉, DataHub 프로젝트는 서브 프로젝트들 간에 의존성(dependency)을 갖습니다. avsc 파일을 생성하기 위해서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata-events&lt;/code&gt; 중 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mxe-schemas&lt;/code&gt;를 빌드해야합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata-events/mxe-schemas&lt;/code&gt;의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;build.gradle&lt;/code&gt;은 아래와 같습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-gradle highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// `datahub/metadata-events/mxe-schemas/build.gradle`&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;copyMetadataModels&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;type:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Copy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;../../metadata-models/src/main/pegasus/&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;into&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;src/main/pegasus&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;generateAvroSchema&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;dependsOn&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;copyMetadataModels&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;pegasus&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;generationModes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PegasusGenerationMode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;PEGASUS&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PegasusGenerationMode&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;AVRO&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;copyOriginalAvsc&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;type:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Copy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;dependsOn:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;generateAvroSchema&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;from&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;src/mainGeneratedAvroSchema/avro&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;into&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;src/renamed/avro&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;서브 프로젝트 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata-models&lt;/code&gt;의 소스 파일을 복사해온다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;copyMetadataModels&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;복사해온 소스 파일을 이용하여 PEAGASUS, AVRO 포맷의 파일을 생성한다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;egasus.main.generationModes&lt;/code&gt;)&lt;/li&gt;
+  &lt;li&gt;생성된 AVSC 파일은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;src/renamed/avro&lt;/code&gt; 경로에 복사한다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;copyOriginalAvsc&lt;/code&gt;)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;서브프로젝트 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata-ingestion&lt;/code&gt;에서 참조하고 있는 avsc 파일 경로는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;**/*.avsc&quot;&lt;/code&gt;이기 때문에 3번 과정에서 생성된 avsc 파일(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;src/renamed/avro&lt;/code&gt; 하위에 있는 avsc 파일들)을 참조합니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;avro_codegenpy는-어떻게-모듈을-생성하지&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;avro_codegen.py&lt;/code&gt;는 어떻게 모듈을 생성하지?&lt;/h3&gt;
+&lt;p&gt;다시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata-ingestion&lt;/code&gt; 서브 프로젝트로 돌아와서 생성된 ascv 파일을 읽고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;meatadata&lt;/code&gt; 모듈을 생성하는 지 확인해보았습니다. 
+ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;avrogen&lt;/code&gt; 패키지의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;avrogenwrite_schema_files&lt;/code&gt; 함수를 사용합니다.
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;write_schema_files&lt;/code&gt;는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;avro.schema.make_avsc_object&lt;/code&gt;를 통해 생성된 avro schema 객체를 입력받아 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;schema_classes.py&lt;/code&gt;를 작성하는 함수입니다.
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;avro.schema.make_avsc_object&lt;/code&gt;는 json파일을 읽어서 avro schema 객체를 생성합니다. 따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;avro_codegen.py&lt;/code&gt;를 간소화하면 아래와 같은 과정을 수행합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;avrogen&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;write_schema_files&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 생성된 avsc 파일들을 json 형태로 읽어들입니다
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;schema_file&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;schema_files&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;load_schema_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schema_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;schemas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schema_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;stem&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;schema&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 생성된 avro schema 객체를 하나의 객체로 합칩니다
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_schema&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;merge_schemas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;schemas&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()))&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 하나의 객체로 합친 결과를 `schema_classes.py`로 작성합니다
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;write_schema_files&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;merged_schema&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outdir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;왜-이런-구조를-사용하는걸까&quot;&gt;왜 이런 구조를 사용하는걸까?&lt;/h3&gt;
+
+&lt;p&gt;애초에 왜 이렇게 복잡한 구조를 사용하는걸까요? 아래와 같은 의문이 생기지 않을 수 없었습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;처음부터 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;schema_classes.py&lt;/code&gt; 파일도 작성하면 되는거 아닌가? avsc 파일 생성할 때는 클래스 별로 잘 생성하던데 왜 여기는 모든 클래스를 뭉뚱그려서 넣어놨지..?&lt;/li&gt;
+  &lt;li&gt;avsc 파일은 왜 생성되도록 만들어놓은거야? 모든 프로젝트에서 참조하는 스키마라면 그냥 하드코딩되있어도 괜찮은 것 아닌가?&lt;/li&gt;
+  &lt;li&gt;이런 구조가 다른 오픈소스들에서도 자주 사용되는 구조인건가? avro 패키지에 코드 생성 함수가 있는 걸 보면 그런 것 같기도 하고…&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;이런 의문들은 위 과정들을 다시 한번 살펴보면서 어느 정도 해소되었습니다.&lt;/p&gt;
+
+&lt;h4 id=&quot;datahub는-restli-kafka-python-에서-동일한-스키마를-사용해야한다&quot;&gt;DataHub는 Rest.li, kafka, python 에서 동일한 스키마를 사용해야한다&lt;/h4&gt;
+
+&lt;p&gt;DataHub는 크게 3가지 기술을 이용하여 구성되어 있습니다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Rest.li Framework: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;meatadata-service&lt;/code&gt;에서 API를 구현하기 위해 사용됩니다.&lt;/li&gt;
+  &lt;li&gt;Kafka: 정확히는 kafka-registry에서 해당 topic이 지정한 schema 형태를 갖추었는지 확인합니다.&lt;/li&gt;
+  &lt;li&gt;Python: CLI를 구현하기위해 사용합니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;그런데 이 3가지 기술 스택이 각각 사용하는 스키마 형태(포맷)이 다릅니다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Rest.li Framework: PDL Schema(Pegasus)를 이용합니다 (&lt;a href=&quot;https://linkedin.github.io/rest.li/pdl_schema&quot;&gt;PDL Schema&lt;/a&gt;)&lt;/li&gt;
+  &lt;li&gt;Kafka-registry: avro(avsc)를 이용하여 스키마를 등록합니다.&lt;/li&gt;
+  &lt;li&gt;Python: 클래스를 선언하여 해당 포맷을 관리합니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;따라서 Avro만으로 스키마를 작성한다면, Rest.li에서는 이를 사용할 수 없고, PDL을 따로 작성해야합니다. 이런 문제를 해결하기 위해 DataHub 개발자들은 Pegasus로만 스키마(PDL)를 작성했습니다. 스키마를 생성하는 task(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pegasus.main.generationModes&lt;/code&gt;)를 이용해서 Avro Schema 파일(avsc)를 생성합니다. 
+이런 구조를 가지게 되면, 결과적으로 프로젝트의 전체 구조를 볼 때, PDL 한가지만 수정하면 Kafka, Python에서 사용하는 avsc와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;schema_classes.py&lt;/code&gt;는 자동으로 생성하는 아키텍쳐를 갖습니다. 관리 포인트가 한가지로만 줄어드는 것입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/python/meta-schema-flow.png&quot; alt=&quot;flow-chart&quot; /&gt;&lt;/p&gt;
+
+&lt;h4 id=&quot;스키마-공유sharing-schema&quot;&gt;스키마 공유(Sharing Schema)&lt;/h4&gt;
+
+&lt;p&gt;이런 사례가 있는지 StackOverflow에 검색을 해봤습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://stackoverflow.com/questions/69919046/how-to-share-avro-schema-between-different-microservices&quot;&gt;How to share avro schema between different microservices?&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;위 포스트의 질문은 다음과 같습니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;avro 스키마(avsc)를 사용하고 있는데, 다른 기술 스택(kotlin)을 사용하는 팀에게 이걸 공유할 수 있는 좋은 방법이 있을까요?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;위 질문은 kotlin과 공유하기 위한 방법을 묻고 있기 때문에 답변들은 maven build를 이용할 것을 권장합니다. 즉, 수동으로(manually) 스키마 파일을 하나하나 클래스로 옮기는 것은 절대 해서는 안되고 DataHub처럼 자동으로 빌드할 수 있는 방법을 마련해야한다는 것입니다.&lt;/p&gt;
+
+&lt;p&gt;DataHub는 gradle을 통해 이를 자동화하였고, maven을 통해 avsc로부터 클래스를 자동으로 생성하는 방법은 &lt;a href=&quot;https://github.com/zolyfarkas/avro-schema-examples&quot;&gt;avro-schema-examples&lt;/a&gt;에서 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;정리&quot;&gt;정리&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;avro schema를 python 클래스로 사용하기 위해서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;avro, avrogen&lt;/code&gt; 패키지를 이용한다.&lt;/li&gt;
+  &lt;li&gt;마이크로서비스 개발 시에 서로 다른 기술 스택에서 공통 스키마를 공유하는 아키텍쳐는 (당연히) 존재한다.&lt;/li&gt;
+  &lt;li&gt;avro schema를 공유하기 위한 방법은 gradle, maven과 같은 빌드 툴을 통해 반드시 자동화되어야 한다.&lt;/li&gt;
+&lt;/ul&gt;</content>
 
       
       
@@ -101,7 +206,7 @@
       
 
       
-        <summary type="html">DataHub에서 avro schema 파일을 사용하는 방법</summary>
+        <summary type="html">DataHub에서 avro schema 파일(avsc)을 사용하는 방법</summary>
       
 
       

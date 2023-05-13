@@ -8,16 +8,16 @@
     
       
       <item>
-        <title>DataHub avro schema 공유 방식</title>
+        <title>Sharing Avro Schema to Python</title>
         
-          <description>&lt;p&gt;DataHub에서 avro schema 파일을 사용하는 방법&lt;/p&gt;
+          <description>&lt;p&gt;DataHub에서 avro schema 파일(avsc)을 사용하는 방법&lt;/p&gt;
 
 </description>
         
         <pubDate>Sun, 07 May 2023 22:30:00 +0900</pubDate>
         <link>
-        https://gyuhoonk.github.io/sharing-avro-schema</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/sharing-avro-schema</guid>
+        https://gyuhoonk.github.io/avro-to-python</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/avro-to-python</guid>
       </item>
       
     
