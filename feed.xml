@@ -5,8 +5,21 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Sat, 25 Mar 2023 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sun, 07 May 2023 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>DataHub avro schema 공유 방식</title>
+        
+        
+            <description>&lt;p&gt;DataHub에서 avro schema 파일을 사용하는 방법&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 07 May 2023 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/sharing-avro-schema</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sharing-avro-schema</guid>
+      </item>
+    
 	<item>
 		<title>jaydebeapi - Class not found Error</title>
         
@@ -122,19 +135,6 @@
         <pubDate>Sat, 27 Aug 2022 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/sparkscala8</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala8</guid>
-      </item>
-    
-	<item>
-		<title>Learning Apache Spark 3 with Scala (Section7)</title>
-        
-        
-            <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section7 - Machine Learning Library)&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Fri, 24 Jun 2022 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/sparkscala7</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala7</guid>
       </item>
     
   </channel>

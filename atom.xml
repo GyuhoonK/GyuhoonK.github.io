@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>DataHub avro schema 공유 방식</title>
+        
+          <description>&lt;p&gt;DataHub에서 avro schema 파일을 사용하는 방법&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 07 May 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sharing-avro-schema</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sharing-avro-schema</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>jaydebeapi - Class not found Error</title>
         
           <description>&lt;p&gt;jaydebeapi로 DB 연결 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TypeError: Class not found&lt;/code&gt; 원인 파악&lt;/p&gt;

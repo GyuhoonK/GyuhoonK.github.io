@@ -11,7 +11,7 @@
 
 
 
-    <title>Learning Apache Spark 3 with Scala (Section5)</title>
+    <title>DataHub avro schema 공유 방식</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,30 +37,30 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/sparkscala5" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/sharing-avro-schema" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Learning Apache Spark 3 with Scala (Section5)" />
-    <meta property="og:description" content="Learning Apache Spark 3 with Scala (Section5 - Spark Progamming) broadcast broadcast를 이용하면 모든 executor에 해당 객체(object)를 보낼 수 있습니다. broadcast를 이용하는 방법은 간단합니다. sparkConetxt 객체에 서 broadcast 함수를 사용하면 됩니다. 각 executor에서는 .values를 사용하여 해당 객체를 조회하고 사용할 수 있습니다. Using the broadcast functionality available in SparkContext can greatly" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/sparkscala5" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
+    <meta property="og:title" content="DataHub avro schema 공유 방식" />
+    <meta property="og:description" content="DataHub에서 avro schema 파일을 사용하는 방법 DataHub CLI 패키지 DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. (https://pypi.org/project/acryl-datahub/) $ pip install 'acryl-datahub[datahub-rest]' $ datahub ingest -c ./examples/recipes/mssql_to_datahub.dhub.yml acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 모듈을 사용할 수 있습니다. 그리고 이중에는 DataHub에서 사용하는 모든 스키마를 정의해놓은 schemaclass도 있습니다. from datahub.metadata.schema_classes import DatasetSnapshotClass metadata.schema_classes는" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/sharing-avro-schema" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/python/jpype.webp" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2022-02-21T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2022-02-21T22:30:00+09:00" />
-    <meta property="article:tag" content="Scala" />
+    <meta property="article:published_time" content="2023-05-07T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2023-05-07T22:30:00+09:00" />
+    <meta property="article:tag" content="Python" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Learning Apache Spark 3 with Scala (Section5)" />
-    <meta name="twitter:description" content="Learning Apache Spark 3 with Scala (Section5 - Spark Progamming) broadcast broadcast를 이용하면 모든 executor에 해당 객체(object)를 보낼 수 있습니다. broadcast를 이용하는 방법은 간단합니다. sparkConetxt 객체에 서 broadcast 함수를 사용하면 됩니다. 각 executor에서는 .values를 사용하여 해당 객체를 조회하고 사용할 수 있습니다. Using the broadcast functionality available in SparkContext can greatly" />
+    <meta name="twitter:title" content="DataHub avro schema 공유 방식" />
+    <meta name="twitter:description" content="DataHub에서 avro schema 파일을 사용하는 방법 DataHub CLI 패키지 DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. (https://pypi.org/project/acryl-datahub/) $ pip install 'acryl-datahub[datahub-rest]' $ datahub ingest -c ./examples/recipes/mssql_to_datahub.dhub.yml acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 모듈을 사용할 수 있습니다. 그리고 이중에는 DataHub에서 사용하는 모든 스키마를 정의해놓은 schemaclass도 있습니다. from datahub.metadata.schema_classes import DatasetSnapshotClass metadata.schema_classes는" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/python/jpype.webp" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Scala" />
+    <meta name="twitter:data2" content="Python" />
     <meta name="twitter:site" content="@" />
     <meta name="twitter:creator" content="@" />
     <meta property="og:image:width" content="1400" />
@@ -75,18 +75,18 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/sparkscala5",
+    "url": "https://gyuhoonk.github.io/sharing-avro-schema",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/scala-banner-post.png",
+        "url": "https://gyuhoonk.github.io/assets/built/images/python/jpype.webp",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/sparkscala5"
+        "@id": "https://gyuhoonk.github.io/sharing-avro-schema"
     },
-    "description": "Learning Apache Spark 3 with Scala (Section5 - Spark Progamming) broadcast broadcast를 이용하면 모든 executor에 해당 객체(object)를 보낼 수 있습니다. broadcast를 이용하는 방법은 간단합니다. sparkConetxt 객체에 서 broadcast 함수를 사용하면 됩니다. 각 executor에서는 .values를 사용하여 해당 객체를 조회하고 사용할 수 있습니다. Using the broadcast functionality available in SparkContext can greatly"
+    "description": "DataHub에서 avro schema 파일을 사용하는 방법 DataHub CLI 패키지 DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. (https://pypi.org/project/acryl-datahub/) $ pip install 'acryl-datahub[datahub-rest]' $ datahub ingest -c ./examples/recipes/mssql_to_datahub.dhub.yml acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 모듈을 사용할 수 있습니다. 그리고 이중에는 DataHub에서 사용하는 모든 스키마를 정의해놓은 schemaclass도 있습니다. from datahub.metadata.schema_classes import DatasetSnapshotClass metadata.schema_classes는"
 }
     </script>
 
@@ -99,7 +99,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="Learning Apache Spark 3 with Scala (Section5)" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="DataHub avro schema 공유 방식" href="/feed.xml" />
 
     
 </head>
@@ -171,183 +171,74 @@ into the {body} of the default.hbs template -->
 <main id="site-main" class="site-main outer" role="main">
     <div class="inner">
 
-        <article class="post-full  tag-scala post tag-scala ">
+        <article class="post-full  tag-python post tag-python ">
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="21 February 2022">21 February 2022</time>
+                    <time class="post-full-meta-date" datetime=" 7 May 2023"> 7 May 2023</time>
                     
                         <span class="date-divider">/</span>
                         
                             
-                               <a href='/tag/scala/'>SCALA</a>
+                               <a href='/tag/python/'>PYTHON</a>
                             
                         
                     
                 </section>
-                <h1 class="post-full-title">Learning Apache Spark 3 with Scala (Section5)</h1>
+                <h1 class="post-full-title">DataHub avro schema 공유 방식</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/scala-banner-post.png)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/python/jpype.webp)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)</p>
+                    <p>DataHub에서 avro schema 파일을 사용하는 방법</p>
 
-<h2 id="broadcast">broadcast</h2>
+<h3 id="datahub-cli-패키지">DataHub CLI 패키지</h3>
+<p>DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. (https://pypi.org/project/acryl-datahub/)</p>
 
-<p><code class="language-plaintext highlighter-rouge">broadcast</code>를 이용하면 모든 executor에 해당 객체(object)를 보낼 수 있습니다. <code class="language-plaintext highlighter-rouge">broadcast</code>를 이용하는 방법은 간단합니다. <code class="language-plaintext highlighter-rouge">sparkConetxt</code> 객체에 서 <code class="language-plaintext highlighter-rouge">broadcast</code> 함수를 사용하면 됩니다. 각 executor에서는 <code class="language-plaintext highlighter-rouge">.values</code>를 사용하여 해당 객체를 조회하고 사용할 수 있습니다.</p>
-
-<blockquote>
-  <p>Using the <a href="https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#broadcast-variables">broadcast functionality</a> available in <code class="language-plaintext highlighter-rouge">SparkContext</code> can greatly reduce <strong>the size of each serialized task</strong>, and <strong>the cost of launching a job</strong> over a cluster. If your tasks use any large object from the driver program inside of them (e.g. a static lookup table), consider turning it into a broadcast variable. Spark prints the serialized size of each task on the master, so you can look at that to decide whether your tasks are too large; in general tasks larger than about 20 KiB are probably worth optimizing.</p>
-
-</blockquote>
-
-<p><code class="language-plaintext highlighter-rouge">broadcast</code> 함수를 이용하면, 하나의 노드에서만 해당 객체에 대한 연산을 수행하고 저장하고 있으므로, 메모리 사용을 줄이고 수행 시간을 줄일 수 있습니다.</p>
-
-<div class="language-scala highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">loadMovieNames</span><span class="o">()</span> <span class="k">:</span> <span class="kt">Map</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
-
-  <span class="c1">// Handle character encoding issues:</span>
-  <span class="k">implicit</span> <span class="k">val</span> <span class="nv">codec</span><span class="k">:</span> <span class="kt">Codec</span> <span class="o">=</span> <span class="nc">Codec</span><span class="o">(</span><span class="s">"ISO-8859-1"</span><span class="o">)</span> <span class="c1">// This is the current encoding of u.item, not UTF-8.</span>
-
-  <span class="c1">// Create a Map of Ints to Strings, and populate it from u.item.</span>
-  <span class="k">var</span> <span class="n">movieNames</span><span class="k">:</span><span class="kt">Map</span><span class="o">[</span><span class="kt">Int</span>, <span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="nc">Map</span><span class="o">()</span>
-
-  <span class="k">val</span> <span class="nv">lines</span> <span class="k">=</span> <span class="nv">Source</span><span class="o">.</span><span class="py">fromFile</span><span class="o">(</span><span class="s">"data/ml-100k/u.item"</span><span class="o">)</span>
-  <span class="nf">for</span> <span class="o">(</span><span class="n">line</span> <span class="k">&lt;-</span> <span class="nv">lines</span><span class="o">.</span><span class="py">getLines</span><span class="o">())</span> <span class="o">{</span>
-    <span class="k">val</span> <span class="nv">fields</span> <span class="k">=</span> <span class="nv">line</span><span class="o">.</span><span class="py">split</span><span class="o">(</span><span class="sc">'|'</span><span class="o">)</span>
-    <span class="nf">if</span> <span class="o">(</span><span class="nv">fields</span><span class="o">.</span><span class="py">length</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">movieNames</span> <span class="o">+=</span> <span class="o">(</span><span class="nf">fields</span><span class="o">(</span><span class="mi">0</span><span class="o">).</span><span class="py">toInt</span> <span class="o">-&gt;</span> <span class="nf">fields</span><span class="o">(</span><span class="mi">1</span><span class="o">))</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-  <span class="nv">lines</span><span class="o">.</span><span class="py">close</span><span class="o">()</span>
-  <span class="n">movieNames</span>
-<span class="o">}</span>
-
-<span class="k">val</span> <span class="nv">nameDict</span> <span class="k">=</span> <span class="nv">spark</span><span class="o">.</span><span class="py">sparkContext</span><span class="o">.</span><span class="py">broadcast</span><span class="o">(</span><span class="nf">loadMovieNames</span><span class="o">())</span>
-<span class="c1">// nameDict is a broadcast variable.</span>
-<span class="o">...</span>
-
-<span class="k">val</span> <span class="nv">lookupName</span> <span class="k">:</span> <span class="kt">Int</span> <span class="o">=&gt;</span> <span class="nc">String</span> <span class="k">=</span> <span class="o">(</span><span class="n">movieID</span><span class="k">:</span><span class="kt">Int</span><span class="o">)=&gt;{</span>
-      <span class="nv">nameDict</span><span class="o">.</span><span class="py">value</span><span class="o">(</span><span class="n">movieID</span><span class="o">)</span>
-    <span class="o">}</span>
-<span class="c1">// broadcast variable을 호출할 때는 .value 사용</span>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pip <span class="nb">install</span> <span class="s1">'acryl-datahub[datahub-rest]'</span>
+<span class="nv">$ </span>datahub ingest <span class="nt">-c</span> ./examples/recipes/mssql_to_datahub.dhub.yml
 </code></pre></div></div>
 
-<h2 id="sparksql-is-not-always-faster-than-rdd">sparkSQL is NOT always Faster than RDD</h2>
+<p>acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 모듈을 사용할 수 있습니다. 그리고 이중에는 DataHub에서 사용하는 모든 스키마를 정의해놓은 <code class="language-plaintext highlighter-rouge">schemaclass</code>도 있습니다.</p>
 
-<p>코드 작성의 편이성과 속도의 측면에서 sparkSQL을 사용하여 코드를 작성하는 것을 권장하지만, 이것이 항상 sparkSQL이 RDD보다 빠르다는 이야기는 아닙니다. 경우에 따라서는 RDD를 이용하는 것이 속도가 더 빠르기도 합니다.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">datahub.metadata.schema_classes</span> <span class="kn">import</span> <span class="n">DatasetSnapshotClass</span>
+</code></pre></div></div>
 
-<table>
-  <thead>
-    <tr>
-      <th> </th>
-      <th>Code</th>
-      <th>Execution Time</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Dataset</td>
-      <td><a href="https://github.com/GyuhoonK/sparkscala/blob/main/src/main/scala/com/sundogsoftware/spark/DegreesOfSeparationDataset.scala">Dataset Code</a></td>
-      <td>7s</td>
-    </tr>
-    <tr>
-      <td>RDD</td>
-      <td><a href="https://github.com/GyuhoonK/sparkscala/blob/main/src/main/scala/com/sundogsoftware/spark/DegreesOfSeparation.scala">RDD Code</a></td>
-      <td>3s</td>
-    </tr>
-  </tbody>
-</table>
+<h3 id="metadataschema_classes는-어디에-있는거지">metadata.schema_classes는 어디에 있는거지?</h3>
 
-<p>위 처럼 Dataset API를 이용하는 경우보다 RDD API를 이용하여 작성한 경우가 2배 이상 빠른 경우도 있습니다. 상황에 맞는 API를 선택하여 활용해야합니다.</p>
+<p>DataHub에서 사용하는 스키마가 궁금해서, 해당 파일을 참조하고 싶어 git에서 배포되고 있는 파일을 찾아보았습니다(https://github.com/acryldata/datahub/tree/master/metadata-ingestion/src/datahub)
+그런데 배포하고 있는 소스코드(<code class="language-plaintext highlighter-rouge">datahub/metadata-ingestion/src/datahub</code>)에서는 <code class="language-plaintext highlighter-rouge">meatadata</code>를 찾을 수가 없었습니다.</p>
 
-<p>Dataset, DataFrame API는 전통적인 데이터 분석 문제를 다루는데 효율적입니다. 즉 SQL 명령어를 활용하여 분석이 가능한 문제라면 sprakSQL API를 활용하는 것이 좋습니다.</p>
+<p><img src="../../assets/built/images/python/datahub-src.png" alt="image" /></p>
 
-<p>반면, 새로운 프레임을 만들어 데이터 분석을 해야하는 경우에는 RDD와 같이 저수준 API에서 더 좋은 결과를 얻을 수 있습니다.</p>
+<p><code class="language-plaintext highlighter-rouge">meatadata</code>를 미리 정의해놓지 않았고 어떤 과정에 의해 빌드되는 것이 아닌가 생각했습니다. 마침, metadata-ingestion의 루트 디렉토리(<code class="language-plaintext highlighter-rouge">datahub/metadata-ingestion</code>)에서 <code class="language-plaintext highlighter-rouge">build.gradle</code> 파일을 발견할 수 있었습니다.</p>
 
-<h2 id="cache-persist">cache, persist</h2>
+<h3 id="buildgradle--codegen-task">build.gradle : codegen task</h3>
 
-<p>모든 노드에서 자주 사용해야하는 데이터에 대해서는 <code class="language-plaintext highlighter-rouge">broadcast</code>가 아니라 <code class="language-plaintext highlighter-rouge">cache</code>, <code class="language-plaintext highlighter-rouge">persist</code>를 사용합니다.</p>
+<p><code class="language-plaintext highlighter-rouge">build.gradle</code>에 정의된 codegen task가 <code class="language-plaintext highlighter-rouge">metadata</code> 코드를 생성하는 것으로 보였습니다.</p>
 
-<table>
-  <thead>
-    <tr>
-      <th> </th>
-      <th>description</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">cache</code></td>
-      <td>lets you cache dataset to memory</td>
-    </tr>
-    <tr>
-      <td><code class="language-plaintext highlighter-rouge">persist</code></td>
-      <td>optionally lets you cache dataset to not jus memory but also disk</td>
-    </tr>
-  </tbody>
-</table>
+<div class="language-gradle highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="nf">codegen</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Exec</span><span class="o">,</span> <span class="nl">dependsOn:</span> <span class="o">[</span><span class="n">environmentSetup</span><span class="o">,</span> <span class="n">installPackage</span><span class="o">,</span> <span class="s1">':metadata-events:mxe-schemas:build'</span><span class="o">])</span> <span class="o">{</span>
+  <span class="n">inputs</span><span class="o">.</span><span class="na">files</span><span class="o">(</span><span class="n">project</span><span class="o">.</span><span class="na">fileTree</span><span class="o">(</span><span class="nl">dir:</span> <span class="s2">"../metadata-events/mxe-schemas/src/"</span><span class="o">,</span> <span class="nl">include:</span> <span class="s2">"**/*.avsc"</span><span class="o">))</span>
+  <span class="n">outputs</span><span class="o">.</span><span class="na">dir</span><span class="o">(</span><span class="s1">'src/datahub/metadata'</span><span class="o">)</span>
+  <span class="n">commandLine</span> <span class="s1">'bash'</span><span class="o">,</span> <span class="s1">'-c'</span><span class="o">,</span> <span class="s2">"source ${venv_name}/bin/activate &amp;&amp; ./scripts/codegen.sh"</span>
+<span class="o">}</span>
+</code></pre></div></div>
 
-<p>아래와 같은 storage level에 대해서 선택이 가능합니다.</p>
+<ol>
+  <li>metadata-events 내부의 avro schema 파일(avsc)을 읽는다</li>
+  <li><code class="language-plaintext highlighter-rouge">codegen.sh</code>를 실행하여 1에서 읽은 파일을 python 파일로 변환한다</li>
+  <li>변환한 파일은 <code class="language-plaintext highlighter-rouge">src/datahub/metadata</code>에 저장한다</li>
+</ol>
 
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: left">Storage Level</th>
-      <th style="text-align: left">Meaning</th>
-      <th> </th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: left">MEMORY_ONLY</td>
-      <td style="text-align: left">Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, some partitions will not be cached and will be recomputed on the fly each time they’re needed. This is the default level.</td>
-      <td>The <code class="language-plaintext highlighter-rouge">cache()</code> method is a shorthand for using the default storage level, which is <code class="language-plaintext highlighter-rouge">StorageLevel.MEMORY_ONLY</code> (store deserialized objects in memory).</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">MEMORY_AND_DISK</td>
-      <td style="text-align: left">Store RDD as deserialized Java objects in the JVM. If the RDD does not fit in memory, store the partitions that don’t fit on disk, and read them from there when they’re needed.</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td style="text-align: left">MEMORY_ONLY_SER (Java and Scala)</td>
-      <td style="text-align: left">Store RDD as <em>serialized</em> Java objects (one byte array per partition). This is generally more space-efficient than deserialized objects, especially when using a <a href="https://spark.apache.org/docs/latest/tuning.html">fast serializer</a>, but more CPU-intensive to read.</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td style="text-align: left">MEMORY_AND_DISK_SER (Java and Scala)</td>
-      <td style="text-align: left">Similar to MEMORY_ONLY_SER, but spill partitions that don’t fit in memory to disk instead of recomputing them on the fly each time they’re needed.</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td style="text-align: left">DISK_ONLY</td>
-      <td style="text-align: left">Store the RDD partitions only on disk.</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td style="text-align: left">MEMORY_ONLY_2, MEMORY_AND_DISK_2, etc.</td>
-      <td style="text-align: left">Same as the levels above, but replicate each partition on two cluster nodes.</td>
-      <td> </td>
-    </tr>
-    <tr>
-      <td style="text-align: left">OFF_HEAP (experimental)</td>
-      <td style="text-align: left">Similar to MEMORY_ONLY_SER, but store the data in <a href="https://spark.apache.org/docs/latest/configuration.html#memory-management">off-heap memory</a>. This requires off-heap memory to be enabled.</td>
-      <td> </td>
-    </tr>
-  </tbody>
-</table>
+<p>위 3단계를 거치는 것으로 보이고, <code class="language-plaintext highlighter-rouge">codegen.sh</code>는 <code class="language-plaintext highlighter-rouge">avro_codegen.py</code> 스크립트를 실행합니다. avsc에서 읽은 정보를 재조합하여 python 파일을 생성할 수 있는 로직을 담고 있습니다.</p>
 
-<p>[참고]</p>
-
-<p><a href="https://www.udemy.com/course/best-scala-apache-spark/">Learning Apache Spark 3 with Scala</a></p>
-
-<p><a href="https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#broadcast-variables">Broadcast Variables</a></p>
-
-<p><a href="https://spark.apache.org/docs/3.2.1/rdd-programming-guide.html#rdd-persistence">RDD Persistence</a></p>
+<h3 id="avro-schemaavsc-파일은-어디서">Avro Schema(avsc) 파일은 어디서?</h3>
+<p>python 패키지 빌드 시 사용하는 avsc 파일도 빌드를 통해 얻어야합니다. <code class="language-plaintext highlighter-rouge">datahub/metadata-events/mxe-schemas/build.gradle</code>에서 실행하여 avsc파일을 생성하는 과정을 정의하고 있습니다.</p>
 
                 </div>
             </section>
@@ -402,9 +293,9 @@ into the {body} of the default.hbs template -->
                     <div id="disqus_thread"></div>
                     <script>
                         var disqus_config = function () {
-                            var this_page_url = 'https://gyuhoonk.github.io/sparkscala5';
-                            var this_page_identifier = '/sparkscala5';
-                            var this_page_title = 'Learning Apache Spark 3 with Scala (Section5)';
+                            var this_page_url = 'https://gyuhoonk.github.io/sharing-avro-schema';
+                            var this_page_identifier = '/sharing-avro-schema';
+                            var this_page_title = 'DataHub avro schema 공유 방식';
                         };
                         (function() {
                             var d = document, s = d.createElement('script');
@@ -438,7 +329,7 @@ into the {body} of the default.hbs template -->
                         <header class="read-next-card-header">
                             <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
                             
-                                <h3 class="read-next-card-header-title"><a href="/tag/scala/">Scala</a></h3>
+                                <h3 class="read-next-card-header-title"><a href="/tag/python/">Python</a></h3>
                             
                         </header>
                         <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
@@ -448,28 +339,14 @@ into the {body} of the default.hbs template -->
                                 
                                 
                                   
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
+                                    
                                   
                                 
                                   
                                     
                                         
                                         
-                                            <li><a href="/sparkscala8">Learning Apache Spark 3 with Scala (Section8)</a></li>
+                                            <li><a href="/jaydebeapi_class_not_found">jaydebeapi - Class not found Error</a></li>
                                         
                                     
                                   
@@ -478,68 +355,7 @@ into the {body} of the default.hbs template -->
                                     
                                         
                                         
-                                            <li><a href="/sparkscala7">Learning Apache Spark 3 with Scala (Section7)</a></li>
-                                        
-                                    
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                    
-                                        
-                                        
-                                            <li><a href="/sparkscala6">Learning Apache Spark 3 with Scala (Section6)</a></li>
-                                        
-                                    
-                                  
-                                
-                                  
-                                
-                                  
-                                    
-                                  
-                                
-                                  
-                                    
-                                        
-                                        
-                                    
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                    
-                                        
-                                        
-                                    
-                                  
-                                
-                                  
-                                
-                                  
-                                    
-                                        
-                                        
-                                    
-                                  
-                                
-                                  
-                                    
-                                        
+                                            <li><a href="/decorator">변수를 전달하는 decorator</a></li>
                                         
                                     
                                   
@@ -564,14 +380,74 @@ into the {body} of the default.hbs template -->
                                 
                                   
                                 
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/threading-in-python">Threading in Python</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
                                   
                                 
                             </ul>
                         </div>
                         <footer class="read-next-card-footer">
-                            <a href="/tag/scala/">
+                            <a href="/tag/python/">
                                 
-                                    See all 7 posts  →
+                                    See all 4 posts  →
                                 
                             </a>
                         </footer>
@@ -584,57 +460,6 @@ into the {body} of the default.hbs template -->
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
             
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/airflow1">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/airflow/airflow.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/airflow1">
-                <header class="post-card-header">
-                    
-                        
-                            
-                                <span class="post-card-tags">Airflow</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">What is Airflow?</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>Basic Concepts of Airflow
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      2 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-            
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
             
@@ -642,26 +467,26 @@ into the {body} of the default.hbs template -->
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/sparkscala4">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/scala-banner-post.png)"></div>
+            <a class="post-card-image-link" href="/jaydebeapi_class_not_found">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/python/jpype.webp)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/sparkscala4">
+            <a class="post-card-content-link" href="/jaydebeapi_class_not_found">
                 <header class="post-card-header">
                     
                         
                             
-                                <span class="post-card-tags">Scala</span>
+                                <span class="post-card-tags">Python</span>
                             
                         
                     
 
-                    <h2 class="post-card-title">Learning Apache Spark 3 with Scala (Section4)</h2>
+                    <h2 class="post-card-title">jaydebeapi - Class not found Error</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>Learning Apache Spark 3 with Scala (Section4 - DataFrame &amp; Dataset)
+                        <p>jaydebeapi로 DB 연결 시 TypeError: Class not found 원인 파악
 
 </p>
                     
@@ -681,7 +506,7 @@ into the {body} of the default.hbs template -->
                 <span class="reading-time">
                     
                     
-                      2 min read
+                      3 min read
                     
                 </span>
             </footer>
@@ -703,18 +528,18 @@ into the {body} of the default.hbs template -->
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">Learning Apache Spark 3 with Scala (Section5)</div>
+    <div class="floating-header-title">DataHub avro schema 공유 방식</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Learning+Apache+Spark+3+with+Scala+%28Section5%29&amp;url=https://gyuhoonk.github.iosparkscala5"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=DataHub+avro+schema+%EA%B3%B5%EC%9C%A0+%EB%B0%A9%EC%8B%9D&amp;url=https://gyuhoonk.github.iosharing-avro-schema"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iosparkscala5"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iosharing-avro-schema"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 
