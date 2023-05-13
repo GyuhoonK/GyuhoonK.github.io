@@ -44,7 +44,7 @@
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Sharing Avro Schema to Python" />
-    <meta property="og:description" content="DataHub에서 avro schema 파일(avsc)을 사용하는 방법 DataHub CLI 패키지 DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. (https://pypi.org/project/acryl-datahub/) $ pip install 'acryl-datahub[datahub-rest]' $ datahub ingest -c ./examples/recipes/mssql_to_datahub.dhub.yml acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 모듈을 사용할 수 있습니다. 그리고 이중에는 DataHub에서 사용하는 모든 스키마를 정의해놓은 schemaclass 모듈 도 있습니다. from datahub.metadata.schema_classes import" />
+    <meta property="og:description" content="DataHub에서 avro schema 파일(avsc)을 사용하는 방법 DataHub CLI 패키지 DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. acryl-datahub $ pip install 'acryl-datahub[datahub-rest]' $ datahub ingest -c ./examples/recipes/mssql_to_datahub.dhub.yml acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 패키지를 사용할 수 있습니다. datahub 패키지 내에는 DataHub에서 사용하는 메타데이터의 스키마를 정의해놓은 schema_classes도 있습니다. from datahub.metadata.schema_classes import DatasetSnapshotClass" />
     <meta property="og:url" content="https://gyuhoonk.github.io/avro-to-python" />
     <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/python/avro-to-python.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
@@ -54,7 +54,7 @@
     <meta property="article:tag" content="Python" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Sharing Avro Schema to Python" />
-    <meta name="twitter:description" content="DataHub에서 avro schema 파일(avsc)을 사용하는 방법 DataHub CLI 패키지 DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. (https://pypi.org/project/acryl-datahub/) $ pip install 'acryl-datahub[datahub-rest]' $ datahub ingest -c ./examples/recipes/mssql_to_datahub.dhub.yml acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 모듈을 사용할 수 있습니다. 그리고 이중에는 DataHub에서 사용하는 모든 스키마를 정의해놓은 schemaclass 모듈 도 있습니다. from datahub.metadata.schema_classes import" />
+    <meta name="twitter:description" content="DataHub에서 avro schema 파일(avsc)을 사용하는 방법 DataHub CLI 패키지 DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. acryl-datahub $ pip install 'acryl-datahub[datahub-rest]' $ datahub ingest -c ./examples/recipes/mssql_to_datahub.dhub.yml acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 패키지를 사용할 수 있습니다. datahub 패키지 내에는 DataHub에서 사용하는 메타데이터의 스키마를 정의해놓은 schema_classes도 있습니다. from datahub.metadata.schema_classes import DatasetSnapshotClass" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
     <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/python/avro-to-python.png" />
     <meta name="twitter:label1" content="Written by" />
@@ -86,7 +86,7 @@
         "@type": "WebPage",
         "@id": "https://gyuhoonk.github.io/avro-to-python"
     },
-    "description": "DataHub에서 avro schema 파일(avsc)을 사용하는 방법 DataHub CLI 패키지 DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. (https://pypi.org/project/acryl-datahub/) $ pip install 'acryl-datahub[datahub-rest]' $ datahub ingest -c ./examples/recipes/mssql_to_datahub.dhub.yml acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 모듈을 사용할 수 있습니다. 그리고 이중에는 DataHub에서 사용하는 모든 스키마를 정의해놓은 schemaclass 모듈 도 있습니다. from datahub.metadata.schema_classes import"
+    "description": "DataHub에서 avro schema 파일(avsc)을 사용하는 방법 DataHub CLI 패키지 DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. acryl-datahub $ pip install 'acryl-datahub[datahub-rest]' $ datahub ingest -c ./examples/recipes/mssql_to_datahub.dhub.yml acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 패키지를 사용할 수 있습니다. datahub 패키지 내에는 DataHub에서 사용하는 메타데이터의 스키마를 정의해놓은 schema_classes도 있습니다. from datahub.metadata.schema_classes import DatasetSnapshotClass"
 }
     </script>
 
@@ -198,27 +198,27 @@ into the {body} of the default.hbs template -->
                     <p>DataHub에서 avro schema 파일(avsc)을 사용하는 방법</p>
 
 <h3 id="datahub-cli-패키지">DataHub CLI 패키지</h3>
-<p>DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. (https://pypi.org/project/acryl-datahub/)</p>
+<p>DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. <a href="https://pypi.org/project/acryl-datahub/">acryl-datahub</a></p>
 
 <div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>pip <span class="nb">install</span> <span class="s1">'acryl-datahub[datahub-rest]'</span>
 <span class="nv">$ </span>datahub ingest <span class="nt">-c</span> ./examples/recipes/mssql_to_datahub.dhub.yml
 </code></pre></div></div>
 
-<p>acryl-datahub[datahub-rest]를 설치하면, python 코드 내에서 datahub 모듈을 사용할 수 있습니다. 그리고 이중에는 DataHub에서 사용하는 모든 스키마를 정의해놓은 <code class="language-plaintext highlighter-rouge">schemaclass</code> 모듈 도 있습니다.</p>
+<p><code class="language-plaintext highlighter-rouge">acryl-datahub[datahub-rest]</code>를 설치하면, python 코드 내에서 datahub 패키지를 사용할 수 있습니다. datahub 패키지 내에는 DataHub에서 사용하는 메타데이터의 스키마를 정의해놓은 <code class="language-plaintext highlighter-rouge">schema_classes</code>도 있습니다.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">datahub.metadata.schema_classes</span> <span class="kn">import</span> <span class="n">DatasetSnapshotClass</span>
 </code></pre></div></div>
 
-<p>그리고 위 패키지는 DataHub 중 <code class="language-plaintext highlighter-rouge">metadata-ingestion</code>이라는 서브 프로젝트로 관리됩니다.</p>
+<p><code class="language-plaintext highlighter-rouge">schema_classes</code>는 DataHub의 서브 프로젝트 중 <code class="language-plaintext highlighter-rouge">metadata</code> 모듈이 속해 있는 <code class="language-plaintext highlighter-rouge">metadata-ingestion</code>에서 관리됩니다.</p>
 
 <h3 id="metadataschema_classes는-어디에-있는거지">metadata.schema_classes는 어디에 있는거지?</h3>
 
-<p>DataHub에서 사용하는 스키마가 궁금해서, 해당 파일을 참조하고 싶어 git에서 배포되고 있는 파일을 찾아보았습니다(https://github.com/acryldata/datahub/tree/master/metadata-ingestion/src/datahub)
-그런데 배포하고 있는 서브 프로젝트의 소스코드(<code class="language-plaintext highlighter-rouge">datahub/metadata-ingestion/src/datahub</code>)에서는 <code class="language-plaintext highlighter-rouge">meatadata</code> 모듈을 찾을 수 없었습니다.</p>
+<p>DataHub에서 메타데이터의 스키마를 어떻게 정의하고 있는지 확인하고 싶어서, git repo에서 배포되고 있는 소스코드를 찾아보았습니다(<a href="https://github.com/acryldata/datahub/tree/master/metadata-ingestion/src/datahub">metadata-ingestion/src/datahub</a>).
+그런데 <code class="language-plaintext highlighter-rouge">metadata-ingestion</code>의 소스코드(<code class="language-plaintext highlighter-rouge">datahub/metadata-ingestion/src/datahub</code>)에서는 <code class="language-plaintext highlighter-rouge">meatadata</code> 모듈을 찾을 수 없었습니다.</p>
 
 <p><img src="../../assets/built/images/python/datahub-src.png" alt="image" /></p>
 
-<p><code class="language-plaintext highlighter-rouge">meatadata</code>를 미리 정의해놓지 않았고 어떤 과정에 의해 빌드되는 것으로 보입니다.  metadata-ingestion의 루트 디렉토리(<code class="language-plaintext highlighter-rouge">datahub/metadata-ingestion</code>)에서 <code class="language-plaintext highlighter-rouge">build.gradle</code> 파일을 발견할 수 있었습니다.</p>
+<p><code class="language-plaintext highlighter-rouge">meatadata</code> 모듈을 미리 작성해놓지 않고, 빌드에 의해 생성되는 것으로 추측했습니다. 빌드 파일(<code class="language-plaintext highlighter-rouge">datahub/metadata-ingestion/build.gradle</code>)에서 <code class="language-plaintext highlighter-rouge">metadata</code> 모듈에 해당하는 소스코드를 생성하는 task를 확인할 수 있었습니다.</p>
 
 <p><code class="language-plaintext highlighter-rouge">build.gradle</code>에 정의된 codegen task에서 <code class="language-plaintext highlighter-rouge">metadata</code> 모듈을 생성합니다.</p>
 
@@ -241,7 +241,9 @@ into the {body} of the default.hbs template -->
 <p>그렇다면 <code class="language-plaintext highlighter-rouge">metadata-events</code>에 avsc 파일이 존재할 것이라고 예측하고 해당 서브 프로젝트를 살펴보았습니다.</p>
 
 <h3 id="metadata-events-avro-schemaavsc-생성하기">metadata-events: Avro Schema(avsc) 생성하기</h3>
-<p>위 단계에서 python 패키지 빌드 시 사용하는 avsc 파일도 <code class="language-plaintext highlighter-rouge">metadata-events</code>를 빌드하여 생성해야했습니다. 즉, DataHub 프로젝트는 서브 프로젝트들 간에 의존성(dependency)을 갖습니다. avsc 파일을 생성하기 위해서는 <code class="language-plaintext highlighter-rouge">metadata-events</code> 중 <code class="language-plaintext highlighter-rouge">mxe-schemas</code>를 빌드해야합니다. <code class="language-plaintext highlighter-rouge">metadata-events/mxe-schemas</code>의 <code class="language-plaintext highlighter-rouge">build.gradle</code>은 아래와 같습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">metadata-ingestion</code>에서 python 패키지 빌드하기 위해 사용하는 avsc 파일도 <code class="language-plaintext highlighter-rouge">metadata-events</code>를 빌드하여 생성해야했습니다. 즉, DataHub 프로젝트는 서브 프로젝트들 간에 의존성(dependency)을 갖습니다. 
+avsc 파일을 생성하기 위해서는 <code class="language-plaintext highlighter-rouge">metadata-events</code> 중 <code class="language-plaintext highlighter-rouge">mxe-schemas</code>를 빌드해야합니다. <code class="language-plaintext highlighter-rouge">metadata-events/mxe-schemas/build.gradle</code>은 아래와 같습니다.</p>
 
 <div class="language-gradle highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// `datahub/metadata-events/mxe-schemas/build.gradle`</span>
 <span class="n">task</span> <span class="nf">copyMetadataModels</span><span class="o">(</span><span class="nl">type:</span> <span class="n">Copy</span><span class="o">)</span> <span class="o">{</span>
@@ -258,6 +260,8 @@ into the {body} of the default.hbs template -->
 <span class="o">}</span>
 </code></pre></div></div>
 
+<p>위 빌드를 간단하게 텍스트로 요약해보면 아래 3단계를 거칩니다.</p>
+
 <ol>
   <li>서브 프로젝트 <code class="language-plaintext highlighter-rouge">metadata-models</code>의 소스 파일을 복사해온다(<code class="language-plaintext highlighter-rouge">copyMetadataModels</code>)</li>
   <li>복사해온 소스 파일을 이용하여 PEAGASUS, AVRO 포맷의 파일을 생성한다(<code class="language-plaintext highlighter-rouge">egasus.main.generationModes</code>)</li>
@@ -267,10 +271,16 @@ into the {body} of the default.hbs template -->
 <p>서브프로젝트 <code class="language-plaintext highlighter-rouge">metadata-ingestion</code>에서 참조하고 있는 avsc 파일 경로는 <code class="language-plaintext highlighter-rouge">"**/*.avsc"</code>이기 때문에 3번 과정에서 생성된 avsc 파일(<code class="language-plaintext highlighter-rouge">src/renamed/avro</code> 하위에 있는 avsc 파일들)을 참조합니다.</p>
 
 <h3 id="avro_codegenpy는-어떻게-모듈을-생성하지"><code class="language-plaintext highlighter-rouge">avro_codegen.py</code>는 어떻게 모듈을 생성하지?</h3>
-<p>다시 <code class="language-plaintext highlighter-rouge">metadata-ingestion</code> 서브 프로젝트로 돌아와서 생성된 ascv 파일을 읽고 <code class="language-plaintext highlighter-rouge">meatadata</code> 모듈을 생성하는 지 확인해보았습니다. 
- <code class="language-plaintext highlighter-rouge">avrogen</code> 패키지의 <code class="language-plaintext highlighter-rouge">avrogenwrite_schema_files</code> 함수를 사용합니다.
-<code class="language-plaintext highlighter-rouge">write_schema_files</code>는 <code class="language-plaintext highlighter-rouge">avro.schema.make_avsc_object</code>를 통해 생성된 avro schema 객체를 입력받아 <code class="language-plaintext highlighter-rouge">schema_classes.py</code>를 작성하는 함수입니다.
-<code class="language-plaintext highlighter-rouge">avro.schema.make_avsc_object</code>는 json파일을 읽어서 avro schema 객체를 생성합니다. 따라서 <code class="language-plaintext highlighter-rouge">avro_codegen.py</code>를 간소화하면 아래와 같은 과정을 수행합니다.</p>
+
+<p>다시 <code class="language-plaintext highlighter-rouge">metadata-ingestion</code> 서브 프로젝트로 돌아와서 생성된 ascv 파일을 읽고 <code class="language-plaintext highlighter-rouge">meatadata</code> 모듈을 생성하는 지 확인해보았습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">avrogen.write_schema_files</code>를 실행하여 소스코드를 생성합니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">write_schema_files</code>는 <code class="language-plaintext highlighter-rouge">avro.schema.make_avsc_object</code>를 통해 생성된 avro schema 객체를 입력받아 <code class="language-plaintext highlighter-rouge">schema_classes.py</code>를 작성합니다.</p>
+
+<p>입력받는 avro schema 객체는 <code class="language-plaintext highlighter-rouge">avro.schema.make_avsc_object</code>로 생성됩니다. json파일을 읽어서 avro schema 객체를 생성하는 역할입니다.</p>
+
+<p>따라서 <code class="language-plaintext highlighter-rouge">avro_codegen.py</code>를 간소화하면 아래와 같은 과정을 수행합니다.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">avrogen</span> <span class="kn">import</span> <span class="n">write_schema_files</span>
 
@@ -314,8 +324,10 @@ into the {body} of the default.hbs template -->
   <li>Python: 클래스를 선언하여 해당 포맷을 관리합니다.</li>
 </ul>
 
-<p>따라서 Avro만으로 스키마를 작성한다면, Rest.li에서는 이를 사용할 수 없고, PDL을 따로 작성해야합니다. 이런 문제를 해결하기 위해 DataHub 개발자들은 Pegasus로만 스키마(PDL)를 작성했습니다. 스키마를 생성하는 task(<code class="language-plaintext highlighter-rouge">pegasus.main.generationModes</code>)를 이용해서 Avro Schema 파일(avsc)를 생성합니다. 
-이런 구조를 가지게 되면, 결과적으로 프로젝트의 전체 구조를 볼 때, PDL 한가지만 수정하면 Kafka, Python에서 사용하는 avsc와 <code class="language-plaintext highlighter-rouge">schema_classes.py</code>는 자동으로 생성하는 아키텍쳐를 갖습니다. 관리 포인트가 한가지로만 줄어드는 것입니다.</p>
+<p>따라서 Avro만으로 스키마를 작성한다면, Rest.li에서는 이를 사용할 수 없고, PDL을 따로 작성해야합니다. 
+이런 문제를 해결하기 위해 DataHub 개발자들은 Pegasus로만 스키마(PDL)를 작성했습니다. 이후에 avro 스키마가 필요할 때마다, 스키마를 생성하는 task(<code class="language-plaintext highlighter-rouge">pegasus.main.generationModes</code>)를 이용해서 Avro Schema 파일(avsc)를 생성합니다.</p>
+
+<p>이런 구조를 가지게 되면, 결과적으로 프로젝트의 전체 구조를 볼 때, PDL 한가지만 수정하면 Kafka에서 사용하는 avsc 파일과 Python에서 사용하는 <code class="language-plaintext highlighter-rouge">schema_classes.py</code>는 자동으로 생성하는 아키텍쳐를 갖습니다. 관리 포인트가 한가지로만 줄어드는 것입니다.</p>
 
 <p><img src="../../assets/built/images/python/meta-schema-flow.png" alt="flow-chart" /></p>
 
