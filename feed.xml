@@ -5,8 +5,21 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Sun, 07 May 2023 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Tue, 16 May 2023 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>non-deterministic UDF</title>
+        
+        
+            <description>&lt;p&gt;non-determinitic UDF 구현하기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Tue, 16 May 2023 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/non-deterministic-udf</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/non-deterministic-udf</guid>
+      </item>
+    
 	<item>
 		<title>Sharing Avro Schema to Python</title>
         
@@ -122,19 +135,6 @@
         <pubDate>Sat, 05 Nov 2022 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/first-contributor</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/first-contributor</guid>
-      </item>
-    
-	<item>
-		<title>Learning Apache Spark 3 with Scala (Section8)</title>
-        
-        
-            <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section8 -Spark Streaming)&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sat, 27 Aug 2022 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/sparkscala8</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala8</guid>
       </item>
     
   </channel>
