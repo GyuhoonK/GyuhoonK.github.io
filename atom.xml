@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>multi-stage와 Builder Pattern</title>
+        
+          <description>&lt;p&gt;DataHub로 알아본 Docker build 전략 (multi-stage, Builder pattern)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 10 Jun 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/multi-stage-and-builder-pattern</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/multi-stage-and-builder-pattern</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>non-deterministic UDF</title>
         
           <description>&lt;p&gt;non-determinitic UDF 구현하기&lt;/p&gt;

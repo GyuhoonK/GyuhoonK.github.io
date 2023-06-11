@@ -5,8 +5,21 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Tue, 16 May 2023 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sat, 10 Jun 2023 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>multi-stage와 Builder Pattern</title>
+        
+        
+            <description>&lt;p&gt;DataHub로 알아본 Docker build 전략 (multi-stage, Builder pattern)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 10 Jun 2023 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/multi-stage-and-builder-pattern</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/multi-stage-and-builder-pattern</guid>
+      </item>
+    
 	<item>
 		<title>non-deterministic UDF</title>
         
@@ -122,19 +135,6 @@
         <pubDate>Sat, 19 Nov 2022 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/special-permissions</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/special-permissions</guid>
-      </item>
-    
-	<item>
-		<title>나의 첫 컨트리뷰션(Retrospect on my first contribution)</title>
-        
-        
-            <description>&lt;p&gt;오픈소스 컨트리뷰션 회고&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sat, 05 Nov 2022 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/first-contributor</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/first-contributor</guid>
       </item>
     
   </channel>
