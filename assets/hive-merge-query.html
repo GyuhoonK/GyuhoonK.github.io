@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>Merge Files in HDFS</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    </script>
+<meta name="description" content="Data Engineering" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/hive-merge-query" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Merge Files in HDFS" />
+    <meta property="og:description" content="HDFS에서 작은 용량의 파일들을 합쳐보자 Blocks in HDFS 데이터는 HDFS 상에서 Block이라는 단위로 저장됩니다. 일반적으로 하나의 Block에 128MB를 저장합니다. 따라서 Block Size, 128MB를 넘는 데이터는 여러 개의 Block으로 쪼개서 저장하게 됩니다. 아래는 518MB 파일이 Block으로 쪼개져서 저장되는 예시입니다. 각 Block은 안정성을 위해 서로 다른 노드에 Block replication을 저장하고, Name Node에는" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/hive-merge-query" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/merge-files.svg" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2021-10-24T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2021-10-24T22:30:00+09:00" />
+    <meta property="article:tag" content="Hadoop" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Merge Files in HDFS" />
+    <meta name="twitter:description" content="HDFS에서 작은 용량의 파일들을 합쳐보자 Blocks in HDFS 데이터는 HDFS 상에서 Block이라는 단위로 저장됩니다. 일반적으로 하나의 Block에 128MB를 저장합니다. 따라서 Block Size, 128MB를 넘는 데이터는 여러 개의 Block으로 쪼개서 저장하게 됩니다. 아래는 518MB 파일이 Block으로 쪼개져서 저장되는 예시입니다. 각 Block은 안정성을 위해 서로 다른 노드에 Block replication을 저장하고, Name Node에는" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/merge-files.svg" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Hadoop" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "https://gyuhoonk.github.io/"
+    },
+    "url": "https://gyuhoonk.github.io/hive-merge-query",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://gyuhoonk.github.io/assets/built/images/merge-files.svg",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://gyuhoonk.github.io/hive-merge-query"
+    },
+    "description": "HDFS에서 작은 용량의 파일들을 합쳐보자 Blocks in HDFS 데이터는 HDFS 상에서 Block이라는 단위로 저장됩니다. 일반적으로 하나의 Block에 128MB를 저장합니다. 따라서 Block Size, 128MB를 넘는 데이터는 여러 개의 Block으로 쪼개서 저장하게 됩니다. 아래는 518MB 파일이 Block으로 쪼개져서 저장되는 예시입니다. 각 Block은 안정성을 위해 서로 다른 노드에 Block replication을 저장하고, Name Node에는"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="Merge Files in HDFS" href="/feed.xml" />
+
+    
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/kubernetes/">kubernetes</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-hadoop post tag-hadoop ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime="24 October 2021">24 October 2021</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/hadoop/'>HADOOP</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">Merge Files in HDFS</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/merge-files.svg)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>HDFS에서 작은 용량의 파일들을 합쳐보자</p>
+
+<h1 id="blocks-in-hdfs">Blocks in HDFS</h1>
+
+<p>데이터는 HDFS 상에서 Block이라는 단위로 저장됩니다. 일반적으로 하나의 Block에 128MB를 저장합니다. 따라서 Block Size, 128MB를 넘는 데이터는 여러 개의 Block으로 쪼개서 저장하게 됩니다. 아래는 518MB 파일이 Block으로 쪼개져서 저장되는 예시입니다.</p>
+
+<p><img src="../../assets/built/images/hdfs-blocks.png" alt="image" /></p>
+
+<p>각  Block은 안정성을 위해 서로 다른 노드에 Block replication을 저장하고, Name Node에는 해당 File의 block location과 같은 meta data를 저장합니다. 이를 통해 한 Data Node가 작동하지 않더라도, 원본 데이터를 복구할 수 있습니다. 포스팅에서 다루고자하는 내용은 아니니 간단히 이미지로 대체하고 넘어가겠습니다.</p>
+
+<p><img src="../../assets/built/images/Block-Replication-in-Hadoop.png" alt="image" style="zoom:150%;" /></p>
+
+<h1 id="read-file--read-blocks--hdfs-io">Read File = Read Blocks = HDFS I/O</h1>
+
+<p>HDFS에서 하나의 File을 읽을 때, 해당 File에 해당하는 Block들을 읽어들여옵니다.</p>
+
+<p>아래 그림처럼 File A를 읽고자 한다면, File A가 쪼개어 저장되어있는 Block1, Block2, Block3, Block4를 읽어들여오는 작업을 수행합니다.</p>
+
+<p><img src="../../assets/built/images/file-reading-hive.png" alt="image" /></p>
+
+<p>만약 File A에 해당하는 Block이 많다면 더 많은 Block을 읽어와야하고 이는 더 많은 HDFS I/O가 발생함을 의미합니다.</p>
+
+<h1 id="bad-case--file-size-is-less-than-block-size">Bad Case : File Size is Less than Block Size</h1>
+
+<p>HDFS에 저장하고자 하는 File이 Block Size(128MB)보다 작으면 이러한 HDFS I/O는 더 많이 발생하게됩니다.</p>
+
+<p>예를 들어, 우리는 500MB 짜리 데이터를 저장한다고 가정해봅시다.</p>
+
+<p>해당 파일은 500MB 짜리 파일 <strong>하나</strong>로 저장할 수도 있고, 50MB짜리 파일 <strong>10개</strong>로 저장할 수도 있습니다. 어떻게 저장하는 것이 더 효율적일까요?</p>
+
+<p>비교 편의를 위해 각 Block들이 모두 다른 DataNode에 저장되었다고 가정하고 비교해보겠습니다.</p>
+
+<h2 id="case1--only-1-file-size-is-500mb">Case1 : only 1 File, Size is 500MB</h2>
+
+<p><img src="../../assets/built/images/hdfs-case1.png" alt="image" style="zoom:150%;" />500MB 짜리 파일 하나로 HDFS에 저장할 경우, File A는 위 그림처럼 4개의 block으로 쪼개집니다. 또한, NameNode는 File A의 메타 데이터를 하나 저장합니다. 이때 HDFS I/O는 4번 발생합니다.</p>
+
+<h2 id="case2--10-files-each-size-is-50mb">Case2 : 10 Files, each Size is 50MB</h2>
+
+<p><img src="../../assets/built/images/hdfs-case2.png" alt="image" style="zoom:150%;" /></p>
+
+<p>File A를 Block Size인 128MB보다 작은 50MB 파일 10개로 쪼개서 저장할 경우, 위 그림처럼 각 10개 File은 각각 50MB 크기의 Block에 저장됩니다. 따라서, HDFS I/O 는 10번 발생하게됩니다. 또한, NameNode는 File A-1부터 File A-10까지 10개 파일에 대한 메타 데이터를 저장하게 됩니다.</p>
+
+<p>위 그림을 간단하게 비교해보면 아래와 같습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th># HDFS I/O(Data Node)</th>
+      <th># MetaData in NameNode</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Case1</td>
+      <td>4</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Case2</td>
+      <td>10</td>
+      <td>10</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>비교를 위해 모든 Block이 다른  Data Node에 저장되어 있다고 가정했지만, 실제 상황에서는 하나의 Data Node에 여러 Block이 저장될 수 있기 때문에  HDFS I/O는 위 수치보다 낮을 것입니다. 즉, 위 상황처럼 모든 Block이 각기 다른 Data Node에 저장된 상황은 최악의 경우라고 생각하시면 됩니다. 그러나 이러한 가정을 제거하더라도 Block Access는 Case1과 Case2가 각각 4,10으로 변함 없을 것입니다. 따라서 우리는 Block Size보다 작은 파일이 저장되는 것을 지양해야함을 알 수 있습니다.</p>
+
+<h1 id="how-it-happened-">How it happened ?</h1>
+
+<h2 id="in-hive">in Hive</h2>
+
+<p>그러면 File Size가 128MB보다 작게 저장되는 경우(small file issue)는 왜 그리고 언제 발생하는 것일까요? 이는 Tez, Yarn 스케쥴러의 동작 원리와 관련 있습니다.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- HiveQL 예시 </span>
+<span class="k">SELECT</span> <span class="n">a</span><span class="p">.</span><span class="n">vendor</span><span class="p">,</span>
+       <span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">),</span>
+       <span class="k">AVG</span><span class="p">(</span><span class="k">c</span><span class="p">.</span><span class="n">cost</span><span class="p">)</span> 
+<span class="k">FROM</span> <span class="n">a</span> <span class="k">JOIN</span> <span class="n">b</span> 
+<span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">b</span><span class="p">.</span><span class="n">id</span><span class="p">)</span> 
+	     <span class="k">JOIN</span> <span class="k">c</span> 
+<span class="k">ON</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">itemid</span> <span class="o">=</span> <span class="k">c</span><span class="p">.</span><span class="n">itemid</span><span class="p">)</span> 
+<span class="k">GROUP</span> <span class="k">BY</span> <span class="n">a</span><span class="p">.</span><span class="n">vendor</span>
+<span class="p">;</span>
+<span class="c1">-- 위 쿼리는 아래 Tez DAG에 따라 수행됩니다</span>
+</code></pre></div></div>
+
+<p><img src="../../assets/built/images/hql-on-tez.png" alt="image" /></p>
+
+<p>Tez engine은 Map-Reduce 이후 작업을 HDFS에 저장하지 않고(HDFS I/O를 발생시키지 않고), in-memory 상에서 다음 작업을 진행한다는 점입니다. 이를 위해 DAG를 미리 생성하는 등의 선행 작업을 실행합니다. 위 그림은 Tez가 이러한 작업을 위해 DAG를 생성하고, HDFS IO없이 Reducer를 통해 쿼리를 실행하는 과정을 설명해줍니다. 그리고 이것이 우리가 일반적으로 알고 있는 MR 동작 방식입니다.</p>
+
+<p>위 도식 대로 INSERT 쿼리가 수행된다면, small file은 등장하지 않아야 하는 것 아닐까요?</p>
+
+<p>하지만, 아래와 같은 쿼리에서는 Mapper만 동작하게 됩니다(mapper-only).</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">outputtable</span> <span class="c1">-- 아래 쿼리 실행 결과에 대해서 Mapper만 동작하여 file write</span>
+<span class="k">SELECT</span> <span class="n">col1</span>
+	<span class="p">,</span><span class="n">col2</span>
+	<span class="p">,</span><span class="n">col3</span>
+<span class="k">FROM</span> <span class="n">source_table</span>
+<span class="k">WHERE</span> <span class="n">col4</span> <span class="o">=</span> <span class="s1">'value'</span>
+<span class="p">;</span>
+</code></pre></div></div>
+
+<p>위 SELECT문은 Reducer를 거치지 않기 때문에 읽어들여온 파일 개수만큼 디렉토리에 그대로 저장합니다. 따라서 source_table 내에 존재하는 파일 개수만큼 outputtable의 table location에 파일을 추가하게 됩니다.</p>
+
+<p>위와 같이 reducer를 사용하지 않는 mapper only query를 반복하여 실행하여 테이블에 파일을 추가한다면, 작은 용량을 가진 파일은 계속해서 증가할 것입니다.</p>
+
+<p><img src="../../assets/built/images/hadoop/reducer-only.webp" alt="image" style="zoom:150%;" /></p>
+
+<h2 id="in-spark">in Spark</h2>
+
+<p>Spark는 file write 작업을 partition 단위로 수행하게 됩니다. 따라서, Spark를 저장된 ouput file 개수는 기본적으로 다른 옵션(아래서 다루게 될 <code class="language-plaintext highlighter-rouge">repartition, coalesce</code>)을 지정하지 않는다면 partition 개수를 결정하는 <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code> 에 의해 결정됩니다.</p>
+
+<blockquote>
+  <p>[default] 200</p>
+
+  <p>[meaning] The default number of partitions to use when shuffling data for joins or aggregations. Note: For structured streaming, this configuration cannot be changed between query restarts from the same checkpoint location.</p>
+</blockquote>
+
+<p>일반적으로 해당 값은 최적화를 위해 총 사용 core 개수의 3배 이상의 값을 권장합니다. 따라서 <code class="language-plaintext highlighter-rouge">repartitoin</code>, <code class="language-plaintext highlighter-rouge">coalesce</code>를 사용하지 않는다면 많은 개수의 파일을 wirte할 것입니다.</p>
+
+<h1 id="how-to-merge">How to Merge?</h1>
+
+<p>그렇다면 이처럼 비효율적으로 저장된 File을 하나의 Block으로 저장하는 방법을 알아보겠습니다.</p>
+
+<h2 id="in-hive--merge-option--add-reducer">in Hive : Merge option / add Reducer</h2>
+
+<p>널리 알려져있고 간단한 방법은 <code class="language-plaintext highlighter-rouge">hive.merge</code> 조건을 설정하여 file write 단계에서 small file들을 병합시키도록 강제할 수 있습니다.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">-- hive.merge 옵션 부여</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">merge</span><span class="p">.</span><span class="n">mapfiles</span><span class="o">=</span><span class="k">true</span><span class="p">;</span> <span class="c1">-- Map 결과 파일에 대해 merge를 허용</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">merge</span><span class="p">.</span><span class="n">mapredfiles</span><span class="o">=</span><span class="k">true</span><span class="p">;</span> <span class="c1">-- MapReducer 결과 파일에 대해 merge를 허용</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">merge</span><span class="p">.</span><span class="k">size</span><span class="p">.</span><span class="n">per</span><span class="p">.</span><span class="n">task</span><span class="o">=</span><span class="mi">128000000</span><span class="p">;</span> <span class="c1">-- 128MB의 file로  merge</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">merge</span><span class="p">.</span><span class="n">smallfiles</span><span class="p">.</span><span class="n">avgsize</span><span class="o">=</span><span class="mi">128000000</span><span class="p">;</span> <span class="c1">-- 128MB 이하의 small file들을 merge 대상으로 지정</span>
+</code></pre></div></div>
+
+<p>위 옵션을 추가하게 되면, mapper 작업에 대해서도 file merge를 실행하게 됩니다.</p>
+
+<p>또 다른 방법으로는 mapper only query에 Reducer 작업을 추가해줌으로써 small file 문제를 해결할 수도 있습니다.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">outputtable</span> <span class="c1">-- 아래 쿼리 실행 결과에 대해서 Mapper만 동작하여 file write</span>
+<span class="k">SELECT</span> <span class="n">col1</span>
+	<span class="p">,</span><span class="n">col2</span>
+	<span class="p">,</span><span class="n">col3</span>
+<span class="k">FROM</span> <span class="n">source_table</span>
+<span class="k">WHERE</span> <span class="n">col4</span> <span class="o">=</span> <span class="s1">'value'</span>
+<span class="n">DISTRIBUTE</span> <span class="k">BY</span> <span class="n">col1</span> <span class="c1">-- DISTRIBUTE BY가 추가됨으로써 해당 쿼리는 Reducer가 추가됩니다.</span>
+<span class="p">;</span>
+</code></pre></div></div>
+
+<p>두 방법을 동시에 사용한다면 더 높은 성능을 보일 수 있습니다. reducer job 결과가 128MB 이하인 경우에 대해서도 대처할 수 있기 때문입니다.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">merge</span><span class="p">.</span><span class="n">mapfiles</span><span class="o">=</span><span class="k">true</span><span class="p">;</span> <span class="c1">-- Map 결과 파일에 대해 merge를 허용</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">merge</span><span class="p">.</span><span class="n">mapredfiles</span><span class="o">=</span><span class="k">true</span><span class="p">;</span> <span class="c1">-- MapReducer 결과 파일에 대해 merge를 허용</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">merge</span><span class="p">.</span><span class="k">size</span><span class="p">.</span><span class="n">per</span><span class="p">.</span><span class="n">task</span><span class="o">=</span><span class="mi">128000000</span><span class="p">;</span> <span class="c1">-- 128MB의 file로  merge</span>
+<span class="k">set</span> <span class="n">hive</span><span class="p">.</span><span class="n">merge</span><span class="p">.</span><span class="n">smallfiles</span><span class="p">.</span><span class="n">avgsize</span><span class="o">=</span><span class="mi">128000000</span><span class="p">;</span> <span class="c1">-- 128MB 이하의 small file들을 merge 대상으로 지정</span>
+
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">outputtable</span> <span class="c1">-- 아래 쿼리 실행 결과에 대해서 Mapper만 동작하여 file write</span>
+<span class="k">SELECT</span> <span class="n">col1</span>
+	<span class="p">,</span><span class="n">col2</span>
+	<span class="p">,</span><span class="n">col3</span>
+<span class="k">FROM</span> <span class="n">source_table</span>
+<span class="k">WHERE</span> <span class="n">col4</span> <span class="o">=</span> <span class="s1">'value'</span>
+<span class="n">DISTRIBUTE</span> <span class="k">BY</span> <span class="n">col1</span> <span class="c1">-- DISTRIBUTE BY가 추가됨으로써 해당 쿼리는 Reducer가 추가됩니다.</span>
+<span class="p">;</span>
+<span class="c1">-- 1) DISTRIBUTE BY에 의해 먼저 Reducer 작업을 한번 수행한 다음</span>
+<span class="c1">-- 2) hive.merge가 동작하게 됩니다</span>
+</code></pre></div></div>
+
+<h2 id="in-spark--repartition-coalesce">in Spark : repartition/ coalesce</h2>
+
+<p><code class="language-plaintext highlighter-rouge">repartition</code>, <code class="language-plaintext highlighter-rouge">coalesce</code>  를 통해 output file의 개수를 조정할 수 있습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">repartition</code> 은 shuffle을 수행하여 RDD를 재조정해주는데 비해,  <code class="language-plaintext highlighter-rouge">coalesce</code> 는 shuffle을 수행하지 않고 지정된 개수의 <code class="language-plaintext highlighter-rouge">partition</code>으로 조정합니다.</p>
+
+<p>그럼  <code class="language-plaintext highlighter-rouge">partition</code>이 무엇인지를 알아야 이 원리를 이해할 수 있을 것 같습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">partition</code> 이란 spark 내에서 task가 처리하는 데이터의 단위를 의미합니다. <code class="language-plaintext highlighter-rouge">RDD</code>(혹은 이들로 이루어진 <code class="language-plaintext highlighter-rouge">DataFrame</code>)는 여러 개의 <code class="language-plaintext highlighter-rouge">partition</code>으로 이루어져있고, 하나의 task가 하나의 <code class="language-plaintext highlighter-rouge">partition</code>을 담당하여 작업을 수행합니다.</p>
+
+<p>이러한 <code class="language-plaintext highlighter-rouge">partition</code>은 3개로 분류됩니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>partition</th>
+      <th>configuration</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Input Partition</td>
+      <td>spark.sql.files.maxPartitionBytes</td>
+    </tr>
+    <tr>
+      <td>Output Partition</td>
+      <td>repartition, coalesce</td>
+    </tr>
+    <tr>
+      <td>Shuffle Partition</td>
+      <td>spark.sql.shuffle.partitions</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>이 중에 Output Partition을 조정하여, 파일 개수를 적절히 조절해줍니다.  <code class="language-plaintext highlighter-rouge">repartition</code> 은   RDD, DataSet, DataFrame과 같은 객체 내부의 partition에 저장될 데이터를 재조정해주는 역할을 합니다. 이때 <strong>shuffle</strong>을 통해, 해당 객체 내부의 데이터들을 재분배하게 됩니다. 이에 비해  <code class="language-plaintext highlighter-rouge">coalesce</code>는 현재  partition 개수보다 적게 만드는 것이 목적이므로, 재조정하지 않고(<strong>shuffle 하지 않고</strong>), partition에 존재하는 데이터를 단순히 다른 partition에 욱여 넣는 작업입니다.</p>
+
+<p>따라서 Output Partition을 적절히 사용하여, output file size가 128MB 이하가 되지 않도록 조정하여 저장하면 됩니다. 아래 예시 코드를 남기며 글을 마치겠습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df</span> <span class="o">=</span> <span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"SELECT id, grade FROM student"</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">.</span><span class="n">coalesce</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>\
+<span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">"append"</span><span class="p">)</span>\
+<span class="p">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="s">"test_table"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>[참고]</p>
+
+<p><a href="https://faqreviews.net/question/what-is-hdfs-data-block/">what is HDFS Data Block</a></p>
+
+<p><a href="https://www.hdfstutorial.com/hdfs-architecture/block-replication-in-hadoop/">Block Replication in Hadoop</a></p>
+
+<p><a href="https://forum.huawei.com/enterprise/en/fi-components-relationship-between-spark-and-hdfs/thread/606704-893">Relationship between Spark and HDFS</a></p>
+
+<p><a href="https://tech.kakao.com/2021/10/08/spark-shuffle-partition/">Spark Shuffle Partition과 최적화</a></p>
+
+<p><a href="https://docs.cloudera.com/best-practices/latest/impala-performance/topics/bp-impala-avoiding-small-files.html">Avoiding small files</a></p>
+
+<p><a href="https://118k.tistory.com/750">[hive] 작은 사이즈의 파일 머지 설정과 그로 인한 오버헤드</a></p>
+
+<p><a href="https://3months.tistory.com/536">하둡과 응용 프레임워크 2) 하둡 실행 환경 (YARN, Tez, Spark)</a></p>
+
+<p><a href="https://wikidocs.net/22827">빅데이터 - 하둡, 하이브로 시작하기</a></p>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            <!--  -->
+            <!-- utteranc setting -->
+            <script src="https://utteranc.es/client.js"
+                    repo="GyuhoonK/blog-comments"
+                    issue-term="pathname"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+                    <article class="read-next-card"
+                        
+                            style="background-image: url(/assets/built/images/spain-blog-cover.jpg)"
+                        
+                    >
+                        <header class="read-next-card-header">
+                            <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
+                            
+                                <h3 class="read-next-card-header-title"><a href="/tag/hadoop/">Hadoop</a></h3>
+                            
+                        </header>
+                        <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
+</div>
+                        <div class="read-next-card-content">
+                            <ul>
+                                
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/non-deterministic-udf">non-deterministic UDF</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/impala-with-clause">WITH절/VIEW 사용 시 쿼리 플랜에 대해서</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/enableHiveSupport">enableHiveSupport</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                            </ul>
+                        </div>
+                        <footer class="read-next-card-footer">
+                            <a href="/tag/hadoop/">
+                                
+                                    See all 11 posts  →
+                                
+                            </a>
+                        </footer>
+                    </article>
+                <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+                </script>
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/threading-in-python">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/thread-banner.jpeg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/threading-in-python">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Python</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Threading in Python</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Python - Thread, Mutex, Semaphore
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      5 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/bucket-hive-spark">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/bucket-banner.jpg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/bucket-hive-spark">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Bucket in Hive, Spark</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Hive와 Spark에서 Bucket 차이점에 대하여
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      3 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://gyuhoonk.github.io/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">Merge Files in HDFS</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Merge+Files+in+HDFS&amp;url=https://gyuhoonk.github.iohive-merge-query"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iohive-merge-query"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2023</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+    <!-- math LaTex-->
+    
+</body>
+</html>

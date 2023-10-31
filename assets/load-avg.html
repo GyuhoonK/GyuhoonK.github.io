@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>Load Average란?(chatGPT로 알아보기)</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    </script>
+<meta name="description" content="Data Engineering" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/load-avg" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Load Average란?(chatGPT로 알아보기)" />
+    <meta property="og:description" content="chatGPT로 load average로 파헤쳐보기 Load Average 알람과의 첫만남 저는 네이버웹툰에서 데이터 엔지니어로서 근무 중입니다. 데이터 엔지니어의 업무 중 하나가 데이터마트를 생성하고 주기적으로 데이터마트가 잘 업데이트되도록 하는 것입니다. 어느날 새로운 데이터마트를 생성해야했었고, 꽤 과거의 기간부터 현재까지의 데이터를 단기간에 적재해야했습니다. 예를 들어, 2010년 1월 1일부터 현재인 2023년 3월까지의 데이터를 일간 단위(daily)로 적재해야한다면" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/load-avg" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/linux/linux_logo.png" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2023-03-11T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2023-03-11T22:30:00+09:00" />
+    <meta property="article:tag" content="Linux" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Load Average란?(chatGPT로 알아보기)" />
+    <meta name="twitter:description" content="chatGPT로 load average로 파헤쳐보기 Load Average 알람과의 첫만남 저는 네이버웹툰에서 데이터 엔지니어로서 근무 중입니다. 데이터 엔지니어의 업무 중 하나가 데이터마트를 생성하고 주기적으로 데이터마트가 잘 업데이트되도록 하는 것입니다. 어느날 새로운 데이터마트를 생성해야했었고, 꽤 과거의 기간부터 현재까지의 데이터를 단기간에 적재해야했습니다. 예를 들어, 2010년 1월 1일부터 현재인 2023년 3월까지의 데이터를 일간 단위(daily)로 적재해야한다면" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/linux/linux_logo.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Linux" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "https://gyuhoonk.github.io/"
+    },
+    "url": "https://gyuhoonk.github.io/load-avg",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://gyuhoonk.github.io/assets/built/images/linux/linux_logo.png",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://gyuhoonk.github.io/load-avg"
+    },
+    "description": "chatGPT로 load average로 파헤쳐보기 Load Average 알람과의 첫만남 저는 네이버웹툰에서 데이터 엔지니어로서 근무 중입니다. 데이터 엔지니어의 업무 중 하나가 데이터마트를 생성하고 주기적으로 데이터마트가 잘 업데이트되도록 하는 것입니다. 어느날 새로운 데이터마트를 생성해야했었고, 꽤 과거의 기간부터 현재까지의 데이터를 단기간에 적재해야했습니다. 예를 들어, 2010년 1월 1일부터 현재인 2023년 3월까지의 데이터를 일간 단위(daily)로 적재해야한다면"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="Load Average란?(chatGPT로 알아보기)" href="/feed.xml" />
+
+    
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/kubernetes/">kubernetes</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-linux post tag-linux ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime="11 March 2023">11 March 2023</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/linux/'>LINUX</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">Load Average란?(chatGPT로 알아보기)</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/linux/linux_logo.png)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>chatGPT로 load average로 파헤쳐보기</p>
+
+<h3 id="load-average-알람과의-첫만남">Load Average 알람과의 첫만남</h3>
+<p>저는 네이버웹툰에서 데이터 엔지니어로서 근무 중입니다. 데이터 엔지니어의 업무 중 하나가 데이터마트를 생성하고 주기적으로 데이터마트가 잘 업데이트되도록 하는 것입니다. 어느날 새로운 데이터마트를 생성해야했었고, 꽤 과거의 기간부터 현재까지의 데이터를 단기간에 적재해야했습니다.<br />
+예를 들어, 2010년 1월 1일부터 현재인 2023년 3월까지의 데이터를 일간 단위(daily)로 적재해야한다면 10년이 넘는, 즉 3650일(회) 이상의 배치 작업을 짧은 기간에 수행해야합니다.<br />
+이런 배치를 수행하는 과정에서 Load Average 알람을 처음 접하게 되었습니다. 해당 배치를 실행하는 서버의 Load average가 임계치를 넘어섰으니 적절한 조치를 취해야한다는 내용이었습니다.</p>
+
+<h3 id="load-average가-뭐지">Load Average가 뭐지?</h3>
+<p>해당 알람을 받았지만.. 사실 Load Average가 무엇인지 정확히 몰랐습니다. 서버 구동 시에 관리되는 메트릭이구나, 일정 임계치를 넘어서면 문제가 되는구나, 지금 내가 실행한 작업에 의해 영향이 있을 수 있겠구나 정도만 파악했고 제 작업을 잠시 중단하니 Load Average가 낮아졌습니다.<br />
+서버에서 구동 중인 작업(process)와 연관이 있겠구나 정도만 파악을 했고 정확히 알아보기 위해 검색을 시작했습니다. 운영체제를 좀 더 열심히 공부할 걸 하는 후회와 함께…
+그러다가 요즘 무엇인가 공부를 하는데에 chatGPT가 효율적이란 후기들이 생각났고 저도 chatGPT한테 load average에 대해서 물어봤습니다.</p>
+
+<h3 id="chatgpt야-load-average가-뭐야">chatGPT야, Load Average가 뭐야?</h3>
+
+<p><img src="../../assets/built/images/linux/chatgpt1.png" alt="image" /> 
+chatGPT는 깔끔하게 답변해주어서 읽는 것만으로도 대강 어떤 내용인지 이해를 할 수 있었습니다.</p>
+<ul>
+  <li>현재 시스템이 얼마나 많은 작업을 수행하는지를 판단하기 위한 지표로서 활용된다.</li>
+  <li>1분, 5분, 15분으로 나누어 실행 중이거나 실행 대기 중인 프로세스의 평균 수를 나타낸다.</li>
+  <li>로드 평균이 1.0이면 완전 과부하 상태이므로 문제가 발생할 수 있다.</li>
+</ul>
+
+<p>구체적인 예시와 함께 해당 내용을 이해하고 싶었습니다. 이번엔 이렇게 질문했습니다.
+<img src="../../assets/built/images/linux/chatgpt2.png" alt="image" /></p>
+
+<p>load average의 값이 갖는 의미를 좀 더 자세히 설명해주었고, load average가 높아질 수 있는 경우에 대해서도 설명해주었습니다.</p>
+
+<p>첫번째 답변에서 load average가 1이라면, <strong>완전 과부하 상태</strong>라고 했는데 두번째 답변에서는 ‘load average가 1일 수도 있고, 4인 경우가 있을 수도 있다’고 설명했고, 이건 완전 과부하 상태와 전혀 관련 없다는 듯이 설명했습니다. 이 부분이 이해가 가지 않아 다시 질문했습니다.</p>
+
+<p><img src="../../assets/built/images/linux/chatgpt3.png" alt="image" /></p>
+
+<p>load average가 1이라면 오히려 정상 작동하고 있을 가능성이 높다고 설명합니다. 그 이유는 CPU 코어가 1개, 2개, 4개인 경우를 생각해보았을 때 각각 CPU 사용률이 100%, 50%, 25%이기 때문이라고 말합니다. <br />
+여기서 조금 헷갈렸지만 다시 생각해보니 chatGPT가 조금 불친절해도 틀린 말은 하지 않았다는 걸 깨달았습니다. CPU 코어가 1개인 경우는 요즘에는 거의 없습니다. 제가 알람을 받았던 서버의 CPU도 24 core CPU였습니다. 24 core CPU에서 load average가 1이라면 CPU를 약 4% 정도만 사용하는 상태입니다. 따라서 대부분의 경우에 load average가 1인 것은 시스템이 정상일 확률이 높다는 설명입니다.<br />
+더불어, chatGPT의 첫번째 답변은 1 core CPU를 상정하고 답변했던 것으로 보입니다. 1 core CPU에서 load average가 1이라면 100%로 사용 중이므로 시스템이 비정상적으로 작동할 것이기 때문입니다.</p>
+
+<p>저의 이런 생각이 맞는지 확인하기 위해 구체적인 예시로 chatGPT에게 다시 질문했습니다.</p>
+
+<p><img src="../../assets/built/images/linux/chatgpt4.png" alt="image" /></p>
+
+<p>load average에 대해 제가 생각했던 것이 맞았음을 알 수 있었습니다.</p>
+
+<p>이번엔 구체적으로 load average가 어떻게 계산되는지 알아보고, 직접 제 맥북에 적용하여 계산해보고자 했습니다.</p>
+
+<p><img src="../../assets/built/images/linux/chatgpt5.png" alt="image" /></p>
+
+<p>chatGPT에 따르면, 로드 평균을 계산하기 위해서 대기 중인 프로세스 수, 실행 중인 프로세스 수, CPU 코어 개수를 알아야합니다. 참고로 현재 제 맥북의 CPU 코어수는 10입니다. 계산을 위해서 프로세스 수를 확인하면 될 것 같습니다. 해당 명령어도 chatGPT에게 물어보았습니다.</p>
+
+<p><img src="../../assets/built/images/linux/chatgpt6.png" alt="image" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">top</code> 명령어를 사용해서 프로세스 개수를 확인해보았습니다.</p>
+
+<p><img src="../../assets/built/images/linux/top.png" alt="image" /></p>
+
+<p>총 프로세스 개수가 582개이고, 580개가 sleeping(대기), 2개가 running(실행)인 상태였습니다. 그런데 chatGPT에 따르면 <code class="language-plaintext highlighter-rouge">실행 중인 프로세스 수=실행 중인 프로세스 수+실행 중인 스레드 수</code>입니다. 따라서, 현재 실행 중인 스레드 수인 2934도 load average 계산에 포함해야합니다. <br />
+그런데 이렇게 계산하면 (582+2394)/10=297.6으로 터무니없는 값이 나옵니다. 현재 <code class="language-plaintext highlighter-rouge">top</code> 명령어로 확인되는 load average(<code class="language-plaintext highlighter-rouge">2.92 3.99 4.07</code>)과도 거의 100배 가까이 차이가 납니다.</p>
+
+<p>이 이후부터는 <code class="language-plaintext highlighter-rouge">top</code>, <code class="language-plaintext highlighter-rouge">uptime</code> 명령어를 사용해가며 확인한 값(프로세스 수와 실제로 표시되는 load avg)을 chatGPT에 제공하며 실제로 load average가 어떻게 계산되는지 확인하려고 했지만 제가 의도한 답변을 받을 수 없었습니다. 그래서 포기하고, 이번엔 제가 직접 구글링해보았습니다.</p>
+
+<h3 id="kernel에서-계산하는-load-avg">kernel에서 계산하는 load avg</h3>
+<p>실제로 커널에서 load average를 계산하는 함수는 <code class="language-plaintext highlighter-rouge">calc_load()</code>라는 함수입니다. 
+kernel 2.0.40의 함수가 가장 간단한 형태라 이해하기 편할 것 같아 예시로 가져와보았습니다.</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// kernel/sched.c</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">calc_load</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">ticks</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">active_tasks</span><span class="p">;</span> <span class="cm">/* fixed-point */</span>
+    <span class="k">static</span> <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="n">LOAD_FREQ</span><span class="p">;</span>
+
+    <span class="n">count</span> <span class="o">-=</span> <span class="n">ticks</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">count</span> <span class="o">+=</span> <span class="n">LOAD_FREQ</span><span class="p">;</span>
+            <span class="n">active_tasks</span> <span class="o">=</span> <span class="n">count_active_tasks</span><span class="p">();</span>
+            <span class="n">CALC_LOAD</span><span class="p">(</span><span class="n">avenrun</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">EXP_1</span><span class="p">,</span> <span class="n">active_tasks</span><span class="p">);</span>
+            <span class="n">CALC_LOAD</span><span class="p">(</span><span class="n">avenrun</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">EXP_5</span><span class="p">,</span> <span class="n">active_tasks</span><span class="p">);</span>
+            <span class="n">CALC_LOAD</span><span class="p">(</span><span class="n">avenrun</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">EXP_15</span><span class="p">,</span> <span class="n">active_tasks</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">count_active_tasks()</code> 함수는 active task 개수를 계산하는데 아래와 같은 코드입니다.</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">count_active_tasks</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="k">return</span> <span class="n">nr_active</span><span class="p">()</span> <span class="o">*</span> <span class="n">FIXED_1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">nr_active</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">i</span><span class="p">,</span> <span class="n">running</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">uninterruptible</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+        <span class="n">for_each_online_cpu</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">running</span> <span class="o">+=</span> <span class="n">cpu_rq</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">nr_running</span><span class="p">;</span>
+                <span class="n">uninterruptible</span> <span class="o">+=</span> <span class="n">cpu_rq</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">nr_uninterruptible</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">unlikely</span><span class="p">((</span><span class="kt">long</span><span class="p">)</span><span class="n">uninterruptible</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">))</span>
+                <span class="n">uninterruptible</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+        <span class="k">return</span> <span class="n">running</span> <span class="o">+</span> <span class="n">uninterruptible</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">nr_active()</code>는 nr_running(TASK_RUNNING), nr_uninterruptible(TASK_UNINTERRUPTIBLE)인 프로세스의 개수를 더해서 리턴합니다. 즉, 실행 중인 프로세스와 대기 상태인 프로세스 개수를 계산합니다.<br />
+따라서 지정된 <code class="language-plaintext highlighter-rouge">tick</code> 단위마다, active task(RUNNING, UNINTERRUPTIBLE)를 계산하여 저장하고 이를 이용하여 load average를 계산한다는 것을 알 수 있습니다.<br />
+이 부분에 대한 이해가 깊지는 않지만, 스레드에 대한 고려는 없는 것으로 보입니다. 따라서 chatGPT가 <code class="language-plaintext highlighter-rouge">실행 중인 스레드의 개수도 더해야한다</code>고 설명한 부분은 틀린 답변이 아닌가 싶습니다.<br />
+참고로 load average를 보여주는 함수는 아래와 같습니다.</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// fs/proc/loadavg.c</span>
+<span class="k">static</span> <span class="kt">int</span> <span class="nf">loadavg_proc_show</span><span class="p">(</span><span class="k">struct</span> <span class="n">seq_file</span> <span class="o">*</span><span class="n">m</span><span class="p">,</span> <span class="kt">void</span> <span class="o">*</span><span class="n">v</span><span class="p">)</span>
+<span class="p">{</span>
+        <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">avnrun</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+
+        <span class="n">get_avenrun</span><span class="p">(</span><span class="n">avnrun</span><span class="p">,</span> <span class="n">FIXED_1</span><span class="o">/</span><span class="mi">200</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+        <span class="n">seq_printf</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s">"%lu.%02lu %lu.%02lu %lu.%02lu %ld/%d %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span>
+                <span class="n">LOAD_INT</span><span class="p">(</span><span class="n">avnrun</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">LOAD_FRAC</span><span class="p">(</span><span class="n">avnrun</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+                <span class="n">LOAD_INT</span><span class="p">(</span><span class="n">avnrun</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">LOAD_FRAC</span><span class="p">(</span><span class="n">avnrun</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                <span class="n">LOAD_INT</span><span class="p">(</span><span class="n">avnrun</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="n">LOAD_FRAC</span><span class="p">(</span><span class="n">avnrun</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+                <span class="n">nr_running</span><span class="p">(),</span> <span class="n">nr_threads</span><span class="p">,</span>
+                <span class="n">task_active_pid_ns</span><span class="p">(</span><span class="n">current</span><span class="p">)</span><span class="o">-&gt;</span><span class="n">last_pid</span><span class="p">);</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>위 함수는 5개 값, <code class="language-plaintext highlighter-rouge">1분,5분,15분 로드평균 (실행 중인 task개수)/(전체 task 개수) (최근 실행된 task의 PID)</code>를 보여줍니다.</p>
+
+<p>그렇다면 실제로 보여지는 load average값은 어떻게 계산되는 걸까? tick마다 계산한 모든 값을 저장하고 있다가 평균을 계산할 수도 있겠지만 이런 방법은 너무 많은 자원을 소모합니다. 예를 들어 1초마다 load를 저장하는 경우 1분, 5분, 15분은 각각 60개, 150개, 900개의 값을 저장해야합니다. 따라서, 이전 load average값만을 이용하여 간단하게 계산하는 방법을 도입했고 리눅스는 EMA(Exponential Moving Average)를 사용합니다.</p>
+
+\[load(t)=load(t-1)e^{\frac{-5}{60m}}+n(t)(1-e^{\frac{-5}{60m}})\]
+
+<ul>
+  <li>\(m\): 리포팅을 위한 시간 (1분, 5분, 15분 등)</li>
+  <li>\(load(t)\): 현재의 Load 값</li>
+  <li>\(load(t-1)\): 지난 Load 값</li>
+  <li>\(n(t)\): 현재의 Active Task 개수</li>
+</ul>
+
+<p>여기서 \(e^{-5/60m}\)가 EMA의 가중치 역할(\(\alpha\))을 합니다.
+위와 같은 수식은 <code class="language-plaintext highlighter-rouge">sched.h</code> 헤더파일에서 확인할 수 있습니다.</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/*
+ * These are the constant used to fake the fixed-point load-average
+ * counting. Some notes:
+ *  - 11 bit fractions expand to 22 bits by the multiplies: this gives
+ *    a load-average precision of 10 bits integer + 11 bits fractional
+ *  - if you want to count load-averages more often, you need more
+ *    precision, or rounding will get you. With 2-second counting freq,
+ *    the EXP_n values would be 1981, 2034 and 2043 if still using only
+ *    11 bit fractions.
+ */</span>
+<span class="k">extern</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">avenrun</span><span class="p">[];</span>         <span class="cm">/* Load averages */</span>
+
+<span class="cp">#define FSHIFT          11              </span><span class="cm">/* nr of bits of precision */</span><span class="cp">
+#define FIXED_1         (1&lt;&lt;FSHIFT)     </span><span class="cm">/* 1.0 as fixed-point */</span><span class="cp">
+#define LOAD_FREQ       (5*HZ+1)        </span><span class="cm">/* 5 sec intervals */</span><span class="cp">
+#define EXP_1           1884            </span><span class="cm">/* 1/exp(5sec/1min) as fixed-point */</span><span class="cp">
+#define EXP_5           2014            </span><span class="cm">/* 1/exp(5sec/5min) */</span><span class="cp">
+#define EXP_15          2037            </span><span class="cm">/* 1/exp(5sec/15min) */</span><span class="cp">
+</span>
+<span class="cp">#define CALC_LOAD(load,exp,n) \
+        load *= exp; \
+        load += n*(FIXED_1-exp); \
+        load &gt;&gt;= FSHIFT;
+</span></code></pre></div></div>
+
+<p>load average를 EMA로 계산하기 위해 고정소수점(fixed-point)을 이용하고 있으며, 10 bit는 정수, 11bit는 소수에 할당됩니다.<br />
+1분 load average를 계산하는 경우에, \(e^{-5/60}\)은 부동소수점으로 표현시 약 \(1884\)의 값을 갖습니다.</p>
+
+\[e^{\frac{-5}{60m}}=0.942...\\
+0.942 \times 2^{11} = 1884.250...\]
+
+<p><code class="language-plaintext highlighter-rouge">EXP_1, EXP_5, EXP_15</code>는 부동소수점 계산을 위해 미리 계산해놓은 고정소수점으로 계산된 근사값이며, 이를 이용하여 load average를 계산하고 있습니다.<br />
+<code class="language-plaintext highlighter-rouge">CALC_LOAD</code> 매크로의 마지막 라인에서 <code class="language-plaintext highlighter-rouge">FSHIFT</code>(소수부 bit 수)만큼 shift right해주는 이유는 곱셉 결과 소수부가 22 bit로 확장되었기 때문에 이 결과 중에 11 bit만큼만을 소수부로 사용하기 위해서입니다.
+따라서, <code class="language-plaintext highlighter-rouge">CALC_LOAD</code>에서 구현한 식은 \(load(t)\)를 계산하는 수식과 동일한 수식임을 알 수 있습니다.</p>
+
+<h3 id="마무리">마무리</h3>
+
+<p>프로세스들의 CPU 사용량이 높아지면 load average도 증가합니다. 즉, active task의 개수가 많아지는 경우 load average도 증가합니다. 한편, I/O(Disk I/O, Network I/O) 작업이 많아지는 경우에도 load average가 증가할 수 있습니다. 제가 받았던 알람의 경우에 CPU 사용률은 치솟지 않고 load average만 상승했기 때문에 I/O 쪽의 문제가 아닌지 추측하고 있습니다(정확한 원인 파악은 하지 못했습니다).</p>
+
+<p>chatGPT 덕분에 구글링으로 몇 시간, 혹은 며칠을 고생했을 의문점을 1~2시간 정도만 투자하고 대강의 내용을 파악하고 제가 궁금한 부분을 더 깊게 파볼 수 있었습니다. 글에는 chatGPT에게 load average에 대해서 물어본 부분만 캡쳐하여 올렸지만, 고정소수점의 연산에 대한 이해에서도 chatGPT의 도움을 받았습니다.<br />
+앞으로도 CS 부분에서 모르는 부분은 chatGPT를 이용하여 적극적으로 검색하고 기록해나가야겠습니다!</p>
+
+<p>[참고]<br />
+<a href="https://lunatine.net/2016/02/19/about-load-average/">Load Average에 대하여</a><br />
+<a href="https://bab2min.tistory.com/183">고정소수점 구현해보기 1. 사칙연산</a></p>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            <!--  -->
+            <!-- utteranc setting -->
+            <script src="https://utteranc.es/client.js"
+                    repo="GyuhoonK/blog-comments"
+                    issue-term="pathname"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+                    <article class="read-next-card"
+                        
+                            style="background-image: url(/assets/built/images/spain-blog-cover.jpg)"
+                        
+                    >
+                        <header class="read-next-card-header">
+                            <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
+                            
+                                <h3 class="read-next-card-header-title"><a href="/tag/linux/">Linux</a></h3>
+                            
+                        </header>
+                        <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
+</div>
+                        <div class="read-next-card-content">
+                            <ul>
+                                
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/special-permissions">Linux 사용자 관리, 파일속성 그리고, 특수권한</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                            </ul>
+                        </div>
+                        <footer class="read-next-card-footer">
+                            <a href="/tag/linux/">
+                                
+                                    See all 1 posts  →
+                                
+                            </a>
+                        </footer>
+                    </article>
+                <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+                </script>
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/decorator">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/python/decorator-comic-1.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/decorator">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Python</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">변수를 전달하는 decorator</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>변수를 생성해 함수로 전달하는 데코레이터 만들기
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      3 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/impala-with-clause">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/apache-impala-logo-1.webp)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/impala-with-clause">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">WITH절/VIEW 사용 시 쿼리 플랜에 대해서</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>WITH절/VIEW 사용은 효율적인 쿼리플랜과 관련이 없다
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      3 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://gyuhoonk.github.io/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">Load Average란?(chatGPT로 알아보기)</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Load+Average%EB%9E%80%3F%28chatGPT%EB%A1%9C+%EC%95%8C%EC%95%84%EB%B3%B4%EA%B8%B0%29&amp;url=https://gyuhoonk.github.ioload-avg"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.ioload-avg"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2023</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+    <!-- math LaTex-->
+    
+</body>
+</html>

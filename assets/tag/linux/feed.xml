@@ -1,0 +1,702 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom" >
+  <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
+  <link href="https://gyuhoonk.github.io/tag/linux/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2023-10-31T22:16:37+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/linux/feed.xml</id>
+
+  
+  
+  
+
+  
+    <title type="html">Gyuhoon Kim | </title>
+  
+
+  
+    <subtitle>Data Engineering</subtitle>
+  
+
+  
+
+  
+    
+      
+    
+  
+
+  
+  
+
+  
+    <entry>
+      <title type="html">Load Average란?(chatGPT로 알아보기)</title>
+      <link href="https://gyuhoonk.github.io/load-avg" rel="alternate" type="text/html" title="Load Average란?(chatGPT로 알아보기)" />
+      <published>2023-03-11T22:30:00+09:00</published>
+      <updated>2023-03-11T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/load-avg</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/load-avg">&lt;p&gt;chatGPT로 load average로 파헤쳐보기&lt;/p&gt;
+
+&lt;h3 id=&quot;load-average-알람과의-첫만남&quot;&gt;Load Average 알람과의 첫만남&lt;/h3&gt;
+&lt;p&gt;저는 네이버웹툰에서 데이터 엔지니어로서 근무 중입니다. 데이터 엔지니어의 업무 중 하나가 데이터마트를 생성하고 주기적으로 데이터마트가 잘 업데이트되도록 하는 것입니다. 어느날 새로운 데이터마트를 생성해야했었고, 꽤 과거의 기간부터 현재까지의 데이터를 단기간에 적재해야했습니다.&lt;br /&gt;
+예를 들어, 2010년 1월 1일부터 현재인 2023년 3월까지의 데이터를 일간 단위(daily)로 적재해야한다면 10년이 넘는, 즉 3650일(회) 이상의 배치 작업을 짧은 기간에 수행해야합니다.&lt;br /&gt;
+이런 배치를 수행하는 과정에서 Load Average 알람을 처음 접하게 되었습니다. 해당 배치를 실행하는 서버의 Load average가 임계치를 넘어섰으니 적절한 조치를 취해야한다는 내용이었습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;load-average가-뭐지&quot;&gt;Load Average가 뭐지?&lt;/h3&gt;
+&lt;p&gt;해당 알람을 받았지만.. 사실 Load Average가 무엇인지 정확히 몰랐습니다. 서버 구동 시에 관리되는 메트릭이구나, 일정 임계치를 넘어서면 문제가 되는구나, 지금 내가 실행한 작업에 의해 영향이 있을 수 있겠구나 정도만 파악했고 제 작업을 잠시 중단하니 Load Average가 낮아졌습니다.&lt;br /&gt;
+서버에서 구동 중인 작업(process)와 연관이 있겠구나 정도만 파악을 했고 정확히 알아보기 위해 검색을 시작했습니다. 운영체제를 좀 더 열심히 공부할 걸 하는 후회와 함께…
+그러다가 요즘 무엇인가 공부를 하는데에 chatGPT가 효율적이란 후기들이 생각났고 저도 chatGPT한테 load average에 대해서 물어봤습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;chatgpt야-load-average가-뭐야&quot;&gt;chatGPT야, Load Average가 뭐야?&lt;/h3&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/linux/chatgpt1.png&quot; alt=&quot;image&quot; /&gt; 
+chatGPT는 깔끔하게 답변해주어서 읽는 것만으로도 대강 어떤 내용인지 이해를 할 수 있었습니다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;현재 시스템이 얼마나 많은 작업을 수행하는지를 판단하기 위한 지표로서 활용된다.&lt;/li&gt;
+  &lt;li&gt;1분, 5분, 15분으로 나누어 실행 중이거나 실행 대기 중인 프로세스의 평균 수를 나타낸다.&lt;/li&gt;
+  &lt;li&gt;로드 평균이 1.0이면 완전 과부하 상태이므로 문제가 발생할 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;구체적인 예시와 함께 해당 내용을 이해하고 싶었습니다. 이번엔 이렇게 질문했습니다.
+&lt;img src=&quot;../../assets/built/images/linux/chatgpt2.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;load average의 값이 갖는 의미를 좀 더 자세히 설명해주었고, load average가 높아질 수 있는 경우에 대해서도 설명해주었습니다.&lt;/p&gt;
+
+&lt;p&gt;첫번째 답변에서 load average가 1이라면, &lt;strong&gt;완전 과부하 상태&lt;/strong&gt;라고 했는데 두번째 답변에서는 ‘load average가 1일 수도 있고, 4인 경우가 있을 수도 있다’고 설명했고, 이건 완전 과부하 상태와 전혀 관련 없다는 듯이 설명했습니다. 이 부분이 이해가 가지 않아 다시 질문했습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/linux/chatgpt3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;load average가 1이라면 오히려 정상 작동하고 있을 가능성이 높다고 설명합니다. 그 이유는 CPU 코어가 1개, 2개, 4개인 경우를 생각해보았을 때 각각 CPU 사용률이 100%, 50%, 25%이기 때문이라고 말합니다. &lt;br /&gt;
+여기서 조금 헷갈렸지만 다시 생각해보니 chatGPT가 조금 불친절해도 틀린 말은 하지 않았다는 걸 깨달았습니다. CPU 코어가 1개인 경우는 요즘에는 거의 없습니다. 제가 알람을 받았던 서버의 CPU도 24 core CPU였습니다. 24 core CPU에서 load average가 1이라면 CPU를 약 4% 정도만 사용하는 상태입니다. 따라서 대부분의 경우에 load average가 1인 것은 시스템이 정상일 확률이 높다는 설명입니다.&lt;br /&gt;
+더불어, chatGPT의 첫번째 답변은 1 core CPU를 상정하고 답변했던 것으로 보입니다. 1 core CPU에서 load average가 1이라면 100%로 사용 중이므로 시스템이 비정상적으로 작동할 것이기 때문입니다.&lt;/p&gt;
+
+&lt;p&gt;저의 이런 생각이 맞는지 확인하기 위해 구체적인 예시로 chatGPT에게 다시 질문했습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/linux/chatgpt4.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;load average에 대해 제가 생각했던 것이 맞았음을 알 수 있었습니다.&lt;/p&gt;
+
+&lt;p&gt;이번엔 구체적으로 load average가 어떻게 계산되는지 알아보고, 직접 제 맥북에 적용하여 계산해보고자 했습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/linux/chatgpt5.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;chatGPT에 따르면, 로드 평균을 계산하기 위해서 대기 중인 프로세스 수, 실행 중인 프로세스 수, CPU 코어 개수를 알아야합니다. 참고로 현재 제 맥북의 CPU 코어수는 10입니다. 계산을 위해서 프로세스 수를 확인하면 될 것 같습니다. 해당 명령어도 chatGPT에게 물어보았습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/linux/chatgpt6.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;top&lt;/code&gt; 명령어를 사용해서 프로세스 개수를 확인해보았습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/linux/top.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;총 프로세스 개수가 582개이고, 580개가 sleeping(대기), 2개가 running(실행)인 상태였습니다. 그런데 chatGPT에 따르면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;실행 중인 프로세스 수=실행 중인 프로세스 수+실행 중인 스레드 수&lt;/code&gt;입니다. 따라서, 현재 실행 중인 스레드 수인 2934도 load average 계산에 포함해야합니다. &lt;br /&gt;
+그런데 이렇게 계산하면 (582+2394)/10=297.6으로 터무니없는 값이 나옵니다. 현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;top&lt;/code&gt; 명령어로 확인되는 load average(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2.92 3.99 4.07&lt;/code&gt;)과도 거의 100배 가까이 차이가 납니다.&lt;/p&gt;
+
+&lt;p&gt;이 이후부터는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;top&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;uptime&lt;/code&gt; 명령어를 사용해가며 확인한 값(프로세스 수와 실제로 표시되는 load avg)을 chatGPT에 제공하며 실제로 load average가 어떻게 계산되는지 확인하려고 했지만 제가 의도한 답변을 받을 수 없었습니다. 그래서 포기하고, 이번엔 제가 직접 구글링해보았습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;kernel에서-계산하는-load-avg&quot;&gt;kernel에서 계산하는 load avg&lt;/h3&gt;
+&lt;p&gt;실제로 커널에서 load average를 계산하는 함수는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;calc_load()&lt;/code&gt;라는 함수입니다. 
+kernel 2.0.40의 함수가 가장 간단한 형태라 이해하기 편할 것 같아 예시로 가져와보았습니다.&lt;/p&gt;
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// kernel/sched.c&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kr&quot;&gt;inline&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;calc_load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ticks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;active_tasks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;cm&quot;&gt;/* fixed-point */&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOAD_FREQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ticks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOAD_FREQ&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;active_tasks&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;count_active_tasks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;CALC_LOAD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avenrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EXP_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;active_tasks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;CALC_LOAD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avenrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EXP_5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;active_tasks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;CALC_LOAD&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avenrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;EXP_15&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;active_tasks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;count_active_tasks()&lt;/code&gt; 함수는 active task 개수를 계산하는데 아래와 같은 코드입니다.&lt;/p&gt;
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;count_active_tasks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nr_active&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FIXED_1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;nr_active&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;running&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uninterruptible&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;for_each_online_cpu&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;running&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cpu_rq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nr_running&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;uninterruptible&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cpu_rq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;i&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nr_uninterruptible&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;unlikely&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;uninterruptible&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;uninterruptible&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;running&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;uninterruptible&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nr_active()&lt;/code&gt;는 nr_running(TASK_RUNNING), nr_uninterruptible(TASK_UNINTERRUPTIBLE)인 프로세스의 개수를 더해서 리턴합니다. 즉, 실행 중인 프로세스와 대기 상태인 프로세스 개수를 계산합니다.&lt;br /&gt;
+따라서 지정된 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tick&lt;/code&gt; 단위마다, active task(RUNNING, UNINTERRUPTIBLE)를 계산하여 저장하고 이를 이용하여 load average를 계산한다는 것을 알 수 있습니다.&lt;br /&gt;
+이 부분에 대한 이해가 깊지는 않지만, 스레드에 대한 고려는 없는 것으로 보입니다. 따라서 chatGPT가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;실행 중인 스레드의 개수도 더해야한다&lt;/code&gt;고 설명한 부분은 틀린 답변이 아닌가 싶습니다.&lt;br /&gt;
+참고로 load average를 보여주는 함수는 아래와 같습니다.&lt;/p&gt;
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// fs/proc/loadavg.c&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;loadavg_proc_show&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;struct&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;seq_file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;avnrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;get_avenrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avnrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;FIXED_1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;200&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+
+        &lt;span class=&quot;n&quot;&gt;seq_printf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;%lu.%02lu %lu.%02lu %lu.%02lu %ld/%d %d&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;LOAD_INT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avnrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOAD_FRAC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avnrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;LOAD_INT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avnrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOAD_FRAC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avnrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;LOAD_INT&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avnrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;LOAD_FRAC&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;avnrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]),&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;nr_running&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nr_threads&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;task_active_pid_ns&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;last_pid&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위 함수는 5개 값, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1분,5분,15분 로드평균 (실행 중인 task개수)/(전체 task 개수) (최근 실행된 task의 PID)&lt;/code&gt;를 보여줍니다.&lt;/p&gt;
+
+&lt;p&gt;그렇다면 실제로 보여지는 load average값은 어떻게 계산되는 걸까? tick마다 계산한 모든 값을 저장하고 있다가 평균을 계산할 수도 있겠지만 이런 방법은 너무 많은 자원을 소모합니다. 예를 들어 1초마다 load를 저장하는 경우 1분, 5분, 15분은 각각 60개, 150개, 900개의 값을 저장해야합니다. 따라서, 이전 load average값만을 이용하여 간단하게 계산하는 방법을 도입했고 리눅스는 EMA(Exponential Moving Average)를 사용합니다.&lt;/p&gt;
+
+\[load(t)=load(t-1)e^{\frac{-5}{60m}}+n(t)(1-e^{\frac{-5}{60m}})\]
+
+&lt;ul&gt;
+  &lt;li&gt;\(m\): 리포팅을 위한 시간 (1분, 5분, 15분 등)&lt;/li&gt;
+  &lt;li&gt;\(load(t)\): 현재의 Load 값&lt;/li&gt;
+  &lt;li&gt;\(load(t-1)\): 지난 Load 값&lt;/li&gt;
+  &lt;li&gt;\(n(t)\): 현재의 Active Task 개수&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;여기서 \(e^{-5/60m}\)가 EMA의 가중치 역할(\(\alpha\))을 합니다.
+위와 같은 수식은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sched.h&lt;/code&gt; 헤더파일에서 확인할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-c highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/*
+ * These are the constant used to fake the fixed-point load-average
+ * counting. Some notes:
+ *  - 11 bit fractions expand to 22 bits by the multiplies: this gives
+ *    a load-average precision of 10 bits integer + 11 bits fractional
+ *  - if you want to count load-averages more often, you need more
+ *    precision, or rounding will get you. With 2-second counting freq,
+ *    the EXP_n values would be 1981, 2034 and 2043 if still using only
+ *    11 bit fractions.
+ */&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;extern&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;unsigned&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;avenrun&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[];&lt;/span&gt;         &lt;span class=&quot;cm&quot;&gt;/* Load averages */&lt;/span&gt;
+
+&lt;span class=&quot;cp&quot;&gt;#define FSHIFT          11              &lt;/span&gt;&lt;span class=&quot;cm&quot;&gt;/* nr of bits of precision */&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;
+#define FIXED_1         (1&amp;lt;&amp;lt;FSHIFT)     &lt;/span&gt;&lt;span class=&quot;cm&quot;&gt;/* 1.0 as fixed-point */&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;
+#define LOAD_FREQ       (5*HZ+1)        &lt;/span&gt;&lt;span class=&quot;cm&quot;&gt;/* 5 sec intervals */&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;
+#define EXP_1           1884            &lt;/span&gt;&lt;span class=&quot;cm&quot;&gt;/* 1/exp(5sec/1min) as fixed-point */&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;
+#define EXP_5           2014            &lt;/span&gt;&lt;span class=&quot;cm&quot;&gt;/* 1/exp(5sec/5min) */&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;
+#define EXP_15          2037            &lt;/span&gt;&lt;span class=&quot;cm&quot;&gt;/* 1/exp(5sec/15min) */&lt;/span&gt;&lt;span class=&quot;cp&quot;&gt;
+&lt;/span&gt;
+&lt;span class=&quot;cp&quot;&gt;#define CALC_LOAD(load,exp,n) \
+        load *= exp; \
+        load += n*(FIXED_1-exp); \
+        load &amp;gt;&amp;gt;= FSHIFT;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;load average를 EMA로 계산하기 위해 고정소수점(fixed-point)을 이용하고 있으며, 10 bit는 정수, 11bit는 소수에 할당됩니다.&lt;br /&gt;
+1분 load average를 계산하는 경우에, \(e^{-5/60}\)은 부동소수점으로 표현시 약 \(1884\)의 값을 갖습니다.&lt;/p&gt;
+
+\[e^{\frac{-5}{60m}}=0.942...\\
+0.942 \times 2^{11} = 1884.250...\]
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;EXP_1, EXP_5, EXP_15&lt;/code&gt;는 부동소수점 계산을 위해 미리 계산해놓은 고정소수점으로 계산된 근사값이며, 이를 이용하여 load average를 계산하고 있습니다.&lt;br /&gt;
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CALC_LOAD&lt;/code&gt; 매크로의 마지막 라인에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FSHIFT&lt;/code&gt;(소수부 bit 수)만큼 shift right해주는 이유는 곱셉 결과 소수부가 22 bit로 확장되었기 때문에 이 결과 중에 11 bit만큼만을 소수부로 사용하기 위해서입니다.
+따라서, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CALC_LOAD&lt;/code&gt;에서 구현한 식은 \(load(t)\)를 계산하는 수식과 동일한 수식임을 알 수 있습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;마무리&quot;&gt;마무리&lt;/h3&gt;
+
+&lt;p&gt;프로세스들의 CPU 사용량이 높아지면 load average도 증가합니다. 즉, active task의 개수가 많아지는 경우 load average도 증가합니다. 한편, I/O(Disk I/O, Network I/O) 작업이 많아지는 경우에도 load average가 증가할 수 있습니다. 제가 받았던 알람의 경우에 CPU 사용률은 치솟지 않고 load average만 상승했기 때문에 I/O 쪽의 문제가 아닌지 추측하고 있습니다(정확한 원인 파악은 하지 못했습니다).&lt;/p&gt;
+
+&lt;p&gt;chatGPT 덕분에 구글링으로 몇 시간, 혹은 며칠을 고생했을 의문점을 1~2시간 정도만 투자하고 대강의 내용을 파악하고 제가 궁금한 부분을 더 깊게 파볼 수 있었습니다. 글에는 chatGPT에게 load average에 대해서 물어본 부분만 캡쳐하여 올렸지만, 고정소수점의 연산에 대한 이해에서도 chatGPT의 도움을 받았습니다.&lt;br /&gt;
+앞으로도 CS 부분에서 모르는 부분은 chatGPT를 이용하여 적극적으로 검색하고 기록해나가야겠습니다!&lt;/p&gt;
+
+&lt;p&gt;[참고]&lt;br /&gt;
+&lt;a href=&quot;https://lunatine.net/2016/02/19/about-load-average/&quot;&gt;Load Average에 대하여&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://bab2min.tistory.com/183&quot;&gt;고정소수점 구현해보기 1. 사칙연산&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="linux" />
+      
+
+      
+        <summary type="html">chatGPT로 load average로 파헤쳐보기</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
+      <title type="html">Linux 사용자 관리, 파일속성 그리고, 특수권한</title>
+      <link href="https://gyuhoonk.github.io/special-permissions" rel="alternate" type="text/html" title="Linux 사용자 관리, 파일속성 그리고, 특수권한" />
+      <published>2022-11-19T22:30:00+09:00</published>
+      <updated>2022-11-19T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/special-permissions</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/special-permissions">&lt;p&gt;Linux 사용자 관리, 파일속성 그리고, 특수권한에 대해서 알아봅니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;linux-사용자그룹과-파일-관리&quot;&gt;Linux 사용자,그룹과 파일 관리&lt;/h1&gt;
+&lt;p&gt;Linux는 파일 관리를 위해 아래와 같은 개념을 도입했습니다.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;사용자와 그룹(User and Group)&lt;/li&gt;
+  &lt;li&gt;파일 허가권(Permission)&lt;/li&gt;
+  &lt;li&gt;파일 소유권(Ownership)&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;h2 id=&quot;1-사용자와-그룹user-and-group&quot;&gt;1. 사용자와 그룹(User and Group)&lt;/h2&gt;
+&lt;p&gt;리눅스가 사용자와 그룹 개념을 도입함으로써, 1대의 리눅스 서버에 여러 명이 동시에 접속해서 사용할 수 있습니다. 
+처음에 리눅스를 설치하면, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;라는 이름을 가진 super user가 있습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;는 시스템의 모든 작업을 실행할 수 있는 권한이 있고, 시스템에 접속할 수 있는 사용자를 생성할 수 있는 권한도 있습니다. 
+사용자(User)는 혼자서 존재하지 않고 어떤 그룹(Group)에 속해야합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/passwd
+nobody:x:-2:-2:Unprivileged User:/var/empty:/usr/bin/false
+root:x:0:0:System Administrator:/var/root:/bin/sh
+daemon:x:1:1:System Services:/var/root:/usr/bin/false
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;위의 각 행의 의미는 아래와 같습니다.&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{사용자 이름}:{암호}:{사용자ID}:{사용자가 소속된 그룹}:{추가 정보}:{홈 디렉토리}:{기본 셀}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;암호가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;로 표시된 경우에 해당 암호는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/shadow&lt;/code&gt;에서 확인할 수 있습니다.
+이번에는 그룹(Group)을 확인해봅니다.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/group
+nobody:x:-2:
+nogroup:x:-1:
+wheel:x:0:root
+daemon:x:1:root
+kmem:x:2:root
+sys:x:3:root
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;각 행의 의미는 아래와 같습니다.&lt;/p&gt;
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{그룹 이름}:{비밀번호}:{그룹 ID}:{보조 그룹 사용자}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;보조 그룹 사용자&lt;/code&gt;란 이 그룹을 주 그룹(main group)이 아닌 보조 그룹(sub group)으로 사용하는 사용자의 목록이 추가됩니다. 여러명이 있는 경우에는 컴마로 구분됩니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;2-파일-허가권permission과-소유권ownership&quot;&gt;2. 파일 허가권(Permission)과 소유권(Ownership)&lt;/h2&gt;
+&lt;p&gt;리눅스는 각각의 파일과 디렉터리마다 소유권과 허가권을 갖습니다. 아래와 같이 확인이 가능합니다.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root 0 7월 15 16:11 sample.txt
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;표시된 정보는 아래 표와 같습니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;-&lt;/th&gt;
+      &lt;th&gt;rx-r–r–&lt;/th&gt;
+      &lt;th&gt;1&lt;/th&gt;
+      &lt;th&gt;root&lt;/th&gt;
+      &lt;th&gt;root&lt;/th&gt;
+      &lt;th&gt;0&lt;/th&gt;
+      &lt;th&gt;7월 15 16:11&lt;/th&gt;
+      &lt;th&gt;sample.txt&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;파일 유형&lt;/td&gt;
+      &lt;td&gt;파일 허가권&lt;/td&gt;
+      &lt;td&gt;링크 수&lt;/td&gt;
+      &lt;td&gt;파일 소유자&lt;/td&gt;
+      &lt;td&gt;파일 소유그룹&lt;/td&gt;
+      &lt;td&gt;파일 크기(byte)&lt;/td&gt;
+      &lt;td&gt;마지막 변경 날짜/시간&lt;/td&gt;
+      &lt;td&gt;파일 이름&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;각 항목에 대해서 간략하게 정리해보겠습니다.&lt;/p&gt;
+&lt;h3 id=&quot;파일-유형&quot;&gt;파일 유형&lt;/h3&gt;
+&lt;p&gt;어떤 종류의 파일인지를 나타내며 아래와 같은 종류가 있습니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;표시&lt;/th&gt;
+      &lt;th&gt;파일 유형&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;d&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;디렉터리&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;일반 파일&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;b&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;블록 디바이스(Block Device)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;c&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;문자 디바이스(Character Device)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;l&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;링크(Link)&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;b&lt;/code&gt;(블록 디바이스)는 하드디스크, 플로피디스크, CD/DVD 등의 저장장치를 말합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;c&lt;/code&gt;(문자 디바이스)는 마우스, 키보드, 프린터 등의 입출력장치에 해당합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;l&lt;/code&gt;(링크)는 ‘바로 가기 아이콘’처럼 연결되어있는 파일을 의미합니다(실제 파일은 다른 곳에 존재합니다).&lt;/p&gt;
+
+&lt;h3 id=&quot;파일-허가권permission&quot;&gt;파일 허가권(Permission)&lt;/h3&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rw-&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r--&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r--&lt;/code&gt; 로 3개씩 끊어서 인식해야합니다. 먼저 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rwx&lt;/code&gt;의 의미는 아래와 같습니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;허가권&lt;/th&gt;
+      &lt;th&gt;의미&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;READ&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;w&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;WRITE&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;EXECUTE&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;3개씩 끊었을 때 앞에서부터의 갖는 의미는 아래와 같습니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;블록&lt;/th&gt;
+      &lt;th&gt;대상&lt;/th&gt;
+      &lt;th&gt;의미&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rw-&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;소유자(user)&lt;/td&gt;
+      &lt;td&gt;소유자는 읽거나 쓸 수 있다&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r--&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;그룹(group)&lt;/td&gt;
+      &lt;td&gt;그룹은 읽을 수만 있다&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r--&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;그외 사용자(other)&lt;/td&gt;
+      &lt;td&gt;그 외 사용자는 읽을 수만 있다&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;허가권은 아래와 같이 숫자로도 표현될 수 있습니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt; &lt;/th&gt;
+      &lt;th&gt;User&lt;/th&gt;
+      &lt;th&gt;User&lt;/th&gt;
+      &lt;th&gt;User&lt;/th&gt;
+      &lt;th&gt;Group&lt;/th&gt;
+      &lt;th&gt;Group&lt;/th&gt;
+      &lt;th&gt;Group&lt;/th&gt;
+      &lt;th&gt;Other&lt;/th&gt;
+      &lt;th&gt;Other&lt;/th&gt;
+      &lt;th&gt;Other&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;r&lt;/td&gt;
+      &lt;td&gt;w&lt;/td&gt;
+      &lt;td&gt;-&lt;/td&gt;
+      &lt;td&gt;r&lt;/td&gt;
+      &lt;td&gt;-&lt;/td&gt;
+      &lt;td&gt;-&lt;/td&gt;
+      &lt;td&gt;r&lt;/td&gt;
+      &lt;td&gt;-&lt;/td&gt;
+      &lt;td&gt;-&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;2진법&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;1&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;10진법&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;2&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+      &lt;td&gt;0&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;합(10진법)&lt;/td&gt;
+      &lt;td&gt;6&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt;4&lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+      &lt;td&gt; &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rwx&lt;/code&gt;를 2진법 3자리수에 대응하여 위와 같이 풀이하는 것도 가능합니다. 따라서  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rw-r--r--&lt;/code&gt;라고 길게 쓴 파일허가권에 대한 설명은 2진법으로는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;110100100&lt;/code&gt;이고, 이를 3자리씩 끊어서 10진법으로 변환하면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;644&lt;/code&gt;에 해당합니다.
+반대로 파일 허가권이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;754&lt;/code&gt;인 경우에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;111101100&lt;/code&gt;이고, 이는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rwxr-xr--&lt;/code&gt;로 풀이됩니다. 이 경우 의미는 소유자는 읽기/쓰기/실행이 가능하고, 그룹은 읽기/실행이 가능, other는 읽기만 가능입니다.
+참고로, 디렉터리로 이동(진입)하기 위해서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;(실행) 권한이 반드시 필요합니다. 따라서 일반적으로 소유자/그룹/other 모두에게 실행 권한이 설정되어 있습니다.&lt;/p&gt;
+
+&lt;p&gt;파일의 허가권을 변경하고 싶은 경우에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chmod&lt;/code&gt; 명령어를 실행해야합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 혹은 소유자만이 해당 파일의 허가권을 변경할 수 있습니다. 아래와 같이 사용합니다.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;777 sample.txt
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;u+x sample.txt &lt;span class=&quot;c&quot;&gt;# User의 권한에 실행 권한을 추가&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;u-wx sample.txt &lt;span class=&quot;c&quot;&gt;# User의 권한에 쓰기/실행 권한을 제거&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;파일-소유권ownership&quot;&gt;파일 소유권(Ownership)&lt;/h3&gt;
+&lt;p&gt;소유권은 파일을 소유한 &lt;strong&gt;사용자&lt;/strong&gt;와 &lt;strong&gt;그룹&lt;/strong&gt;을 의미합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sample.txt&lt;/code&gt;의 경우 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 사용자와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 그룹이 소유하고 있습니다. 소유권은 아래와 같은 명령어로 변경할 수 있습니다.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chown &lt;/span&gt;ubuntu sample.txt &lt;span class=&quot;c&quot;&gt;# sample.txt의 소유자를 ubuntu로 변경&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chown &lt;/span&gt;ubuntu.ubuntu sample.txt &lt;span class=&quot;c&quot;&gt;# sample.txt의 소유자와 소유 그룹을 ubuntu 그룹으로 변경&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chgrp &lt;/span&gt;ubuntu sample.txt &lt;span class=&quot;c&quot;&gt;# 그룹만 ubuntu로 변경&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;링크link&quot;&gt;링크(Link)&lt;/h3&gt;
+&lt;p&gt;링크는 하드 링크(Hard Link)와 심볼릭 링크(Symbolic Link)로 나뉩니다. 먼저, 링크를 이해하기 전에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode&lt;/code&gt;에 대해서 알고 있어야합니다.&lt;/p&gt;
+
+&lt;h4 id=&quot;inode&quot;&gt;inode&lt;/h4&gt;
+&lt;p&gt;inode는 리눅스/유닉스 파일 시스템에서 사용하는 자료구조로서, 파일이나 디렉터리의 정보를 저장하고 있습니다. 모든 파일/디렉터리는 각각 1개씩의 inode를 갖고 있으며 inode 내에 파일의 소유권, 허가권, 파일 종류 등의 정보와 해당 파일의 실제 위치(address)가 저장되어 있습니다. inode가 저장되어 있는 공간을 inode block이라고 하며 일반적으로 전체 디스크 공간의 1%가 inode block으로 사용됩니다. 반대로, Data Block은 실제로 데이터가 저장되어 있는 공간으로 나머지 99%를 사용합니다.&lt;/p&gt;
+
+&lt;p&gt;링크 생성 시 링크 대상이 되는 파일의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode&lt;/code&gt;를 공유하느냐, 새로운  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode&lt;/code&gt;를 생성하느냐에 따라 하드 링크와 심볼릭 링크로 나뉩니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/linux/link.webp&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;위 그림에서 표현된 것처럼, 하드링크는 대상(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Filename&lt;/code&gt;)의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode1&lt;/code&gt;을 공유합니다. 따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Filename&lt;/code&gt;의 소유권, 권한, 파일 종류 데이터를 공유하고, Data Block도 같은 공간을 바라보게 됩니다.반대로 심볼릭링크로 생성할 경우 새로운 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode2&lt;/code&gt;를 생성하고 해당 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode2&lt;/code&gt;의 Data Block은 파일 데이터가 아닌 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Filename&lt;/code&gt;의 주소를 저장하고 있는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Link Data&lt;/code&gt;(파일포인터)입니다(실제 데이터를 저장하고 있지 않습니다). Windows의 바로가기 아이콘은 심볼릭 링크에 해당합니다.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ln &lt;/span&gt;basefile hardlink &lt;span class=&quot;c&quot;&gt;# 하드링크 파일 생성&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; basefile softlink &lt;span class=&quot;c&quot;&gt;# 소프트링크(심볼릭링크) 생성&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-il&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# inode 번호를 가장 앞에 출력함 &lt;/span&gt;
+4063514 &lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 2 root root 60 7월 16 15:31 basefile
+4063514 &lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 2 root root 60 7월 16 15:31 hardlink &lt;span class=&quot;c&quot;&gt;# basefile과 같은 inode&lt;/span&gt;
+4063516 lrwxrwxrwx 1 root root 8  7월 16 15:33 softlink -&amp;gt; basefile &lt;span class=&quot;c&quot;&gt;# basefile과 inode가 다르다&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;softlink&lt;/code&gt; 파일은 현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;basefile&lt;/code&gt;의 위치로 링크되기 때문에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;basefile&lt;/code&gt;을 이동 시키면 소프트링크는 유지되지 않습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hardlink&lt;/code&gt;는 파일포인터를 이용하지 않고 같은 inode를 바라보기때문에 링크가 유지됩니다.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mv &lt;/span&gt;basefile ../ &lt;span class=&quot;c&quot;&gt;# basefile 위치 변경 (상위 디렉터리로 이동)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;hardlink &lt;span class=&quot;c&quot;&gt;# 링크 확인&lt;/span&gt;
+파일 링크 연결 확인
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;softlink &lt;span class=&quot;c&quot;&gt;# 링크 확인&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt;: softlink: 그런 파일이나 디렉터리가 없습니다
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;다시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;basefile&lt;/code&gt;을 원래 위치로 복귀시키면 소프트링크가 작동하는 것을 확인할 수 있습니다.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mv&lt;/span&gt; ../basefile &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 현재 디렉터리로 이동 &lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;softlink &lt;span class=&quot;c&quot;&gt;# 링크 확인&lt;/span&gt;
+파일 링크 연결 확인
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;특수-권한special-permissions에-대해서&quot;&gt;특수 권한(Special Permissions)에 대해서&lt;/h1&gt;
+&lt;p&gt;리눅스의 특수 권한은 세 가지가 있습니다.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;SUID&lt;/li&gt;
+  &lt;li&gt;GUID&lt;/li&gt;
+  &lt;li&gt;sticky bit&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;특수 권한은 파일의 소유자(owner)가 아닌 user에게 더 높은 권한을 부여하지 않고도 해당 파일을 실행할 수 있도록 허용하기 위해 탄생했습니다. User &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A&lt;/code&gt;가 생성한 파일을 다른 유저가 실행하고자 할 때 가장 간단한 해결책은 무엇일까요? 혼자서 사용하는 리눅스 환경이라면 단순하게  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt;  커맨드를 입력하고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;  계정의 권한을 획득하여 실행할 수 있을 것입니다. 그러나 여러 멤버들과 함께 사용하는 리눅스 환경에서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt; 커맨드에 대한 권한이 없는 경우가 더 많을 뿐 아니라 설령 허용된다고 하더라도 모든 문제를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;  권한으로 해결하고자하는 것은 위험한 발상입니다. 결국 모든 사용자가  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;  권한을 요구하게 되고 이는 리눅스의 사용자/그룹/파일 관리 시스템에 위배되는 현상이기 때문입니다. 이러한 현상을 해결하기 위해 등장한 것이 &lt;strong&gt;특수 권한&lt;/strong&gt;입니다.&lt;/p&gt;
+&lt;h2 id=&quot;suid&quot;&gt;SUID&lt;/h2&gt;
+
+&lt;p&gt;SUID(&lt;strong&gt;S&lt;/strong&gt;et Owner &lt;strong&gt;U&lt;/strong&gt;ser &lt;strong&gt;ID&lt;/strong&gt;)는 user가 파일을 실행할 수 있도록 설정합니다.  구체적으로, SUID를 설정하게 되면 user는 해당 파일을 실행할 때, owner와 같은 권한을 갖는 채로 실행이 가능해집니다.&lt;/p&gt;
+
+&lt;p&gt;만약에  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;가 어떤 파일을 생성하였고, 해당 파일의 실행 권한이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 에게만 있다고 가정해봅시다. 아래와 같은 경우가 그에 해당합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gyuhoonkim&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; 
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root 0 7월 15 16:11 testfile1
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root 0 7월 15 16:11 testfile2
+gyuhoonkim&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;testfile1
+&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;testfile1&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;: Permission denied
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이 경우, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 외의 계정은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;testfile1&lt;/code&gt;을 읽을 수는 있지만, 실행할 수는 없습니다. 이때 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;suid&lt;/code&gt; 를 설정하게되면,  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 외의 계정에서도 위 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;testfile1&lt;/code&gt; 을 실행할 수 있습니다. 실행하는 순간  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;의 권한을 획득하기 때문입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gyuhoonkim&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo
+&lt;/span&gt;root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;4744 testfile1 &lt;span class=&quot;c&quot;&gt;# 실행권한 있음&lt;/span&gt;
+root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;u+s testfile2 &lt;span class=&quot;c&quot;&gt;# 실행권한 없음&lt;/span&gt;
+root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;-rwsr--r--&lt;/span&gt; 1 root root 0 7월 15 16:11 testfile1
+&lt;span class=&quot;nt&quot;&gt;-rwSr--r--&lt;/span&gt; 1 root root 0 7월 15 16:11 testfile2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;가 파일에 대해 실행권한(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;)를 가지고 있는 상태에서  SUID를 부여하게 되면 권한 표시에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s&lt;/code&gt;(소문자)로 표시됩니다. 반대로, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 가 실행권한을 가지고 있지 않았다면  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;S&lt;/code&gt;(대문자)로 표시됩니다.&lt;/p&gt;
+
+&lt;p&gt;이제 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gyuhoonkim&lt;/code&gt;에서  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;testfile1&lt;/code&gt;을 실행할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su gyuhoonkim
+gyuhoonkim&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;testfile1
+실행 성공
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이러한 권한 관리가 필요한 대표적인 경우는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt;  명령어입니다.  user는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt; 명령어로 패스워드를 설정/변경하는 경우에 자동으로  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/passwd&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/shadow&lt;/code&gt; 파일도 변경하게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;그런데 이 두 파일은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;가 생성한 파일이므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;권한이 없으면 수정할 수 없습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; /etc/passwd
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root 7868  8 11 15:44 /etc/passwd &lt;span class=&quot;c&quot;&gt;#644&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; /etc/shadow
+&lt;span class=&quot;nt&quot;&gt;-rw-r-----&lt;/span&gt; 1 root root 7868  8 11 15:44 /etc/shadow &lt;span class=&quot;c&quot;&gt;# 640&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;그러나 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;가 아닌 계정(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gyuhoonkim&lt;/code&gt;)에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt;를 실행하면,  위의 두 파일이 변경됩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 가 아닌데도 위 두 파일을 변경할 수 있는 이유는  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt;에 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; /usr/bin/passwd
+&lt;span class=&quot;nt&quot;&gt;-rwsr-xr-x&lt;/span&gt; 1 root root 51096 8 11 15:44 /usr/bin/passwd&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 4755&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt; 는 SUID가 설정된 명령어이기 때문에, 실행되는 순간 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;owner&lt;/code&gt;인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 권한을 획득합니다. 따라서 일반 user가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt;를 실행하는 순간 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;권한을 가지고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/passwd&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/shadow&lt;/code&gt; 파일을 수정(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;write&lt;/code&gt;)할 수 있게 되는 것입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;guid&quot;&gt;GUID&lt;/h2&gt;
+
+&lt;p&gt;SUID와 비슷합니다. GUID가 설정된 파일은 실행할 때 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;group&lt;/code&gt;의 권한으로 실행됩니다. 만약 GUID가 설정된 디렉터리 하위에 디렉터리를 생성한다면, 생성된 디렉터리와 파일들은 설정된 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;group&lt;/code&gt;을 부여받게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;SUID와 비슷하지만, group에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s&lt;/code&gt;/&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;S&lt;/code&gt;를 표시합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+drwxr-xr-x 2 test1 test1 4096 6월 26 21:16 guid_dir1
+drwxr-xr-x 2 test2 test2 4096 6월 26 21:16 guid_dir1
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;2755 guid_dir1
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;g+x+s guid_dir2
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+drwxr-sr-x 2 test1 test1 4096 6월 26 21:16 guid_dir1
+drwxr-Sr-x 2 test2 test2 4096 6월 26 21:16 guid_dir2
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# root 계정으로 변경&lt;/span&gt;
+root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;guid_dir1
+root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir &lt;/span&gt;test_dir1 
+root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;test_file1
+root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
+drwxr-sr-x 2 root test1 4096 6월 26 22:16 dir1/ &lt;span class=&quot;c&quot;&gt;# Group owner가 test1&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root test1 0    6월 26 22:16 test_file1 &lt;span class=&quot;c&quot;&gt;# Group owner가 test1&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;GUID는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/var/mail&lt;/code&gt; 디렉터리 관리에 사용됩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/var/mail&lt;/code&gt; 디렉터리는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mail&lt;/code&gt; group owner를 가지고 있는데 이 하위에 생성되는 모든 디렉터리는  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mail&lt;/code&gt;  group owner를 갖도록 생성되어야 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mail&lt;/code&gt; 그룹을 통해 관리가 가능합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt; /var/mail &lt;span class=&quot;c&quot;&gt;# GUID 셋팅 확인&lt;/span&gt;
+drwxrwsr-x 2 root mail 4096 6월 26 22:30 /var/mail 
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;useradd &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; test3
+&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt; /var/mail/test3 &lt;span class=&quot;c&quot;&gt;# Group Onwer가 mail로 생성되었음&lt;/span&gt;
+&lt;span class=&quot;nt&quot;&gt;-rw-rw----&lt;/span&gt; 1 test3 mail 0 6월 26 22:40 /var/ail/test3 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;guid-1&quot;&gt;GUID&lt;/h2&gt;
+&lt;h2 id=&quot;sticky-bit&quot;&gt;sticky bit&lt;/h2&gt;
+
+&lt;p&gt;sticky bit는 디렉터리에 적용되는 옵션입니다. sticky bit가 설정되면, 설정된 디렉터리와 내부 파일에 접근할 수 있는 user는 자신이 생성한 파일만 삭제할 수 있고, 다른 user의 파일은 수정하거나 삭제할 수 없습니다. 이런 특징은 공유 폴더를 관리할 때에 사용됩니다. sticky bit가 설정된 디렉터리나 내부 파일들의 권한이 777로 설정되어 있다고 하더라도, sticky bit 옵션 때문에 삭제는 불가능합니다(생성은 가능합니다).&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt;
+drwxr-xr-x 2 root root 4096 6월 26 23:00 dir1
+drwxr-xr-x 2 root root 4096 6월 26 23:00 dir2
+drwxr-xr-x 2 root root 4096 6월 26 23:00 dir3
+
+&lt;span class=&quot;c&quot;&gt;# sticky bit 부여&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;1754 dir1 &lt;span class=&quot;c&quot;&gt;# Other의 e 권한 회수(100)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;o+t dir2
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +t dir3
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt;
+drwxr-xr-T 2 root root 4096 6월 26 23:00 dir1 &lt;span class=&quot;c&quot;&gt;# Other가 e권한 없는 경우 T로 표시&lt;/span&gt;
+drwxr-xr-t 2 root root 4096 6월 26 23:00 dir2
+drwxr-xr-t 2 root root 4096 6월 26 23:00 dir3
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이러한 특성은  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/tmp&lt;/code&gt;와 같이 공유 폴더를 관리할 때 사용합니다. 공유폴더 내부에서는 누구나 파일을 생성할 수 있지만, 다른 user가 생성한 파일에 대해서 삭제/수정이 불가능합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;dir2
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su test1
+test1&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;testfile1
+test1&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;testfile2
+
+&lt;span class=&quot;c&quot;&gt;# test2 계정에서 확인&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su test2
+test2&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm &lt;/span&gt;tesetfile1
+tesetfile1: failed to remove &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;tesetfile1&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;: 명령을 허용하지 않음
+test2&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm &lt;/span&gt;testfile2
+testfile2: failed to remove &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;testfile2&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;: 명령을 허용하지 않음
+
+&lt;span class=&quot;c&quot;&gt;# root 계정에서 확인&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su root
+root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm &lt;/span&gt;tesetfile1 &lt;span class=&quot;c&quot;&gt;# 삭제 성공&lt;/span&gt;
+
+&lt;span class=&quot;c&quot;&gt;# test1(파일을 생성한 계정)에서 확인&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su test1
+test1&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm &lt;/span&gt;testfile2 &lt;span class=&quot;c&quot;&gt;# 삭제 성공&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;[참고]&lt;br /&gt;
+&lt;a href=&quot;https://cafe.naver.com/thisisLinux&quot;&gt;이것이 루분투 리눅스다(2017)&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://medium.com/@1154_75881/what-is-the-difference-between-a-hard-link-and-a-symbolic-link-14db61df7707&quot;&gt;What is the difference between a hard link and a symbolic link?&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://linuxhint.com/special-permissions-suid-guid-sticky-bit/&quot;&gt;Special Permissions: SUID, GUID, and sticky bit&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://eunguru.tistory.com/115&quot;&gt;[UNIX/Linux]특수 권한(setuid, setgid, sticky bit)&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="linux" />
+      
+
+      
+        <summary type="html">Linux 사용자 관리, 파일속성 그리고, 특수권한에 대해서 알아봅니다.</summary>
+      
+
+      
+      
+    </entry>
+  
+</feed>

@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>hadoop distcp</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    </script>
+<meta name="description" content="Data Engineering" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/hadoop-distcp" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="hadoop distcp" />
+    <meta property="og:description" content="hadoop distcp 명령어 distcp distcp 명령어는 효율적인 병렬 처리를 통해 파일을 복사합니다. 아래와 같은 명령어로 실행합니다. # 파일 복사 [gyuhoonk@namenode1~]$ hadoop distcp file1 file2 # hadoop fs -cp file1 file2 와 같은 결과이지만 # distcp를 이용하는 경우에는 '병렬 처리'하여 복사함 # 디렉토리 복사 [gyuhoonk@namenode1~]$ hadoop distcp dir1 dir2 discp는 내부적으로는" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/hadoop-distcp" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/distcp.png" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2022-01-20T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2022-01-20T22:30:00+09:00" />
+    <meta property="article:tag" content="Hadoop" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="hadoop distcp" />
+    <meta name="twitter:description" content="hadoop distcp 명령어 distcp distcp 명령어는 효율적인 병렬 처리를 통해 파일을 복사합니다. 아래와 같은 명령어로 실행합니다. # 파일 복사 [gyuhoonk@namenode1~]$ hadoop distcp file1 file2 # hadoop fs -cp file1 file2 와 같은 결과이지만 # distcp를 이용하는 경우에는 '병렬 처리'하여 복사함 # 디렉토리 복사 [gyuhoonk@namenode1~]$ hadoop distcp dir1 dir2 discp는 내부적으로는" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/distcp.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Hadoop" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "https://gyuhoonk.github.io/"
+    },
+    "url": "https://gyuhoonk.github.io/hadoop-distcp",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://gyuhoonk.github.io/assets/built/images/hadoop/distcp.png",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://gyuhoonk.github.io/hadoop-distcp"
+    },
+    "description": "hadoop distcp 명령어 distcp distcp 명령어는 효율적인 병렬 처리를 통해 파일을 복사합니다. 아래와 같은 명령어로 실행합니다. # 파일 복사 [gyuhoonk@namenode1~]$ hadoop distcp file1 file2 # hadoop fs -cp file1 file2 와 같은 결과이지만 # distcp를 이용하는 경우에는 '병렬 처리'하여 복사함 # 디렉토리 복사 [gyuhoonk@namenode1~]$ hadoop distcp dir1 dir2 discp는 내부적으로는"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="hadoop distcp" href="/feed.xml" />
+
+    
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/kubernetes/">kubernetes</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-hadoop post tag-hadoop ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime="20 January 2022">20 January 2022</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/hadoop/'>HADOOP</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">hadoop distcp</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/hadoop/distcp.png)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>hadoop distcp 명령어</p>
+
+<h1 id="distcp"><code class="language-plaintext highlighter-rouge">distcp</code></h1>
+
+<p><code class="language-plaintext highlighter-rouge">distcp</code> 명령어는 효율적인 병렬 처리를 통해 파일을 복사합니다. 아래와 같은 명령어로 실행합니다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 파일 복사</span>
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hadoop distcp file1 file2
+<span class="c"># hadoop fs -cp file1 file2 와 같은 결과이지만</span>
+<span class="c"># distcp를 이용하는 경우에는 '병렬 처리'하여 복사함</span>
+
+<span class="c"># 디렉토리 복사</span>
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hadoop distcp dir1 dir2
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">discp</code>는 내부적으로는 <code class="language-plaintext highlighter-rouge">hadoop fs -cp</code>명령을 클라이언트가 직접 수행하는 방식이기 때문에 큰 파일의 복사에 더 적합합니다.</p>
+
+<h1 id="options">options</h1>
+<p><a href="https://hadoop.apache.org/docs/stable/hadoop-distcp/DistCp.html">DistCp Guide</a></p>
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># overwrite</span>
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hdfs dfs <span class="nb">ls</span> 
+<span class="o">&gt;&gt;&gt;</span> dir1 dir2
+
+
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hadoop distcp dir1 dir2
+<span class="c"># 이미 dir2가 존재하고 있으므로, dir2의 하위에 dir1을 복사함</span>
+
+
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hadoop distcp <span class="nt">-overwrite</span> dir1 dir2
+<span class="c"># overwrite 옵션이 있으므로 dir2에 dir1을 덮어씌움</span>
+
+
+
+<span class="c"># update</span>
+<span class="c"># 디렉토리 내에 변경이 있는 파일들만 복사하여 동기화시킵니다.</span>
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hadoop distcp <span class="nt">-update</span> dir1 dir2
+<span class="c"># dir1 내 파일과 dir2 내 파일을 비교하여 변경된 부분만 dir2에 동기화시킴</span>
+
+
+
+<span class="c"># delete</span>
+<span class="c"># 원본 경로에는 존재하지 않고, 타겟 경로에만 존재하는 파일들을 지우도록 하는 옵션입니다.</span>
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hadoop distcp <span class="nt">-delete</span> dir1 dir2
+<span class="c"># dir1, dir2를 비교하여 dir2에만 존재하는 파일들은 삭제한 뒤 distcp를 수행</span>
+
+
+
+<span class="c"># m</span>
+<span class="c"># 몇 개의 mapper를 사용할지 결정합니다. </span>
+<span class="c"># 기본적으로 distcp는 Map-Reduce Job으로 구현되어있으며 </span>
+<span class="c"># 클러스터 전반에 걸쳐 병렬로 수행되는 Map Task를 이용하여 복사 작업을 수행합니다.</span>
+<span class="c"># 단, Reducer를 사용하지 않으며 각 파일은 Mapper에서 복사합니다. </span>
+<span class="c"># 이 때 bucketing을 통해 각 Mapper에 거의 같은 양의 데이터를 제공하고자 합니다. </span>
+<span class="c"># 기본값으로 최대 20개의 Mapper가 사용됩니다.</span>
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hadoop distcp <span class="nt">-m</span> 100 file1 file2
+<span class="c"># 100개 Mapper를 사용하여 distcp 수행</span>
+
+
+
+<span class="c"># p</span>
+<span class="c">#복제 시 파일의 권한, 블록 사이즈 등 파일 속성 정보를 보전하려는 경우에 사용됩니다. </span>
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hadoop distcp <span class="nt">-p</span> file1 file2
+</code></pre></div></div>
+
+<h1 id="다른-클러스터namenode간-복사">다른 클러스터(namenode)간 복사</h1>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hadoop distcp webhdfs://namenode1:14000/foo webhdfs://namenode2:14000/foo
+</code></pre></div></div>
+
+<p>위처럼 namenode1에서 namenode2로 파일을 복사할 수 있습니다. 이 경우에 webHDFS 프로토콜을 이용합니다. webHDFS 프로토콜 대신에 HttpFs 프록시 방식으로 distcp의 소스 혹은 타깃을 변경할 수도 있다. HttpFs 프록시 방식은 방화벽, 대역폭 설정을 할 수 있다는 장점이 있습니다.</p>
+
+<p>참고로 HDFS에 접근 가능한 인터페이스는 아래와 같습니다.</p>
+
+<ul>
+  <li>webHDFS</li>
+</ul>
+
+<p>HDFS는 REST API를 이용하여 파일을 조회, 생성, 수정, 삭제(CRUD)를 지원합니다. 이러한 기능을 제공하는 API가 webHDFS이며  FileSystem API입니다. 해당 프로토콜은 Java FileSystem Class에 작성되어 있습니다. 그리고 이를 바탕으로 다른 FileSystem을 이용할 수도 있습니다.</p>
+
+<ul>
+  <li>Http</li>
+</ul>
+
+<p>JAVA로 작성되지 않은 애플리케이션이 HDFS에 접근할 수 있도록 WebHDFS 프로토콜을 기반으로 하여 HTTP REST API를 사용할 수 있습니다.</p>
+
+<ul>
+  <li>C - libhdfs library</li>
+</ul>
+
+<p>JAVA FileSystem Class를 모방하여 작성된 라이브러리입니다. 모든 HDFS(Local, S3 등)에 접근 가능합니다. JNI(Java Native Interface)를 사용하여 JAVA FileSystem Class를 호출합니다.</p>
+
+<ul>
+  <li>NFS</li>
+</ul>
+
+<p>NFSv3 게이트웨이를 이용하여 로컬 클라이언트 파일시스템에 HDFS를 마운트할 수 있습니다. 또한, ls, cat과 같은 unix 명령어를 이용할 수 있습니다. 참고로, HDFS는 파일의 끝에만 쓰기를 허용하므로 파일에 추가하는 작업은 가능하지만, 파일의 임의 위치에 있는 데이터를 수정하는 것은 지원하지 않습니다.</p>
+
+<ul>
+  <li>FUSE(Filesystem in Userspace)</li>
+</ul>
+
+<p>사용자 공간과 유닉스 파일 시스템을 통합한 파일 시스템을 지원합니다. 하둡의 Fuse-DFS contrib 모듈은 표준 로컬 파일시스템에 HDFS를 마운트할 수 있는 기능을 제공합니다. Fuse-DFS는 C로 작성된 libhdfs로 HDFS 인터페이스를 구현했습니다. 참고로 NFS가 Fuse-DFS보다 안전하며 선호되는 방법입니다.</p>
+
+<h1 id="클러스터간-테이블-이동">클러스터간 테이블 이동</h1>
+
+<p>예를 들어, namenode1에 아래와 같은 테이블이 있다고 가정해보겠습니다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hive <span class="nt">-e</span> <span class="s1">'SELECT * FROM default.table_1'</span>
++-------+---------+
+| col1  |  col2   |
++-------+---------+
+| a     | apple   |
+| b     | banana  |
+| c     | car     |
++-------+---------+
+</code></pre></div></div>
+
+<p>namenode2로 default.table_1을 이동하기 위해서는 아래와 같은 과정이 필요합니다.</p>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">/user/hive/warehouse/default.db/table_1</code> 디렉토리 이동</li>
+</ol>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># namenode1에서 실행</span>
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hadoop distcp <span class="nt">-overwrite</span> webhdfs://namenode1:14000/user/hive/warehouse/default.db/table_1 webhdfs://namenode2:14000/user/hive/warehouse/default.db/table_1
+
+<span class="c">#namenode2에서 distcp 결과 확인</span>
+<span class="o">[</span>gyuhoonk@namenode2~]<span class="nv">$ </span>hdfs dfs <span class="nt">-ls</span> /user/hive/warehouse/default.db/table_1
+<span class="nt">-rw-r--r--</span>+  3 gyuhoonK hive          0 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/_SUCCESS
+<span class="nt">-rw-r--r--</span>+  3 gyuhoonK hive        340 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00000-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+<span class="nt">-rw-r--r--</span>+  3 gyuhoonK hive        544 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00166-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+<span class="nt">-rw-r--r--</span>+  3 gyuhoonK hive        549 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00333-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+<span class="nt">-rw-r--r--</span>+  3 gyuhoonK hive        534 2022-01-20 10:04 /user/hive/warehouse/defulat.db/table_1/part-00499-7628a86e-50d7-4e64-a35d-435ba6943156-c000.snappy.parquet
+</code></pre></div></div>
+
+<ol>
+  <li>create statement 확인</li>
+</ol>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hive <span class="nt">-e</span> <span class="s1">'SHOW CREATE TABLE default.table_1'</span>
+</code></pre></div></div>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">+</span><span class="c1">----------------------------------------------------+</span>
+<span class="o">|</span>                   <span class="n">createtab_stmt</span>                   <span class="o">|</span>
+<span class="o">+</span><span class="c1">----------------------------------------------------+</span>
+<span class="o">|</span> <span class="k">CREATE</span> <span class="k">EXTERNAL</span> <span class="k">TABLE</span> <span class="nv">`default.table_1`</span><span class="p">(</span>           <span class="o">|</span>
+<span class="o">|</span>   <span class="nv">`col1`</span> <span class="n">string</span><span class="p">,</span>                                   <span class="o">|</span>
+<span class="o">|</span>   <span class="nv">`col2`</span> <span class="n">string</span><span class="p">)</span>                                   <span class="o">|</span>
+<span class="o">|</span> <span class="k">ROW</span> <span class="n">FORMAT</span> <span class="n">SERDE</span>                                   <span class="o">|</span>
+<span class="o">|</span>   <span class="s1">'org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe'</span>  <span class="o">|</span>
+<span class="o">|</span> <span class="k">WITH</span> <span class="n">SERDEPROPERTIES</span> <span class="p">(</span>                             <span class="o">|</span>
+<span class="o">|</span>   <span class="s1">'path'</span><span class="o">=</span><span class="s1">'hdfs://nameservice1/user/hive/warehouse/default.db/table_1'</span><span class="p">)</span>                                          <span class="o">|</span>
+<span class="o">|</span> <span class="n">STORED</span> <span class="k">AS</span> <span class="n">INPUTFORMAT</span>                              <span class="o">|</span>
+<span class="o">|</span>   <span class="s1">'org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat'</span>  <span class="o">|</span>
+<span class="o">|</span> <span class="n">OUTPUTFORMAT</span>                                       <span class="o">|</span>
+<span class="o">|</span>   <span class="s1">'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'</span> <span class="o">|</span>
+<span class="o">|</span> <span class="k">LOCATION</span>                                           <span class="o">|</span>
+<span class="o">|</span>   <span class="s1">'hdfs://nameservice1/user/hive/warehouse/default.db/table_1'</span> <span class="o">|</span>
+<span class="o">|</span> <span class="n">TBLPROPERTIES</span> <span class="p">(</span>                                    <span class="o">|</span>
+<span class="o">|</span>   <span class="s1">'bucketing_version'</span><span class="o">=</span><span class="s1">'2'</span><span class="p">,</span>                         <span class="o">|</span>
+<span class="o">|</span>   <span class="s1">'spark.sql.create.version'</span><span class="o">=</span><span class="s1">'2.3.1.3.0.1.0-187'</span><span class="p">,</span>  <span class="o">|</span>
+<span class="o">|</span>   <span class="s1">'spark.sql.sources.provider'</span><span class="o">=</span><span class="s1">'parquet'</span><span class="p">,</span>          <span class="o">|</span>
+<span class="o">|</span>   <span class="s1">'spark.sql.sources.schema.numParts'</span><span class="o">=</span><span class="s1">'1'</span><span class="p">,</span>         <span class="o">|</span>
+<span class="o">|</span>   <span class="s1">'spark.sql.sources.schema.part.0'</span><span class="o">=</span><span class="s1">'{"type":"struct","fields":[{"name":"col1","type":"string","nullable":true,"metadata":{}},{"name":"col2","type":"string","nullable":true,"metadata":{}}]}'</span><span class="p">,</span>  <span class="o">|</span>
+<span class="o">|</span>   <span class="s1">'transient_lastDdlTime'</span><span class="o">=</span><span class="s1">'1642640799'</span><span class="p">)</span>            <span class="o">|</span>
+<span class="o">+</span><span class="c1">----------------------------------------------------+</span>
+</code></pre></div></div>
+
+<p>아래와 같이 명령어를 조합하면 쿼리문만 파일로 저장할 수 있습니다.</p>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>hive <span class="nt">-e</span> <span class="s1">'show create table default.table_1'</span> | <span class="nb">sed</span> <span class="s1">'s/|//g'</span> | <span class="nb">sed</span> <span class="s1">'s/+//g'</span> | <span class="nb">sed</span> <span class="s1">'s/createtab_stmt//g'</span> | <span class="nb">sed</span> <span class="s1">'/WARN/d'</span> <span class="o">&gt;&gt;</span> create.sql 2&gt;/dev/null<span class="p">;</span> <span class="nb">echo</span> <span class="s1">';'</span> <span class="o">&gt;&gt;</span> create.sql
+</code></pre></div></div>
+
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">create.sql</code> 파일을 namenode2로 옮긴 뒤 namenode2에서 create statement 실행</li>
+</ol>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># namenode1</span>
+<span class="o">[</span>gyuhoonk@namenode1~]<span class="nv">$ </span>scp create.sql gyuhoonk@namenode2:/home/gyuhoonk/
+<span class="c"># namenode2</span>
+<span class="o">[</span>gyuhoonk@namenode2~]<span class="nv">$ </span>hive <span class="nt">-f</span> create.sql
+</code></pre></div></div>
+
+<ol>
+  <li>Partitioned table인 경우에는 TABLE REPAIR 실행</li>
+</ol>
+
+<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">[</span>gyuhoonk@namenode2~]<span class="nv">$ </span>hive <span class="nt">-e</span> <span class="s1">'MSCK REPAIR TABLE defulat.table_1'</span>
+</code></pre></div></div>
+
+<p>[참고]</p>
+
+<p>하둡 완벽 가이드, 한빛미디어</p>
+
+<p><a href="https://hadoop.apache.org/docs/r1.2.1/distcp.html">DistCp Guide</a></p>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            <!--  -->
+            <!-- utteranc setting -->
+            <script src="https://utteranc.es/client.js"
+                    repo="GyuhoonK/blog-comments"
+                    issue-term="pathname"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+                    <article class="read-next-card"
+                        
+                            style="background-image: url(/assets/built/images/spain-blog-cover.jpg)"
+                        
+                    >
+                        <header class="read-next-card-header">
+                            <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
+                            
+                                <h3 class="read-next-card-header-title"><a href="/tag/hadoop/">Hadoop</a></h3>
+                            
+                        </header>
+                        <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
+</div>
+                        <div class="read-next-card-content">
+                            <ul>
+                                
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/non-deterministic-udf">non-deterministic UDF</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/impala-with-clause">WITH절/VIEW 사용 시 쿼리 플랜에 대해서</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/enableHiveSupport">enableHiveSupport</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                            </ul>
+                        </div>
+                        <footer class="read-next-card-footer">
+                            <a href="/tag/hadoop/">
+                                
+                                    See all 11 posts  →
+                                
+                            </a>
+                        </footer>
+                    </article>
+                <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+                </script>
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/spark-shuffle-partition">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/partition-spill-spark.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/spark-shuffle-partition">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Partition, Spill in Spark</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Partition, Spill in Spark
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      5 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/sparkscala3">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/scala-banner-post.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/sparkscala3">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Scala</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Learning Apache Spark 3 with Scala (Section3)</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Learning Apache Spark 3 with Scala (Section3 - RDD &amp; RDD Action)
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      2 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://gyuhoonk.github.io/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">hadoop distcp</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=hadoop+distcp&amp;url=https://gyuhoonk.github.iohadoop-distcp"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iohadoop-distcp"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2023</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+    <!-- math LaTex-->
+    
+</body>
+</html>

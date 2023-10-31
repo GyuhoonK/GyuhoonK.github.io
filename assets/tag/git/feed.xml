@@ -1,0 +1,247 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom" >
+  <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
+  <link href="https://gyuhoonk.github.io/tag/git/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2023-10-31T22:16:37+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/git/feed.xml</id>
+
+  
+  
+  
+
+  
+    <title type="html">Gyuhoon Kim | </title>
+  
+
+  
+    <subtitle>Data Engineering</subtitle>
+  
+
+  
+
+  
+    
+      
+    
+  
+
+  
+  
+
+  
+    <entry>
+      <title type="html">merge vs. rebase</title>
+      <link href="https://gyuhoonk.github.io/merge-rebase" rel="alternate" type="text/html" title="merge vs. rebase" />
+      <published>2022-05-14T22:30:00+09:00</published>
+      <updated>2022-05-14T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/merge-rebase</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/merge-rebase">&lt;p&gt;merge와 rebase 비교하기&lt;/p&gt;
+
+&lt;h1 id=&quot;merge--rebase&quot;&gt;Merge &amp;amp; Rebase&lt;/h1&gt;
+
+&lt;p&gt;Git에서 브랜치를 합치는 두 가지 방법으로 merge와 rebase가 있습니다. 이 둘은 서로 다른 브랜치를 하나의 브랜치로 합친다는 공통점을 갖지만, 이외의 기능은 많은 차이를 보입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;git-merge&quot;&gt;git merge&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Join two or more development histories together&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Incorporates changes from the named commits (since the time their histories diverged from the current branch) into the current branch. This command is used by &lt;em&gt;git pull&lt;/em&gt; to incorporate changes from another repository and can be used by hand to merge changes from one branch into another.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;대상 브랜치의 커밋 내용을 현재 브랜치로 포함시킨다는 것이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 의 가장 큰 특징입니다.  서로 다른 브랜치 간에서만 사용되는 것이 아니라, 저장소 간의 내용을 하나로 통합하는 경우에도 사용됩니다. 즉, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git pull&lt;/code&gt;에서도 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt;를 이용합니다.&lt;/p&gt;
+
+&lt;p&gt;git document는 아래와 같은 상황을 예시로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 를 설명합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      A---B---C topic
+     /
+D---E---F---G master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;이 때, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt;의 공통 조상이 되는 commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E&lt;/code&gt; 를 &lt;strong&gt;base&lt;/strong&gt;라고 부릅니다.&lt;/p&gt;
+
+&lt;p&gt;현재 브랜치(current branch)가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 일 때, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge topic&lt;/code&gt; 을 실행하면, 아래와 같은 브랜치 히스토리가 생성됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout master
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git merge topic
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      A---B---C topic
+     /         \
+D---E---F---G---H master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt;로부터 현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt; 브랜치의 current commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C&lt;/code&gt;까지의 모든 변화(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E-A-B-C&lt;/code&gt;)를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치의 current commit이었던 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt;로부터 재실행합니다. 그리고 이를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;H&lt;/code&gt; 라는 commit으로 생성합니다.&lt;/p&gt;
+
+&lt;p&gt;이 때, 충돌(conflict)이 발생하게 되면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt; 를 입력한 사용자는 충돌을 해결하고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt; 를 이어가거나(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge --continue&lt;/code&gt;), 이전 상태로 되돌려야만 합니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge --abort&lt;/code&gt;).&lt;/p&gt;
+
+&lt;h2 id=&quot;git-rebase&quot;&gt;git rebase&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt; 는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;upstream&amp;gt;, &amp;lt;branch&amp;gt;&lt;/code&gt;를 명시할 수 있습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;branch&amp;gt;&lt;/code&gt; 옵션은 명시하지 않으면 현재 명령어를 실행하는 브랜치(current branch)로 입력됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase &amp;lt;upstream&amp;gt; &amp;lt;branch&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Reapply commits on top of another base tip&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;If &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[branch]&lt;/code&gt; is specified, &lt;em&gt;git rebase&lt;/em&gt; will perform an automatic &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git switch [branch]&lt;/code&gt; before doing anything else. Otherwise it remains on the current branch. All changes made by commits in the current branch but that are not in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt; are saved to a temporary area.The commits that were previously saved into the temporary area are then reapplied to the current branch, one by one, in order. Note that any commits in HEAD which introduce the same textual changes as a commit in HEAD..&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt; are omitted (i.e., a patch already accepted upstream with a different commit message or timestamp will be skipped).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt;에 존재하지 않고, current branch(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[branch]&lt;/code&gt;)에 존재하는 commit은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;라는 임시 공간에 저장됩니다.  이후 해당 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;에 저장되있는 commit은 &lt;strong&gt;순서대로&lt;/strong&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream&lt;/code&gt;의 current commit에서부터 적용됩니다. 이 과정은 공통 commit인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt; 를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream의&lt;/code&gt; current commit으로 변경하는 작업으로 이해할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;      A---B---C topic
+     /
+D---E---F---G master 위와 같은 상황에서 아래 명령어를 실행하면, `topic` 브랜치의 base를  `master` 의 current commit `G` 로 변경합니다.
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git checkout topic
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase master &lt;span class=&quot;c&quot;&gt;# git rebase master topic&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;              A'--B'--C' topic
+             /
+D---E---F---G master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;current branch인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt; 의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E-A-B-C&lt;/code&gt; 커밋들은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt; 에 잠시 저장되어 있다가, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G&lt;/code&gt; 에서부터  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;patch&lt;/code&gt;의 커밋 내용들을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치에 &lt;strong&gt;순서대로&lt;/strong&gt; 적용합니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git merge&lt;/code&gt;가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A-B-C&lt;/code&gt;를  &lt;strong&gt;한번에&lt;/strong&gt; 적용하여 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;G--H&lt;/code&gt; 로 commit했던 것과 다른 부분입니다.&lt;/p&gt;
+
+&lt;p&gt;이 때, 만약 upstream(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;matser&lt;/code&gt;)의 커밋 중 일부가 branch(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;)의 커밋 내용을 포함하고 있는 경우, 해당 커밋 내용은 건너뛰고(skipped) 진행됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;       A---B---C topic
+      /
+ D---E---A'---F master
+ # A in topic is same to A' in master 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;               B'---C' topic
+              /
+D---E---A'---F master
+# A in topic is skipped when `git rebase master`
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;하나의 브랜치(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;upstream&lt;/code&gt;)로 부터 여러 개의 브랜치가 생성되었을 때, rebase는 이를 간결하게 표현해 줄 수 있습니다. 이는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--onto&lt;/code&gt;옵션을 이용합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;The current branch is reset to &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[upstream]&lt;/code&gt;, or [newbase] if the –onto option was supplied. This has the exact same effect as &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git reset --hard &lt;/code&gt;[upstream]`` (or [newbase]). ORIG_HEAD is set to point at the tip of the branch before the reset.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;–onto [newbase]&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Starting point at which to create the new commits. If the –onto option is not specified, the starting point is &lt;upstream&gt;. May be any valid commit, and not just an existing branch name.&lt;/upstream&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;o---o---o---o---o  master
+     \
+      o---o---o---o---o  next
+                       \
+                        o---o---o  topic
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;만약   &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;의 변화 내용만을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 에 병합하고 싶다면 우리는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치로부터 분화(forked)된 것으로 변경해야합니다. rebase의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;--onto&lt;/code&gt; 옵션을 이용하면  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topcic&lt;/code&gt; 의 base branch를  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt;로 변경할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase &lt;span class=&quot;nt&quot;&gt;--onto&lt;/span&gt; master next topic
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;newbase인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치로부터 새로운 커밋들을 rebase하게 됩니다. 이 경우, topic이 master로부터 forked되지 않았으므로 수정되게 됩니다.&lt;/p&gt;
+
+&lt;p&gt;즉, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;master&lt;/code&gt; 브랜치가  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;topic&lt;/code&gt;의 base로 변경됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;o---o---o---o---o  master
+    |            \
+    |             o'--o'--o'  topic
+     \
+      o---o---o---o---o  next
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;아래의 경우처럼 브랜치 간 관계가 복잡한 경우에도 rebase를 이용하면 관계를 단순하게 조작할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;                        H---I---J topicB
+                       /
+              E---F---G  topicA
+             /
+A---B---C---D  master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;git rebase &lt;span class=&quot;nt&quot;&gt;--onto&lt;/span&gt; master topicA topicB
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;             H'--I'--J'  topicB
+            /
+            | E---F---G  topicA
+            |/
+A---B---C---D  master
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h1 id=&quot;purpose&quot;&gt;Purpose&lt;/h1&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt;와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt;는 두 개 이상의 브랜치를 합친다는 공통점은 있지만 동작 방식과 그 결과는 다릅니다. 따라서 목적에 따라 다르게 사용해야합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h4 id=&quot;git-rebase-1&quot;&gt;Git Rebase&lt;/h4&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;Streamlines a potentially complex history.&lt;/li&gt;
+    &lt;li&gt;Avoids merge commit “noise” in busy repos with busy branches.&lt;/li&gt;
+    &lt;li&gt;Cleans intermediate commits by making them a single commit, which can be helpful for DevOps teams.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote&gt;
+  &lt;h4 id=&quot;git-merge-1&quot;&gt;Git Merge&lt;/h4&gt;
+
+  &lt;ul&gt;
+    &lt;li&gt;Simple and familiar.&lt;/li&gt;
+    &lt;li&gt;Preserves complete history and chronological order.&lt;/li&gt;
+    &lt;li&gt;Maintains the context of the branch.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt;는 복잡한 히스토리를 단순화하는데 주요한 목적이 있으나, 이러한 과정에서 정확한 forked 정보는 소실될 수 있습니다. 또한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt;에 비해서 사용이 어렵고 복잡합니다.&lt;/p&gt;
+
+&lt;p&gt;반대로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;merge&lt;/code&gt;는 fork, commit, merge에 대한 모든 히스토리가 그대로 남아있어 추후에 트래킹에서의 이점이 있을 수 있습니다. 그러나 모든 히스토리가 남기 때문에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rebase&lt;/code&gt;에 비해 히스토리가 복잡해지는 단점이 있습니다.&lt;/p&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://git-scm.com/docs/git-merge&quot;&gt;Git Document - merge&lt;/a&gt; &lt;br /&gt;
+&lt;a href=&quot;https://git-scm.com/docs/git-rebase&quot;&gt;Git Document - rebase&lt;/a&gt; &lt;br /&gt;
+&lt;a href=&quot;https://www.perforce.com/blog/vcs/git-rebase-vs-git-merge-which-better&quot;&gt;Git Rebase vs. Git Merge: Which Is Better?&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="git" />
+      
+
+      
+        <summary type="html">merge와 rebase 비교하기</summary>
+      
+
+      
+      
+    </entry>
+  
+</feed>

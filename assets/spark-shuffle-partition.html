@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>Partition, Spill in Spark</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    </script>
+<meta name="description" content="Data Engineering" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/spark-shuffle-partition" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Partition, Spill in Spark" />
+    <meta property="og:description" content="Partition, Spill in Spark Spark Needs Performance Tuning Spark로 작성된 Application은 실행을 넘어, 최적화가 필요합니다. 이는 Partition 단위로 작업을 실행하는 Spark 특성 때문입니다. 특히, Partition 간 shuffle이 발생하는 경우에 많은 자원과 시간을 소모하게 됩니다. 따라서, Spark Tuning(Optimization)이란 Shuffle 작업 속도를 빠르게 만드는 것과 다름 없습니다. Shuffle 속도를 향상시키기 위해서는 partition" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/spark-shuffle-partition" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/partition-spill-spark.png" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2022-02-09T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2022-02-09T22:30:00+09:00" />
+    <meta property="article:tag" content="Hadoop" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Partition, Spill in Spark" />
+    <meta name="twitter:description" content="Partition, Spill in Spark Spark Needs Performance Tuning Spark로 작성된 Application은 실행을 넘어, 최적화가 필요합니다. 이는 Partition 단위로 작업을 실행하는 Spark 특성 때문입니다. 특히, Partition 간 shuffle이 발생하는 경우에 많은 자원과 시간을 소모하게 됩니다. 따라서, Spark Tuning(Optimization)이란 Shuffle 작업 속도를 빠르게 만드는 것과 다름 없습니다. Shuffle 속도를 향상시키기 위해서는 partition" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/partition-spill-spark.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Hadoop" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "https://gyuhoonk.github.io/"
+    },
+    "url": "https://gyuhoonk.github.io/spark-shuffle-partition",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://gyuhoonk.github.io/assets/built/images/hadoop/partition-spill-spark.png",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://gyuhoonk.github.io/spark-shuffle-partition"
+    },
+    "description": "Partition, Spill in Spark Spark Needs Performance Tuning Spark로 작성된 Application은 실행을 넘어, 최적화가 필요합니다. 이는 Partition 단위로 작업을 실행하는 Spark 특성 때문입니다. 특히, Partition 간 shuffle이 발생하는 경우에 많은 자원과 시간을 소모하게 됩니다. 따라서, Spark Tuning(Optimization)이란 Shuffle 작업 속도를 빠르게 만드는 것과 다름 없습니다. Shuffle 속도를 향상시키기 위해서는 partition"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="Partition, Spill in Spark" href="/feed.xml" />
+
+    
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/kubernetes/">kubernetes</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-hadoop post tag-hadoop ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime=" 9 February 2022"> 9 February 2022</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/hadoop/'>HADOOP</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">Partition, Spill in Spark</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/hadoop/partition-spill-spark.png)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>Partition, Spill in Spark</p>
+
+<h2 id="spark-needs-performance-tuning">Spark Needs Performance Tuning</h2>
+
+<p>Spark로 작성된 Application은 실행을 넘어, 최적화가 필요합니다. 이는 Partition 단위로 작업을 실행하는 Spark 특성 때문입니다. 특히, Partition 간 shuffle이 발생하는 경우에 많은 자원과 시간을 소모하게 됩니다. 따라서, Spark Tuning(Optimization)이란 Shuffle 작업 속도를 빠르게 만드는 것과 다름 없습니다.</p>
+
+<p>Shuffle 속도를 향상시키기 위해서는 partition 개수를 적절하게 조절해주어야합니다.</p>
+
+<h4 id="input-shuffle-read-shuffle-write-output">Input, Shuffle Read, Shuffle Write, Output</h4>
+
+<p>Spark Job은 여러 Stage로 나뉘게 되고, 각 Stage는 Input, Shuffle Read, Shuffle Write, Ouput로 구성됩니다. 모든 Stage는 partition을 처리하는 과정이며, 아래와 같이 설명됩니다.</p>
+
+<blockquote>
+  <p>Shuffling means the reallocation of data between multiple Spark stages. “Shuffle Write” is the sum of all written serialized data on all executors before transmitting (normally at the end of a stage) and “Shuffle Read” means the sum of read serialized data on all executors at the beginning of a stage. (<a href="https://stackoverflow.com/questions/27276884/what-is-shuffle-read-shuffle-write-in-apache-spark">What is shuffle read &amp; shuffle write in Apache Spark</a>)</p>
+</blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Stage</th>
+      <th>설명</th>
+      <th>구분</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Input</td>
+      <td>Task 수행을 위해 외부 데이터를 SparkSession, SparkContext로 로드함</td>
+      <td>Partition Read</td>
+    </tr>
+    <tr>
+      <td>Shuffle Read</td>
+      <td>Task 수행을 위해 SparkSession, SparkContext 내부(executors)의 Serialized Data를 읽어들임</td>
+      <td>Partition Read</td>
+    </tr>
+    <tr>
+      <td>Shuffle Write</td>
+      <td>Task 수행 결과를 SparkSession, SparkContext 내부(executors)의 Serialzied Data로 내보냄</td>
+      <td>Partition Write</td>
+    </tr>
+    <tr>
+      <td>Output</td>
+      <td>Task 수행 결과를 SparkSession, SparkContext 외부에 작성함</td>
+      <td>Partition Write</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>하나의 Stage는 Partiton Read와 Partition Write로 이루어져있습니다. Partition을 읽고, 읽어들여온 Partition에 대해 Task를 수행하고(Shuffle) 그 결과를 다시 Partition으로 작성합니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">df1</span><span class="o">=</span><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"SELECT * FROM default.table_1"</span><span class="p">)</span>
+<span class="n">df2</span><span class="o">=</span><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"SELECT * FROM default.table_2"</span><span class="p">)</span>
+
+<span class="n">joined</span> <span class="o">=</span> <span class="n">df1</span><span class="p">.</span><span class="n">alias</span><span class="p">(</span><span class="s">"df1"</span><span class="p">).</span><span class="n">join</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="n">df1</span><span class="p">.</span><span class="n">col1</span><span class="o">==</span><span class="n">df2</span><span class="p">.</span><span class="n">col1</span><span class="p">,</span> <span class="n">df1</span><span class="p">.</span><span class="n">col2</span><span class="o">==</span><span class="n">df2</span><span class="p">.</span><span class="n">col2</span><span class="p">])</span>
+<span class="n">joined</span> <span class="o">=</span> <span class="n">joined</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s">"df1.col1"</span><span class="p">,</span> <span class="s">"df1.col2"</span><span class="p">,</span> <span class="s">"df1.col3"</span><span class="p">)</span>
+<span class="n">joined_agg</span> <span class="o">=</span> <span class="n">joined</span><span class="p">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s">"col1"</span><span class="p">,</span> <span class="s">"col2"</span><span class="p">).</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="s">"col3"</span><span class="p">).</span><span class="n">alias</span><span class="p">(</span><span class="s">"cnt"</span><span class="p">))</span>
+<span class="n">schema</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="s">"default.joined"</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">"."</span><span class="p">)</span>
+<span class="n">joined_agg</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">"path"</span><span class="p">,</span> <span class="sa">f</span><span class="s">'/user/hive/warehouse/</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.db/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>예를 들어 위 코드는 아래와 같은 stages를 구성하고, 실행됩니다. Input이 2번 있었고, Input하여 shuffle write된 DataFrame(<code class="language-plaintext highlighter-rouge">df1</code>, <code class="language-plaintext highlighter-rouge">df2</code>)에 대해 <code class="language-plaintext highlighter-rouge">join</code>과 <code class="language-plaintext highlighter-rouge">saveAsTable</code>이 실행되었습니다.</p>
+
+<p><img src="../../assets/built/images/hadoop/stages1.png" alt="image" /></p>
+
+<p>왼쪽의 <strong>Task: Succeeded/Total</strong>은 Stage 내에서 Task 수행 시 몇 개의 Task가 수행되었는지 표시합니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">spark.sql</code>을 사용하여 <code class="language-plaintext highlighter-rouge">DataFrame</code> 객체를 만드는 경우에는 해당 테이블의 파일 개수만큼(61228, 29684) Task를 실행했습니다. 따라서 <code class="language-plaintext highlighter-rouge">df1</code>, <code class="language-plaintext highlighter-rouge">df2</code>의 파티션 개수도 각각 61228, 29684개 입니다.</p>
+
+<p>맨 위에 <strong>1000/1000 (112 failed)</strong>는 1000개 작업 중에 중간에 112개 task를 실패했었음을 의미합니다. 1000개 task가 실행된 이유는 <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>를 1000으로 설정했기 때문입니다.</p>
+
+<p>해당 값은 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>, <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>를 통해 변경할수 있습니다.</p>
+
+<h4 id="spark-partitionsparkdefaultparallelism-sparksqlshufflepartitions">Spark Partition(spark.default.parallelism, spark.sql.shuffle.partitions)</h4>
+
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">spark.default.parallelism</code> – Default number of partitions in resilient distributed datasets (RDDs) returned by transformations like <code class="language-plaintext highlighter-rouge">join</code>, <code class="language-plaintext highlighter-rouge">reduceByKey</code>, and <code class="language-plaintext highlighter-rouge">parallelize</code> when no partition number is set by the user.</p>
+
+  <p><code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code> – Sets the number of partitions for joins and aggregations.</p>
+</blockquote>
+
+<p>Spark에서 사용하는 <code class="language-plaintext highlighter-rouge">RDD</code>, <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>은 모두 Partition을 가장 작은 단위(객체)로 갖습니다. 이 Partition을 단위로 각 Executor의 Core는 작업(Task)를 적용합니다. 이중에 <code class="language-plaintext highlighter-rouge">RDD</code>는 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>에 의해서 partition 값이 결정됩니다. <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>의 경우에는 <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>에 의해 partition 개수가 결정됩니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">pyspark.sql</span> <span class="kn">import</span> <span class="n">SparkSession</span>
+<span class="kn">from</span> <span class="nn">pyspark</span> <span class="kn">import</span> <span class="n">SparkConf</span>
+
+<span class="n">conf</span> <span class="o">=</span> <span class="n">SparkConf</span><span class="p">().</span><span class="n">setAppName</span><span class="p">(</span><span class="s">'spark_partition_test'</span><span class="p">).</span><span class="n">setMaster</span><span class="p">(</span><span class="s">"yarn"</span><span class="p">)</span>
+
+<span class="c1">## 5 cores per executor
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.cores"</span><span class="p">,</span><span class="s">"5"</span><span class="p">)</span> 
+<span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.driver.cores"</span><span class="p">,</span> <span class="s">"5"</span><span class="p">)</span>
+<span class="c1">## 30 executors
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.instances"</span><span class="p">,</span> <span class="s">"30"</span><span class="p">)</span>
+<span class="c1">## 10 GB per executor -&gt; 2GB per core
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.driver.memory"</span><span class="p">,</span><span class="s">"10G"</span><span class="p">)</span>
+<span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.memory"</span><span class="p">,</span><span class="s">"10G"</span><span class="p">)</span>
+<span class="c1">## SparkSession has 30 * 5 cores, which each core has 2GB mem.
+## So, spark.default.parallelism is 150(# of cores), and spark.sql.shuffle.partitions is 200(default)
+</span><span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">enableHiveSupport</span><span class="p">().</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
+
+<span class="n">df1</span><span class="o">=</span><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"SELECT * FROM default.table_1"</span><span class="p">)</span>
+<span class="n">df2</span><span class="o">=</span><span class="n">spark</span><span class="p">.</span><span class="n">sql</span><span class="p">(</span><span class="s">"SELECT * FROM default.table_2"</span><span class="p">)</span>
+
+<span class="n">joined</span> <span class="o">=</span> <span class="n">df1</span><span class="p">.</span><span class="n">alias</span><span class="p">(</span><span class="s">"df1"</span><span class="p">).</span><span class="n">join</span><span class="p">(</span><span class="n">df2</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="n">df1</span><span class="p">.</span><span class="n">col1</span><span class="o">==</span><span class="n">df2</span><span class="p">.</span><span class="n">col1</span><span class="p">,</span> <span class="n">df1</span><span class="p">.</span><span class="n">col2</span><span class="o">==</span><span class="n">df2</span><span class="p">.</span><span class="n">col2</span><span class="p">])</span>
+<span class="n">joined</span> <span class="o">=</span> <span class="n">joined</span><span class="p">.</span><span class="n">select</span><span class="p">(</span><span class="s">"df1.col1"</span><span class="p">,</span> <span class="s">"df1.col2"</span><span class="p">,</span> <span class="s">"df1.col3"</span><span class="p">)</span>
+<span class="n">joined_agg</span> <span class="o">=</span> <span class="n">joined</span><span class="p">.</span><span class="n">groupBy</span><span class="p">(</span><span class="s">"col1"</span><span class="p">,</span> <span class="s">"col2"</span><span class="p">).</span><span class="n">agg</span><span class="p">(</span><span class="n">F</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="s">"col3"</span><span class="p">).</span><span class="n">alias</span><span class="p">(</span><span class="s">"cnt"</span><span class="p">))</span>
+<span class="n">schema</span><span class="p">,</span> <span class="n">table</span> <span class="o">=</span> <span class="s">"default.joined"</span><span class="p">.</span><span class="n">split</span><span class="p">(</span><span class="s">"."</span><span class="p">)</span>
+<span class="n">joined_agg</span><span class="p">.</span><span class="n">write</span><span class="p">.</span><span class="n">mode</span><span class="p">(</span><span class="s">'overwrite'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">option</span><span class="p">(</span><span class="s">"path"</span><span class="p">,</span> <span class="sa">f</span><span class="s">'/user/hive/warehouse/</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.db/</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>\
+    <span class="p">.</span><span class="n">saveAsTable</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="si">{</span><span class="n">schema</span><span class="si">}</span><span class="s">.</span><span class="si">{</span><span class="n">table</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>따로 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>을 지정하지 않으면 core 개수만큼으로 partition 개수를 지정합니다. 따라서, 기본적으로 <code class="language-plaintext highlighter-rouge">RDD</code>는 150(5 cores * 30 executors)개의 partition으로 분할처리될 것입니다. core 개수와 partiton 개수가 같으므로 1 task per 1 core로 분산 처리하게 될 것입니다. 한편, <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>는 기본값이 200이기 때문에 <code class="language-plaintext highlighter-rouge">DataFrame</code>, <code class="language-plaintext highlighter-rouge">Dataset</code>은 200개의 partition으로 분할처리 될 것입니다.</p>
+
+<p><img src="../../assets/built/images/hadoop/stages2.png" alt="image" /></p>
+
+<p>그러나, 200 partitions로 설정하여 코드를 실행하는 경우 계속해서 fail task가 발생하고 결과적으로 App이 중간에 종료되어버렸습니다. Fail 발생을 줄이고 app이 성공적으로 실행을 완료하기 위해서는 튜닝이 필요합니다.</p>
+
+<p>일반적으로 전체 core 개수의 2배~3배 정도까지 <code class="language-plaintext highlighter-rouge">spark.default.parallelism</code>을 설정해줄 것을 권장합니다. 따라서 위의 conf setting은 아래 항목을 추가해주어야합니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+<span class="c1">## SparkSession has 30 * 5 cores, So proper number of partitions is 150 * 2 or 150 * 3.
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.sql.shuffle.partitions"</span><span class="p">,</span><span class="s">"450"</span><span class="p">)</span>
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">enableHiveSupport</span><span class="p">().</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">...</span>
+</code></pre></div></div>
+
+<p><img src="../../assets/built/images/hadoop/stages3.png" alt="image" /></p>
+
+<p>450 tasks가 수행됩니다. 그러나 어젼히 Shuffle Spill이 발생하고 있습니다.</p>
+
+<p><img src="../../assets/built/images/hadoop/shuffle-spill1.png" alt="image" /></p>
+
+<h2 id="what-makes-spark-slower">What makes Spark Slower?</h2>
+
+<p>가장 큰 이유는 <strong>Shuffle Spill</strong> 때문입니다. partition이 너무 커서 하나의 core(RAM)에 모두 담을 수 없는 경우에 Spill이 발생합니다. 이 때 발생한 Spill은 Disk에 저장되었다가, 연산 필요 시 다시 RAM으로 전달됩니다. 이러한 과정에서 직렬화(serialize)와 역직렬화(deserialize) 과정을 거치기 때문에 Spill이 발생한 Task(즉 partition)은 수행 시간이 늘어나고 Fail이 발생할 확률이 늘어납니다.</p>
+
+<blockquote>
+  <p><em>Spill is the term used to refer to the act of moving an RDD from RAM to disk, and later back into RAM again.</em></p>
+</blockquote>
+
+<p>Shuffle Spill(Disk) 와  Shuffle Spill(Memory)가 있습니다.</p>
+
+<blockquote>
+  <p>“Shuffle spill (memory) is the size of the deserialized form of the data in memory at the time when we spill it, whereas shuffle spill (disk) is the size of the serialized form of the data on disk after we spill it. This is why the latter tends to be much smaller than the former. Note that both metrics are aggregated over the entire duration of the task (i.e. within each task you can spill multiple times).”</p>
+</blockquote>
+
+<p>RAM(=memory)에서 Spill이 발생하게 되면 이를 직렬화(serialize)하여 disk에 임시로 저장해둡니다. 직렬화하는 과정에서 데이터 사이즈는 줄어들게 되므로 일반적으로 Shuffle Spill(Disk)가 Shuffle Spill(Memory)보다 작은 값을 갖습니다.</p>
+
+<p>이후에, Task에서 Disk로 Spill한 데이터를 연산에 사용하기 위해서는 역직렬화(deserialize)하여 RAM으로 로드합니다. 따라서 I/O의 증가, 직렬화/역직렬화 과정이 추가되면서 Task 수행 시간은 늘어나게 됩니다.</p>
+
+<p><img src="../../assets/built/images/hadoop/spill-water.jpg" alt="image" style="zoom:33%;" /></p>
+
+<p>​							       컵이 물을 모두 담아내지 못하는 것처럼 memory가 partition을 담아내지 못하고 흘려버리는 것과 같습니다</p>
+
+<h4 id="how-to-remove-spill">How to remove Spill?</h4>
+
+<ul>
+  <li>Memory Size를 늘린다</li>
+</ul>
+
+<p>Task 수행에 사용되는 Core에게 더 큰 RAM을 할당해주면, Shuffle Spill이 발생하지 않을 수 있습니다. 이는 물과 컵에 비유하자면 컵의 크기를 늘리는 방법입니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## 5 cores per executor
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.cores"</span><span class="p">,</span><span class="s">"5"</span><span class="p">)</span> 
+<span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.driver.cores"</span><span class="p">,</span> <span class="s">"5"</span><span class="p">)</span>
+<span class="c1">## 30 executors
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.instances"</span><span class="p">,</span> <span class="s">"30"</span><span class="p">)</span>
+<span class="c1">## 15 GB per executor -&gt; 3GB per core
+</span><span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.driver.memory"</span><span class="p">,</span><span class="s">"15G"</span><span class="p">)</span>
+<span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.executor.memory"</span><span class="p">,</span><span class="s">"15G"</span><span class="p">)</span>
+<span class="c1">## SparkSession has 30 * 5 cores, which each core has 2GB mem.
+## So, spark.default.parallelism is 150(# of cores), and spark.sql.shuffle.partitions is 200(default)
+</span><span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">enableHiveSupport</span><span class="p">().</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>기존에 Core에 2GB를 할당했었지만, 3GB로 증가시켰습니다. 일반적으로 Shuffle Read가 600GB 이상인 경우에는 core size가 4GB 이상으로 설정할 것을 권장합니다.</p>
+
+<p>Shuffle Read가 600GB가 넘지 않는 경우에는 core size를 늘리는 것보다 아래의 방법을 사용합니다.</p>
+
+<ul>
+  <li>partition size를 줄인다 ( # partition을 늘린다 )</li>
+</ul>
+
+<p>Core에게 전달되는 partition size를 줄여서 Shuffle Spill을 방지할 수 있습니다. 물을 조금씩(smaller partition size) 자주 컵에 담는다면 물이 넘치지않겠죠. Shuffle Read는 데이터가 변하지 않는다면 고정되어있으므로 partition size를 줄인다는 것은 partition 개수를 늘리는 것과 동일합니다. Shuffle Partition의 크기를 100MB~200MB로 설정하는 것이 최적으로 알려져있습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">spark.default.paralleism</code>, <code class="language-plaintext highlighter-rouge">spark.sql.shuffle.partitions</code>와 같은 conf option이 사용될 수 있습니다. 혹은 <code class="language-plaintext highlighter-rouge">df.repartition()</code>처럼 명시적으로 partition 개수를 늘려주는 방법도 있습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">...</span>
+<span class="n">conf</span><span class="p">.</span><span class="nb">set</span><span class="p">(</span><span class="s">"spark.sql.shuffle.partitions"</span><span class="p">,</span><span class="s">"1000"</span><span class="p">)</span>
+<span class="n">spark</span> <span class="o">=</span> <span class="n">SparkSession</span><span class="p">.</span><span class="n">builder</span><span class="p">.</span><span class="n">enableHiveSupport</span><span class="p">().</span><span class="n">config</span><span class="p">(</span><span class="n">conf</span><span class="o">=</span><span class="n">conf</span><span class="p">).</span><span class="n">getOrCreate</span><span class="p">()</span>
+<span class="p">...</span>
+</code></pre></div></div>
+
+<p>Shuffle Spill이 발생하지 않고 수행 시간도 줄어들었음을 확인할 수 있습니다.</p>
+
+<p><img src="../../assets/built/images/hadoop/shuffle-spill2.png" alt="image" /></p>
+
+<h2 id="마치며">마치며</h2>
+
+<p>애매하게 알고 있었던 partition, shuffle, spill의 개념을 정리할 수 있었습니다. 다만, 위에서 가정한 상황은 모든 partition에 데이터가 고루 분배되는 이상적인 상황입니다. 실제 상황에서는 skewed dataset 때문에 straggler task가 발생하기도 합니다. 이러한 경우에는 먼저 필터링하거나, partition 개수를 더욱 늘리는 방법(partition size가 100MB보다 작도록)으로 대처해야합니다.</p>
+
+<p>[참고]</p>
+
+<p><a href="http://people.csail.mit.edu/matei/papers/2012/nsdi_spark.pdf">Resilient Distributed Datasets: A Fault-Tolerant Abstraction for In-Memory Cluster Computing</a></p>
+
+<p><a href="https://tech.kakao.com/2021/10/08/spark-shuffle-partition/">Spark Shuffle Partition과 최적화</a></p>
+
+<p><a href="https://luminousmen.com/post/spark-partitions">Spark Partitions</a></p>
+
+<p><a href="https://jaemunbro.medium.com/apache-spark-partition-%EA%B0%9C%EC%88%98%EC%99%80-%ED%81%AC%EA%B8%B0-%EC%A0%95%ED%95%98%EA%B8%B0-3a790bd4675d">[Apache Spark] Partition 개수와 크기 정하기</a></p>
+
+<p><a href="https://aws.amazon.com/ko/blogs/big-data/best-practices-for-successfully-managing-memory-for-apache-spark-applications-on-amazon-emr/">Best practices for successfully managing memory for Apache Spark applications on Amazon EMR</a></p>
+
+<p><a href="https://community.cloudera.com/t5/Support-Questions/Spark-shuffle-spill-Memory/td-p/186859">Spark shuffle spill (Memory)</a></p>
+
+<p><a href="https://medium.com/road-to-data-engineering/spark-performance-optimization-series-2-spill-685126e9d21f">Spark Performance Optimization Series: #2. Spill</a></p>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            <!--  -->
+            <!-- utteranc setting -->
+            <script src="https://utteranc.es/client.js"
+                    repo="GyuhoonK/blog-comments"
+                    issue-term="pathname"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+                    <article class="read-next-card"
+                        
+                            style="background-image: url(/assets/built/images/spain-blog-cover.jpg)"
+                        
+                    >
+                        <header class="read-next-card-header">
+                            <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
+                            
+                                <h3 class="read-next-card-header-title"><a href="/tag/hadoop/">Hadoop</a></h3>
+                            
+                        </header>
+                        <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
+</div>
+                        <div class="read-next-card-content">
+                            <ul>
+                                
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/non-deterministic-udf">non-deterministic UDF</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/impala-with-clause">WITH절/VIEW 사용 시 쿼리 플랜에 대해서</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/enableHiveSupport">enableHiveSupport</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                            </ul>
+                        </div>
+                        <footer class="read-next-card-footer">
+                            <a href="/tag/hadoop/">
+                                
+                                    See all 11 posts  →
+                                
+                            </a>
+                        </footer>
+                    </article>
+                <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+                </script>
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/prefix-sum">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/algorithm/2dim-prefix-sum-cache2.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/prefix-sum">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Algorithm</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">누적 합(Prefix Sum)</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>누적 합(Prefix Sum) 알고리즘 (2022 KAKAO BLIND RECRUITMENT 6 파괴되지 않은 건물)
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      3 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/hadoop-distcp">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/distcp.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/hadoop-distcp">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">hadoop distcp</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>hadoop distcp 명령어
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      3 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://gyuhoonk.github.io/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">Partition, Spill in Spark</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Partition%2C+Spill+in+Spark&amp;url=https://gyuhoonk.github.iospark-shuffle-partition"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iospark-shuffle-partition"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2023</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+    <!-- math LaTex-->
+    
+</body>
+</html>

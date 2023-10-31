@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom" >
+  <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
+  <link href="https://gyuhoonk.github.io/tag/airflow/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2023-10-31T22:16:37+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/airflow/feed.xml</id>
+
+  
+  
+  
+
+  
+    <title type="html">Gyuhoon Kim | </title>
+  
+
+  
+    <subtitle>Data Engineering</subtitle>
+  
+
+  
+
+  
+    
+      
+    
+  
+
+  
+  
+
+  
+    <entry>
+      <title type="html">What is Airflow?</title>
+      <link href="https://gyuhoonk.github.io/airflow1" rel="alternate" type="text/html" title="What is Airflow?" />
+      <published>2022-02-28T22:30:00+09:00</published>
+      <updated>2022-02-28T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/airflow1</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/airflow1">&lt;p&gt;Basic Concepts of Airflow&lt;/p&gt;
+
+&lt;h2 id=&quot;orchestrator&quot;&gt;Orchestrator&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Apache Airflow is an open source platform to programmatically author, schedule and monitor workflows.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Google에서 Airflow를 검색하면 위와 같은 결과를 찾을 수 있습니다. 강사 &lt;a href=&quot;https://www.udemy.com/user/lockgfg/&quot;&gt;Marc Lamberti&lt;/a&gt; 는 Airflow를 Orchestrator로 정의합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;An &lt;strong&gt;orchestrator&lt;/strong&gt; is a trained musical professional who assigns instruments to an &lt;a href=&quot;https://en.wikipedia.org/wiki/Orchestra&quot;&gt;orchestra&lt;/a&gt; or other &lt;a href=&quot;https://en.wikipedia.org/wiki/Musical_ensemble&quot;&gt;musical ensemble&lt;/a&gt; from a piece of music written by a &lt;a href=&quot;https://en.wikipedia.org/wiki/Composer&quot;&gt;composer&lt;/a&gt;, or who adapts music composed for another medium for an orchestra. - wikipedia&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;orchestator는 오케스트라 공연에서 연주자들이 언제 어떤 일을 해야하는지 알려주는 일을 합니다. 데이터 파이프라인도 하나의 오케스트라 공연과 같습니다. 여러 연주자들이 자신의 악기를 연주하듯이 파이프라인 내에서 여러 툴들이 이용됩니다. 또한 연주자가 연주해야하는 시간과 음이 정해져있듯이 툴들이 해야하는 일과 시간이 정해져있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;benefit-of-airflow&quot;&gt;Benefit of Airflow&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Dynamic&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Airflow로 작성되는 코드는 동적(dynamic)입니다. 쉽게 수정하고 작업을 추가할 수 있습니다. 이러한 특징은 airflow가 python으로 작성된 언어이며 파이프라인 역시 python으로 작성한다는 점에서 기인합니다. 따라서 Python으로 실행할 수 있는 모든 작업은 airflow로 실행가능합니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Scalability&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;리소스가 허락되는 한 원하는 만큼 동시에 많은 작업을 실행할 수 있습니다. 예를 들어, 20개의 클러스터를 가진 환경에서 airflow를 실행한다면 20개의 작업을 동시에 실행할 수 있을 것입니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;UI&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;효과적인 UI 설계 덕분에 데이터 파이프라인을 쉽게 모니터링할 수 있습니다. UI에서 클릭 하나만으로 실패한 작업을 재실행할 수도 있고 여러 가지 정보를 얻을 수도 있습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Extensibility&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;어떤 새로운 툴이 발표되었고, airflow로 그 작업을 실행하고 싶은 경우에 airflow가 해당 툴을 포함할 때까지 기다릴 필요가 없습니다. 사용자는 스스로 플러그인을 만들어 파이프라인에 포함시키고 작업을 지시할 수 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;core-components&quot;&gt;Core Components&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;Web Server : Gunicorn이 이용된 Flask Server입니다. UI를 제공하는 역할을 맡습니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Scheduler  : 작업을 스케쥴링하는 역할을 담당하는 daemon입니다. 파이프라인에서 작업이 실행되는 것을 담당하므로 airflow의 가장 중요한 기능입니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;MetaStore : Airflow, 혹은 설계된 데이터 파이프라인과 관련 있는 모든 메타 정보들이 저장되는 공간입니다. Airflow 내부에 위치하는 것을 권장하지만 외부DB로 대체될 수도 있습니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Executor : 작업이 어떻게 실행될지 정의합니다. (defines how your tasks are going to be executed )&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Worker : 실제로 작업이 실행되는 프로세스입니다. (the process where the task is executed)&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;important-concepts&quot;&gt;Important Concepts&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;DAG : Airflow에서 데이터 파이프라인은 DAG 형태로 구성됩니다. 따라서 Airflow에서 DAG란 곧 데이터 파이프라인을 의미합니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Operator
+    &lt;ul&gt;
+      &lt;li&gt;Action Operator : 실제로 함수나 명령을 실행합니다&lt;/li&gt;
+      &lt;li&gt;Transfer Operator : source에서 destination으로 데이터를 전송합니다&lt;/li&gt;
+      &lt;li&gt;Sensor Operator : 다음 작업을 실행하기 전에, 특정 작업이 완료되는 것을 기다립니다&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;task :  task(작업)은 곧 파이프라인에서 operator가 실행하는 행동을 말합니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Workflow : 위에서 본 개념들의 집합입니다. Operator, task로 이루어졌으며 depencency를 가진 DAG를 workflow라고 합니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;what-airflow-is-not-&quot;&gt;What Airflow is NOT ?&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Airflow is not a data STREAMING solution neither a data PROCESSING framework.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Airflow로 대용량 데이터를 &lt;strong&gt;직접&lt;/strong&gt; 처리해서는 안됩니다. 데이터를 직접 처리하는 것은 각종 툴(예를 들어 Spark)이 맡아야하고 Airflow는 그러한 툴들의 순서를 관리하고 실행만을 지시하는 역할입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;how-airflow-works&quot;&gt;How Airflow works?&lt;/h2&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="airflow" />
+      
+
+      
+        <summary type="html">Basic Concepts of Airflow</summary>
+      
+
+      
+      
+    </entry>
+  
+</feed>

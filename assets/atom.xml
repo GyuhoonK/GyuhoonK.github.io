@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title> - Articles</title>
+    <description>Data Engineering</description>
+    <link>
+    https://gyuhoonk.github.io</link>
+    
+      
+      <item>
+        <title>prepared statement</title>
+        
+          <description>&lt;p&gt;prepared statment&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 29 Oct 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/prepared-statement</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/prepared-statement</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>multi-stage와 Builder Pattern</title>
+        
+          <description>&lt;p&gt;DataHub로 알아본 Docker build 전략 (multi-stage, Builder pattern)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 10 Jun 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/multi-stage-and-builder-pattern</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/multi-stage-and-builder-pattern</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>non-deterministic UDF</title>
+        
+          <description>&lt;p&gt;non-determinitic UDF 구현하기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Tue, 16 May 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/non-deterministic-udf</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/non-deterministic-udf</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Sharing Avro Schema to Python</title>
+        
+          <description>&lt;p&gt;DataHub에서 avro schema 파일(avsc)을 사용하는 방법&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 07 May 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/avro-to-python</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/avro-to-python</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>jaydebeapi - Class not found Error</title>
+        
+          <description>&lt;p&gt;jaydebeapi로 DB 연결 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TypeError: Class not found&lt;/code&gt; 원인 파악&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 25 Mar 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/jaydebeapi_class_not_found</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/jaydebeapi_class_not_found</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>변수를 전달하는 decorator</title>
+        
+          <description>&lt;p&gt;변수를 생성해 함수로 전달하는 데코레이터 만들기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 18 Mar 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/decorator</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/decorator</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Load Average란?(chatGPT로 알아보기)</title>
+        
+          <description>&lt;p&gt;chatGPT로 load average로 파헤쳐보기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 11 Mar 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/load-avg</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/load-avg</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>WITH절/VIEW 사용 시 쿼리 플랜에 대해서</title>
+        
+          <description>&lt;p&gt;WITH절/VIEW 사용은 효율적인 쿼리플랜과 관련이 없다&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Thu, 16 Feb 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/impala-with-clause</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/impala-with-clause</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Pod와 Container</title>
+        
+          <description>&lt;p&gt;Container와 Pod의 기본개념을 확인해봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 12 Feb 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/pod-container</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/pod-container</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Oracle DB Connection String</title>
+        
+          <description>&lt;p&gt;oracle database connection String 설정에 대해 알아봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 24 Dec 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/oracle-connection</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/oracle-connection</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Linux 사용자 관리, 파일속성 그리고, 특수권한</title>
+        
+          <description>&lt;p&gt;Linux 사용자 관리, 파일속성 그리고, 특수권한에 대해서 알아봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 19 Nov 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/special-permissions</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/special-permissions</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>나의 첫 컨트리뷰션(Retrospect on my first contribution)</title>
+        
+          <description>&lt;p&gt;오픈소스 컨트리뷰션 회고&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 05 Nov 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/first-contributor</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/first-contributor</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Learning Apache Spark 3 with Scala (Section8)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section8 -Spark Streaming)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 27 Aug 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala8</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala8</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Learning Apache Spark 3 with Scala (Section7)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section7 - Machine Learning Library)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Fri, 24 Jun 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala7</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala7</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>enableHiveSupport</title>
+        
+          <description>&lt;p&gt;Spark enableHiveSupport(Hive metaStore)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Thu, 16 Jun 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/enableHiveSupport</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/enableHiveSupport</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>merge vs. rebase</title>
+        
+          <description>&lt;p&gt;merge와 rebase 비교하기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 14 May 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/merge-rebase</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/merge-rebase</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Parquet and Predicate PushDown</title>
+        
+          <description>&lt;p&gt;parquet 포맷과 predicate pushdown에 대해서&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Thu, 21 Apr 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/parquet-ppd</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/parquet-ppd</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Softeer 거리 합 구하기</title>
+        
+          <description>&lt;p&gt;Subtree를 이용한 거리 합 구하기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Fri, 01 Apr 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/Subtree</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/Subtree</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>repartition in Spark</title>
+        
+          <description>&lt;p&gt;repartition 파헤치기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 12 Mar 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/spark-repartition</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-repartition</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Learning Apache Spark 3 with Scala (Section6)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section6 - Running Spark on Cluster)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 06 Mar 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala6</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala6</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>What is Airflow?</title>
+        
+          <description>&lt;p&gt;Basic Concepts of Airflow&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 28 Feb 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/airflow1</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/airflow1</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Learning Apache Spark 3 with Scala (Section5)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section5 - Spark Progamming)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 21 Feb 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala5</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala5</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Learning Apache Spark 3 with Scala (Section4)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section4 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DataFrame&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dataset&lt;/code&gt;)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 21 Feb 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala4</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala4</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>누적 합(Prefix Sum)</title>
+        
+          <description>&lt;p&gt;누적 합(Prefix Sum) 알고리즘 (2022 KAKAO BLIND RECRUITMENT 6 파괴되지 않은 건물)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 14 Feb 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/prefix-sum</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/prefix-sum</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Partition, Spill in Spark</title>
+        
+          <description>&lt;p&gt;Partition, Spill in Spark&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Wed, 09 Feb 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/spark-shuffle-partition</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-shuffle-partition</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>hadoop distcp</title>
+        
+          <description>&lt;p&gt;hadoop distcp 명령어&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Thu, 20 Jan 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/hadoop-distcp</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/hadoop-distcp</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Learning Apache Spark 3 with Scala (Section3)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section3 - &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD&lt;/code&gt; &amp;amp; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RDD Action&lt;/code&gt;)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 15 Jan 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala3</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala3</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>DataBase Connection Pool</title>
+        
+          <description>&lt;p&gt;DBCP(DataBase Connection Pool)에 대해서&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Thu, 06 Jan 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/DBCP</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/DBCP</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Learning Apache Spark 3 with Scala (Scala Basic)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Scala Basic)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 03 Jan 2022 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala2</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala2</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Learning Apache Spark 3 with Scala (Section1)</title>
+        
+          <description>&lt;p&gt;Learning Apache Spark 3 with Scala (Section1)&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Thu, 30 Dec 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/sparkscala1</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala1</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>EXP-SUM-LOG / LOG-SUM-EXP</title>
+        
+          <description>&lt;p&gt;EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Wed, 29 Dec 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/EXP-LOG-SUM</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/EXP-LOG-SUM</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Overwrite Partition in Spark</title>
+        
+          <description>&lt;p&gt;Spark를 이용하여 특정 파티션만 overwrite하기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Tue, 21 Dec 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/spark-overwrite-partition</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-overwrite-partition</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Melt in Pyspark</title>
+        
+          <description>&lt;p&gt;pyspark로 melt function 구현하기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Thu, 25 Nov 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/melt-in-pyspark</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/melt-in-pyspark</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Knuth–Morris–Pratt algorithm, KMP</title>
+        
+          <description>&lt;p&gt;문자열 탐색에서 사용되는 KMP 알고리즘에 대해서&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 06 Nov 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/KMP</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/KMP</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Threading in Python</title>
+        
+          <description>&lt;p&gt;Python - Thread, Mutex, Semaphore&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 01 Nov 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/threading-in-python</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/threading-in-python</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Merge Files in HDFS</title>
+        
+          <description>&lt;p&gt;HDFS에서 작은 용량의 파일들을 합쳐보자&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 24 Oct 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/hive-merge-query</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/hive-merge-query</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Bucket in Hive, Spark</title>
+        
+          <description>&lt;p&gt;Hive와 Spark에서 Bucket 차이점에 대하여&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 09 Oct 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/bucket-hive-spark</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/bucket-hive-spark</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Gaussian Kernel</title>
+        
+          <description>&lt;p&gt;Gaussian Kernel(RBF) 기본 개념에 대하여&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Fri, 08 Oct 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/gaussian_kernel</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/gaussian_kernel</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>CREATE Statement in Hive</title>
+        
+          <description>&lt;p&gt;HiveQL - CREATE Statement구조에 대하여&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Thu, 16 Sep 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/hive-create-stmt</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/hive-create-stmt</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Connection to DataBase in Python, R</title>
+        
+          <description>&lt;p&gt;python, R에서 Database Server와 연결하기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Mon, 06 Sep 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/connect-to-database</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/connect-to-database</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>AWS S3와 zip 파일</title>
+        
+          <description>&lt;p&gt;AWS S3 내 zip 파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Wed, 01 Sep 2021 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/boto3-zipfile</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/boto3-zipfile</guid>
+      </item>
+      
+    
+  </channel>
+</rss>
