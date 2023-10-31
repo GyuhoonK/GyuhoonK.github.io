@@ -5,8 +5,21 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Sat, 10 Jun 2023 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sun, 29 Oct 2023 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>prepared statement</title>
+        
+        
+            <description>&lt;p&gt;prepared statement&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 29 Oct 2023 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/prepared-statement</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/prepared-statement</guid>
+      </item>
+    
 	<item>
 		<title>multi-stage와 Builder Pattern</title>
         
@@ -122,19 +135,6 @@
         <pubDate>Sat, 24 Dec 2022 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/oracle-connection</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/oracle-connection</guid>
-      </item>
-    
-	<item>
-		<title>Linux 사용자 관리, 파일속성 그리고, 특수권한</title>
-        
-        
-            <description>&lt;p&gt;Linux 사용자 관리, 파일속성 그리고, 특수권한에 대해서 알아봅니다.&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sat, 19 Nov 2022 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/special-permissions</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/special-permissions</guid>
       </item>
     
   </channel>

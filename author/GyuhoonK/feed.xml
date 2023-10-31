@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2023-06-11T22:29:37+09:00</updated>
+  <updated>2023-10-31T22:29:49+09:00</updated>
   <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
 
   
@@ -30,6 +30,154 @@
   
   
 
+  
+    <entry>
+      <title type="html">prepared statement</title>
+      <link href="https://gyuhoonk.github.io/prepared-statement" rel="alternate" type="text/html" title="prepared statement" />
+      <published>2023-10-29T22:30:00+09:00</published>
+      <updated>2023-10-29T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/prepared-statement</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/prepared-statement">&lt;p&gt;prepared statement&lt;/p&gt;
+
+&lt;h1 id=&quot;prepared-statement란&quot;&gt;prepared statement란?&lt;/h1&gt;
+
+&lt;h2 id=&quot;개념&quot;&gt;개념&lt;/h2&gt;
+&lt;p&gt;위키피디아의 설명을 먼저 살펴보겠습니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;프리페어드 스테이트먼트(prepared statement), 파라미터라이즈드 스테이트먼트(parameterized statement)는 데이터베이스 관리 시스템(DBMS)에서 동일하거나 비슷한 데이터베이스 문을 높은 효율성으로 반복적으로 실행하기 위해 사용되는 기능이다. 일반적으로 쿼리나 업데이트와 같은 SQL 문과 함께 사용되는 프리페어드 스테이트먼트는 템플릿의 형태를 취하며, 그 템플릿 안으로 특정한 상수값이 매 실행 때마다 대체된다.&lt;br /&gt;
+프리페어드 스테이트먼트의 일반적인 워크플로는 다음과 같다:&lt;/p&gt;
+  &lt;ol&gt;
+    &lt;li&gt;준비(Prepare): 먼저 애플리케이션은 문의 틀을 만들고 이를 DBMS로 보낸다. 특정값은 지정하지 않은 채로 남겨지며 이들은 “변수”, “플레이스홀더”, “바인드값”으로 부른다. (아래의 “?” 레이블 참고):&lt;br /&gt;
+  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INSERT INTO products (name, price) VALUES (?, ?);&lt;/code&gt;&lt;/li&gt;
+    &lt;li&gt;그 다음, DBMS는 문의 틀을 컴파일하며(최적화 및 변환) 아직 실행하지 않고 결과만 저장한다.&lt;/li&gt;
+    &lt;li&gt;실행(Execute): 나중에 애플리케이션이 문 틀의 변수에 값(바인드)을 지정하면 DBMS는 (결과를 반환할 수도 있는) 문을 실행한다. 애플리케이션은 여러 값으로 원하는 횟수만큼 문을 실행할 수 있다. 위의 예에서 첫 번째 변수로 “bike”로, 두 번째 변수로 “10900”을 지정한다.&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;위키피디아에 적혀진 설명에서 핵심이 되는 단어는 두 가지인 것 같습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;반복: 같은 쿼리를 반복 실행하는 경우에 높은 효율성을 위해 사용한다&lt;/li&gt;
+  &lt;li&gt;준비: template(틀)을 미리 만들어 놓고, placeholder를 입력하여 보낸다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;주의할 점은 template과 placeholder를 전달받은 DBMS가 실행할 쿼리를 컴파일한다는 것입니다(어플리케이션에서 컴파일하여 그 결과를 전달하지 않는다, 어플리케이션은 template과 placeholder만 제출한다).&lt;/p&gt;
+
+&lt;h2 id=&quot;예시-python&quot;&gt;예시 (python)&lt;/h2&gt;
+
+&lt;p&gt;이것도 위키피디아에 적절한 예시가 있어서 그대로 가져왔습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;mysql.connector&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mysql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;mysql&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;root&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;CREATE TABLE IF NOT EXISTS products (name VARCHAR(40), price INT)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bike&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10900&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+              &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;shoes&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;7400&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
+              &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;phone&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;29500&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;executemany&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;INSERT INTO products VALUES (%s, %s)&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;shoes&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM products WHERE name = %s&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;params&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fetchall&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;finally&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;INSERT INTO&lt;/code&gt;와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; 쿼리를 실행할 때, prepared statement를 사용하고 있습니다. placeholder(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;%s&lt;/code&gt;)를 사용하여 변수를 입력받을 수 있는 쿼리 템플릿을 만들어 놓고, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;params&lt;/code&gt;를 사용하여 해당 쿼리에서 사용할 변수를 함께 DBMS로 제출합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;prepared-statement가-필요한-이유&quot;&gt;prepared statement가 필요한 이유&lt;/h1&gt;
+
+&lt;h2 id=&quot;1-sql-injection&quot;&gt;1. SQL injection&lt;/h2&gt;
+&lt;p&gt;첫번째는 보안 때문입니다. statement만 사용하여 DBMS에 쿼리를 제출할 경우 개발자가 의도하지 않은 쿼리가 제출되지 않을 수 있습니다. 이러한 해킹 기법을 SQL injection이라고 합니다. 예를 들어 아래와 같이 string으로만 쿼리를 제출한다고 가정해보겠습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;mysql&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;connect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;mysql&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;root&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+
+&lt;span class=&quot;n&quot;&gt;your_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;input&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;cursor&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;execute&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;SELECT * FROM products WHERE name = &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;your_name&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;일반적인 사용자라면 본인의 이름만 입력하겠지만, 어떤 해커가 아래처럼 쿼리를 작성하여 input으로 제출한다면 DB에 본인이 원하는 데이터를 주입하거나, 심지어는 삭제할 수도 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;your_name&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;'ANYTHING' AND 1=1; DELETE FROM products WHERE 1=1&quot;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# 위 입력을 받는 경우에 실제 실행되는 쿼리는 아래와 같습니다
+&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
+SELECT * 
+FROM products
+WHERE name = 'ANYTHING' AND 1=1;
+DELETE FROM products WHERE 1=1 
+&quot;&quot;&quot;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;위처럼 prepared statement를 사용하지 않으면 의도와 다른 쿼리가 실행되는 것을 막을 수 없습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;2-유지-보수&quot;&gt;2. 유지 보수&lt;/h2&gt;
+
+&lt;p&gt;prepared statement를 사용하면 유지보수가 편해집니다. 어플리케이션에서 사용할 쿼리 템플릿이 정해져있고, 템플릿에 입력할 변수를 관리하기 때문입니다. 예를 들어, 어플리케이션에 쿼리를 제출할 때마다 문자열 기반의 쿼리를 작성하는 것은 언제 어떤 쿼리를 제출했는지 추적하기 어렵습니다. 이는 추후에 쿼리를 수정하는 등의 유지 보수가 필요한 상황이 발생했을 때, 코드를 관리하고 수정하기 어렵게 만듭니다. 이에 반해 prepared statement로 제출할 쿼리를 미리 정의해놓았기 때문에 추후에 쿼리를 수정해야할 일이 있을 때 수정해야할 부분을 명확하게 알 수 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;3-query-caching&quot;&gt;3. Query Caching&lt;/h2&gt;
+
+&lt;p&gt;prepared statement의 장점 중 쿼리의 반복 실행 시 효율성이 보장되는 가장 큰 이유이며 prepared statement를 사용하는 가장 큰 이유라고도 할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;DB는 일반적인 statement를 입력받으면 아래의 세 과정을 거칩니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;Query parsing&lt;/li&gt;
+  &lt;li&gt;Optimization&lt;/li&gt;
+  &lt;li&gt;Execution&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;그러나 prepared statement를 입력받는 경우에 DB는 첫 입력에만 1~3의 과정을 거치고 다음 입력부터는 캐시에 저장해둔 정보를 기반으로 쿼리를 실행합니다. 즉, 반복 횟수가 많아질수록 prepared statement가 더 유리해집니다. 이런 점 때문에 prepared statement가 반복되는 쿼리에 있어서 더 효율적이라고 말합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;query-caching-이란&quot;&gt;Query Caching 이란?&lt;/h1&gt;
+
+&lt;p&gt;쿼리 캐싱은 과거에 실행된 쿼리와 정확하게 같은 쿼리가 실행되었을 때, 과거에 실행된 쿼리 결과를 캐시에 저장해두었다가 반환해주는 것입니다. 이러한 쿼리 캐싱은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SELECT&lt;/code&gt; 쿼리에 대해서만 동작합니다. 같은 결과를 조회하는 동일한 쿼리에 대해서 두번째 실행부터는 쿼리 분석, 컴파일, 실행의 과정을 거치지 않고 미리 저장해둔 결과를 반환합니다.&lt;/p&gt;
+
+&lt;p&gt;다만, 리서치를 조금 해보니 최근 버전의 DBMS에서는 해당 기능을 점차 지원하고 있지 않는 것으로 보입니다. MySQL도 8.0버전 이후로는 쿼리 캐시 기능을 제거하였으며 MariaDB도 10.1.7버전 이후로는 기본값이 비활성화인 것으로 보입니다. 이렇게 쿼리 캐싱 기능이 점차 비활성화되고 있는 이유는 멀티 코어 시스템에서는 쿼리 캐싱 기능이 확장되지 않기 때문이라고 합니다.&lt;/p&gt;
+
+&lt;p&gt;쿼리 캐싱이 동작하기 위해서는 제한 조건이 존재합니다.&lt;/p&gt;
+&lt;ol&gt;
+  &lt;li&gt;정확하게 같은 쿼리여야한다: 작성된 쿼리의 대소문자까지도 정확하게 일치해야합니다. 이는 쿼리 캐싱을 찾을 때 해당 쿼리의 byte를 검색 key로 사용하기 때문입니다.&lt;/li&gt;
+  &lt;li&gt;조회하는 테이블에 UPDATE/DELETE/INSERT와 같은 데이터 변화가 없어야한다: 쿼리 캐싱된 결과는 해당 테이블이 업데이트되면 즉시 삭제됩니다. 따라서 빈번한 읽기가 발생하는 테이블에 대해서 쿼리 캐싱은 기대 효과를 얻기 어렵습니다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;[참고]&lt;br /&gt;
+&lt;a href=&quot;https://ko.wikipedia.org/wiki/%ED%94%84%EB%A6%AC%ED%8E%98%EC%96%B4%EB%93%9C_%EC%8A%A4%ED%85%8C%EC%9D%B4%ED%8A%B8%EB%A8%BC%ED%8A%B8&quot;&gt;[wikipedia]프리페어드 스테이트먼트&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://youtu.be/FoZ2cucLiDs?si=kele-Cb_tPCcCk-v&quot;&gt;[youtube]코딩애플-SQL injection 공격&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://jupiny.com/2021/01/10/mysql-query-cache-disadvantage/&quot;&gt;MySQL Query Cache은 무조건 좋을까? (Feat. query cache lock)&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="database" />
+      
+
+      
+        <summary type="html">prepared statement</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">multi-stage와 Builder Pattern</title>
@@ -1719,460 +1867,6 @@ node에 대해 기술하지 않아도, RAC failover가 가능합니다. 기존�
 
       
         <summary type="html">oracle database connection String 설정에 대해 알아봅니다.</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">Linux 사용자 관리, 파일속성 그리고, 특수권한</title>
-      <link href="https://gyuhoonk.github.io/special-permissions" rel="alternate" type="text/html" title="Linux 사용자 관리, 파일속성 그리고, 특수권한" />
-      <published>2022-11-19T22:30:00+09:00</published>
-      <updated>2022-11-19T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/special-permissions</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/special-permissions">&lt;p&gt;Linux 사용자 관리, 파일속성 그리고, 특수권한에 대해서 알아봅니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;linux-사용자그룹과-파일-관리&quot;&gt;Linux 사용자,그룹과 파일 관리&lt;/h1&gt;
-&lt;p&gt;Linux는 파일 관리를 위해 아래와 같은 개념을 도입했습니다.&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;사용자와 그룹(User and Group)&lt;/li&gt;
-  &lt;li&gt;파일 허가권(Permission)&lt;/li&gt;
-  &lt;li&gt;파일 소유권(Ownership)&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;h2 id=&quot;1-사용자와-그룹user-and-group&quot;&gt;1. 사용자와 그룹(User and Group)&lt;/h2&gt;
-&lt;p&gt;리눅스가 사용자와 그룹 개념을 도입함으로써, 1대의 리눅스 서버에 여러 명이 동시에 접속해서 사용할 수 있습니다. 
-처음에 리눅스를 설치하면, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;라는 이름을 가진 super user가 있습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;는 시스템의 모든 작업을 실행할 수 있는 권한이 있고, 시스템에 접속할 수 있는 사용자를 생성할 수 있는 권한도 있습니다. 
-사용자(User)는 혼자서 존재하지 않고 어떤 그룹(Group)에 속해야합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/passwd
-nobody:x:-2:-2:Unprivileged User:/var/empty:/usr/bin/false
-root:x:0:0:System Administrator:/var/root:/bin/sh
-daemon:x:1:1:System Services:/var/root:/usr/bin/false
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;위의 각 행의 의미는 아래와 같습니다.&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{사용자 이름}:{암호}:{사용자ID}:{사용자가 소속된 그룹}:{추가 정보}:{홈 디렉토리}:{기본 셀}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;암호가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;로 표시된 경우에 해당 암호는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/shadow&lt;/code&gt;에서 확인할 수 있습니다.
-이번에는 그룹(Group)을 확인해봅니다.&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt; /etc/group
-nobody:x:-2:
-nogroup:x:-1:
-wheel:x:0:root
-daemon:x:1:root
-kmem:x:2:root
-sys:x:3:root
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;각 행의 의미는 아래와 같습니다.&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;{그룹 이름}:{비밀번호}:{그룹 ID}:{보조 그룹 사용자}
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;보조 그룹 사용자&lt;/code&gt;란 이 그룹을 주 그룹(main group)이 아닌 보조 그룹(sub group)으로 사용하는 사용자의 목록이 추가됩니다. 여러명이 있는 경우에는 컴마로 구분됩니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;2-파일-허가권permission과-소유권ownership&quot;&gt;2. 파일 허가권(Permission)과 소유권(Ownership)&lt;/h2&gt;
-&lt;p&gt;리눅스는 각각의 파일과 디렉터리마다 소유권과 허가권을 갖습니다. 아래와 같이 확인이 가능합니다.&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root 0 7월 15 16:11 sample.txt
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;표시된 정보는 아래 표와 같습니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;-&lt;/th&gt;
-      &lt;th&gt;rx-r–r–&lt;/th&gt;
-      &lt;th&gt;1&lt;/th&gt;
-      &lt;th&gt;root&lt;/th&gt;
-      &lt;th&gt;root&lt;/th&gt;
-      &lt;th&gt;0&lt;/th&gt;
-      &lt;th&gt;7월 15 16:11&lt;/th&gt;
-      &lt;th&gt;sample.txt&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;파일 유형&lt;/td&gt;
-      &lt;td&gt;파일 허가권&lt;/td&gt;
-      &lt;td&gt;링크 수&lt;/td&gt;
-      &lt;td&gt;파일 소유자&lt;/td&gt;
-      &lt;td&gt;파일 소유그룹&lt;/td&gt;
-      &lt;td&gt;파일 크기(byte)&lt;/td&gt;
-      &lt;td&gt;마지막 변경 날짜/시간&lt;/td&gt;
-      &lt;td&gt;파일 이름&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;각 항목에 대해서 간략하게 정리해보겠습니다.&lt;/p&gt;
-&lt;h3 id=&quot;파일-유형&quot;&gt;파일 유형&lt;/h3&gt;
-&lt;p&gt;어떤 종류의 파일인지를 나타내며 아래와 같은 종류가 있습니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;표시&lt;/th&gt;
-      &lt;th&gt;파일 유형&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;d&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;디렉터리&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;-&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;일반 파일&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;b&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;블록 디바이스(Block Device)&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;c&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;문자 디바이스(Character Device)&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;l&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;링크(Link)&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;b&lt;/code&gt;(블록 디바이스)는 하드디스크, 플로피디스크, CD/DVD 등의 저장장치를 말합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;c&lt;/code&gt;(문자 디바이스)는 마우스, 키보드, 프린터 등의 입출력장치에 해당합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;l&lt;/code&gt;(링크)는 ‘바로 가기 아이콘’처럼 연결되어있는 파일을 의미합니다(실제 파일은 다른 곳에 존재합니다).&lt;/p&gt;
-
-&lt;h3 id=&quot;파일-허가권permission&quot;&gt;파일 허가권(Permission)&lt;/h3&gt;
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rw-&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r--&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r--&lt;/code&gt; 로 3개씩 끊어서 인식해야합니다. 먼저 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rwx&lt;/code&gt;의 의미는 아래와 같습니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;허가권&lt;/th&gt;
-      &lt;th&gt;의미&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;READ&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;w&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;WRITE&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;EXECUTE&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;3개씩 끊었을 때 앞에서부터의 갖는 의미는 아래와 같습니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;블록&lt;/th&gt;
-      &lt;th&gt;대상&lt;/th&gt;
-      &lt;th&gt;의미&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rw-&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;소유자(user)&lt;/td&gt;
-      &lt;td&gt;소유자는 읽거나 쓸 수 있다&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r--&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;그룹(group)&lt;/td&gt;
-      &lt;td&gt;그룹은 읽을 수만 있다&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;r--&lt;/code&gt;&lt;/td&gt;
-      &lt;td&gt;그외 사용자(other)&lt;/td&gt;
-      &lt;td&gt;그 외 사용자는 읽을 수만 있다&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;허가권은 아래와 같이 숫자로도 표현될 수 있습니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt; &lt;/th&gt;
-      &lt;th&gt;User&lt;/th&gt;
-      &lt;th&gt;User&lt;/th&gt;
-      &lt;th&gt;User&lt;/th&gt;
-      &lt;th&gt;Group&lt;/th&gt;
-      &lt;th&gt;Group&lt;/th&gt;
-      &lt;th&gt;Group&lt;/th&gt;
-      &lt;th&gt;Other&lt;/th&gt;
-      &lt;th&gt;Other&lt;/th&gt;
-      &lt;th&gt;Other&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;r&lt;/td&gt;
-      &lt;td&gt;w&lt;/td&gt;
-      &lt;td&gt;-&lt;/td&gt;
-      &lt;td&gt;r&lt;/td&gt;
-      &lt;td&gt;-&lt;/td&gt;
-      &lt;td&gt;-&lt;/td&gt;
-      &lt;td&gt;r&lt;/td&gt;
-      &lt;td&gt;-&lt;/td&gt;
-      &lt;td&gt;-&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;2진법&lt;/td&gt;
-      &lt;td&gt;1&lt;/td&gt;
-      &lt;td&gt;1&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;1&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;1&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;10진법&lt;/td&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt;2&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-      &lt;td&gt;0&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;합(10진법)&lt;/td&gt;
-      &lt;td&gt;6&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;4&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rwx&lt;/code&gt;를 2진법 3자리수에 대응하여 위와 같이 풀이하는 것도 가능합니다. 따라서  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rw-r--r--&lt;/code&gt;라고 길게 쓴 파일허가권에 대한 설명은 2진법으로는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;110100100&lt;/code&gt;이고, 이를 3자리씩 끊어서 10진법으로 변환하면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;644&lt;/code&gt;에 해당합니다.
-반대로 파일 허가권이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;754&lt;/code&gt;인 경우에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;111101100&lt;/code&gt;이고, 이는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;rwxr-xr--&lt;/code&gt;로 풀이됩니다. 이 경우 의미는 소유자는 읽기/쓰기/실행이 가능하고, 그룹은 읽기/실행이 가능, other는 읽기만 가능입니다.
-참고로, 디렉터리로 이동(진입)하기 위해서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;(실행) 권한이 반드시 필요합니다. 따라서 일반적으로 소유자/그룹/other 모두에게 실행 권한이 설정되어 있습니다.&lt;/p&gt;
-
-&lt;p&gt;파일의 허가권을 변경하고 싶은 경우에는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chmod&lt;/code&gt; 명령어를 실행해야합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 혹은 소유자만이 해당 파일의 허가권을 변경할 수 있습니다. 아래와 같이 사용합니다.&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;777 sample.txt
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;u+x sample.txt &lt;span class=&quot;c&quot;&gt;# User의 권한에 실행 권한을 추가&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;u-wx sample.txt &lt;span class=&quot;c&quot;&gt;# User의 권한에 쓰기/실행 권한을 제거&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;파일-소유권ownership&quot;&gt;파일 소유권(Ownership)&lt;/h3&gt;
-&lt;p&gt;소유권은 파일을 소유한 &lt;strong&gt;사용자&lt;/strong&gt;와 &lt;strong&gt;그룹&lt;/strong&gt;을 의미합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sample.txt&lt;/code&gt;의 경우 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 사용자와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 그룹이 소유하고 있습니다. 소유권은 아래와 같은 명령어로 변경할 수 있습니다.&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chown &lt;/span&gt;ubuntu sample.txt &lt;span class=&quot;c&quot;&gt;# sample.txt의 소유자를 ubuntu로 변경&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chown &lt;/span&gt;ubuntu.ubuntu sample.txt &lt;span class=&quot;c&quot;&gt;# sample.txt의 소유자와 소유 그룹을 ubuntu 그룹으로 변경&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chgrp &lt;/span&gt;ubuntu sample.txt &lt;span class=&quot;c&quot;&gt;# 그룹만 ubuntu로 변경&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;링크link&quot;&gt;링크(Link)&lt;/h3&gt;
-&lt;p&gt;링크는 하드 링크(Hard Link)와 심볼릭 링크(Symbolic Link)로 나뉩니다. 먼저, 링크를 이해하기 전에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode&lt;/code&gt;에 대해서 알고 있어야합니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;inode&quot;&gt;inode&lt;/h4&gt;
-&lt;p&gt;inode는 리눅스/유닉스 파일 시스템에서 사용하는 자료구조로서, 파일이나 디렉터리의 정보를 저장하고 있습니다. 모든 파일/디렉터리는 각각 1개씩의 inode를 갖고 있으며 inode 내에 파일의 소유권, 허가권, 파일 종류 등의 정보와 해당 파일의 실제 위치(address)가 저장되어 있습니다. inode가 저장되어 있는 공간을 inode block이라고 하며 일반적으로 전체 디스크 공간의 1%가 inode block으로 사용됩니다. 반대로, Data Block은 실제로 데이터가 저장되어 있는 공간으로 나머지 99%를 사용합니다.&lt;/p&gt;
-
-&lt;p&gt;링크 생성 시 링크 대상이 되는 파일의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode&lt;/code&gt;를 공유하느냐, 새로운  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode&lt;/code&gt;를 생성하느냐에 따라 하드 링크와 심볼릭 링크로 나뉩니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/linux/link.webp&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;위 그림에서 표현된 것처럼, 하드링크는 대상(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Filename&lt;/code&gt;)의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode1&lt;/code&gt;을 공유합니다. 따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Filename&lt;/code&gt;의 소유권, 권한, 파일 종류 데이터를 공유하고, Data Block도 같은 공간을 바라보게 됩니다.반대로 심볼릭링크로 생성할 경우 새로운 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode2&lt;/code&gt;를 생성하고 해당 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;inode2&lt;/code&gt;의 Data Block은 파일 데이터가 아닌 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Filename&lt;/code&gt;의 주소를 저장하고 있는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Link Data&lt;/code&gt;(파일포인터)입니다(실제 데이터를 저장하고 있지 않습니다). Windows의 바로가기 아이콘은 심볼릭 링크에 해당합니다.&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ln &lt;/span&gt;basefile hardlink &lt;span class=&quot;c&quot;&gt;# 하드링크 파일 생성&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ln&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-s&lt;/span&gt; basefile softlink &lt;span class=&quot;c&quot;&gt;# 소프트링크(심볼릭링크) 생성&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-il&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# inode 번호를 가장 앞에 출력함 &lt;/span&gt;
-4063514 &lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 2 root root 60 7월 16 15:31 basefile
-4063514 &lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 2 root root 60 7월 16 15:31 hardlink &lt;span class=&quot;c&quot;&gt;# basefile과 같은 inode&lt;/span&gt;
-4063516 lrwxrwxrwx 1 root root 8  7월 16 15:33 softlink -&amp;gt; basefile &lt;span class=&quot;c&quot;&gt;# basefile과 inode가 다르다&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;softlink&lt;/code&gt; 파일은 현재 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;basefile&lt;/code&gt;의 위치로 링크되기 때문에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;basefile&lt;/code&gt;을 이동 시키면 소프트링크는 유지되지 않습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;hardlink&lt;/code&gt;는 파일포인터를 이용하지 않고 같은 inode를 바라보기때문에 링크가 유지됩니다.&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mv &lt;/span&gt;basefile ../ &lt;span class=&quot;c&quot;&gt;# basefile 위치 변경 (상위 디렉터리로 이동)&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;hardlink &lt;span class=&quot;c&quot;&gt;# 링크 확인&lt;/span&gt;
-파일 링크 연결 확인
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;softlink &lt;span class=&quot;c&quot;&gt;# 링크 확인&lt;/span&gt;
-&lt;span class=&quot;nb&quot;&gt;cat&lt;/span&gt;: softlink: 그런 파일이나 디렉터리가 없습니다
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;다시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;basefile&lt;/code&gt;을 원래 위치로 복귀시키면 소프트링크가 작동하는 것을 확인할 수 있습니다.&lt;/p&gt;
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mv&lt;/span&gt; ../basefile &lt;span class=&quot;nb&quot;&gt;.&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 현재 디렉터리로 이동 &lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cat &lt;/span&gt;softlink &lt;span class=&quot;c&quot;&gt;# 링크 확인&lt;/span&gt;
-파일 링크 연결 확인
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h1 id=&quot;특수-권한special-permissions에-대해서&quot;&gt;특수 권한(Special Permissions)에 대해서&lt;/h1&gt;
-&lt;p&gt;리눅스의 특수 권한은 세 가지가 있습니다.&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;SUID&lt;/li&gt;
-  &lt;li&gt;GUID&lt;/li&gt;
-  &lt;li&gt;sticky bit&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;특수 권한은 파일의 소유자(owner)가 아닌 user에게 더 높은 권한을 부여하지 않고도 해당 파일을 실행할 수 있도록 허용하기 위해 탄생했습니다. User &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A&lt;/code&gt;가 생성한 파일을 다른 유저가 실행하고자 할 때 가장 간단한 해결책은 무엇일까요? 혼자서 사용하는 리눅스 환경이라면 단순하게  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt;  커맨드를 입력하고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;  계정의 권한을 획득하여 실행할 수 있을 것입니다. 그러나 여러 멤버들과 함께 사용하는 리눅스 환경에서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sudo&lt;/code&gt; 커맨드에 대한 권한이 없는 경우가 더 많을 뿐 아니라 설령 허용된다고 하더라도 모든 문제를 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;  권한으로 해결하고자하는 것은 위험한 발상입니다. 결국 모든 사용자가  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;  권한을 요구하게 되고 이는 리눅스의 사용자/그룹/파일 관리 시스템에 위배되는 현상이기 때문입니다. 이러한 현상을 해결하기 위해 등장한 것이 &lt;strong&gt;특수 권한&lt;/strong&gt;입니다.&lt;/p&gt;
-&lt;h2 id=&quot;suid&quot;&gt;SUID&lt;/h2&gt;
-
-&lt;p&gt;SUID(&lt;strong&gt;S&lt;/strong&gt;et Owner &lt;strong&gt;U&lt;/strong&gt;ser &lt;strong&gt;ID&lt;/strong&gt;)는 user가 파일을 실행할 수 있도록 설정합니다.  구체적으로, SUID를 설정하게 되면 user는 해당 파일을 실행할 때, owner와 같은 권한을 갖는 채로 실행이 가능해집니다.&lt;/p&gt;
-
-&lt;p&gt;만약에  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;가 어떤 파일을 생성하였고, 해당 파일의 실행 권한이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 에게만 있다고 가정해봅시다. 아래와 같은 경우가 그에 해당합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gyuhoonkim&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt; 
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root 0 7월 15 16:11 testfile1
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root 0 7월 15 16:11 testfile2
-gyuhoonkim&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;testfile1
-&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;testfile1&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;: Permission denied
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;이 경우, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 외의 계정은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;testfile1&lt;/code&gt;을 읽을 수는 있지만, 실행할 수는 없습니다. 이때 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;suid&lt;/code&gt; 를 설정하게되면,  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 외의 계정에서도 위 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;testfile1&lt;/code&gt; 을 실행할 수 있습니다. 실행하는 순간  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;의 권한을 획득하기 때문입니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;gyuhoonkim&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo
-&lt;/span&gt;root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;4744 testfile1 &lt;span class=&quot;c&quot;&gt;# 실행권한 있음&lt;/span&gt;
-root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;u+s testfile2 &lt;span class=&quot;c&quot;&gt;# 실행권한 없음&lt;/span&gt;
-root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;-rwsr--r--&lt;/span&gt; 1 root root 0 7월 15 16:11 testfile1
-&lt;span class=&quot;nt&quot;&gt;-rwSr--r--&lt;/span&gt; 1 root root 0 7월 15 16:11 testfile2
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;가 파일에 대해 실행권한(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;x&lt;/code&gt;)를 가지고 있는 상태에서  SUID를 부여하게 되면 권한 표시에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s&lt;/code&gt;(소문자)로 표시됩니다. 반대로, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 가 실행권한을 가지고 있지 않았다면  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;S&lt;/code&gt;(대문자)로 표시됩니다.&lt;/p&gt;
-
-&lt;p&gt;이제 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gyuhoonkim&lt;/code&gt;에서  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;testfile1&lt;/code&gt;을 실행할 수 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su gyuhoonkim
-gyuhoonkim&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;testfile1
-실행 성공
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;이러한 권한 관리가 필요한 대표적인 경우는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt;  명령어입니다.  user는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt; 명령어로 패스워드를 설정/변경하는 경우에 자동으로  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/passwd&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/shadow&lt;/code&gt; 파일도 변경하게 됩니다.&lt;/p&gt;
-
-&lt;p&gt;그런데 이 두 파일은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;가 생성한 파일이므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;권한이 없으면 수정할 수 없습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; /etc/passwd
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root root 7868  8 11 15:44 /etc/passwd &lt;span class=&quot;c&quot;&gt;#644&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; /etc/shadow
-&lt;span class=&quot;nt&quot;&gt;-rw-r-----&lt;/span&gt; 1 root root 7868  8 11 15:44 /etc/shadow &lt;span class=&quot;c&quot;&gt;# 640&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;그러나 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;가 아닌 계정(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;gyuhoonkim&lt;/code&gt;)에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt;를 실행하면,  위의 두 파일이 변경됩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 가 아닌데도 위 두 파일을 변경할 수 있는 이유는  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt;에 있습니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-a&lt;/span&gt; /usr/bin/passwd
-&lt;span class=&quot;nt&quot;&gt;-rwsr-xr-x&lt;/span&gt; 1 root root 51096 8 11 15:44 /usr/bin/passwd&lt;span class=&quot;k&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# 4755&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt; 는 SUID가 설정된 명령어이기 때문에, 실행되는 순간 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;owner&lt;/code&gt;인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt; 권한을 획득합니다. 따라서 일반 user가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;passwd&lt;/code&gt;를 실행하는 순간 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;root&lt;/code&gt;권한을 가지고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/passwd&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/etc/shadow&lt;/code&gt; 파일을 수정(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;write&lt;/code&gt;)할 수 있게 되는 것입니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;guid&quot;&gt;GUID&lt;/h2&gt;
-
-&lt;p&gt;SUID와 비슷합니다. GUID가 설정된 파일은 실행할 때 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;group&lt;/code&gt;의 권한으로 실행됩니다. 만약 GUID가 설정된 디렉터리 하위에 디렉터리를 생성한다면, 생성된 디렉터리와 파일들은 설정된 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;group&lt;/code&gt;을 부여받게 됩니다.&lt;/p&gt;
-
-&lt;p&gt;SUID와 비슷하지만, group에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;s&lt;/code&gt;/&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;S&lt;/code&gt;를 표시합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
-drwxr-xr-x 2 test1 test1 4096 6월 26 21:16 guid_dir1
-drwxr-xr-x 2 test2 test2 4096 6월 26 21:16 guid_dir1
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;2755 guid_dir1
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;g+x+s guid_dir2
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
-drwxr-sr-x 2 test1 test1 4096 6월 26 21:16 guid_dir1
-drwxr-Sr-x 2 test2 test2 4096 6월 26 21:16 guid_dir2
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;sudo&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# root 계정으로 변경&lt;/span&gt;
-root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;guid_dir1
-root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;mkdir &lt;/span&gt;test_dir1 
-root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;test_file1
-root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-l&lt;/span&gt;
-drwxr-sr-x 2 root test1 4096 6월 26 22:16 dir1/ &lt;span class=&quot;c&quot;&gt;# Group owner가 test1&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;-rw-r--r--&lt;/span&gt; 1 root test1 0    6월 26 22:16 test_file1 &lt;span class=&quot;c&quot;&gt;# Group owner가 test1&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;GUID는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/var/mail&lt;/code&gt; 디렉터리 관리에 사용됩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/var/mail&lt;/code&gt; 디렉터리는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mail&lt;/code&gt; group owner를 가지고 있는데 이 하위에 생성되는 모든 디렉터리는  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mail&lt;/code&gt;  group owner를 갖도록 생성되어야 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;mail&lt;/code&gt; 그룹을 통해 관리가 가능합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt; /var/mail &lt;span class=&quot;c&quot;&gt;# GUID 셋팅 확인&lt;/span&gt;
-drwxrwsr-x 2 root mail 4096 6월 26 22:30 /var/mail 
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;useradd &lt;span class=&quot;nt&quot;&gt;-m&lt;/span&gt; test3
-&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt; /var/mail/test3 &lt;span class=&quot;c&quot;&gt;# Group Onwer가 mail로 생성되었음&lt;/span&gt;
-&lt;span class=&quot;nt&quot;&gt;-rw-rw----&lt;/span&gt; 1 test3 mail 0 6월 26 22:40 /var/ail/test3 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;guid-1&quot;&gt;GUID&lt;/h2&gt;
-&lt;h2 id=&quot;sticky-bit&quot;&gt;sticky bit&lt;/h2&gt;
-
-&lt;p&gt;sticky bit는 디렉터리에 적용되는 옵션입니다. sticky bit가 설정되면, 설정된 디렉터리와 내부 파일에 접근할 수 있는 user는 자신이 생성한 파일만 삭제할 수 있고, 다른 user의 파일은 수정하거나 삭제할 수 없습니다. 이런 특징은 공유 폴더를 관리할 때에 사용됩니다. sticky bit가 설정된 디렉터리나 내부 파일들의 권한이 777로 설정되어 있다고 하더라도, sticky bit 옵션 때문에 삭제는 불가능합니다(생성은 가능합니다).&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt;
-drwxr-xr-x 2 root root 4096 6월 26 23:00 dir1
-drwxr-xr-x 2 root root 4096 6월 26 23:00 dir2
-drwxr-xr-x 2 root root 4096 6월 26 23:00 dir3
-
-&lt;span class=&quot;c&quot;&gt;# sticky bit 부여&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;1754 dir1 &lt;span class=&quot;c&quot;&gt;# Other의 e 권한 회수(100)&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod &lt;/span&gt;o+t dir2
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;chmod&lt;/span&gt; +t dir3
-
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;ls&lt;/span&gt; &lt;span class=&quot;nt&quot;&gt;-ld&lt;/span&gt;
-drwxr-xr-T 2 root root 4096 6월 26 23:00 dir1 &lt;span class=&quot;c&quot;&gt;# Other가 e권한 없는 경우 T로 표시&lt;/span&gt;
-drwxr-xr-t 2 root root 4096 6월 26 23:00 dir2
-drwxr-xr-t 2 root root 4096 6월 26 23:00 dir3
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;이러한 특성은  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/tmp&lt;/code&gt;와 같이 공유 폴더를 관리할 때 사용합니다. 공유폴더 내부에서는 누구나 파일을 생성할 수 있지만, 다른 user가 생성한 파일에 대해서 삭제/수정이 불가능합니다.&lt;/p&gt;
-
-&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;dir2
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su test1
-test1&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;testfile1
-test1&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;touch &lt;/span&gt;testfile2
-
-&lt;span class=&quot;c&quot;&gt;# test2 계정에서 확인&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su test2
-test2&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm &lt;/span&gt;tesetfile1
-tesetfile1: failed to remove &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;tesetfile1&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;: 명령을 허용하지 않음
-test2&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm &lt;/span&gt;testfile2
-testfile2: failed to remove &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;testfile2&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;: 명령을 허용하지 않음
-
-&lt;span class=&quot;c&quot;&gt;# root 계정에서 확인&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su root
-root&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm &lt;/span&gt;tesetfile1 &lt;span class=&quot;c&quot;&gt;# 삭제 성공&lt;/span&gt;
-
-&lt;span class=&quot;c&quot;&gt;# test1(파일을 생성한 계정)에서 확인&lt;/span&gt;
-&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;su test1
-test1&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;rm &lt;/span&gt;testfile2 &lt;span class=&quot;c&quot;&gt;# 삭제 성공&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;[참고]&lt;br /&gt;
-&lt;a href=&quot;https://cafe.naver.com/thisisLinux&quot;&gt;이것이 루분투 리눅스다(2017)&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://medium.com/@1154_75881/what-is-the-difference-between-a-hard-link-and-a-symbolic-link-14db61df7707&quot;&gt;What is the difference between a hard link and a symbolic link?&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://linuxhint.com/special-permissions-suid-guid-sticky-bit/&quot;&gt;Special Permissions: SUID, GUID, and sticky bit&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://eunguru.tistory.com/115&quot;&gt;[UNIX/Linux]특수 권한(setuid, setgid, sticky bit)&lt;/a&gt;&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="linux" />
-      
-
-      
-        <summary type="html">Linux 사용자 관리, 파일속성 그리고, 특수권한에 대해서 알아봅니다.</summary>
       
 
       
