@@ -5,8 +5,21 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Sun, 29 Oct 2023 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sat, 30 Dec 2023 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>Salting in Spark</title>
+        
+        
+            <description>&lt;p&gt;Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 30 Dec 2023 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/spark-salting</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-salting</guid>
+      </item>
+    
 	<item>
 		<title>prepared statement</title>
         
@@ -122,19 +135,6 @@
         <pubDate>Sun, 12 Feb 2023 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/pod-container</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/pod-container</guid>
-      </item>
-    
-	<item>
-		<title>Oracle DB Connection String</title>
-        
-        
-            <description>&lt;p&gt;oracle database connection String 설정에 대해 알아봅니다.&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sat, 24 Dec 2022 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/oracle-connection</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/oracle-connection</guid>
       </item>
     
   </channel>

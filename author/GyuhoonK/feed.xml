@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2023-10-31T22:29:49+09:00</updated>
+  <updated>2023-12-31T01:17:59+09:00</updated>
   <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
 
   
@@ -30,6 +30,215 @@
   
   
 
+  
+    <entry>
+      <title type="html">Salting in Spark</title>
+      <link href="https://gyuhoonk.github.io/spark-salting" rel="alternate" type="text/html" title="Salting in Spark" />
+      <published>2023-12-30T22:30:00+09:00</published>
+      <updated>2023-12-30T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/spark-salting</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/spark-salting">&lt;p&gt;Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-is-salting-in-spark&quot;&gt;What is Salting in Spark?&lt;/h3&gt;
+
+&lt;p&gt;요리를 할 때 소금을 뿌림으로써 재료의 맛과 향을 더해줄 수 있습니다. spark의 salting 기법도 요리에서 소금을 뿌리는 것과 비슷합니다. 데이터가 더 잘 처리될 수 있도록 도와주는 역할을 합니다.&lt;/p&gt;
+
+&lt;p&gt;salting이란 spark에서 shuffle join하는 경우에 발생할 수 있는 데이터 불균형(skewness)을 해결하기 위해 사용되는 기법입니다.&lt;/p&gt;
+
+&lt;p&gt;Spark에서 skewness는 성능 저하를 유발합니다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;bottle neck&lt;br /&gt;
+skewness가 있는 경우 spark job 완료까지 소요되는 시간(가동 시간, Total uptime)이 늘어납니다. spark job에서 10개의 task를 처리할 때, 9개의 task는 10초만에 완료하더라도 1개 task의 처리에 100초가 소요된다면 전체 spark job의 total uptime은 100초입니다. skewness가 발생하는 경우 앞선 예시처럼 skewness가 있는 데이터를 처리하는 task의 수행시간이 다른 task에 비해 늘어나게 되고, 전체 spark job의 uptime을 증가시키는 bottle neck을 유발합니다.&lt;/p&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;job fail&lt;br /&gt;
+skewness는 spark job의 실패를 초래할 수도 있습니다. 특정 task가 처리해야할 데이터가 할당받은 리소스의 처리 능력을 넘는다면 task fail이 발생하게 되고 이는 spark job의 실패로 이어질 수도 있습니다.&lt;/p&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;salting 기법은 새로운 JOIN KEY(SALTING KEY)를 추가하여 skewness를 해결합니다. salting key를 기준으로 데이터가 한번 더 분산되기 때문에, join 연산 간에 특정 파티션에만 데이터가 쏠리는 현상을 방지할 수 있습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;example&quot;&gt;Example&lt;/h3&gt;
+
+&lt;p&gt;구체적인 예시로 salting key 기법이 적용되는 과정을 설명해보겠습니다.&lt;/p&gt;
+
+&lt;p&gt;먼저 skewness가 발생할 수 있는 상황을 가정해보겠습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/salting_example_1.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;log&lt;/code&gt;와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_type&lt;/code&gt; 이라는 DataFrame이 존재한다고 가정했습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;log&lt;/code&gt;에 각 유저(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id&lt;/code&gt;)의 type을 추가하려면 아래와 같이 코드를 작성하면 됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'left'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;type 컬럼을 추가하고려는 목적은 달성할 수 있으나 위와 같은 경우에 data skewness가 발생합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id&lt;/code&gt;가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;e&lt;/code&gt;인 경우에 해당하는 row가 6개입니다. 따라서, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id&lt;/code&gt;만을 가지고 join하는 경우 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;e&lt;/code&gt;를 처리하는 파티션 사이즈가 다른 파티션(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;a~d&lt;/code&gt;를 처리하는 파티션)에 비해 커지게 됩니다.&lt;br /&gt;
+상대적으로 비교했을 때, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;a~d&lt;/code&gt;를 처리하는 파티션 사이즈가 1인 것에 비해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;e&lt;/code&gt;를 처리하는 파티션 사이즈는 6이므로 해당 파티션 처리는 다른 파티션에 비해 6배의 시간이 소요될 것입니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/salting_example_2.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;위와 같은 상황에서 발생한 skewness를 해결하기 위해 salting key를 적용해봅시다. 일단 모든 파티션 사이즈가 1로 동일하길 희망합니다. 이를 위해 salting key를 추가하고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_type&lt;/code&gt; DataFrame의 row를 복제합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyspark.sql.functions&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;explode&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyspark.sql.types&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IntegerType&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;SALTING_SIZE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# log에 salting key 추가 / 0~9 사이의 무작위 정수값 추가
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;withColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;salting_key&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;F&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;salt_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IntegerType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+                     &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# user_type에 salting key를 추가, 모든 row가 0~9의 값을 갖게됨
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;withColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;salting_key&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                 &lt;span class=&quot;n&quot;&gt;explode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;val&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SALTING_SIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]))&lt;/span&gt;
+                                 &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'salting_key'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'left'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id&lt;/code&gt;와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;salting_key&lt;/code&gt;를 기준으로 join하므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;log&lt;/code&gt;의 각 row는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_type&lt;/code&gt;의 1개 row와만 매칭됩니다. 따라서 모든 경우에 대해서 파티션 사이즈가 1로 매핑됩니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/salting_example_3.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;optimization&quot;&gt;Optimization&lt;/h3&gt;
+
+&lt;p&gt;salting key를 적용하면 data skewness를 해결할 수 있음을 확인했습니다. 하지만 위의 예시에서는 아직 문제점이 존재합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_type&lt;/code&gt;은 salting key를 추가하는 과정에서 그 데이터 사이즈가 10배 커졌습니다.&lt;/p&gt;
+
+&lt;p&gt;이 글에서 예시로 작성한 경우는 데이터셋이 매우 작으므로 문제가 되지 않지만, 실제 데이터를 가공하는 경우에는 특정 데이터셋을 10배로 키우는 것은 문제가 될 수 있습니다(아니, 대부분 문제가 됩니다).&lt;/p&gt;
+
+&lt;p&gt;이를 최적화하기 위해서는 어떻게 접근해야할까요?&lt;/p&gt;
+
+&lt;h4 id=&quot;접근1-salting_size를-조정한다&quot;&gt;[접근1] &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SALTING_SIZE&lt;/code&gt;를 조정한다&lt;/h4&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SALTING_SIZE&lt;/code&gt;를 8로 줄이면, 데이터 사이즈를 10배 증가하던 것을 8배 증가로 줄일 수 있습니다. 또한 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;log&lt;/code&gt; 데이터의 모든 rows에 대해서 join이 되는 것도 보장할 수 있습니다.&lt;/p&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;SALTING_SIZE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;8&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;그러나 여전히 데이터가 8배가 되는 것은 부담이 됩니다. 또한 데이터를 직접 확인해보지 않으면 파라미터(SALING_SIZE)를 어떤 값으로 설정해야하는지 판단할 수 없습니다.&lt;/p&gt;
+
+&lt;h4 id=&quot;접근2-동적으로-salting_size를-결정한다&quot;&gt;[접근2] 동적으로 SALTING_SIZE를 결정한다&lt;/h4&gt;
+
+&lt;p&gt;로직을 추가하여 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_type&lt;/code&gt;을 복제할 사이즈를 자동으로 결정할 수 있습니다. 이 과정에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_type&lt;/code&gt; 전체를 복제하는 것이 아니라 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id&lt;/code&gt; 별로 얼마나 복제해야할지 동적으로 결정한다면 메모리를 훨씬 더 아낄 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyspark.sql.functions&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;explode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;udf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyspark.sql.types&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IntegerType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ArrayType&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;user_id_cnt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groupBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# log
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id_cnt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'left'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;withColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;salting_key&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;count&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IntegerType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+                     &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;udf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;returnType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ArrayType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IntergerType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()))&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_salting_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'''
+    count=3 =&amp;gt; [0, 1, 2]
+    '''&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# user_type
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id_cnt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'left'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;withColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;salting_key&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                 &lt;span class=&quot;n&quot;&gt;explode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_salting_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;count&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+                                 &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'salting_key'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'left'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id_cnt&lt;/code&gt;에 따라 결정된 salting_size는 아래와 같습니다. 따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_type&lt;/code&gt;에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;(e, GENERAL)&lt;/code&gt;에 해당하는 row만 salting_key 0~5를 부여하여 6개로 복제됩니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/salting_example_4.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;여기서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_type&lt;/code&gt;의 복제를 더 최소화할 수 있는 마지막 접근법이 있습니다.&lt;/p&gt;
+
+&lt;h4 id=&quot;접근3-join을-11-매핑에서-1n이-가능하도록-수정한다&quot;&gt;[접근3] join을 1:1 매핑에서 1:N이 가능하도록 수정한다&lt;/h4&gt;
+&lt;p&gt;1:N 매핑이 가능하도록 로직을 수정하면, 접근2의 결과보다도 복제를 더 최소화할 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id=e&lt;/code&gt;인 경우에 집중해봅시다. 현재 상태에서 join을 하게되면 1 task가 1 row를 처리합니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;1row/task&lt;/code&gt;). 대신 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_type&lt;/code&gt;에는 6 rows를 복제해야했습니다.&lt;/p&gt;
+
+&lt;p&gt;그렇다면, 1 task가 2 rows씩 처리(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;2rows/task&lt;/code&gt;)하도록 한다면 복제해야하는 사이즈를 줄일 수 있지 않을까요?&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyspark.sql.functions&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;explode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;udf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyspark.sql.types&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;IntegerType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ArrayType&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;math&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ceil&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;PARTITION_SIZE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 1개 task가 처리할 rows 개수
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;user_id_cnt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;groupBy&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;udf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;returnType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IntegerType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_salting_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'''
+    count=6 =&amp;gt; ceil(6/2)
+    count=1 =&amp;gt; ceil(1/2)
+    '''&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;is&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ceil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;/&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PARTITION_SIZE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;udf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;returnType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ArrayType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IntergerType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()))&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;get_salting_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;s&quot;&gt;'''
+    count=3 =&amp;gt; [0, 1, 2]
+    '''&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;list&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;range&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;count&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# log
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id_cnt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'left'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;withColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;salting_size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_salting_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'count'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;withColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;salting_key&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                    &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;salting_size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)).&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cast&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;IntegerType&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+                     &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# user_type
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_id_cnt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'left'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;withColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;salting_size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;get_salting_size&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'count'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;withColumn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;salting_key&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                 &lt;span class=&quot;n&quot;&gt;explode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_salting_array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;salting_size&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+                                 &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'salting_key'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'left'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;get_salting_size&lt;/code&gt;에 의해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id&lt;/code&gt;의 count 수를 그대로 salting_size로 사용하는 것이 아니라 연산을 거칩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PARTITION_SIZE&lt;/code&gt;란 하나의 task가 처리할 row 수를 의미합니다. 따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id=2&lt;/code&gt;의 경우 2 rows씩 처리하면 되므로 3 rows만 복제했습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/salting_example_5.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusion&quot;&gt;Conclusion&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;spark에서 data skewness를 줄이기 위해 salting key 기법을 사용할 수 있다&lt;/li&gt;
+  &lt;li&gt;salting key 사용 시 데이터 복제가 발생한다&lt;/li&gt;
+  &lt;li&gt;동적으로 salting size를 결정하도록 코드를 구현하여 데이터 복제를 최소화할 수 있다&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;[참고]&lt;br /&gt;
+&lt;a href=&quot;https://mesh.dev/20220130-dev-notes-008-salting-method-and-examples/&quot;&gt;[VROONG 테크 블로그]Salting 기법 예제 코드&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="hadoop" />
+      
+
+      
+        <summary type="html">Spark Salting Key 기법에 대해서 알아봅니다.</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">prepared statement</title>
@@ -1664,209 +1873,6 @@ kernel 2.0.40의 함수가 가장 간단한 형태라 이해하기 편할 것 �
 
       
         <summary type="html">Container와 Pod의 기본개념을 확인해봅니다.</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">Oracle DB Connection String</title>
-      <link href="https://gyuhoonk.github.io/oracle-connection" rel="alternate" type="text/html" title="Oracle DB Connection String" />
-      <published>2022-12-24T22:30:00+09:00</published>
-      <updated>2022-12-24T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/oracle-connection</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/oracle-connection">&lt;p&gt;oracle database connection String 설정에 대해 알아봅니다.&lt;/p&gt;
-
-&lt;h1 id=&quot;jdbc-driver&quot;&gt;JDBC Driver&lt;/h1&gt;
-&lt;p&gt;JDBC 드라이버는 Java App이 데이터베이스와 상호작용(데이터를 가져오거나 저장)하는 것을 가능하게 합니다. JDBC 클래스는  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;java.sql&lt;/code&gt; 패키지에 포함되어 있습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;javax.sql.JDBC&lt;/code&gt;는 아래와 같은 역할을 합니다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;데이터베이스와 같은 데이터 소스와의 연결&lt;/li&gt;
-  &lt;li&gt;쿼리를 전송&lt;/li&gt;
-  &lt;li&gt;작성한 쿼리에 대한 응답(데이터)을 처리하고 반환&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;JDK와 함께 제공되는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;java.sql&lt;/code&gt; 패키지에는 기능을 구현하고 있는 여러 클래스를 포함하고 있으며, 서드 파티 드라이버를 이용하여 실제로 구현할 수 있습니다. 서드 파티 공급자(vendor)는 그들의 데이터베이스 드라이버에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;java.sql.Driver&lt;/code&gt; 인터페이스를 구현해야합니다. 이러한 JDBC 드라이버는 사용되는 기술과 연결되는 데이터베이스에 따라 4가지 타입으로 구분됩니다.&lt;/p&gt;
-&lt;h2 id=&quot;type-1-bridge-driver&quot;&gt;Type-1: Bridge Driver&lt;/h2&gt;
-&lt;p&gt;Type-1 Driver JDBC는 브릿지 드라이버(bridge driver)라고도 불립니다. Type-1은 각각의 클라이언트에 설치된 ODBC 드라이버에 접근할 수 있는 다리(bridge)를 제공합니다. Type-1은 JDBC 메소드 호출(calls to JDBC methods)를 ODBC 함수 호출(calls to ODBC functions)로 치환합니다. 브릿지 드라이버는 설치되어있는 ODBC 드라이버에 의해 제공되는 데이터베이스 연결에 JDBC App이 즉각 접근할 수 있도록 합니다.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;장점
-    &lt;ul&gt;
-      &lt;li&gt;하나의 드라이버로 다른 데이터 소스에 접근할 수 있습니다.&lt;/li&gt;
-      &lt;li&gt;모든 ODBC가 제공되는 데이터베이스에 사용할 수 있습니다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;단점
-    &lt;ul&gt;
-      &lt;li&gt;Java APP은 ODBC에만 의존해야합니다.&lt;/li&gt;
-      &lt;li&gt;모든 클라이언트는 ODBC를 설치해야합니다.&lt;/li&gt;
-      &lt;li&gt;JDBC 메소드 호출을 ODBC 함수 호출로 변환하기 때문에 성능이 하락할 수 있습니다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;type-2-oracle-call-interfaceoci-driver&quot;&gt;Type-2: Oracle Call Interface(OCI) Driver&lt;/h2&gt;
-&lt;p&gt;Oracle client 설치와 함께 클라이언트 측에서 사용됩니다. App과 함께할 때에만 사용될 수 있습니다. 즉, Type-2 드라이버는 Java App과 함께 사용됩니다. Type-2 드라이버는 특정 플랫폼에 맞는 OCI 라이브러리를 요구합니다. InterProcessCommunication(IPC), named pipes, TCP/IP, Internetwork Packet Exchange/Sequenced Packet Exchange(IPX/SPX)를 포함하는 설치된 모든 Oracle Net adapter를 지원합니다.&lt;/p&gt;
-
-&lt;p&gt;Java와 C를 이용하여 작성된 OCI 드라이버는 C-entry 포인트를 호출하는 네이티브 메서드를 이용하여 JDBC  호출을 OCI 호출로 변환합니다. 이러한 호출 과정에서 Oracle Net Service를 이용하여 데이터베이스와 커뮤니케이션합니다.&lt;/p&gt;
-
-&lt;p&gt;OCI 드라이버는 클아이언트 컴퓨터에 설치되어 있는 OCI 라이브러리, C-entry points, Oracle Net, core 라이브러리와 다른 필수적인 파일들을 이용합니다.&lt;br /&gt;
-OCI는 3세대 언어의 네이티브 프로시저 또는 함수 호출을 사용하여 Oracle Database에 액세스하고 SQL 문 처리의 모든 단계를 제어하는 응용프로그램을 만들 수 있는 API입니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;type-3-network-protocol-driver&quot;&gt;Type-3: Network Protocol Driver&lt;/h2&gt;
-&lt;p&gt;JDBC 호출을 직간접적으로 vendor-specific database protocol로 변환해주는 application server를 이용합니다. Type-3 드라이버는 JDBC 호출을 middleware vendor’s protocol로 변환합니다. 이후에 변환된 프로토콜은 다양한  데이터베이스에 연결을 제공하고 있는 middleware server에 의해 database-specific protocol로 다시 변환됩니다.&lt;/p&gt;
-
-&lt;p&gt;middleware는 OS와 OS에서 실행되는 App 사이에 있는 소프트웨어입니다. 필수적으로 hidden translation layer로서 기능하면서, middleware는 분산 응용프로그램(distributed application)을 위한 데이터 매니지먼트와 커뮤니케이션을 가능케 합니다.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;장점
-    &lt;ul&gt;
-      &lt;li&gt;사용자가 여러 개의 데이터베이스에 연결해야하고, 하나의 드라이버를 사용하고 싶을 경우에 사용됩니다.&lt;/li&gt;
-      &lt;li&gt;이미 서버에 설치되어 있으므로 클라이언트 측에 드라이버 코드를 설치할 필요가 없습니다.&lt;/li&gt;
-      &lt;li&gt;백엔드 서버 컴포넌트는 데이터베이스가 실행되고 있는 OS에 최적화되어있습니다.&lt;/li&gt;
-      &lt;li&gt;Type-1, Type-2에 비해 좋은 성능을 보입니다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;단점
-    &lt;ul&gt;
-      &lt;li&gt;middleware가 다른 머신에서 실행 중이라면, Type-4가 더 효과적일 수 있습니다.&lt;/li&gt;
-      &lt;li&gt;database에 특화된 코드가 middleware 서버에 설치되어 있어야합니다.&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;type-4-native-protocol-driver&quot;&gt;Type-4: Native Protocol Driver&lt;/h2&gt;
-&lt;p&gt;데이터베이스와 직접적으로 상호작용합니다. native database library를 필요로 하지 않기 때문에 &lt;strong&gt;Thin Driver&lt;/strong&gt;라고도 불립니다. native library는 물론, middleware server도 필요로 하지 않으므로, no-client-side이며 no-server-side로 설치됩니다. 완벽하게 Java로 작성되어 있기 때문에 이동가능한(portable) 드라이버입니다.&lt;/p&gt;
-
-&lt;p&gt;Thin Driver는 JDBC 호출을 직접적으로 vendor-specific database protocol로 변환합니다. 또한, Thin Driver는 플랫폼에 영향을 받지 않습니다(platform-independent). 하지만, native protocol을 사용하기 때문에 데이터베이스에 영향을 받습니다.(Protocol can establish a connection between particular server only)&lt;/p&gt;
-
-&lt;h1 id=&quot;jdbc-name-url&quot;&gt;JDBC Name URL&lt;/h1&gt;
-&lt;p&gt;JDBC NAME URL의 템플릿은 아래와 같습니다.&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jdbc:oracle:[driver_type]:[username/password]@[database_specifier]
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;이 중 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;driver_type&lt;/code&gt;과 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;database_specifier&lt;/code&gt;에 대해서 설명해보고자 합니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;driver_type&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;driver_type&lt;/code&gt;&lt;/h2&gt;
-&lt;p&gt;어떤 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;driver_type&lt;/code&gt;을 사용하는지를 결정합니다. 드라이버 타입에 맞는 이름을 작성해주어야합니다.&lt;/p&gt;
-&lt;h3 id=&quot;server-side-internal-driver-kprb&quot;&gt;server-side internal driver: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kprb&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;server-side internal driver를 사용하는 경우에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kprb&lt;/code&gt;로 입력해야합니다. 이 경우에 다른 속성은 모두 무시됩니다.&lt;/p&gt;
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;Connection&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;conn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DriverManager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getConnection&lt;/span&gt; 
-                  &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;jdbc:oracle:kprb:@&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;database&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;jdbc-thin-or-oci-driver-thinoci&quot;&gt;JDBC Thin or OCI Driver: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thin&lt;/code&gt;/&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;oci&lt;/code&gt;&lt;/h3&gt;
-&lt;p&gt;Thin이나 OCI 드라이버를 사용하는 경우입니다.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;URL 세팅이 user/password를 포함할 수 있다면, 아래와 같이 작성합니다. 특히, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;thin&lt;/code&gt;이 이에 해당합니다.&lt;br /&gt;
-&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;jdbc:oracle:thin:HR/hr@localhost:5221:orcl&lt;/code&gt;&lt;/li&gt;
-  &lt;li&gt;url property가 존재한다면, tnsEntry, driverType, portNumber, networkProtocol, serverName, databaseName property는 모두 무시됩니다.&lt;/li&gt;
-  &lt;li&gt;tnsEntry property가 존재하고, url property가 존재하지 않는다면, databaseName, serverName, portNumber, networkProtocol property는 모두 무시됩니다.&lt;/li&gt;
-  &lt;li&gt;OCI 드라이버를 사용하고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;networkProtocol&lt;/code&gt;이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ipc&lt;/code&gt;로 셋팅되어있다면, 다른 셋팅은 모두 무시됩니다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;database_specifier&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;database_specifier&lt;/code&gt;&lt;/h2&gt;
-&lt;p&gt;database specifier는 어플리케이션이 연결을 필요로하는 특정 데이터베이스를 확인하기 위해 사용됩니다. 일부 데이터베이스는 오직 thin에서만, 혹은 오직 oci 드라이버에서만 작동합니다. thin, oci 모두 사용할 수 있는 데이터베이스(oracle)도 존재합니다.&lt;/p&gt;
-&lt;h3 id=&quot;ipv6를-지원한다&quot;&gt;IPv6를 지원한다&lt;/h3&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)
-    (HOST=[2001:0db8:7654:3210:FEDC:BA98:7654:3210])(PORT=5521))
-    (CONNECT_DATA=(SERVICE_NAME=sales.example.com))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;위처럼 IPv6로 host를 전달할 수 있습니다.&lt;/p&gt;
-&lt;h3 id=&quot;supported-database-specifiers&quot;&gt;Supported Database Specifiers&lt;/h3&gt;
-&lt;p&gt;데이터베이스에 따라 database specifier를 사용할 수 있는 드라이버 타입이 다릅니다. 구체적인 내용은 아래 표와 같습니다.&lt;/p&gt;
-
-&lt;table&gt;
-  &lt;thead&gt;
-    &lt;tr&gt;
-      &lt;th&gt;Specifier&lt;/th&gt;
-      &lt;th&gt;Supported Drivers&lt;/th&gt;
-      &lt;th&gt;Example&lt;/th&gt;
-    &lt;/tr&gt;
-  &lt;/thead&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Oracle Net connection descriptor&lt;/td&gt;
-      &lt;td&gt;Thin, OCI&lt;/td&gt;
-      &lt;td&gt;Thin, using an address list:&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;url=&quot;jdbc:oracle:thin:@(DESCRIPTION=  (LOAD_BALANCE=on) (ADDRESS_LIST=  (ADDRESS=(PROTOCOL=TCP)(HOST=host1) (PORT=5221)) (ADDRESS=(PROTOCOL=TCP)(HOST=host2)(PORT=5221))) (CONNECT_DATA=(SERVICE_NAME=orcl)))&quot; &lt;/code&gt;OCI, using a cluster:&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;jdbc:oracle:oci:@(DESCRIPTION=  (ADDRESS=(PROTOCOL=TCP)(HOST=cluster_alias)    (PORT=5221))    (CONNECT_DATA=(SERVICE_NAME=orcl)))&quot;&lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Thin-style service name&lt;/td&gt;
-      &lt;td&gt;Thin&lt;/td&gt;
-      &lt;td&gt;Refer to &lt;a href=&quot;https://docs.oracle.com/database/121/JJDBC/urls.htm#BEIDHCBA&quot;&gt;“Thin-style Service Name Syntax”&lt;/a&gt; for details.&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;jdbc:oracle:thin:HR/hr@//localhost:5221/orcl&quot; &lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;LDAP syntax&lt;/td&gt;
-      &lt;td&gt;Thin&lt;/td&gt;
-      &lt;td&gt;Refer to &lt;a href=&quot;https://docs.oracle.com/database/121/JJDBC/urls.htm#CHDBICFA&quot;&gt;LDAP Syntax&lt;/a&gt; for details.&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;jdbc:oracle:thin:@ldap://ldap.example.com:7777/sales,cn=OracleContext,dc=com&quot; &lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;Bequeath connection&lt;/td&gt;
-      &lt;td&gt;OCI&lt;/td&gt;
-      &lt;td&gt;Empty. That is, nothing after @&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&quot;jdbc:oracle:oci:HR/hr/@&quot; &lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-    &lt;tr&gt;
-      &lt;td&gt;TNSNames alias&lt;/td&gt;
-      &lt;td&gt;Thin, OCI&lt;/td&gt;
-      &lt;td&gt;Refer to &lt;a href=&quot;https://docs.oracle.com/database/121/JJDBC/urls.htm#BEIDIJCE&quot;&gt;“TNSNames Alias Syntax”&lt;/a&gt; for details.&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OracleDataSource ods = new OracleDataSource(); ods.setTNSEntryName(&quot;MyTNSAlias&quot;);&lt;/code&gt;&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
-
-&lt;h1 id=&quot;2-node-rac-db-stystem&quot;&gt;2-Node RAC DB Stystem&lt;/h1&gt;
-&lt;p&gt;database specifier를 작성할 때, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ADDRESS_LIST&lt;/code&gt;라는 옵션은 왜 존재하는 것일까요? 위의 예시에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ADDRESS_LIST&lt;/code&gt;에 2개의 host가 작성되어있음을 확인할 수 있습니다.&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;jdbc:oracle:thin:@(DESCRIPTION=  (LOAD_BALANCE=on) 
-  (ADDRESS_LIST=  
-    (ADDRESS=(PROTOCOL=TCP)(HOST=host1)(PORT=5221)) 
-    (ADDRESS=(PROTOCOL=TCP)(HOST=host2)(PORT=5221))) 
-  (CONNECT_DATA=(SERVICE_NAME=orcl)))
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;이는 oracle이 2-Node RAC(Real Application Clusters) DB System을 지원하기 때문입니다. 이는 고가용성(High Availability)를 위해 고안된 시스템입니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;../../assets/built/images/database/OracleRAC_nodes.jpeg&quot; alt=&quot;2-node-rac-db-system&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;이러한 구조를 갖게 되면, 메인으로 연결된 노드(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Node1&lt;/code&gt;)에 대한 연결이 실패하더라도, 예비 노드(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Node2&lt;/code&gt;)로 즉각 연결하여 DB 연결이 끊어지는 문제를 방지할 수 있습니다.&lt;br /&gt;
-2-Node RAC DB System이 주는 장점은 아래와 같습니다.&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;Load balancing&lt;br /&gt;
-DB에 요청이 많을 경우 2개 노드에 분산하여 처리할 수 있습니다(로드 밸런싱). 다만 성능 이슈가 발생할 수 있으므로 해당 옵션은 꺼두는 것을 권장합니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LOAD_BALANCE=OFF&lt;/code&gt;).&lt;/li&gt;
-  &lt;li&gt;SCAN (Single Client Access Name)&lt;br /&gt;
-node에 대해 기술하지 않아도, RAC failover가 가능합니다. 기존에는 initial node와 failover node를 설정해야했지만, JDBC URL를 작성하여 oracle과 연결하면 SCAN이 자동으로 initial/failover를 선택합니다.&lt;/li&gt;
-  &lt;li&gt;High availability (Failover)&lt;br /&gt;
-최초 연결 시에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FAILOVER=ON&lt;/code&gt; 옵션을 주고 연결하면 timeout 내에 해당 노드와 연결이 되지 않았을 때 다른 노드로 자동으로 연결을 수행합니다.&lt;/li&gt;
-  &lt;li&gt;High availability (Failover), continued&lt;br /&gt;
-이러한 고가용성은 연결 중에도 작동합니다. 연결된 노드에 장애가 발생하여 connection이 중간에 끊어지면 다른 노드로 자동으로 연결을 수행합니다. 이때, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lifespan&lt;/code&gt; 옵션을 설정하면 장애가 발생한 노드가 복구되었는지 확인하여 기존 노드로 연결을 수정합니다.&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;[참고]&lt;br /&gt;
-&lt;a href=&quot;https://www.geeksforgeeks.org/jdbc-type-1-driver/?ref=rp&quot;&gt;JDBC – Type 1 Driver
-&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://docs.oracle.com/en/database/oracle/oracle-database/21/jjdbc/introducing-JDBC.html#GUID-D6975767-9F5A-4B30-8910-9298DDD7FEF0&quot;&gt;Overview of Oracle JDBC Drivers&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://docs.oracle.com/cd/A97335_02/apps.102/a83724/advanc4.htm&quot;&gt;JDBC in the Server: the Server-Side Internal Driver
-&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://docs.oracle.com/database/121/ODPNT/featConnecting.htm#ODPNT164&quot;&gt;oracle-featConnecting&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://docs.oracle.com/database/121/JJDBC/urls.htm#JJDBC28267&quot;&gt;oracle-urls&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://www.ibm.com/docs/en/b2b-integrator/5.2?topic=odcm-using-oracle-real-application-clusters-rac-high-availability&quot;&gt;Using Oracle Real Application Clusters (RAC) for High Availability&lt;/a&gt;&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="database" />
-      
-
-      
-        <summary type="html">oracle database connection String 설정에 대해 알아봅니다.</summary>
       
 
       

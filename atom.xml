@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Salting in Spark</title>
+        
+          <description>&lt;p&gt;Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 30 Dec 2023 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/spark-salting</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-salting</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>prepared statement</title>
         
           <description>&lt;p&gt;prepared statement&lt;/p&gt;
