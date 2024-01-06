@@ -5,13 +5,26 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Sat, 30 Dec 2023 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Fri, 05 Jan 2024 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>DIP(Dependency Inversion Principle),의존관계 역전 원칙</title>
+        
+        
+            <description>&lt;p&gt;의존관계 역전 원칙과 이를 지키기 위한 의존관계 주입(Depdendency Injection, DI)에 대해서 알아봅니다&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Fri, 05 Jan 2024 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/dependency-inversion-principle</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/dependency-inversion-principle</guid>
+      </item>
+    
 	<item>
 		<title>Salting in Spark</title>
         
         
-            <description>&lt;p&gt;Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
+            <description>&lt;p&gt;Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
 
 </description>
         
@@ -122,19 +135,6 @@
         <pubDate>Thu, 16 Feb 2023 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/impala-with-clause</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/impala-with-clause</guid>
-      </item>
-    
-	<item>
-		<title>Pod와 Container</title>
-        
-        
-            <description>&lt;p&gt;Container와 Pod의 기본개념을 확인해봅니다.&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sun, 12 Feb 2023 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/pod-container</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/pod-container</guid>
       </item>
     
   </channel>

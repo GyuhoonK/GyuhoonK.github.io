@@ -44,7 +44,7 @@
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Salting in Spark" />
-    <meta property="og:description" content="Spark Salting Key 기법에 대해서 알아봅니다. What is Salting in Spark? 요리를 할 때 소금을 뿌림으로써 재료의 맛과 향을 더해줄 수 있습니다. spark의 salting 기법도 요리에서 소금을 뿌리는 것과 비슷합니다. 데이터가 더 잘 처리될 수 있도록 도와주는 역할을 합니다. salting이란 spark에서 shuffle join하는 경우에 발생할 수 있는 데이터 불균형(skewness)을 해결하기" />
+    <meta property="og:description" content="Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다. What is Salting in Spark? 요리를 할 때 소금을 뿌림으로써 재료의 맛과 향을 더해줄 수 있습니다. spark의 salting 기법도 요리에서 소금을 뿌리는 것과 비슷합니다. 데이터가 더 잘 처리될 수 있도록 도와주는 역할을 합니다. salting이란 spark에서 shuffle join하는 경우에 발생할 수 있는" />
     <meta property="og:url" content="https://gyuhoonk.github.io/spark-salting" />
     <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/salting.jpeg" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
@@ -54,7 +54,7 @@
     <meta property="article:tag" content="Hadoop" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Salting in Spark" />
-    <meta name="twitter:description" content="Spark Salting Key 기법에 대해서 알아봅니다. What is Salting in Spark? 요리를 할 때 소금을 뿌림으로써 재료의 맛과 향을 더해줄 수 있습니다. spark의 salting 기법도 요리에서 소금을 뿌리는 것과 비슷합니다. 데이터가 더 잘 처리될 수 있도록 도와주는 역할을 합니다. salting이란 spark에서 shuffle join하는 경우에 발생할 수 있는 데이터 불균형(skewness)을 해결하기" />
+    <meta name="twitter:description" content="Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다. What is Salting in Spark? 요리를 할 때 소금을 뿌림으로써 재료의 맛과 향을 더해줄 수 있습니다. spark의 salting 기법도 요리에서 소금을 뿌리는 것과 비슷합니다. 데이터가 더 잘 처리될 수 있도록 도와주는 역할을 합니다. salting이란 spark에서 shuffle join하는 경우에 발생할 수 있는" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
     <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/salting.jpeg" />
     <meta name="twitter:label1" content="Written by" />
@@ -86,7 +86,7 @@
         "@type": "WebPage",
         "@id": "https://gyuhoonk.github.io/spark-salting"
     },
-    "description": "Spark Salting Key 기법에 대해서 알아봅니다. What is Salting in Spark? 요리를 할 때 소금을 뿌림으로써 재료의 맛과 향을 더해줄 수 있습니다. spark의 salting 기법도 요리에서 소금을 뿌리는 것과 비슷합니다. 데이터가 더 잘 처리될 수 있도록 도와주는 역할을 합니다. salting이란 spark에서 shuffle join하는 경우에 발생할 수 있는 데이터 불균형(skewness)을 해결하기"
+    "description": "Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다. What is Salting in Spark? 요리를 할 때 소금을 뿌림으로써 재료의 맛과 향을 더해줄 수 있습니다. spark의 salting 기법도 요리에서 소금을 뿌리는 것과 비슷합니다. 데이터가 더 잘 처리될 수 있도록 도와주는 역할을 합니다. salting이란 spark에서 shuffle join하는 경우에 발생할 수 있는"
 }
     </script>
 
@@ -195,7 +195,7 @@ into the {body} of the default.hbs template -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>Spark Salting Key 기법에 대해서 알아봅니다.</p>
+                    <p>Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다.</p>
 
 <h3 id="what-is-salting-in-spark">What is Salting in Spark?</h3>
 
@@ -358,7 +358,7 @@ skewness는 spark job의 실패를 초래할 수도 있습니다. 특정 task가
 <span class="n">joined</span> <span class="o">=</span> <span class="n">log</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">user_type</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s">'user_id'</span><span class="p">,</span> <span class="s">'salting_key'</span><span class="p">],</span> <span class="n">how</span><span class="o">=</span><span class="s">'left'</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">get_salting_size</code>에 의해 <code class="language-plaintext highlighter-rouge">user_id</code>의 count 수를 그대로 salting_size로 사용하는 것이 아니라 연산을 거칩니다. <code class="language-plaintext highlighter-rouge">PARTITION_SIZE</code>란 하나의 task가 처리할 row 수를 의미합니다. 따라서 <code class="language-plaintext highlighter-rouge">user_id=2</code>의 경우 2 rows씩 처리하면 되므로 3 rows만 복제했습니다.</p>
+<p><code class="language-plaintext highlighter-rouge">get_salting_size</code>에 의해 <code class="language-plaintext highlighter-rouge">user_id</code>의 count 수를 그대로 salting_size로 사용하는 것이 아니라 연산을 거칩니다. <code class="language-plaintext highlighter-rouge">PARTITION_SIZE</code>란 하나의 task가 처리할 row 수를 의미합니다. 따라서 <code class="language-plaintext highlighter-rouge">user_id=e</code>의 경우 2 rows씩 처리하면 되므로 3 rows만 복제했습니다.</p>
 
 <p><img src="../../assets/built/images/hadoop/salting_example_5.png" alt="image" /></p>
 
@@ -460,6 +460,8 @@ skewness는 spark job의 실패를 초래할 수도 있습니다. 특정 task가
                         <div class="read-next-card-content">
                             <ul>
                                 
+                                
+                                  
                                 
                                   
                                     
@@ -631,6 +633,57 @@ skewness는 spark job의 실패를 초래할 수도 있습니다. 특정 task가
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
             
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/dependency-inversion-principle">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/spring/injection.jpg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/dependency-inversion-principle">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Spring</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">DIP(Dependency Inversion Principle),의존관계 역전 원칙</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>의존관계 역전 원칙과 이를 지키기 위한 의존관계 주입(Depdendency Injection, DI)에 대해서 알아봅니다
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      3 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
             
@@ -735,7 +788,7 @@ skewness는 spark job의 실패를 초래할 수도 있습니다. 특정 task가
         <!-- The footer at the very bottom of the screen -->
         <footer class="site-footer outer">
             <div class="site-footer-content inner">
-                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2023</section>
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2024</section>
                 <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
                     <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
                     <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>

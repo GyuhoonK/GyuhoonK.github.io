@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2023-12-31T01:17:59+09:00</updated>
+  <updated>2024-01-06T16:44:03+09:00</updated>
   <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
 
   
@@ -32,12 +32,198 @@
 
   
     <entry>
+      <title type="html">DIP(Dependency Inversion Principle),의존관계 역전 원칙</title>
+      <link href="https://gyuhoonk.github.io/dependency-inversion-principle" rel="alternate" type="text/html" title="DIP(Dependency Inversion Principle),의존관계 역전 원칙" />
+      <published>2024-01-05T22:30:00+09:00</published>
+      <updated>2024-01-05T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/dependency-inversion-principle</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/dependency-inversion-principle">&lt;p&gt;의존관계 역전 원칙과 이를 지키기 위한 의존관계 주입(Depdendency Injection, DI)에 대해서 알아봅니다&lt;/p&gt;
+
+&lt;h2 id=&quot;dip란&quot;&gt;DIP란?&lt;/h2&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;객체 지향 프로그래밍에서 의존관계 역전 원칙은 소프트웨어 모듈들을 분리하는 특정 형식을 지칭한다. 이 원칙을 따르면, 상위 계층(정책 결정)이 하위 계층(세부 사항)에 의존하는 전통적인 의존관계를 반전(역전)시킴으로써 상위 계층이 하위 계층의 구현으로부터 독립되게 할 수 있다. 이 원칙은 다음과 같은 내용을 담고 있다.&lt;br /&gt;
+첫째, 상위 모듈은 하위 모듈에 의존해서는 안된다. 상위 모듈과 하위 모듈 모두 추상화에 의존해야 한다.&lt;br /&gt;
+둘째, 추상화는 세부 사항에 의존해서는 안된다. 세부사항이 추상화에 의존해야 한다.&lt;br /&gt;
+이 원칙은 ‘상위와 하위 객체 모두가 동일한 추상화에 의존해야 한다’는 객체 지향적 설계의 대원칙을 제공한다. &lt;a href=&quot;https://ko.wikipedia.org/wiki/%EC%9D%98%EC%A1%B4%EA%B4%80%EA%B3%84_%EC%97%AD%EC%A0%84_%EC%9B%90%EC%B9%99&quot;&gt;출처&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;DIP, 의존관계 역전 원칙은 객체지향 설계를 위해 적용되어야는 원칙들 중 하나입니다.  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;역전(inversion)&lt;/code&gt;이란 단어를 사용한 이유는 전통적인 의존관계를 역전시켰기 때문입니다. 이러한 역전은 상위 모듈과 하위 모듈은 독립될 수 있고, 구체(구현체 클래스)에 의존하지 않고 추상화(인터페이스)에만 의존하도록 합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;전통적인-의존-관계&quot;&gt;전통적인 의존 관계&lt;/h2&gt;
+
+&lt;p&gt;DIP에서 말하는 전통적인 의존 관계란 상위 클래스와 하위 클래스 간의 의존관계가 구현체(구체 클래스)에 의해 결정되는 경우입니다.&lt;br /&gt;
+예를 들어, 상위 클래스가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderService&lt;/code&gt;(주문 서비스)이고, 하위 클래스가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DiscountPolicy&lt;/code&gt;(할인 정책)라고 가정합니다.&lt;/p&gt;
+
+&lt;p&gt;하위 클래스 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DiscountPolicy&lt;/code&gt;는 비율 할인과 정액 할인이 존재합니다. 비율 할인과 정액 할인은 각각 구체 클래스로 아래와 같이 작성했습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* discount/FixDiscountPolicy.java */&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FixDiscountPolicy&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountFixAmount&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 1000원 정액 할인&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;discount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Member&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;member&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;price&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;member&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getGrade&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Grade&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;VIP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountFixAmount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* discount/RateDiscountPolicy.java */&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RateDiscountPolicy&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPercent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;discount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Member&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;member&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;price&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// cmd + shift + t&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;member&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getGrade&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Grade&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;VIP&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;){&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;price&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPercent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;100&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;전통적인 의존관계에서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderService&lt;/code&gt;의 구현체 작성 시에 하위 구체 클래스를 직접 사용합니다. 정액 할인 정책을 적용하여 주문 서비스를 구현한다면 아래와 같이 작성할 것입니다&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* order.OrderServiceImpl.java */&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderServiceImpl&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemoryMemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+   &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FixDiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Order&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;createOrder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;Member&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;member&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;findById&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPrice&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;discount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;member&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;상위 계층의 구현(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderServiceImpl&lt;/code&gt;) 시에 하위 계층인 할인 정책의 구현체(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FixDiscountPolicy&lt;/code&gt;)를 직접 참조하고 있습니다. 만약 할인 정책을 비율 할인으로 변경하고 싶다면, 상위 계층 구현체(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderServiceImpl&lt;/code&gt;)를 직접 수정해야합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* order.OrderServiceImpl.java */&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderServiceImpl&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemoryMemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;//    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();&lt;/span&gt;
+   &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;RateDiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Order&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;createOrder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;Member&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;member&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;findById&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPrice&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;discount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;member&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위처럼 할인 정책 변경을 위해 상위 구현체를 직접 수정하는 접근 방식은 객체 지향 프로그래밍의 원칙에 어긋납니다.&lt;/p&gt;
+
+&lt;p&gt;전통적인 의존관계에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderServiceImpl&lt;/code&gt;의 역할은 2가지입니다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;주문 서비스의 구현: OrderServiceImpl을 작성한 본래 목적이며 가장 중요한 역할입니다&lt;/li&gt;
+  &lt;li&gt;하위 계층(할인 정책)의 선택: 이는 OOP의 관점에서 볼 때 불필요한 역할입니다&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;객체 지향 프로그래밍은 클래스 간의 독립적 디자인을 중요시합니다. 따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderServiceImpl&lt;/code&gt;의 클래스 디자인에서 다른 클래스를 참조하는 것은 객체 지향 프로그래밍의 원칙을 위배하고 있으므로 제거해야할 역할입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;해결책-의존성-주입dependency-injection&quot;&gt;해결책: 의존성 주입(Dependency Injection)&lt;/h2&gt;
+
+&lt;p&gt;먼저, 하위 계층(구체 클래스)을 직접 참조하지 않기 위해 인터페이스 간의 의존관계만을 정의합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* order.OrderServiceImpl.java */&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderServiceImpl&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Order&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;createOrder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;Member&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;member&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;findById&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPrice&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;discount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;member&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위 코드에서 구체 클래스가 등장하지 않습니다. 인터페이스에 대한 의존관계만을 정의합니다. 이런 경우 실제 구체 클래스는 어떻게 생성해주어야할까요? 외부에서 구체 클래스를 선택하도록 구현해야합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AppConfig&lt;/code&gt;로 의존관계를 작성하겠습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AppConfig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;orderService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;OrderServiceImpl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemoryMemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FixDiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AppConfig&lt;/code&gt;는 어떤 구체 클래스를 적용할지 결정하는 역할을 합니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderServiceImpl&lt;/code&gt;에 생성자(constructor)를 추가해주겠습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;cm&quot;&gt;/* order.OrderServiceImpl.java */&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderServiceImpl&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+   &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+   &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Override&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Order&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;createOrder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;Long&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nc&quot;&gt;Member&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;member&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;findById&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;kt&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPrice&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;discount&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;member&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;Order&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberId&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemName&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;itemPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPrice&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;// 생성자 추가&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;OrderServiceImpl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;memberRepository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;discountPolicy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AppConfig&lt;/code&gt;에서 하위 계층(할인 정책,&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FixDiscountPolicy&lt;/code&gt;)을 생성하고, 이를 이용하여 상위 계층(주문 서비스, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderServiceImpl&lt;/code&gt;)을 생성합니다.&lt;br /&gt;
+구체 클래스 간의 의존관계(전통적인 의존관계)는 존재하지 않으며, 오직 인터페이스(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DiscountPolicy, OrderService&lt;/code&gt;)간의 의존관계만이 존재합니다.&lt;/p&gt;
+
+&lt;p&gt;이처럼 인터페이스 간의 의존관계만을 이용하고, 구체 클래스의 선택을 클래스 내부가 아니라 외부에서 작성해두는 방법을 의존관계 주입(Dependency Injection, DI)이라고 부릅니다.&lt;/p&gt;
+
+&lt;p&gt; DI를 이용하는 경우 DIP를 준수할 수 있게 됩니다. 즉, 상위 계층이 하위 계층에 의존하지 않을 수 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;정리&quot;&gt;정리&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;전통적인 의존관계 정의는 OOP 원칙을 준수할 수 없다&lt;/li&gt;
+  &lt;li&gt;DIP는 인터페이스 간의 의존관계만을 정의한다&lt;/li&gt;
+  &lt;li&gt;구체 클래스의 선택을 외부에 위임한다&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;[참고]&lt;br /&gt;
+&lt;a href=&quot;https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81-%ED%95%B5%EC%8B%AC-%EC%9B%90%EB%A6%AC-%EA%B8%B0%EB%B3%B8%ED%8E%B8/dashboard&quot;&gt;[inflearn]스프링 핵심 원리 - 기본편&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://ko.wikipedia.org/wiki/%EC%9D%98%EC%A1%B4%EA%B4%80%EA%B3%84_%EC%97%AD%EC%A0%84_%EC%9B%90%EC%B9%99&quot;&gt;[wiki]의존관계 역전 원칙&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://ko.wikipedia.org/wiki/%EA%B0%9D%EC%B2%B4_%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D&quot;&gt;[wiki]객체 지향 프로그래밍&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="spring" />
+      
+
+      
+        <summary type="html">의존관계 역전 원칙과 이를 지키기 위한 의존관계 주입(Depdendency Injection, DI)에 대해서 알아봅니다</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
       <title type="html">Salting in Spark</title>
       <link href="https://gyuhoonk.github.io/spark-salting" rel="alternate" type="text/html" title="Salting in Spark" />
       <published>2023-12-30T22:30:00+09:00</published>
       <updated>2023-12-30T22:30:00+09:00</updated>
       <id>https://gyuhoonk.github.io/spark-salting</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/spark-salting">&lt;p&gt;Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
+      <content type="html" xml:base="https://gyuhoonk.github.io/spark-salting">&lt;p&gt;Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;what-is-salting-in-spark&quot;&gt;What is Salting in Spark?&lt;/h3&gt;
 
@@ -200,7 +386,7 @@ skewness는 spark job의 실패를 초래할 수도 있습니다. 특정 task가
 &lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'salting_key'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'left'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;get_salting_size&lt;/code&gt;에 의해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id&lt;/code&gt;의 count 수를 그대로 salting_size로 사용하는 것이 아니라 연산을 거칩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PARTITION_SIZE&lt;/code&gt;란 하나의 task가 처리할 row 수를 의미합니다. 따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id=2&lt;/code&gt;의 경우 2 rows씩 처리하면 되므로 3 rows만 복제했습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;get_salting_size&lt;/code&gt;에 의해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id&lt;/code&gt;의 count 수를 그대로 salting_size로 사용하는 것이 아니라 연산을 거칩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PARTITION_SIZE&lt;/code&gt;란 하나의 task가 처리할 row 수를 의미합니다. 따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id=e&lt;/code&gt;의 경우 2 rows씩 처리하면 되므로 3 rows만 복제했습니다.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/salting_example_5.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
@@ -233,7 +419,7 @@ skewness는 spark job의 실패를 초래할 수도 있습니다. 특정 task가
       
 
       
-        <summary type="html">Spark Salting Key 기법에 대해서 알아봅니다.</summary>
+        <summary type="html">Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다.</summary>
       
 
       
@@ -1720,159 +1906,6 @@ kernel 2.0.40의 함수가 가장 간단한 형태라 이해하기 편할 것 �
 
       
         <summary type="html">WITH절/VIEW 사용은 효율적인 쿼리플랜과 관련이 없다</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">Pod와 Container</title>
-      <link href="https://gyuhoonk.github.io/pod-container" rel="alternate" type="text/html" title="Pod와 Container" />
-      <published>2023-02-12T22:30:00+09:00</published>
-      <updated>2023-02-12T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/pod-container</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/pod-container">&lt;p&gt;Container와 Pod의 기본개념을 확인해봅니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;container란-무엇인가&quot;&gt;Container란 무엇인가?&lt;/h2&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;컨테이너는 소프트웨어 서비스를 실행하는 데 필요한 특정 버전의 프로그래밍 언어 런타임 및 라이브러리와 같은 종속 항목과 애플리케이션 코드를 함께 포함하는 경량 패키지입니다.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;컨테이너는 운영체제 수준에서 CPU, 메모리, 스토리지, 네트워크 리소스를 쉽게 공유할 수 있게 해주며 컨테이너가 실제로 실행되는 환경에서 애플리케이션을 추상화할 수 있는 논리 패키징 메커니즘을 제공합니다.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;구글 클라우드는 컨테이너에 대해 위와 같이 설명합니다. 짧은 두 문장이지만, 컨테이너는 결국 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;경량 패지키&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;논리 패키징 메커니즘&lt;/code&gt;라는 것 같습니다. 구체적으로 어떤 뜻일까요? 컨테이너를 활용하게되면, 개발자는 제공되는 컨테이너에서 애플리케이션을 개발하고, 배포합니다. 컨테이너에는 개발자에게 프로그래밍 언어, 런타임, 라이브러리와 같은 개발 환경이 이미 셋팅(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;경량 패키지&lt;/code&gt;)되어있습니다. 따라서 개발자는 이러한 개발 환경 셋팅과 디버깅 과정을 생략하고 애플리케이션 자체에 집중할 수 있습니다. 따라서 컨테이너에 대한 위 설명은 ‘개발과 배포를 하기 위해 필요한 모든 것을 준비해 놓았다!’ 정도로 이해할 수 있을 것 같습니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;conatiner가-개발자에게-주는-장점&quot;&gt;Conatiner가 개발자에게 주는 장점&lt;/h3&gt;
-&lt;p&gt;대부분의 개발 프로세스가 오픈 소스 기반으로 이루어지고 있는 지금의 개발 환경에서, 이러한 컨테이너 기반의 개발은 매우 혁명적이었습니다. 컨테이너 기반의 개발 작업이 오픈 소스 기반 개발의 단점을 보완해줄 수 있었기 때문입니다.&lt;/p&gt;
-
-&lt;p&gt;오픈 소스를 기반으로 하는 애플리케이션 개발은 개발자가 직접 작성해야하는 코드의 양을 줄여 개발 생산성을 늘려주었습니다. 덕분에 개발자는 단기간에 높은 수준의 애플리케이션을 만들어낼 수 있었습니다. 그러나 오픈 소스를 기반 개발은 &lt;strong&gt;버전 관리&lt;/strong&gt;라는 맹점이 존재합니다. 사용하는 오픈 소스 라이브러리의 버전업이 개발한 애플리케이션에 어떤 영향을 줄 지 예상이 불가능했고, 이는 다양한 버그와 호환성 문제를 야기했습니다. 즉 개발 생산성을 높이는 대신 애플리케이션의 안정성이 떨어지는 트레이드 오프가 발생했습니다.&lt;/p&gt;
-
-&lt;p&gt;컨테이너는 오픈소스 기반 애플리케이션 개발의 불안정성을 보완해주었습니다. 같은 컨테이너 내에서는 제공되는 언어, 런타임, 라이브러리, 종속 항목들이 고정되어 있으므로 애플리케이션 빌드나 배포 시에 오픈 소스 라이브러리의 버전업이나 수정, 패치에 영향받지 않습니다.&lt;/p&gt;
-
-&lt;p&gt;또한 컨테이너가 제공되고, 실행만 가능하다면 개인 노트북을 포함한 어떤 환경에서도 동일한 개발환경을 유지한 채 개발작업을 수행할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;이외에도 컨테이너는 개발자와 인프라 운영팀의 책임을 분명히 구분해주는 책임 분리(Separation of responsibility), 실해되는 다른 애플리케이션으로부터 영향을 받지 않는 애플리케이션 격리라는 장점을 갖습니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;pod란-무엇인가&quot;&gt;Pod란 무엇인가?&lt;/h2&gt;
-&lt;blockquote&gt;
-  &lt;p&gt;파드(Pod) 는 쿠버네티스에서 생성하고 관리할 수 있는 배포 가능한 가장 작은 컴퓨팅 단위이다.&lt;br /&gt;
-파드 (고래 떼(pod of whales)나 콩꼬투리(pea pod)와 마찬가지로)는 하나 이상의 컨테이너의 그룹이다. 이 그룹은 스토리지 및 네트워크를 공유하고, 해당 컨테이너를 구동하는 방식에 대한 명세를 갖는다. 파드의 콘텐츠는 항상 함께 배치되고, 함께 스케줄되며, 공유 콘텍스트에서 실행된다. 파드는 애플리케이션 별 “논리 호스트”를 모델링한다. 여기에는 상대적으로 밀접하게 결합된 하나 이상의 애플리케이션 컨테이너가 포함된다. 클라우드가 아닌 콘텍스트에서, 동일한 물리 또는 가상 머신에서 실행되는 애플리케이션은 동일한 논리 호스트에서 실행되는 클라우드 애플리케이션과 비슷하다.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;애플리케이션 컨테이너와 마찬가지로, 파드에는 파드 시작 중에 실행되는 초기화 컨테이너가 포함될 수 있다. 클러스터가 제공하는 경우, 디버깅을 위해 임시 컨테이너를 삽입할 수도 있다.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;Kubernetes 공식문서에서는 Pod를 위와 같이 설명합니다. 요약해보자면, Pod를 아래와 같은 특징으로 요약될 수 있습니다.&lt;/p&gt;
-&lt;ol&gt;
-  &lt;li&gt;파드는 쿠버네티스에서 생성/관리 가능한 가장 작은 컴퓨팅 단위이다&lt;/li&gt;
-  &lt;li&gt;파드의 콘텐츠는 함께 배치, 스케줄, (공유 콘텍스트에서)실행된다&lt;/li&gt;
-  &lt;li&gt;파드는 애플리케이션 별로 논리 호스트를 모델링한다&lt;/li&gt;
-  &lt;li&gt;파드에는 초기화 컨테이너, 임시 컨테이너를 삽입할 수 있다&lt;/li&gt;
-&lt;/ol&gt;
-
-&lt;p&gt;각 항목에 대해서 자세히 살펴보겠습니다.&lt;/p&gt;
-&lt;h3 id=&quot;가장-작은-컴퓨팅-단위&quot;&gt;가장 작은 컴퓨팅 단위&lt;/h3&gt;
-&lt;p&gt;실제로 애플리케이션이 실행되는 것은 파드 내에 존재하는 컨테이너(Container)이지만, 쿠버네티스는 직접 컨테이너를 실행하지 않고, 파드를 실행합니다. 쿠버네티스에 의해 실행된 파드가 파드 내의 컨테이너를 관리합니다. 즉, 쿠버네티스 자체는 컨테이너에 직접적으로 관여하지 않습니다. 대신 컨트롤러(controller)를 이용하여 파드를 관리합니다.&lt;br /&gt;
-한편, 파드는 LivenessProbe, ReadienessProbe를 설정하여 파드 내부의 컨테이너에서 실행되는 애플리케이션의 상태를 모니터링합니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;파드의-콘텐츠는-배치-스케줄-콘텍스트를-공유&quot;&gt;파드의 콘텐츠는 배치, 스케줄, 콘텍스트를 공유&lt;/h3&gt;
-&lt;p&gt;동일 파드 내에서 실행되는 컨테이너들은 모두 같은 노드에서 실행되며, 동일 파드에 의해 관리되는 여러 컨테이너들은 동일한 리소스 및 로컬 네트워크를 공유합니다. 따라서 파드 내 컨테이너들은 분리되어 실행되더라도 통신과 리소스 공유가 가능합니다. 공유 컨텍스트(shared context)란 동일 파드 내 컨테이너 간에는 System V 프로세스 통신이나 POSIX 공유 메모리를 사용하여 통신이 가능하고, 볼륨 마운트(Volume Mount)를 통하여 파일 시스템을 공유할 수 있음을 의미하는 것으로 보입니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;애플리케이션-별로-논리-호스트를-모델링&quot;&gt;애플리케이션 별로 논리 호스트를 모델링&lt;/h3&gt;
-&lt;p&gt;추상적인 단어가 많아 이해하기가 어려운 개념이었습니다. 일단 원문을 다시 읽어보았습니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;A Pod models an application-specific “logical host”: it contains one or more application containers which are relatively tightly coupled.&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;쿠버네티스 문서에서 제공하는 번역이 원문의 의미를 전달하지 못하고 있는 것 같습니다. 몇 가지 단어를 중심으로 의미를 풀어보고자 합니다.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;aplication-specific&lt;/code&gt;이란 특정 어플리케이션을 위해서 작성되었다는 의미입니다(&lt;a href=&quot;https://en.wiktionary.org/wiki/application-specific&quot;&gt;application-specific&lt;/a&gt;). &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;애플리케이션 별로&lt;/code&gt;로 번역되어 그 의미가 정확히 전달되지 못한 것 같습니다.&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;논리 호스트&lt;/code&gt;로 번역된 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;logical host&lt;/code&gt;는 어플리케이션을 실행을 위해 필요로 하는 소프트웨어와 컴포넌트를 갖추고 있는 환경 자체를 의미합니다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;위의 두 가지 의미를 합쳐보면, Pod는 어플리케이션을 위해 작성된, 어플리케이션을 실행할 수 있는 환경 그 자체라고 해석할 수 있습니다. 나아가, Pod는 한 가지 어플리케이션만 실행하는 것이 아니라, 서로 관련 있는 여러 개의 어플리케이션을 포함할 수 있습니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;초기화-컨테이너-임시-컨테이너&quot;&gt;초기화 컨테이너, 임시 컨테이너&lt;/h3&gt;
-&lt;p&gt;Pod에는 초기화만을 담당하는 컨테이너를 설정할 수 있습니다. 이를 초기화 컨테이너(initContainer)라고 부르며 해당 컨테이너는 Pod 시작 후에 가장 먼저 시작되어 초기화 작업을 수행하고 이후 메인 컨테이너들이 실행됩니다. 이외에도 디버깅을 위해 임시 컨테이너(Ephemeral Container)를 설정할 수도 있습니다.&lt;/p&gt;
-
-&lt;p&gt;위의 4가지 특징 이외에도 Pod는 아래 특징을 가지고 있습니다.&lt;/p&gt;
-
-&lt;h3 id=&quot;pod는-일시적인-존재&quot;&gt;Pod는 일시적인 존재&lt;/h3&gt;
-&lt;p&gt;Pod는 일시적인 존재로 설계되어 Pod 내의 컨테이너는 이미지로부터 매번 생성되빈다. 따라서 같은 오브젝트 이름으로 재기동하여도, 이전 컨테이너의 실행기록(로그), 변경 사항은 남지 않고 초기 이미지 상태에서부터 재실행됩니다.&lt;br /&gt;
-또한 Pod의 IP도 고정적이지 않습니다. Pod의 IP는 생성과 함께 부여된 뒤, 종료 시에 회수됩니다. 재시작하더라도 같은 IP를 부여하지 않습니다. 따라서 Pod에게 요청(request)를 보내고자 하는 경우에는 반드시 service를 이용하여 고정 IP를 제공해야합니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;controller&quot;&gt;Controller&lt;/h2&gt;
-&lt;p&gt;이러한 Pod는 워크로드 리소스(컨트롤러)에 의해 생성되고 관리됩니다. 컨트롤러는 파드 장애 시 복제 및 롤아웃과 자동복구를 처리합니다. 어떤 노드에서 장애가 발생했을 때, 컨트롤러는 장애 노드에서 실행되는 Pod들의 작동 중지를 인식하고, 다른 노드에서 대체 Pod를 생성하는 식으로 대응합니다. 이러한 컨트롤러에는 7가지가 있습니다.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Deployment 디플로이먼트&lt;/li&gt;
-  &lt;li&gt;ReplicaSet 레플리카셋&lt;/li&gt;
-  &lt;li&gt;StatefultSet 스테이트풀셋&lt;/li&gt;
-  &lt;li&gt;DaemonSet 데몬셋&lt;/li&gt;
-  &lt;li&gt;Job 잡&lt;/li&gt;
-  &lt;li&gt;CronJob 크론잡&lt;/li&gt;
-  &lt;li&gt;ReplicationController 레플리케이션 컨트롤러&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;Deployment의 템플릿 예시는 아래와 같습니다.&lt;/p&gt;
-&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;apiVersion&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;apps/v1&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;kind&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;Deployment&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx-deployment&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
-&lt;span class=&quot;na&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;replicas&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;3&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;selector&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;matchLabels&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
-  &lt;span class=&quot;c1&quot;&gt;# 여기서부터 파드 템플릿이다&lt;/span&gt;
-  &lt;span class=&quot;na&quot;&gt;template&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;labels&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;app&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
-    &lt;span class=&quot;na&quot;&gt;spec&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;na&quot;&gt;containers&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-      &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;nginx:1.14.2&lt;/span&gt;
-        &lt;span class=&quot;na&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
-        &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;na&quot;&gt;containerPort&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;80&lt;/span&gt;
-   &lt;span class=&quot;c1&quot;&gt;# 여기까지 파드 템플릿이다&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;간단하게 컨테이너와 파드의 개념에 대해 정리해보았고, 파드를 관리하는 컨트롤러가 무엇이 있는지까지만 알아보았습니다.&lt;br /&gt;
-읽어주셔서 감사합니다 (_ _)&lt;/p&gt;
-
-&lt;p&gt;[참고]&lt;br /&gt;
-&lt;a href=&quot;https://cloud.google.com/learn/what-are-containers?hl=ko&quot;&gt;GCP 컨테이너란?&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://kubernetes.io/ko/docs/concepts/workloads/pods/&quot;&gt;Kubernetes 파드&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://www.redhat.com/ko/topics/containers/what-is-kubernetes-pod&quot;&gt;RedHat 쿠버네티스 포드(Kubernetes pod)란?&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;http://www.yes24.com/Product/Goods/93317828&quot;&gt;15단계로 배우는 도커와 쿠버네티스&lt;/a&gt;&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="kubernetes" />
-      
-
-      
-        <summary type="html">Container와 Pod의 기본개념을 확인해봅니다.</summary>
       
 
       

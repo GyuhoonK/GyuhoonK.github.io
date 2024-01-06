@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2023-12-31T01:17:59+09:00</updated>
+  <updated>2024-01-06T16:44:03+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/hadoop/feed.xml</id>
 
   
@@ -37,7 +37,7 @@
       <published>2023-12-30T22:30:00+09:00</published>
       <updated>2023-12-30T22:30:00+09:00</updated>
       <id>https://gyuhoonk.github.io/spark-salting</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/spark-salting">&lt;p&gt;Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
+      <content type="html" xml:base="https://gyuhoonk.github.io/spark-salting">&lt;p&gt;Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;what-is-salting-in-spark&quot;&gt;What is Salting in Spark?&lt;/h3&gt;
 
@@ -200,7 +200,7 @@ skewness는 spark job의 실패를 초래할 수도 있습니다. 특정 task가
 &lt;span class=&quot;n&quot;&gt;joined&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user_type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;on&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'user_id'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'salting_key'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;how&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'left'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;get_salting_size&lt;/code&gt;에 의해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id&lt;/code&gt;의 count 수를 그대로 salting_size로 사용하는 것이 아니라 연산을 거칩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PARTITION_SIZE&lt;/code&gt;란 하나의 task가 처리할 row 수를 의미합니다. 따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id=2&lt;/code&gt;의 경우 2 rows씩 처리하면 되므로 3 rows만 복제했습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;get_salting_size&lt;/code&gt;에 의해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id&lt;/code&gt;의 count 수를 그대로 salting_size로 사용하는 것이 아니라 연산을 거칩니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;PARTITION_SIZE&lt;/code&gt;란 하나의 task가 처리할 row 수를 의미합니다. 따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_id=e&lt;/code&gt;의 경우 2 rows씩 처리하면 되므로 3 rows만 복제했습니다.&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/hadoop/salting_example_5.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 
@@ -233,7 +233,7 @@ skewness는 spark job의 실패를 초래할 수도 있습니다. 특정 task가
       
 
       
-        <summary type="html">Spark Salting Key 기법에 대해서 알아봅니다.</summary>
+        <summary type="html">Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다.</summary>
       
 
       

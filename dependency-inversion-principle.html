@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>DIP(Dependency Inversion Principle),의존관계 역전 원칙</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    </script>
+<meta name="description" content="Data Engineering" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.jpg" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/dependency-inversion-principle" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="DIP(Dependency Inversion Principle),의존관계 역전 원칙" />
+    <meta property="og:description" content="의존관계 역전 원칙과 이를 지키기 위한 의존관계 주입(Depdendency Injection, DI)에 대해서 알아봅니다 DIP란? 객체 지향 프로그래밍에서 의존관계 역전 원칙은 소프트웨어 모듈들을 분리하는 특정 형식을 지칭한다. 이 원칙을 따르면, 상위 계층(정책 결정)이 하위 계층(세부 사항)에 의존하는 전통적인 의존관계를 반전(역전)시킴으로써 상위 계층이 하위 계층의 구현으로부터 독립되게 할 수 있다. 이 원칙은 다음과" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/dependency-inversion-principle" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/spring/injection.jpg" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2024-01-05T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2024-01-05T22:30:00+09:00" />
+    <meta property="article:tag" content="Spring" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DIP(Dependency Inversion Principle),의존관계 역전 원칙" />
+    <meta name="twitter:description" content="의존관계 역전 원칙과 이를 지키기 위한 의존관계 주입(Depdendency Injection, DI)에 대해서 알아봅니다 DIP란? 객체 지향 프로그래밍에서 의존관계 역전 원칙은 소프트웨어 모듈들을 분리하는 특정 형식을 지칭한다. 이 원칙을 따르면, 상위 계층(정책 결정)이 하위 계층(세부 사항)에 의존하는 전통적인 의존관계를 반전(역전)시킴으로써 상위 계층이 하위 계층의 구현으로부터 독립되게 할 수 있다. 이 원칙은 다음과" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/spring/injection.jpg" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Spring" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "https://gyuhoonk.github.io/"
+    },
+    "url": "https://gyuhoonk.github.io/dependency-inversion-principle",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://gyuhoonk.github.io/assets/built/images/spring/injection.jpg",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://gyuhoonk.github.io/dependency-inversion-principle"
+    },
+    "description": "의존관계 역전 원칙과 이를 지키기 위한 의존관계 주입(Depdendency Injection, DI)에 대해서 알아봅니다 DIP란? 객체 지향 프로그래밍에서 의존관계 역전 원칙은 소프트웨어 모듈들을 분리하는 특정 형식을 지칭한다. 이 원칙을 따르면, 상위 계층(정책 결정)이 하위 계층(세부 사항)에 의존하는 전통적인 의존관계를 반전(역전)시킴으로써 상위 계층이 하위 계층의 구현으로부터 독립되게 할 수 있다. 이 원칙은 다음과"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="DIP(Dependency Inversion Principle),의존관계 역전 원칙" href="/feed.xml" />
+
+    
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/kubernetes/">kubernetes</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-spring post tag-hadoop ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime=" 5 January 2024"> 5 January 2024</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/spring/'>SPRING</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">DIP(Dependency Inversion Principle),의존관계 역전 원칙</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/spring/injection.jpg)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>의존관계 역전 원칙과 이를 지키기 위한 의존관계 주입(Depdendency Injection, DI)에 대해서 알아봅니다</p>
+
+<h2 id="dip란">DIP란?</h2>
+
+<blockquote>
+  <p>객체 지향 프로그래밍에서 의존관계 역전 원칙은 소프트웨어 모듈들을 분리하는 특정 형식을 지칭한다. 이 원칙을 따르면, 상위 계층(정책 결정)이 하위 계층(세부 사항)에 의존하는 전통적인 의존관계를 반전(역전)시킴으로써 상위 계층이 하위 계층의 구현으로부터 독립되게 할 수 있다. 이 원칙은 다음과 같은 내용을 담고 있다.<br />
+첫째, 상위 모듈은 하위 모듈에 의존해서는 안된다. 상위 모듈과 하위 모듈 모두 추상화에 의존해야 한다.<br />
+둘째, 추상화는 세부 사항에 의존해서는 안된다. 세부사항이 추상화에 의존해야 한다.<br />
+이 원칙은 ‘상위와 하위 객체 모두가 동일한 추상화에 의존해야 한다’는 객체 지향적 설계의 대원칙을 제공한다. <a href="https://ko.wikipedia.org/wiki/%EC%9D%98%EC%A1%B4%EA%B4%80%EA%B3%84_%EC%97%AD%EC%A0%84_%EC%9B%90%EC%B9%99">출처</a></p>
+</blockquote>
+
+<p>DIP, 의존관계 역전 원칙은 객체지향 설계를 위해 적용되어야는 원칙들 중 하나입니다.  <code class="language-plaintext highlighter-rouge">역전(inversion)</code>이란 단어를 사용한 이유는 전통적인 의존관계를 역전시켰기 때문입니다. 이러한 역전은 상위 모듈과 하위 모듈은 독립될 수 있고, 구체(구현체 클래스)에 의존하지 않고 추상화(인터페이스)에만 의존하도록 합니다.</p>
+
+<h2 id="전통적인-의존-관계">전통적인 의존 관계</h2>
+
+<p>DIP에서 말하는 전통적인 의존 관계란 상위 클래스와 하위 클래스 간의 의존관계가 구현체(구체 클래스)에 의해 결정되는 경우입니다.<br />
+예를 들어, 상위 클래스가 <code class="language-plaintext highlighter-rouge">OrderService</code>(주문 서비스)이고, 하위 클래스가 <code class="language-plaintext highlighter-rouge">DiscountPolicy</code>(할인 정책)라고 가정합니다.</p>
+
+<p>하위 클래스 <code class="language-plaintext highlighter-rouge">DiscountPolicy</code>는 비율 할인과 정액 할인이 존재합니다. 비율 할인과 정액 할인은 각각 구체 클래스로 아래와 같이 작성했습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* discount/FixDiscountPolicy.java */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">FixDiscountPolicy</span> <span class="kd">implements</span> <span class="nc">DiscountPolicy</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">discountFixAmount</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">;</span> <span class="c1">// 1000원 정액 할인</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">discount</span><span class="o">(</span><span class="nc">Member</span> <span class="n">member</span><span class="o">,</span> <span class="kt">int</span> <span class="n">price</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">member</span><span class="o">.</span><span class="na">getGrade</span><span class="o">()</span> <span class="o">==</span> <span class="nc">Grade</span><span class="o">.</span><span class="na">VIP</span><span class="o">){</span>
+            <span class="k">return</span> <span class="n">discountFixAmount</span><span class="o">;</span>
+        <span class="o">}</span> <span class="k">else</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* discount/RateDiscountPolicy.java */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RateDiscountPolicy</span> <span class="kd">implements</span> <span class="nc">DiscountPolicy</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">discountPercent</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">discount</span><span class="o">(</span><span class="nc">Member</span> <span class="n">member</span><span class="o">,</span> <span class="kt">int</span> <span class="n">price</span><span class="o">)</span> <span class="o">{</span> <span class="c1">// cmd + shift + t</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">member</span><span class="o">.</span><span class="na">getGrade</span><span class="o">()</span> <span class="o">==</span> <span class="nc">Grade</span><span class="o">.</span><span class="na">VIP</span><span class="o">){</span>
+            <span class="k">return</span> <span class="n">price</span> <span class="o">*</span> <span class="n">discountPercent</span> <span class="o">/</span> <span class="mi">100</span><span class="o">;</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>전통적인 의존관계에서는 <code class="language-plaintext highlighter-rouge">OrderService</code>의 구현체 작성 시에 하위 구체 클래스를 직접 사용합니다. 정액 할인 정책을 적용하여 주문 서비스를 구현한다면 아래와 같이 작성할 것입니다</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* order.OrderServiceImpl.java */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OrderServiceImpl</span> <span class="kd">implements</span> <span class="nc">OrderService</span> <span class="o">{</span>
+   <span class="kd">private</span> <span class="kd">final</span> <span class="nc">MemberRepository</span> <span class="n">memberRepository</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MemoryMemberRepository</span><span class="o">();</span>
+   <span class="kd">private</span> <span class="kd">final</span> <span class="nc">DiscountPolicy</span> <span class="n">discountPolicy</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">FixDiscountPolicy</span><span class="o">();</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Order</span> <span class="nf">createOrder</span><span class="o">(</span><span class="nc">Long</span> <span class="n">memberId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">itemName</span><span class="o">,</span> <span class="kt">int</span> <span class="n">itemPrice</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Member</span> <span class="n">member</span> <span class="o">=</span> <span class="n">memberRepository</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="n">memberId</span><span class="o">);</span>
+        <span class="kt">int</span> <span class="n">discountPrice</span> <span class="o">=</span> <span class="n">discountPolicy</span><span class="o">.</span><span class="na">discount</span><span class="o">(</span><span class="n">member</span><span class="o">,</span> <span class="n">itemPrice</span><span class="o">);</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">Order</span><span class="o">(</span><span class="n">memberId</span><span class="o">,</span> <span class="n">itemName</span><span class="o">,</span> <span class="n">itemPrice</span><span class="o">,</span> <span class="n">discountPrice</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>상위 계층의 구현(<code class="language-plaintext highlighter-rouge">OrderServiceImpl</code>) 시에 하위 계층인 할인 정책의 구현체(<code class="language-plaintext highlighter-rouge">FixDiscountPolicy</code>)를 직접 참조하고 있습니다. 만약 할인 정책을 비율 할인으로 변경하고 싶다면, 상위 계층 구현체(<code class="language-plaintext highlighter-rouge">OrderServiceImpl</code>)를 직접 수정해야합니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* order.OrderServiceImpl.java */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OrderServiceImpl</span> <span class="kd">implements</span> <span class="nc">OrderService</span> <span class="o">{</span>
+   <span class="kd">private</span> <span class="kd">final</span> <span class="nc">MemberRepository</span> <span class="n">memberRepository</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MemoryMemberRepository</span><span class="o">();</span>
+<span class="c1">//    private final DiscountPolicy discountPolicy = new FixDiscountPolicy();</span>
+   <span class="kd">private</span> <span class="kd">final</span> <span class="nc">DiscountPolicy</span> <span class="n">discountPolicy</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">RateDiscountPolicy</span><span class="o">();</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Order</span> <span class="nf">createOrder</span><span class="o">(</span><span class="nc">Long</span> <span class="n">memberId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">itemName</span><span class="o">,</span> <span class="kt">int</span> <span class="n">itemPrice</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Member</span> <span class="n">member</span> <span class="o">=</span> <span class="n">memberRepository</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="n">memberId</span><span class="o">);</span>
+        <span class="kt">int</span> <span class="n">discountPrice</span> <span class="o">=</span> <span class="n">discountPolicy</span><span class="o">.</span><span class="na">discount</span><span class="o">(</span><span class="n">member</span><span class="o">,</span> <span class="n">itemPrice</span><span class="o">);</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">Order</span><span class="o">(</span><span class="n">memberId</span><span class="o">,</span> <span class="n">itemName</span><span class="o">,</span> <span class="n">itemPrice</span><span class="o">,</span> <span class="n">discountPrice</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>위처럼 할인 정책 변경을 위해 상위 구현체를 직접 수정하는 접근 방식은 객체 지향 프로그래밍의 원칙에 어긋납니다.</p>
+
+<p>전통적인 의존관계에서 <code class="language-plaintext highlighter-rouge">OrderServiceImpl</code>의 역할은 2가지입니다.</p>
+<ul>
+  <li>주문 서비스의 구현: OrderServiceImpl을 작성한 본래 목적이며 가장 중요한 역할입니다</li>
+  <li>하위 계층(할인 정책)의 선택: 이는 OOP의 관점에서 볼 때 불필요한 역할입니다</li>
+</ul>
+
+<p>객체 지향 프로그래밍은 클래스 간의 독립적 디자인을 중요시합니다. 따라서 <code class="language-plaintext highlighter-rouge">OrderServiceImpl</code>의 클래스 디자인에서 다른 클래스를 참조하는 것은 객체 지향 프로그래밍의 원칙을 위배하고 있으므로 제거해야할 역할입니다.</p>
+
+<h2 id="해결책-의존성-주입dependency-injection">해결책: 의존성 주입(Dependency Injection)</h2>
+
+<p>먼저, 하위 계층(구체 클래스)을 직접 참조하지 않기 위해 인터페이스 간의 의존관계만을 정의합니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* order.OrderServiceImpl.java */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OrderServiceImpl</span> <span class="kd">implements</span> <span class="nc">OrderService</span> <span class="o">{</span>
+   <span class="kd">private</span> <span class="kd">final</span> <span class="nc">MemberRepository</span> <span class="n">memberRepository</span><span class="o">;</span>
+   <span class="kd">private</span> <span class="kd">final</span> <span class="nc">DiscountPolicy</span> <span class="n">discountPolicy</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Order</span> <span class="nf">createOrder</span><span class="o">(</span><span class="nc">Long</span> <span class="n">memberId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">itemName</span><span class="o">,</span> <span class="kt">int</span> <span class="n">itemPrice</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Member</span> <span class="n">member</span> <span class="o">=</span> <span class="n">memberRepository</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="n">memberId</span><span class="o">);</span>
+        <span class="kt">int</span> <span class="n">discountPrice</span> <span class="o">=</span> <span class="n">discountPolicy</span><span class="o">.</span><span class="na">discount</span><span class="o">(</span><span class="n">member</span><span class="o">,</span> <span class="n">itemPrice</span><span class="o">);</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">Order</span><span class="o">(</span><span class="n">memberId</span><span class="o">,</span> <span class="n">itemName</span><span class="o">,</span> <span class="n">itemPrice</span><span class="o">,</span> <span class="n">discountPrice</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>위 코드에서 구체 클래스가 등장하지 않습니다. 인터페이스에 대한 의존관계만을 정의합니다. 이런 경우 실제 구체 클래스는 어떻게 생성해주어야할까요? 외부에서 구체 클래스를 선택하도록 구현해야합니다. <code class="language-plaintext highlighter-rouge">AppConfig</code>로 의존관계를 작성하겠습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AppConfig</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">OrderService</span> <span class="nf">orderService</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">OrderServiceImpl</span><span class="o">(</span><span class="k">new</span> <span class="nc">MemoryMemberRepository</span><span class="o">(),</span> <span class="k">new</span> <span class="nc">FixDiscountPolicy</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">AppConfig</code>는 어떤 구체 클래스를 적용할지 결정하는 역할을 합니다. <code class="language-plaintext highlighter-rouge">OrderServiceImpl</code>에 생성자(constructor)를 추가해주겠습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cm">/* order.OrderServiceImpl.java */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OrderServiceImpl</span> <span class="kd">implements</span> <span class="nc">OrderService</span> <span class="o">{</span>
+   <span class="kd">private</span> <span class="kd">final</span> <span class="nc">MemberRepository</span> <span class="n">memberRepository</span><span class="o">;</span>
+   <span class="kd">private</span> <span class="kd">final</span> <span class="nc">DiscountPolicy</span> <span class="n">discountPolicy</span><span class="o">;</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Order</span> <span class="nf">createOrder</span><span class="o">(</span><span class="nc">Long</span> <span class="n">memberId</span><span class="o">,</span> <span class="nc">String</span> <span class="n">itemName</span><span class="o">,</span> <span class="kt">int</span> <span class="n">itemPrice</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Member</span> <span class="n">member</span> <span class="o">=</span> <span class="n">memberRepository</span><span class="o">.</span><span class="na">findById</span><span class="o">(</span><span class="n">memberId</span><span class="o">);</span>
+        <span class="kt">int</span> <span class="n">discountPrice</span> <span class="o">=</span> <span class="n">discountPolicy</span><span class="o">.</span><span class="na">discount</span><span class="o">(</span><span class="n">member</span><span class="o">,</span> <span class="n">itemPrice</span><span class="o">);</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">Order</span><span class="o">(</span><span class="n">memberId</span><span class="o">,</span> <span class="n">itemName</span><span class="o">,</span> <span class="n">itemPrice</span><span class="o">,</span> <span class="n">discountPrice</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="c1">// 생성자 추가</span>
+    <span class="kd">public</span> <span class="nf">OrderServiceImpl</span><span class="o">(</span><span class="nc">MemberRepository</span> <span class="n">memberRepository</span><span class="o">,</span> <span class="nc">DiscountPolicy</span> <span class="n">discountPolicy</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">memberRepository</span> <span class="o">=</span> <span class="n">memberRepository</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">discountPolicy</span> <span class="o">=</span> <span class="n">discountPolicy</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">AppConfig</code>에서 하위 계층(할인 정책,<code class="language-plaintext highlighter-rouge">FixDiscountPolicy</code>)을 생성하고, 이를 이용하여 상위 계층(주문 서비스, <code class="language-plaintext highlighter-rouge">OrderServiceImpl</code>)을 생성합니다.<br />
+구체 클래스 간의 의존관계(전통적인 의존관계)는 존재하지 않으며, 오직 인터페이스(<code class="language-plaintext highlighter-rouge">DiscountPolicy, OrderService</code>)간의 의존관계만이 존재합니다.</p>
+
+<p>이처럼 인터페이스 간의 의존관계만을 이용하고, 구체 클래스의 선택을 클래스 내부가 아니라 외부에서 작성해두는 방법을 의존관계 주입(Dependency Injection, DI)이라고 부릅니다.</p>
+
+<p> DI를 이용하는 경우 DIP를 준수할 수 있게 됩니다. 즉, 상위 계층이 하위 계층에 의존하지 않을 수 있습니다.</p>
+
+<h2 id="정리">정리</h2>
+<ul>
+  <li>전통적인 의존관계 정의는 OOP 원칙을 준수할 수 없다</li>
+  <li>DIP는 인터페이스 간의 의존관계만을 정의한다</li>
+  <li>구체 클래스의 선택을 외부에 위임한다</li>
+</ul>
+
+<p>[참고]<br />
+<a href="https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81-%ED%95%B5%EC%8B%AC-%EC%9B%90%EB%A6%AC-%EA%B8%B0%EB%B3%B8%ED%8E%B8/dashboard">[inflearn]스프링 핵심 원리 - 기본편</a><br />
+<a href="https://ko.wikipedia.org/wiki/%EC%9D%98%EC%A1%B4%EA%B4%80%EA%B3%84_%EC%97%AD%EC%A0%84_%EC%9B%90%EC%B9%99">[wiki]의존관계 역전 원칙</a><br />
+<a href="https://ko.wikipedia.org/wiki/%EA%B0%9D%EC%B2%B4_%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D">[wiki]객체 지향 프로그래밍</a></p>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            <!--  -->
+            <!-- utteranc setting -->
+            <script src="https://utteranc.es/client.js"
+                    repo="GyuhoonK/blog-comments"
+                    issue-term="pathname"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/spark-salting">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/salting.jpeg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/spark-salting">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Hadoop</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Salting in Spark</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다.
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      4 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://gyuhoonk.github.io/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">DIP(Dependency Inversion Principle),의존관계 역전 원칙</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=DIP%28Dependency+Inversion+Principle%29%2C%EC%9D%98%EC%A1%B4%EA%B4%80%EA%B3%84+%EC%97%AD%EC%A0%84+%EC%9B%90%EC%B9%99&amp;url=https://gyuhoonk.github.iodependency-inversion-principle"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iodependency-inversion-principle"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2024</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+    <!-- math LaTex-->
+    
+</body>
+</html>

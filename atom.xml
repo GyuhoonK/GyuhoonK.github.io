@@ -8,9 +8,24 @@
     
       
       <item>
+        <title>DIP(Dependency Inversion Principle),의존관계 역전 원칙</title>
+        
+          <description>&lt;p&gt;의존관계 역전 원칙과 이를 지키기 위한 의존관계 주입(Depdendency Injection, DI)에 대해서 알아봅니다&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Fri, 05 Jan 2024 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/dependency-inversion-principle</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/dependency-inversion-principle</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Salting in Spark</title>
         
-          <description>&lt;p&gt;Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
+          <description>&lt;p&gt;Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
 
 </description>
         
