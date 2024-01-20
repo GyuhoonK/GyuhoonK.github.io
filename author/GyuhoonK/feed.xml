@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2024-01-06T16:44:03+09:00</updated>
+  <updated>2024-01-20T20:25:31+09:00</updated>
   <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
 
   
@@ -30,6 +30,183 @@
   
   
 
+  
+    <entry>
+      <title type="html">Spring Bean 조회하기</title>
+      <link href="https://gyuhoonk.github.io/get-bean" rel="alternate" type="text/html" title="Spring Bean 조회하기" />
+      <published>2024-01-19T22:30:00+09:00</published>
+      <updated>2024-01-19T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/get-bean</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/get-bean">&lt;p&gt;Spring Container에서 Bean을 조회하는 방법을 정리합니다&lt;/p&gt;
+
+&lt;h2 id=&quot;spring-bean이란&quot;&gt;Spring Bean이란?&lt;/h2&gt;
+
+&lt;p&gt;Spring 공식 문서에서 Bean을 아래처럼 설명합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A Spring IoC container manages one or more beans. These beans are created with the configuration metadata that you supply to the container (for  example, in the form of XML &lt;bean&gt;&lt;/bean&gt; definitions).&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Spring IoC(Inversion Of Control) Container, 줄여서 Spring Container에서 관리하고 있는 객체들을 &lt;strong&gt;Bean&lt;/strong&gt;이라고 부릅니다. Bean을 정의하기 위해서는 annotation(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@bean&lt;/code&gt;)을 사용하거나 혹은 XML 파일 형식으로 정의할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@Configuration&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestBeanConfig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;MemoryMemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberService&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;memberService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;MemberService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;bean-호출하기&quot;&gt;Bean 호출하기&lt;/h2&gt;
+&lt;p&gt;실제로 Bean을 호출하여 사용하는 방법은 아래와 같습니다.&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Baen 이름으로 조회하기&lt;/li&gt;
+  &lt;li&gt;클래스로 조회하기&lt;/li&gt;
+  &lt;li&gt;상속 관계 조회하기&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;bean-이름으로-조회하기&quot;&gt;Bean 이름으로 조회하기&lt;/h3&gt;
+&lt;p&gt;가장 기본적인 Bean 호출 방식입니다.&lt;/p&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// Bean 호출을 위한 context 생성&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;AnnotationConfigApplicationContext&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AnnotationConfigApplicationContext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;TestBeanConfig&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bean1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;memberRepository&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;MemberService&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bean2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;memberService&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;memberRepository&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;memberService&lt;/code&gt;와 같이 Bean Name을 이용하여 조회할 수 있습니다. Bean Name은 생성할 때 따로 지정하지 않으면 기본값으로 method name을 사용합니다.
+@Bean 어노테이션 사용 시에 따로 bean name을 지정할 수도 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;        &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;memberService1&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberService&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;memberService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;MemberService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;클래스로-조회하기&quot;&gt;클래스로 조회하기&lt;/h3&gt;
+
+&lt;p&gt;Name이 아니라 bean의 class만으로도 조회가 가능합니다.&lt;/p&gt;
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bean1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;class만으로 Bean을 조회하는 경우 동일한 class를 가진 bean이 있다면 에러가 발생합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@Configuration&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestBeanConfig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;memberRepository1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;MemoryMemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;memberRepository2&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;MemoryMemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;AnnotationConfigApplicationContext&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AnnotationConfigApplicationContext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;TestBeanConfig&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bean1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 에러 발생&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;org.springframework.beans.factory.NoUniqueBeanDefinitionException: 
+No qualifying bean of type 'hello.demo.member.MemberRepository' available:
+expected single matching bean but found 2: memberRepository1,memberRepository2
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위 코드에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MemberRepository.class&lt;/code&gt;에 해당하는 Bean이 2개(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;memberRepository1, memberRepository2&lt;/code&gt;)가 있으므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NoUniqueBeanDefinitionException&lt;/code&gt; 에러가 발생합니다.&lt;/p&gt;
+
+&lt;p&gt;이런 경우 bean name을 정확히 지정해주거나, 모든 bean을 조회하고 싶다면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getBeansOfType&lt;/code&gt; 메소드를 사용해야합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;// bean name 지정하여 조회&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bean1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberRepository1&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;'&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nc&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beansOfType&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBeansOfType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// memberRepository1, memberRepository2&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;상속-관계를-이용하여-조회하기&quot;&gt;상속 관계를 이용하여 조회하기&lt;/h3&gt;
+
+&lt;p&gt;클래스 A를 상속받아 클래스 B를 선언했다면, 부모 클래스(A)를 이용하여 자식 클래스를 모두 조회할 수도 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@Configuration&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TestConfig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;rateDiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;RateDiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+        &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
+        &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;fixDiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;FixDiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DisCountPolicy&lt;/code&gt;를 상속받아 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RateDiscountPolicy, FixDiscountPolicy&lt;/code&gt; 클래스를 선언했습니다.&lt;/p&gt;
+
+&lt;p&gt;부모 클래스를 이용하여 조회하는 경우 자식 클래스를 모두 조회할 수 있습니다. 1개 Bean만을 조회하기 위해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;getBean&lt;/code&gt;을 사용하는 경우에는 마찬가지로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NoUniqueBeanDefinitionException&lt;/code&gt; 에러가 발생합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bean1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// NoUniqueBeanDefinitionException 에러 발생&lt;/span&gt;
+
+&lt;span class=&quot;nc&quot;&gt;Map&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;beansOfType&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBeansOfType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// RateDiscountPolicy, FixDiscountPolicy&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;특정 자식 클래스를 조회하고 싶은 경우 Bean name을 이용해야합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;rateDiscountPolicy&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;권장하는 방법은 아니지만, 특정 자식 클래스를 이용하여 조회할 수도 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bean&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;RateDiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;정리&quot;&gt;정리&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Bean은 Spring container에서 관리하는 객체이다.&lt;/li&gt;
+  &lt;li&gt;container 내부의 bean을 호출하는 방법은 3가지가 있다.
+    &lt;ul&gt;
+      &lt;li&gt;Bean Name을 이용하여 호출&lt;/li&gt;
+      &lt;li&gt;Class를 이용하여 호출&lt;/li&gt;
+      &lt;li&gt;상속 관계를 이용하여 호출&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;[참고]&lt;br /&gt;
+&lt;a href=&quot;https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81-%ED%95%B5%EC%8B%AC-%EC%9B%90%EB%A6%AC-%EA%B8%B0%EB%B3%B8%ED%8E%B8/dashboard&quot;&gt;[inflearn]스프링 핵심 원리 - 기본편&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://docs.spring.io/spring-framework/reference/core/beans/definition.html&quot;&gt;[Spring]Bean Overview
+&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="spring" />
+      
+
+      
+        <summary type="html">Spring Container에서 Bean을 조회하는 방법을 정리합니다</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">DIP(Dependency Inversion Principle),의존관계 역전 원칙</title>
@@ -178,6 +355,41 @@
 &lt;p&gt;이처럼 인터페이스 간의 의존관계만을 이용하고, 구체 클래스의 선택을 클래스 내부가 아니라 외부에서 작성해두는 방법을 의존관계 주입(Dependency Injection, DI)이라고 부릅니다.&lt;/p&gt;
 
 &lt;p&gt; DI를 이용하는 경우 DIP를 준수할 수 있게 됩니다. 즉, 상위 계층이 하위 계층에 의존하지 않을 수 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;spring에서의-사용-방법spring-container&quot;&gt;Spring에서의 사용 방법(Spring Container)&lt;/h2&gt;
+
+&lt;p&gt;Spring은 작성된 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AppConfig&lt;/code&gt;를 어디서든 불러서 사용할 수 있게끔 관리해줍니다. Spring Container를 생성하고, AppConfig에 작성해두었던 구체 클래스의 의존 관계를 저장해둡니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@Configuration&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AppConfig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;MemoryMemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(){&lt;/span&gt;
+       &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;FixDiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;();&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
+    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;orderService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;OrderServiceImpl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;이렇게 작성해두면 스프링 컨테이너 내부에서 구체 클래스를 생성한 뒤, 구체 클래스 간 의존 관계를 자동으로 설정합니다.&lt;br /&gt;
+구체적으로 설명하자면, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;MemoryMemberRepository&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;FixDiscountPolicy&lt;/code&gt;를 먼저 생성한 뒤에 이를 이용하여 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;OrderService&lt;/code&gt;의 생성해 사용합니다.&lt;/p&gt;
+
+&lt;p&gt;이렇게 생성된 Bean들은 아래와 같이 호출할 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nc&quot;&gt;AnnotationConfigApplicationContext&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AnnotationConfigApplicationContext&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;SameBeanConfig&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+
+&lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;memberRepository&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;discountPolicy&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;orderService&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;ac&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;getBean&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;orderService&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;정리&quot;&gt;정리&lt;/h2&gt;
 &lt;ul&gt;
@@ -1727,185 +1939,6 @@ kernel 2.0.40의 함수가 가장 간단한 형태라 이해하기 편할 것 �
 
       
         <summary type="html">chatGPT로 load average로 파헤쳐보기</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">WITH절/VIEW 사용 시 쿼리 플랜에 대해서</title>
-      <link href="https://gyuhoonk.github.io/impala-with-clause" rel="alternate" type="text/html" title="WITH절/VIEW 사용 시 쿼리 플랜에 대해서" />
-      <published>2023-02-16T22:30:00+09:00</published>
-      <updated>2023-02-16T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/impala-with-clause</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/impala-with-clause">&lt;p&gt;WITH절/VIEW 사용은 효율적인 쿼리플랜과 관련이 없다&lt;/p&gt;
-
-&lt;h3 id=&quot;with절cte&quot;&gt;WITH절(CTE)&lt;/h3&gt;
-&lt;p&gt;WITH절은 SELECT문을 전에 작성하여 복잡한 쿼리를 alias로 처리할 수 있도록 도와줍니다. SELECT문 내에서 여러번 반복해서 사용해야하는 구문을 미리 WITH절로 정의해놓음으로써 작성되는 쿼리의 복잡성을 낮출 수 있습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CREATE VIEW&lt;/code&gt;와 비슷하지만, WITH절 내에서 정의된 컬럼명과 테이블은 쿼리 세션이 종료되면 유지되지 않는다는 차이점이 있습니다. 또한, WITH절은 존재하는 테이블/뷰의 이름과 중복되더라도 충돌이 발생하지 않습니다.&lt;/p&gt;
-
-&lt;p&gt;WITH절을 사용하는 목적은 3가지로 요약할 수 있습니다.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;작성하는 쿼리 내부의 중복을 줄임으로써 쿼리 작성이 편리해집니다.&lt;/li&gt;
-  &lt;li&gt;쿼리의 복잡한 부분을 추출하여 WITH절로 정의해둠으로써 쿼리를 읽고 이해하기 쉽게 합니다.&lt;/li&gt;
-  &lt;li&gt;WITH절을 지원함으로써 다른 DB와의 호환성이 보장됩니다. 특히, Oracle과의 호환성이 지원됩니다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;다만, Impala의 WITH절은 recursive query를 지원하지 않습니다.&lt;/p&gt;
-
-&lt;h4 id=&quot;with절-사용-예시&quot;&gt;WITH절 사용 예시&lt;/h4&gt;
-&lt;p&gt;WITH절은 아래처럼 차례대로 정의되는 경우가 일반적입니다.&lt;/p&gt;
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;-- Define 2 subqueries that can be referenced from the body of a longer query.&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; 
-&lt;span class=&quot;n&quot;&gt;t2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;insert&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;into&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;tab&lt;/span&gt; 
-      &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; 
-      &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt; 
-      &lt;span class=&quot;k&quot;&gt;union&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;all&lt;/span&gt; 
-      &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; 
-      &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t2&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;서브쿼리 내부에서 WITH절을 정의하고 사용할 수도 있습니다. 아래의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;t2&lt;/code&gt;는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;UNION ALL&lt;/code&gt;의 앞부분에서 정의되고 사용되었습니다.&lt;/p&gt;
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;-- Define one subquery at the outer level, and another at the inner level as part of the&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;-- initial stage of the UNION ALL query.&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;c1&quot;&gt;-- UNINON ALL의 앞부분 사적&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;with&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
-      &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t2&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
-&lt;span class=&quot;c1&quot;&gt;-- UNINON ALL의 앞부분 종료&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;union&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;all&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;select&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;h4 id=&quot;view1&quot;&gt;VIEW1&lt;/h4&gt;
-&lt;p&gt;view는 alias문처럼 동작하는 경량 논리구조(lightweight logical constructs)입니다. SELECT문에서 테이블 이름을 특정해야하는 부분에 view 이름을 적음으로써 사용할 수 있습니다.&lt;/p&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;a view is purely a logical construct (an alias for a query) with no physical data behind it&lt;/p&gt;
-&lt;/blockquote&gt;
-
-&lt;p&gt;주의해야할 점은 view는 순수하게 &lt;strong&gt;논리구조&lt;/strong&gt;이므로 실제로 데이터를 따로 저장해두지 않습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ALTER VIEW&lt;/code&gt;와 같은 DDL도 view를 관리하는 메타데이터를 변경할 뿐, HDFS에 저장된 데이터 파일에 영향을 주지 않습니다.&lt;/p&gt;
-
-&lt;p&gt;view는 아래와 같은 특징들을 갖습니다.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;압축되고 간단한 문법으로 복잡한 쿼리를 다룰 수 있습니다.&lt;/li&gt;
-  &lt;li&gt;복잡한 쿼리의 중복 사용을 줄임으로써, 유지보수를 쉽게 합니다.&lt;/li&gt;
-  &lt;li&gt;view 생성 시에 새로운 절, SELECT-LIST, 함수 호출 등을 사용하여 정교한 쿼리를 작성할 수 있습니다.&lt;/li&gt;
-  &lt;li&gt;칼럼과 테이블의 이름을 직관적인 이름으로 부여할 수 있습니다.&lt;/li&gt;
-  &lt;li&gt;view에 연결된 테이블을 변경하는 과정에서 downtime이 발생하지 않습니다.&lt;/li&gt;
-  &lt;li&gt;여러 쿼리들에서 반복적으로 사용되는 같은 서브쿼리를 view로 정의해둠으로써 긴 서브쿼리 작성을 피할 수 있습니다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;view를 사용할 때는 아래와 같은 제한사항이 있습니다.&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;impala view에는 데이터를 INSERT할 수 없습니다.&lt;/li&gt;
-  &lt;li&gt;view를 생성할 때 사용된 쿼리의 WHERE절과 현재 실행한 쿼리의 WHERE절이 partition pruning에 적용됩니다. 1.4 버전 이전에는 view 생성 시 사용된 쿼리의 WHWERE절만 partition pruning이 적용되었습니다.&lt;/li&gt;
-  &lt;li&gt;view 생성 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;LIMIT&lt;/code&gt;이 없이 사용된 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ORDER BY&lt;/code&gt;는 무시됩니다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;with절view-사용과-쿼리-플랜에-대해서&quot;&gt;WITH절/VIEW 사용과 쿼리 플랜에 대해서&lt;/h3&gt;
-&lt;p&gt;아래와 같은 쿼리를 작성했을 때, 어떤 query plan이 생성되리라 기대하시나요?&lt;/p&gt;
-
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;WITH&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;MAX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;table1&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;t1_col1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; 
-      &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;level1&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;
-&lt;span class=&quot;n&quot;&gt;t1_col2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; 
-      &lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;level1&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt;
-&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t1_col1&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;UNION&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ALL&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t1_col2&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;저는 위와 같은 쿼리를 작성하면서 WITH절 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;t1&lt;/code&gt;을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;t1_col1&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;t1_col2&lt;/code&gt;에서 공통으로 사용하고 있으므로, 아래와 같이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;t1&lt;/code&gt;으로부터 파생되는 WITH절을 생성하는 쿼리 플랜을 기대했었습니다. 즉 전체 쿼리 실행 중에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GROUP BY&lt;/code&gt;로 발생하는 계산은 1회만 발생하리라 예상했습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;assets/built/images/hadoop/with-query-plan-1.png&quot; alt=&quot;image1&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;그러나 impala에서 위와 같은 쿼리를 실행했을 때 확인되는 쿼리 플랜은 실제로는 아래와 같았습니다.&lt;/p&gt;
-
-&lt;p&gt;&lt;img src=&quot;assets/built/images/hadoop/with-query-plan-2.png&quot; alt=&quot;image2&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;실행 중에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;table1&lt;/code&gt;은 2번 스캔하고, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;t1&lt;/code&gt;을 생성하는 WITH절도 2번 실행됩니다. 즉 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;GROUP BY&lt;/code&gt; 연산이 2회 발생했습니다. 예상했던 것보다 2배의 스캔량과 2배의 연산이 발생했습니다.&lt;/p&gt;
-
-&lt;p&gt;쿼리를 작성하는 사람은 하나의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;t1&lt;/code&gt;으로부터 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;t1_col1&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;t1_col2&lt;/code&gt;를 생성하겠다는 의미를 담아 쿼리를 작성했을 확률이 높습니다. 실제로 저 또한 그러했습니다. 그러나 실제로 실행될 때에는 쿼리 작성자의 의도와는 다르게 2번의 스캔과 2번의 연산이 발생하게 됩니다. 이런 차이점이 발생하는 이유는 무엇일까요?&lt;/p&gt;
-
-&lt;p&gt;그것은 기본적으로 WITH절이 VIEW와 같이 &lt;strong&gt;순수한 논리구조(purely a logical construct)&lt;/strong&gt;에 불과하기 때문입니다. 앞서 설명드린 것처럼 VIEW는 실제로 HDFS에 어떤 데이터를 생성하거나 변경시키지 못합니다. 단지 해당 VIEW를 조회할 때, VIEW 생성 시 사용된 로직(SELECT문)을 실행시켜주는 논리구조에 불과합니다.&lt;/p&gt;
-
-&lt;p&gt;WITH절도 VIEW와 마찬가지로 HDFS 어딘가에 그 생성 결과를 저장해두거나 실제 데이터를 변경시키는 작업을 하지 못합니다. 단지 해당 쿼리 세션 내에서 일치하는 부분을 WITH절로 변경시켜주는 것에 불과합니다.&lt;br /&gt;
-즉 제가 예시로 들었던 쿼리는 기본적으로 아래의 쿼리를 실행하는 것과 동일하며, 쿼리 플랜 역시 아래 쿼리를 실행하는 것과 동일할 뿐입니다.&lt;/p&gt;
-&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;level1&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;MAX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;table1&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;k&quot;&gt;UNION&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;ALL&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt; 
-&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;level1&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;  &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt;
-            &lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;MAX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;AS&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col3&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;table1&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;t1&lt;/span&gt;
-      &lt;span class=&quot;k&quot;&gt;GROUP&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;BY&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;col2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-&lt;p&gt;같은 예시를 WITH절 대신 VIEW를 사용하여도 같은 결과를 확인할 수 있습니다.&lt;/p&gt;
-
-&lt;p&gt;따라서 쿼리 작성 시 WITH절/VIEW를 사용함으로써 효율적인 쿼리 플랜을 만들 수 있다고 생각해선 안됩니다. WITH절과 VIEW의 사용은 단순히 1) 쿼리 내 중복 사용을 줄이고, 2) 쿼리를 읽고 이해하기 쉽게 만드는 것임을 기억해야합니다.&lt;/p&gt;
-
-&lt;p&gt;[참고]&lt;br /&gt;
-&lt;a href=&quot;https://impala.apache.org/docs/build/plain-html/topics/impala_with.html&quot;&gt;WITH Clause&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://impala.apache.org/docs/build/html/topics/impala_views.html&quot;&gt;Overview of Impala Views&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://impala.apache.org/docs/build/html/topics/impala_create_view.html#create_view&quot;&gt;CREATE VIEW Statement&lt;/a&gt;&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="hadoop" />
-      
-
-      
-        <summary type="html">WITH절/VIEW 사용은 효율적인 쿼리플랜과 관련이 없다</summary>
       
 
       

@@ -171,7 +171,7 @@ into the {body} of the default.hbs template -->
 <main id="site-main" class="site-main outer" role="main">
     <div class="inner">
 
-        <article class="post-full  tag-spring post tag-hadoop ">
+        <article class="post-full  tag-spring post tag-spring ">
 
             <header class="post-full-header">
                 <section class="post-full-meta">
@@ -337,6 +337,41 @@ into the {body} of the default.hbs template -->
 
 <p> DI를 이용하는 경우 DIP를 준수할 수 있게 됩니다. 즉, 상위 계층이 하위 계층에 의존하지 않을 수 있습니다.</p>
 
+<h2 id="spring에서의-사용-방법spring-container">Spring에서의 사용 방법(Spring Container)</h2>
+
+<p>Spring은 작성된 <code class="language-plaintext highlighter-rouge">AppConfig</code>를 어디서든 불러서 사용할 수 있게끔 관리해줍니다. Spring Container를 생성하고, AppConfig에 작성해두었던 구체 클래스의 의존 관계를 저장해둡니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Configuration</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AppConfig</span> <span class="o">{</span>
+
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">MemberRepository</span> <span class="nf">memberRepository</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">MemoryMemberRepository</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">DiscountPolicy</span> <span class="nf">discountPolicy</span><span class="o">(){</span>
+       <span class="k">return</span> <span class="k">new</span> <span class="nf">FixDiscountPolicy</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">OrderService</span> <span class="nf">orderService</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">OrderServiceImpl</span><span class="o">(</span><span class="n">memberRepository</span><span class="o">(),</span> <span class="n">discountPolicy</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+<p>이렇게 작성해두면 스프링 컨테이너 내부에서 구체 클래스를 생성한 뒤, 구체 클래스 간 의존 관계를 자동으로 설정합니다.<br />
+구체적으로 설명하자면, <code class="language-plaintext highlighter-rouge">MemoryMemberRepository</code>, <code class="language-plaintext highlighter-rouge">FixDiscountPolicy</code>를 먼저 생성한 뒤에 이를 이용하여 <code class="language-plaintext highlighter-rouge">OrderService</code>의 생성해 사용합니다.</p>
+
+<p>이렇게 생성된 Bean들은 아래와 같이 호출할 수 있습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">AnnotationConfigApplicationContext</span> <span class="n">ac</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AnnotationConfigApplicationContext</span><span class="o">(</span><span class="nc">SameBeanConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+
+<span class="nc">MemberRepository</span> <span class="n">memberRepository</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"memberRepository"</span><span class="o">,</span> <span class="nc">MemberRepository</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="nc">DiscountPolicy</span> <span class="n">discountPolicy</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"discountPolicy"</span><span class="o">,</span> <span class="nc">DiscountPolicy</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="nc">OrderService</span> <span class="n">orderService</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"orderService"</span><span class="o">,</span> <span class="nc">OrderService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</code></pre></div></div>
+
 <h2 id="정리">정리</h2>
 <ul>
   <li>전통적인 의존관계 정의는 OOP 원칙을 준수할 수 없다</li>
@@ -421,9 +456,188 @@ into the {body} of the default.hbs template -->
                 
                 
                 
+                    <article class="read-next-card"
+                        
+                            style="background-image: url(/assets/built/images/spain-blog-cover.jpg)"
+                        
+                    >
+                        <header class="read-next-card-header">
+                            <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
+                            
+                                <h3 class="read-next-card-header-title"><a href="/tag/spring/">Spring</a></h3>
+                            
+                        </header>
+                        <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
+</div>
+                        <div class="read-next-card-content">
+                            <ul>
+                                
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/get-bean">Spring Bean 조회하기</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                            </ul>
+                        </div>
+                        <footer class="read-next-card-footer">
+                            <a href="/tag/spring/">
+                                
+                                    See all 1 posts  →
+                                
+                            </a>
+                        </footer>
+                    </article>
+                <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+                </script>
+                
             
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/get-bean">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/spring/bean.jpg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/get-bean">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Spring</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Spring Bean 조회하기</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Spring Container에서 Bean을 조회하는 방법을 정리합니다
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      2 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
             
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
