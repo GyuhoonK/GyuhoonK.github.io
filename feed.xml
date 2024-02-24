@@ -5,8 +5,21 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Fri, 19 Jan 2024 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sun, 18 Feb 2024 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>Spring Bean 정의하기</title>
+        
+        
+            <description>&lt;p&gt;Spring Container에서 Bean 정의를 정리합니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 18 Feb 2024 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/bean-definition</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/bean-definition</guid>
+      </item>
+    
 	<item>
 		<title>Spring Bean 조회하기</title>
         
@@ -122,19 +135,6 @@
         <pubDate>Sat, 18 Mar 2023 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/decorator</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/decorator</guid>
-      </item>
-    
-	<item>
-		<title>Load Average란?(chatGPT로 알아보기)</title>
-        
-        
-            <description>&lt;p&gt;chatGPT로 load average로 파헤쳐보기&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sat, 11 Mar 2023 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/load-avg</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/load-avg</guid>
       </item>
     
   </channel>

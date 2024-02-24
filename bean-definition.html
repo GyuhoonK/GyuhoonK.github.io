@@ -11,7 +11,7 @@
 
 
 
-    <title>Spring Bean 조회하기</title>
+    <title>Spring Bean 정의하기</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,26 +37,26 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/get-bean" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/bean-definition" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Spring Bean 조회하기" />
-    <meta property="og:description" content="Spring Container에서 Bean을 조회하는 방법을 정리합니다 Spring Bean이란? Spring 공식 문서에서 Bean을 아래처럼 설명합니다. A Spring IoC container manages one or more beans. These beans are created with the configuration metadata that you supply to the container (for example, in the form of XML definitions). Spring IoC(Inversion Of Control) Container," />
-    <meta property="og:url" content="https://gyuhoonk.github.io/get-bean" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/spring/bean.jpg" />
+    <meta property="og:title" content="Spring Bean 정의하기" />
+    <meta property="og:description" content="Spring Container에서 Bean 정의를 정리합니다. BeanFactory 스프링 컨테이너의 최상위 인터페이스이다. 스프링 빈을 관리하고 조회하는 역할(getBean)을 한다 정확하게는 Spring Container는 BeanFactory에 해당한다 ApplicationContext 일반적으로 Spring Container라하면 ApplicationConetxt를 말한다 ApplicationContext는 BeanFactory를 확장한 인터페이스로, BeanFactory의 모든 역할을 상속받는다 AnnotationConfigApplicationContext와 같은 구현 객체를 사용한다 BeanFactory의 기능(빈 관리/조회) 외에 수많은 부가 기능을 제공한다 메시지 소스를" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/bean-definition" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/spring/spring-dependencies.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2024-01-19T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2024-01-19T22:30:00+09:00" />
+    <meta property="article:published_time" content="2024-02-18T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2024-02-18T22:30:00+09:00" />
     <meta property="article:tag" content="Spring" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Spring Bean 조회하기" />
-    <meta name="twitter:description" content="Spring Container에서 Bean을 조회하는 방법을 정리합니다 Spring Bean이란? Spring 공식 문서에서 Bean을 아래처럼 설명합니다. A Spring IoC container manages one or more beans. These beans are created with the configuration metadata that you supply to the container (for example, in the form of XML definitions). Spring IoC(Inversion Of Control) Container," />
+    <meta name="twitter:title" content="Spring Bean 정의하기" />
+    <meta name="twitter:description" content="Spring Container에서 Bean 정의를 정리합니다. BeanFactory 스프링 컨테이너의 최상위 인터페이스이다. 스프링 빈을 관리하고 조회하는 역할(getBean)을 한다 정확하게는 Spring Container는 BeanFactory에 해당한다 ApplicationContext 일반적으로 Spring Container라하면 ApplicationConetxt를 말한다 ApplicationContext는 BeanFactory를 확장한 인터페이스로, BeanFactory의 모든 역할을 상속받는다 AnnotationConfigApplicationContext와 같은 구현 객체를 사용한다 BeanFactory의 기능(빈 관리/조회) 외에 수많은 부가 기능을 제공한다 메시지 소스를" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/spring/bean.jpg" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/spring/spring-dependencies.png" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
@@ -75,18 +75,18 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/get-bean",
+    "url": "https://gyuhoonk.github.io/bean-definition",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/spring/bean.jpg",
+        "url": "https://gyuhoonk.github.io/assets/built/images/spring/spring-dependencies.png",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/get-bean"
+        "@id": "https://gyuhoonk.github.io/bean-definition"
     },
-    "description": "Spring Container에서 Bean을 조회하는 방법을 정리합니다 Spring Bean이란? Spring 공식 문서에서 Bean을 아래처럼 설명합니다. A Spring IoC container manages one or more beans. These beans are created with the configuration metadata that you supply to the container (for example, in the form of XML definitions). Spring IoC(Inversion Of Control) Container,"
+    "description": "Spring Container에서 Bean 정의를 정리합니다. BeanFactory 스프링 컨테이너의 최상위 인터페이스이다. 스프링 빈을 관리하고 조회하는 역할(getBean)을 한다 정확하게는 Spring Container는 BeanFactory에 해당한다 ApplicationContext 일반적으로 Spring Container라하면 ApplicationConetxt를 말한다 ApplicationContext는 BeanFactory를 확장한 인터페이스로, BeanFactory의 모든 역할을 상속받는다 AnnotationConfigApplicationContext와 같은 구현 객체를 사용한다 BeanFactory의 기능(빈 관리/조회) 외에 수많은 부가 기능을 제공한다 메시지 소스를"
 }
     </script>
 
@@ -99,7 +99,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="Spring Bean 조회하기" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Spring Bean 정의하기" href="/feed.xml" />
 
     
 </head>
@@ -175,7 +175,7 @@ into the {body} of the default.hbs template -->
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="19 January 2024">19 January 2024</time>
+                    <time class="post-full-meta-date" datetime="18 February 2024">18 February 2024</time>
                     
                         <span class="date-divider">/</span>
                         
@@ -185,154 +185,153 @@ into the {body} of the default.hbs template -->
                         
                     
                 </section>
-                <h1 class="post-full-title">Spring Bean 조회하기</h1>
+                <h1 class="post-full-title">Spring Bean 정의하기</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/spring/bean.jpg)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/spring/spring-dependencies.png)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>Spring Container에서 Bean을 조회하는 방법을 정리합니다</p>
+                    <p>Spring Container에서 Bean 정의를 정리합니다.</p>
 
-<h2 id="spring-bean이란">Spring Bean이란?</h2>
-
-<p>Spring 공식 문서에서 Bean을 아래처럼 설명합니다.</p>
-
-<blockquote>
-  <p>A Spring IoC container manages one or more beans. These beans are created with the configuration metadata that you supply to the container (for  example, in the form of XML <bean></bean> definitions).</p>
-</blockquote>
-
-<p>Spring IoC(Inversion Of Control) Container, 줄여서 Spring Container에서 관리하고 있는 객체들을 <strong>Bean</strong>이라고 부릅니다. Bean을 정의하기 위해서는 annotation(<code class="language-plaintext highlighter-rouge">@bean</code>)을 사용하거나 혹은 XML 파일 형식으로 정의할 수 있습니다.</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Configuration</span>
-    <span class="kd">static</span> <span class="kd">class</span> <span class="nc">TestBeanConfig</span> <span class="o">{</span>
-        <span class="nd">@Bean</span>
-        <span class="kd">public</span> <span class="nc">MemberRepository</span> <span class="nf">memberRepository</span><span class="o">()</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="k">new</span> <span class="nf">MemoryMemberRepository</span><span class="o">();</span>
-        <span class="o">}</span>
-
-        <span class="nd">@Bean</span>
-        <span class="kd">public</span> <span class="nc">MemberService</span> <span class="nf">memberService</span><span class="o">()</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="k">new</span> <span class="nf">MemberService</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-</code></pre></div></div>
-
-<h2 id="bean-호출하기">Bean 호출하기</h2>
-<p>실제로 Bean을 호출하여 사용하는 방법은 아래와 같습니다.</p>
+<h2 id="beanfactory">BeanFactory</h2>
 <ul>
-  <li>Baen 이름으로 조회하기</li>
-  <li>클래스로 조회하기</li>
-  <li>상속 관계 조회하기</li>
+  <li>스프링 컨테이너의 최상위 인터페이스이다.</li>
+  <li>스프링 빈을 관리하고 조회하는 역할(<code class="language-plaintext highlighter-rouge">getBean</code>)을 한다</li>
+  <li>정확하게는 Spring Container는 BeanFactory에 해당한다</li>
 </ul>
 
-<h3 id="bean-이름으로-조회하기">Bean 이름으로 조회하기</h3>
-<p>가장 기본적인 Bean 호출 방식입니다.</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Bean 호출을 위한 context 생성</span>
-<span class="nc">AnnotationConfigApplicationContext</span> <span class="n">ac</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AnnotationConfigApplicationContext</span><span class="o">(</span><span class="nc">TestBeanConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<h2 id="applicationcontext">ApplicationContext</h2>
+<ul>
+  <li>일반적으로 Spring Container라하면 ApplicationConetxt를 말한다</li>
+  <li>ApplicationContext는 BeanFactory를 확장한 인터페이스로, BeanFactory의 모든 역할을 상속받는다</li>
+  <li>AnnotationConfigApplicationContext와 같은 구현 객체를 사용한다</li>
+  <li>BeanFactory의 기능(빈 관리/조회) 외에 수많은 부가 기능을 제공한다
+    <ul>
+      <li>메시지 소스를 활용한 국제화 기능</li>
+      <li>환경변수</li>
+      <li>애플리케이션 이벤트</li>
+      <li>편리한 리소스 조회</li>
+    </ul>
+  </li>
+  <li>기본적으로 싱글톤 컨테이너를 생성한다
+    <ul>
+      <li>컨테이너 내에서 자동으로 의존관계를 설정한다</li>
+      <li>정확하게는 [Bean 생성]과 [의존관계 주입 단계]가 나누어져있다</li>
+    </ul>
+  </li>
+</ul>
 
-<span class="nc">MemberRepository</span> <span class="n">bean1</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"memberRepository"</span><span class="o">,</span> <span class="nc">MemberRepository</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-<span class="nc">MemberService</span> <span class="n">bean2</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"memberService"</span><span class="o">,</span> <span class="nc">MemberService</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<h2 id="appilcationcontext-내에-spring-bean-정의하기">AppilcationContext 내에 Spring Bean 정의하기</h2>
+
+<h3 id="1-java-코드-이용">[1] Java 코드 이용</h3>
+<ul>
+  <li>factory method를 이용하여 Bean을 정의한다고 표현한다</li>
+  <li>annotation(<code class="language-plaintext highlighter-rouge">@Configuration, @Bean</code>) 기반 자바 코드 설정을 사용한다</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// hello/demo/AppConfig.class</span>
+<span class="nd">@Configuration</span> <span class="c1">// App의 설정 정보(구성 정보)를 담고 있다</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">AppConfig</span> <span class="o">{</span>
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">MemberRepository</span> <span class="nf">memberRepository</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">MemoryMemberRepository</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">DiscountPolicy</span> <span class="nf">discountPolicy</span><span class="o">(){</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">RateDiscountPolicy</span><span class="o">();</span>
+    <span class="o">}</span>
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">MemberService</span> <span class="nf">memberService</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">MemberServiceImpl</span><span class="o">(</span><span class="n">memberRepository</span><span class="o">());</span>
+
+    <span class="o">}</span>
+    <span class="nd">@Bean</span>
+    <span class="kd">public</span> <span class="nc">OrderService</span> <span class="nf">orderService</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">OrderServiceImpl</span><span class="o">(</span><span class="n">memberRepository</span><span class="o">(),</span> <span class="n">discountPolicy</span><span class="o">());</span>
+    <span class="o">}</span>
+<span class="o">}</span>
 </code></pre></div></div>
-<p><code class="language-plaintext highlighter-rouge">memberRepository</code>, <code class="language-plaintext highlighter-rouge">memberService</code>와 같이 Bean Name을 이용하여 조회할 수 있습니다. Bean Name은 생성할 때 따로 지정하지 않으면 기본값으로 method name을 사용합니다.
-@Bean 어노테이션 사용 시에 따로 bean name을 지정할 수도 있습니다.</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="nd">@Bean</span><span class="o">(</span><span class="n">name</span><span class="o">=</span><span class="s">"memberService1"</span><span class="o">)</span>
-        <span class="kd">public</span> <span class="nc">MemberService</span> <span class="nf">memberService</span><span class="o">()</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="k">new</span> <span class="nf">MemberService</span><span class="o">();</span>
-        <span class="o">}</span>
+<p>위 <code class="language-plaintext highlighter-rouge">AppConfig.java</code>를 이용하여 Spring Container를 생성할 때는 아래와 같이 이용한다</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// hello/demo/MemberApp.java</span>
+<span class="nc">ApplicationContext</span> <span class="n">applicationContext</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AnnotationConfigApplicationContext</span><span class="o">(</span><span class="nc">AppConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 </code></pre></div></div>
 
-<h3 id="클래스로-조회하기">클래스로 조회하기</h3>
+<p>Spring은 Bean을 생성하고 아래와 같이 의존 관계를 자동으로 주입한다</p>
 
-<p>Name이 아니라 bean의 class만으로도 조회가 가능합니다.</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">MemberRepository</span> <span class="n">bean1</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="nc">MemberRepository</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<p><img src="../../assets/built/images/spring/spring-dependencies.png" alt="typo1" /></p>
+
+<h3 id="2-xml-파일-이용">[2] XML 파일 이용</h3>
+
+<ul>
+  <li>최근 사용하지 않는 추세이다</li>
+  <li>컴파일 없이 사용 가능하다</li>
+</ul>
+
+<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+       <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+       <span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"memberService"</span> <span class="na">class=</span><span class="s">"hello.demo.member.MemberServiceImpl"</span> <span class="nt">&gt;</span>
+        <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">"memberRepository"</span> <span class="na">ref=</span><span class="s">"memberRepository"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"memberRepository"</span> <span class="na">class=</span><span class="s">"hello.demo.member.MemoryMemberRepository"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"orderService"</span> <span class="na">class=</span><span class="s">"hello.demo.order.OrderServiceImpl"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">"memberRepository"</span> <span class="na">ref=</span><span class="s">"memberRepository"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+        <span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">"discountPolicy"</span> <span class="na">ref=</span><span class="s">"discountPolicy"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"discountPolicy"</span> <span class="na">class=</span><span class="s">"hello.demo.discount.RateDiscountPolicy"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+
+<span class="nt">&lt;/beans&gt;</span>
 </code></pre></div></div>
 
-<p>class만으로 Bean을 조회하는 경우 동일한 class를 가진 bean이 있다면 에러가 발생합니다.</p>
+<p><code class="language-plaintext highlighter-rouge">GenericXmlApplicationContext</code> 구현 객체를 이용하여 스프링 컨테이너 내에 Bean을 생성한다</p>
 
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Configuration</span>
-    <span class="kd">static</span> <span class="kd">class</span> <span class="nc">TestBeanConfig</span> <span class="o">{</span>
-        <span class="nd">@Bean</span>
-        <span class="kd">public</span> <span class="nc">MemberRepository</span> <span class="nf">memberRepository1</span><span class="o">()</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="k">new</span> <span class="nf">MemoryMemberRepository</span><span class="o">();</span>
-        <span class="o">}</span>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">GenericXmlApplicationContext</span> <span class="n">ac</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">GenericXmlApplicationContext</span><span class="o">(</span><span class="s">"appConfig.xml"</span><span class="o">);</span>
+</code></pre></div></div>
 
-        <span class="nd">@Bean</span>
-        <span class="kd">public</span> <span class="nc">MemberRepository</span> <span class="nf">memberRepository2</span><span class="o">()</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="k">new</span> <span class="nf">MemoryMemberRepository</span><span class="o">();</span>
+<h2 id="beandefinition-확인하기">BeanDefinition 확인하기</h2>
+<ul>
+  <li>BeanDefinition이란 Bean 설정 메타 정보를 추상화해놓은 인터페이스이다</li>
+  <li>작성해놓은 <code class="language-plaintext highlighter-rouge">@Bean, &lt;Bean&gt;</code> 하나 당 하나의 메타 정보를 생성한다</li>
+  <li>아래와 같은 BeanDefinitionReader가 ApplicationContext의 구현 객체 내에 포함되어 있어 BeanDefinition을 조회할 수 있다
+    <ul>
+      <li>AnnotatedBeanDefitiionReader(AppConfig.java)</li>
+      <li>XMLBeanDefinitionReader(appConfig.xml)</li>
+      <li>XXXBeanDefinitionReader(기타))</li>
+    </ul>
+  </li>
+  <li>BeanDefinition을 코드 내에서 직접 생성하여 스프링 컨테이너에 등록할 수도 있다 (잘 사용하진 않는다)</li>
+</ul>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">findApplicationBean</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">String</span><span class="o">[]</span> <span class="n">beanDefinitionNames</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBeanDefinitionNames</span><span class="o">();</span>
+        <span class="k">for</span> <span class="o">(</span><span class="nc">String</span> <span class="nl">beanDefinitionName:</span> <span class="n">beanDefinitionNames</span><span class="o">){</span>
+            <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">beans</span><span class="o">.</span><span class="na">factory</span><span class="o">.</span><span class="na">config</span><span class="o">.</span><span class="na">BeanDefinition</span> <span class="n">beanDefinition</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBeanDefinition</span><span class="o">(</span><span class="n">beanDefinitionName</span><span class="o">);</span> <span class="c1">// BeanDefinitionReader를 사용함</span>
+
+            <span class="k">if</span> <span class="o">(</span><span class="n">beanDefinition</span><span class="o">.</span><span class="na">getRole</span><span class="o">()</span> <span class="o">==</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">beans</span><span class="o">.</span><span class="na">factory</span><span class="o">.</span><span class="na">config</span><span class="o">.</span><span class="na">BeanDefinition</span><span class="o">.</span><span class="na">ROLE_APPLICATION</span><span class="o">)</span> <span class="o">{</span>
+                <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"beanDefinitionName = "</span> <span class="o">+</span> <span class="n">beanDefinitionName</span> <span class="o">+</span> <span class="s">"beanDefinition = "</span> <span class="o">+</span> <span class="n">beanDefinition</span><span class="o">);</span>
+            <span class="o">}</span>
         <span class="o">}</span>
     <span class="o">}</span>
-<span class="nc">AnnotationConfigApplicationContext</span> <span class="n">ac</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">AnnotationConfigApplicationContext</span><span class="o">(</span><span class="nc">TestBeanConfig</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-
-<span class="nc">MemberRepository</span> <span class="n">bean1</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="nc">MemberRepository</span><span class="o">.</span><span class="na">class</span><span class="o">);</span> <span class="c1">// 에러 발생</span>
-</code></pre></div></div>
-
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>org.springframework.beans.factory.NoUniqueBeanDefinitionException: 
-No qualifying bean of type 'hello.demo.member.MemberRepository' available:
-expected single matching bean but found 2: memberRepository1,memberRepository2
-</code></pre></div></div>
-
-<p>위 코드에서 <code class="language-plaintext highlighter-rouge">MemberRepository.class</code>에 해당하는 Bean이 2개(<code class="language-plaintext highlighter-rouge">memberRepository1, memberRepository2</code>)가 있으므로 <code class="language-plaintext highlighter-rouge">NoUniqueBeanDefinitionException</code> 에러가 발생합니다.</p>
-
-<p>이런 경우 bean name을 정확히 지정해주거나, 모든 bean을 조회하고 싶다면 <code class="language-plaintext highlighter-rouge">getBeansOfType</code> 메소드를 사용해야합니다.</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// bean name 지정하여 조회</span>
-<span class="nc">MemberRepository</span> <span class="n">bean1</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="err">'</span><span class="n">memberRepository1</span><span class="err">'</span><span class="o">,</span> <span class="nc">MemberRepository</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-
-<span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">MemberRepository</span><span class="o">&gt;</span> <span class="n">beansOfType</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBeansOfType</span><span class="o">(</span><span class="nc">MemberRepository</span><span class="o">.</span><span class="na">class</span><span class="o">);</span> <span class="c1">// memberRepository1, memberRepository2</span>
-</code></pre></div></div>
-
-<h3 id="상속-관계를-이용하여-조회하기">상속 관계를 이용하여 조회하기</h3>
-
-<p>클래스 A를 상속받아 클래스 B를 선언했다면, 부모 클래스(A)를 이용하여 자식 클래스를 모두 조회할 수도 있습니다.</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Configuration</span>
-    <span class="kd">static</span> <span class="kd">class</span> <span class="nc">TestConfig</span> <span class="o">{</span>
-        <span class="nd">@Bean</span>
-        <span class="kd">public</span> <span class="nc">DiscountPolicy</span> <span class="nf">rateDiscountPolicy</span><span class="o">()</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="k">new</span> <span class="nf">RateDiscountPolicy</span><span class="o">();</span>
-        <span class="o">}</span>
-
-        <span class="nd">@Bean</span>
-        <span class="kd">public</span> <span class="nc">DiscountPolicy</span> <span class="nf">fixDiscountPolicy</span><span class="o">(){</span>
-            <span class="k">return</span> <span class="k">new</span> <span class="nf">FixDiscountPolicy</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-</code></pre></div></div>
-
-<p><code class="language-plaintext highlighter-rouge">DisCountPolicy</code>를 상속받아 <code class="language-plaintext highlighter-rouge">RateDiscountPolicy, FixDiscountPolicy</code> 클래스를 선언했습니다.</p>
-
-<p>부모 클래스를 이용하여 조회하는 경우 자식 클래스를 모두 조회할 수 있습니다. 1개 Bean만을 조회하기 위해 <code class="language-plaintext highlighter-rouge">getBean</code>을 사용하는 경우에는 마찬가지로 <code class="language-plaintext highlighter-rouge">NoUniqueBeanDefinitionException</code> 에러가 발생합니다.</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">DiscountPolicy</span> <span class="n">bean1</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="nc">DiscountPolicy</span><span class="o">.</span><span class="na">class</span><span class="o">);</span> <span class="c1">// NoUniqueBeanDefinitionException 에러 발생</span>
-
-<span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">DiscountPolicy</span><span class="o">&gt;</span> <span class="n">beansOfType</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBeansOfType</span><span class="o">(</span><span class="nc">DiscountPolicy</span><span class="o">.</span><span class="na">class</span><span class="o">);</span> <span class="c1">// RateDiscountPolicy, FixDiscountPolicy</span>
-</code></pre></div></div>
-
-<p>특정 자식 클래스를 조회하고 싶은 경우 Bean name을 이용해야합니다.</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">DiscountPolicy</span> <span class="n">bean</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"rateDiscountPolicy"</span><span class="o">,</span> <span class="nc">DiscountPolicy</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
-</code></pre></div></div>
-
-<p>권장하는 방법은 아니지만, 특정 자식 클래스를 이용하여 조회할 수도 있습니다.</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">DiscountPolicy</span> <span class="n">bean</span> <span class="o">=</span> <span class="n">ac</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="nc">RateDiscountPolicy</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
 </code></pre></div></div>
 
 <h2 id="정리">정리</h2>
 <ul>
-  <li>Bean은 Spring container에서 관리하는 객체이다.</li>
-  <li>container 내부의 bean을 호출하는 방법은 3가지가 있다.
-    <ul>
-      <li>Bean Name을 이용하여 호출</li>
-      <li>Class를 이용하여 호출</li>
-      <li>상속 관계를 이용하여 호출</li>
-    </ul>
-  </li>
+  <li>Spring container란 엄밀히 말하면 BeanFactory를 의미하며, 일반적으로는 ApplicationContext를 말한다</li>
+  <li>ApplicationContext는 BeanFactory의 모든 기능을 상속받고 있으며, 부가적인 기능을 제공한다</li>
+  <li>Bean을 정의할 때는 annotation과 xml을 이용할 수 있다</li>
+  <li>정의된 Bean의 메타 정보는 BeanDefinitionReader(<code class="language-plaintext highlighter-rouge">getBeanDefinition</code>)를 이용하여 조회할 수 있다</li>
 </ul>
 
 <p>[참고]<br />
@@ -431,14 +430,14 @@ expected single matching bean but found 2: memberRepository1,memberRepository2
                                 
                                   
                                     
-                                        
-                                        
-                                            <li><a href="/bean-definition">Spring Bean 정의하기</a></li>
-                                        
-                                    
                                   
                                 
                                   
+                                    
+                                        
+                                        
+                                            <li><a href="/get-bean">Spring Bean 조회하기</a></li>
+                                        
                                     
                                   
                                 
@@ -553,57 +552,6 @@ expected single matching bean but found 2: memberRepository1,memberRepository2
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
             
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/bean-definition">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/spring/spring-dependencies.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/bean-definition">
-                <header class="post-card-header">
-                    
-                        
-                            
-                                <span class="post-card-tags">Spring</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">Spring Bean 정의하기</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>Spring Container에서 Bean 정의를 정리합니다.
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      1 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-            
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
             
@@ -611,12 +559,12 @@ expected single matching bean but found 2: memberRepository1,memberRepository2
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/dependency-inversion-principle">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/spring/injection.jpg)"></div>
+            <a class="post-card-image-link" href="/get-bean">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/spring/bean.jpg)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/dependency-inversion-principle">
+            <a class="post-card-content-link" href="/get-bean">
                 <header class="post-card-header">
                     
                         
@@ -626,11 +574,11 @@ expected single matching bean but found 2: memberRepository1,memberRepository2
                         
                     
 
-                    <h2 class="post-card-title">DIP(Dependency Inversion Principle),의존관계 역전 원칙</h2>
+                    <h2 class="post-card-title">Spring Bean 조회하기</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>의존관계 역전 원칙과 이를 지키기 위한 의존관계 주입(Depdendency Injection, DI)에 대해서 알아봅니다
+                        <p>Spring Container에서 Bean을 조회하는 방법을 정리합니다
 
 </p>
                     
@@ -650,7 +598,7 @@ expected single matching bean but found 2: memberRepository1,memberRepository2
                 <span class="reading-time">
                     
                     
-                      4 min read
+                      2 min read
                     
                 </span>
             </footer>
@@ -672,18 +620,18 @@ expected single matching bean but found 2: memberRepository1,memberRepository2
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">Spring Bean 조회하기</div>
+    <div class="floating-header-title">Spring Bean 정의하기</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Spring+Bean+%EC%A1%B0%ED%9A%8C%ED%95%98%EA%B8%B0&amp;url=https://gyuhoonk.github.ioget-bean"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Spring+Bean+%EC%A0%95%EC%9D%98%ED%95%98%EA%B8%B0&amp;url=https://gyuhoonk.github.iobean-definition"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.ioget-bean"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iobean-definition"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 

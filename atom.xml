@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Spring Bean 정의하기</title>
+        
+          <description>&lt;p&gt;Spring Container에서 Bean 정의를 정리합니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 18 Feb 2024 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/bean-definition</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/bean-definition</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Spring Bean 조회하기</title>
         
           <description>&lt;p&gt;Spring Container에서 Bean을 조회하는 방법을 정리합니다&lt;/p&gt;
