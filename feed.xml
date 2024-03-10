@@ -5,8 +5,21 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Sun, 18 Feb 2024 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sat, 09 Mar 2024 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>Spring Singleton Container</title>
+        
+        
+            <description>&lt;p&gt;Spring Container에서 지원하는 싱글톤 컨테이너에 대해서 알아봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 09 Mar 2024 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/singleton</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/singleton</guid>
+      </item>
+    
 	<item>
 		<title>Spring Bean 정의하기</title>
         
@@ -122,19 +135,6 @@
         <pubDate>Sat, 25 Mar 2023 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/jaydebeapi_class_not_found</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/jaydebeapi_class_not_found</guid>
-      </item>
-    
-	<item>
-		<title>변수를 전달하는 decorator</title>
-        
-        
-            <description>&lt;p&gt;변수를 생성해 함수로 전달하는 데코레이터 만들기&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sat, 18 Mar 2023 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/decorator</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/decorator</guid>
       </item>
     
   </channel>

@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Spring Singleton Container</title>
+        
+          <description>&lt;p&gt;Spring Container에서 지원하는 싱글톤 컨테이너에 대해서 알아봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 09 Mar 2024 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/singleton</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/singleton</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Spring Bean 정의하기</title>
         
           <description>&lt;p&gt;Spring Container에서 Bean 정의를 정리합니다.&lt;/p&gt;
