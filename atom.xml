@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Spring Dependency Injection, Component Scan</title>
+        
+          <description>&lt;p&gt;Spring의 의존관계 주입 방법과 Component Scan에 대해서 알아봅니다&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 01 Jun 2024 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/depdendency-injection</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/depdendency-injection</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Spring Singleton Container</title>
         
           <description>&lt;p&gt;Spring Container에서 지원하는 싱글톤 컨테이너에 대해서 알아봅니다.&lt;/p&gt;
