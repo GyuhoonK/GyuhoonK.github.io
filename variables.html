@@ -11,7 +11,7 @@
 
 
 
-    <title>prepared statement</title>
+    <title>Variables & Dag Parsing</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,30 +37,30 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/prepared-statement" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/variables" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="prepared statement" />
-    <meta property="og:description" content="prepared statement prepared statement란? 개념 위키피디아의 설명을 먼저 살펴보겠습니다. 프리페어드 스테이트먼트(prepared statement), 파라미터라이즈드 스테이트먼트(parameterized statement)는 데이터베이스 관리 시스템(DBMS)에서 동일하거나 비슷한 데이터베이스 문을 높은 효율성으로 반복적으로 실행하기 위해 사용되는 기능이다. 일반적으로 쿼리나 업데이트와 같은 SQL 문과 함께 사용되는 프리페어드 스테이트먼트는 템플릿의 형태를 취하며, 그 템플릿 안으로 특정한 상수값이 매 실행 때마다" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/prepared-statement" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/database/preparedstatement.png" />
+    <meta property="og:title" content="Variables & Dag Parsing" />
+    <meta property="og:description" content="Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다. Variables key value json serialize 암호화 (fernet_key) Best Practice Good execute() 내부에서는 자유롭게 사용 jinja template 사용하여 전달 Bad TOP LEVEL PYTHON 코드에서 get 메소드 사용 대체 방법 jinja task(execute) 내에서 get 메소드 사용 Dag Parsing Top Level Python Code Dag" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/variables" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/airflow/airflow.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2023-10-29T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2023-10-29T22:30:00+09:00" />
-    <meta property="article:tag" content="Database" />
+    <meta property="article:published_time" content="2024-11-08T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2024-11-08T22:30:00+09:00" />
+    <meta property="article:tag" content="Airflow" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="prepared statement" />
-    <meta name="twitter:description" content="prepared statement prepared statement란? 개념 위키피디아의 설명을 먼저 살펴보겠습니다. 프리페어드 스테이트먼트(prepared statement), 파라미터라이즈드 스테이트먼트(parameterized statement)는 데이터베이스 관리 시스템(DBMS)에서 동일하거나 비슷한 데이터베이스 문을 높은 효율성으로 반복적으로 실행하기 위해 사용되는 기능이다. 일반적으로 쿼리나 업데이트와 같은 SQL 문과 함께 사용되는 프리페어드 스테이트먼트는 템플릿의 형태를 취하며, 그 템플릿 안으로 특정한 상수값이 매 실행 때마다" />
+    <meta name="twitter:title" content="Variables & Dag Parsing" />
+    <meta name="twitter:description" content="Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다. Variables key value json serialize 암호화 (fernet_key) Best Practice Good execute() 내부에서는 자유롭게 사용 jinja template 사용하여 전달 Bad TOP LEVEL PYTHON 코드에서 get 메소드 사용 대체 방법 jinja task(execute) 내에서 get 메소드 사용 Dag Parsing Top Level Python Code Dag" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/database/preparedstatement.png" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/airflow/airflow.png" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Database" />
+    <meta name="twitter:data2" content="Airflow" />
     <meta name="twitter:site" content="@" />
     <meta name="twitter:creator" content="@" />
     <meta property="og:image:width" content="1400" />
@@ -75,18 +75,18 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/prepared-statement",
+    "url": "https://gyuhoonk.github.io/variables",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/database/preparedstatement.png",
+        "url": "https://gyuhoonk.github.io/assets/built/images/airflow/airflow.png",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/prepared-statement"
+        "@id": "https://gyuhoonk.github.io/variables"
     },
-    "description": "prepared statement prepared statement란? 개념 위키피디아의 설명을 먼저 살펴보겠습니다. 프리페어드 스테이트먼트(prepared statement), 파라미터라이즈드 스테이트먼트(parameterized statement)는 데이터베이스 관리 시스템(DBMS)에서 동일하거나 비슷한 데이터베이스 문을 높은 효율성으로 반복적으로 실행하기 위해 사용되는 기능이다. 일반적으로 쿼리나 업데이트와 같은 SQL 문과 함께 사용되는 프리페어드 스테이트먼트는 템플릿의 형태를 취하며, 그 템플릿 안으로 특정한 상수값이 매 실행 때마다"
+    "description": "Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다. Variables key value json serialize 암호화 (fernet_key) Best Practice Good execute() 내부에서는 자유롭게 사용 jinja template 사용하여 전달 Bad TOP LEVEL PYTHON 코드에서 get 메소드 사용 대체 방법 jinja task(execute) 내에서 get 메소드 사용 Dag Parsing Top Level Python Code Dag"
 }
     </script>
 
@@ -99,33 +99,8 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="prepared statement" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Variables & Dag Parsing" href="/feed.xml" />
 
-    
-      <script type="text/x-mathjax-config">
-	MathJax.Hub.Config({
-	TeX: {
-		equationNumbers: {
-		autoNumber: "AMS"
-		}
-	},
-	tex2jax: {
-		inlineMath: [ ['$', '$'] ],
-		displayMath: [ ['$$', '$$'] ],
-		processEscapes: true,
-		}
-	});
-	MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-	MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-</script>
-
-<script type="text/javascript" async
-src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
-</script>
     
 </head>
 <body class="post-template">
@@ -196,145 +171,78 @@ into the {body} of the default.hbs template -->
 <main id="site-main" class="site-main outer" role="main">
     <div class="inner">
 
-        <article class="post-full  tag-database post tag-database ">
+        <article class="post-full  tag-airflow post tag-airflow ">
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="29 October 2023">29 October 2023</time>
+                    <time class="post-full-meta-date" datetime=" 8 November 2024"> 8 November 2024</time>
                     
                         <span class="date-divider">/</span>
                         
                             
-                               <a href='/tag/database/'>DATABASE</a>
+                               <a href='/tag/airflow/'>AIRFLOW</a>
                             
                         
                     
                 </section>
-                <h1 class="post-full-title">prepared statement</h1>
+                <h1 class="post-full-title">Variables & Dag Parsing</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/database/preparedstatement.png)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/airflow/airflow.png)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>prepared statement</p>
+                    <p>Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다.</p>
 
-<h1 id="prepared-statement란">prepared statement란?</h1>
+<h2 id="variables">Variables</h2>
 
-<h2 id="개념">개념</h2>
-<p>위키피디아의 설명을 먼저 살펴보겠습니다.</p>
+<h3 id="key-value">key value</h3>
 
-<blockquote>
-  <p>프리페어드 스테이트먼트(prepared statement), 파라미터라이즈드 스테이트먼트(parameterized statement)는 데이터베이스 관리 시스템(DBMS)에서 동일하거나 비슷한 데이터베이스 문을 높은 효율성으로 반복적으로 실행하기 위해 사용되는 기능이다. 일반적으로 쿼리나 업데이트와 같은 SQL 문과 함께 사용되는 프리페어드 스테이트먼트는 템플릿의 형태를 취하며, 그 템플릿 안으로 특정한 상수값이 매 실행 때마다 대체된다.<br />
-프리페어드 스테이트먼트의 일반적인 워크플로는 다음과 같다:</p>
-  <ol>
-    <li>준비(Prepare): 먼저 애플리케이션은 문의 틀을 만들고 이를 DBMS로 보낸다. 특정값은 지정하지 않은 채로 남겨지며 이들은 “변수”, “플레이스홀더”, “바인드값”으로 부른다. (아래의 “?” 레이블 참고):<br />
-  <code class="language-plaintext highlighter-rouge">INSERT INTO products (name, price) VALUES (?, ?);</code></li>
-    <li>그 다음, DBMS는 문의 틀을 컴파일하며(최적화 및 변환) 아직 실행하지 않고 결과만 저장한다.</li>
-    <li>실행(Execute): 나중에 애플리케이션이 문 틀의 변수에 값(바인드)을 지정하면 DBMS는 (결과를 반환할 수도 있는) 문을 실행한다. 애플리케이션은 여러 값으로 원하는 횟수만큼 문을 실행할 수 있다. 위의 예에서 첫 번째 변수로 “bike”로, 두 번째 변수로 “10900”을 지정한다.</li>
-  </ol>
-</blockquote>
+<h3 id="json-serialize">json serialize</h3>
 
-<p>위키피디아에 적혀진 설명에서 핵심이 되는 단어는 두 가지인 것 같습니다.</p>
+<h3 id="암호화-fernet_key">암호화 (fernet_key)</h3>
 
+<h2 id="best-practice">Best Practice</h2>
+
+<h3 id="good">Good</h3>
+<h4 id="execute-내부에서는-자유롭게-사용">execute() 내부에서는 자유롭게 사용</h4>
+
+<h4 id="jinja-template-사용하여-전달">jinja template 사용하여 전달</h4>
+
+<h3 id="bad">Bad</h3>
+
+<h4 id="top-level-python-코드에서-get-메소드-사용">TOP LEVEL PYTHON 코드에서 get 메소드 사용</h4>
+
+<h4 id="대체-방법">대체 방법</h4>
 <ul>
-  <li>반복: 같은 쿼리를 반복 실행하는 경우에 높은 효율성을 위해 사용한다</li>
-  <li>준비: template(틀)을 미리 만들어 놓고, placeholder를 입력하여 보낸다.</li>
+  <li>jinja</li>
+  <li>task(execute) 내에서 get 메소드 사용</li>
 </ul>
 
-<p>주의할 점은 template과 placeholder를 전달받은 DBMS가 실행할 쿼리를 컴파일한다는 것입니다(어플리케이션에서 컴파일하여 그 결과를 전달하지 않는다, 어플리케이션은 template과 placeholder만 제출한다).</p>
+<h2 id="dag-parsing">Dag Parsing</h2>
 
-<h2 id="예시-python">예시 (python)</h2>
+<h3 id="top-level-python-code">Top Level Python Code</h3>
 
-<p>이것도 위키피디아에 적절한 예시가 있어서 그대로 가져왔습니다.</p>
+<h3 id="dag-parsing-1">Dag Parsing</h3>
+<ul>
+  <li>Dag Serializtion의 Dag File Processing</li>
+  <li>Airflow에서 사용하고 있는 MySQL(Metadata DataBase)와 연결되지 않는 것이 좋음</li>
+</ul>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">mysql.connector</span>
+<h3 id="dag-running">Dag Running</h3>
+<ul>
+  <li>실제로 실행</li>
+  <li>Airflow에서 사용하고 있는 MySQL(Metadata DataBase)와 연결됨</li>
+</ul>
 
-<span class="n">conn</span> <span class="o">=</span> <span class="bp">None</span>
-<span class="n">cursor</span> <span class="o">=</span> <span class="bp">None</span>
-
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">conn</span> <span class="o">=</span> <span class="n">mysql</span><span class="p">.</span><span class="n">connector</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="s">"mysql"</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s">"root"</span><span class="p">)</span>
-    <span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="p">.</span><span class="n">cursor</span><span class="p">()</span>
-    <span class="n">cursor</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="s">"CREATE TABLE IF NOT EXISTS products (name VARCHAR(40), price INT)"</span><span class="p">)</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="p">[(</span><span class="s">"bike"</span><span class="p">,</span> <span class="mi">10900</span><span class="p">),</span>
-              <span class="p">(</span><span class="s">"shoes"</span><span class="p">,</span> <span class="mi">7400</span><span class="p">),</span>
-              <span class="p">(</span><span class="s">"phone"</span><span class="p">,</span> <span class="mi">29500</span><span class="p">)]</span>
-    <span class="n">cursor</span><span class="p">.</span><span class="n">executemany</span><span class="p">(</span><span class="s">"INSERT INTO products VALUES (%s, %s)"</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-    <span class="n">params</span> <span class="o">=</span> <span class="p">(</span><span class="s">"shoes"</span><span class="p">,)</span>
-    <span class="n">cursor</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="s">"SELECT * FROM products WHERE name = %s"</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">cursor</span><span class="p">.</span><span class="n">fetchall</span><span class="p">()[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
-<span class="k">finally</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">cursor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span> <span class="n">cursor</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">conn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span> <span class="n">conn</span><span class="p">.</span><span class="n">close</span><span class="p">()</span>
-</code></pre></div></div>
-
-<p><code class="language-plaintext highlighter-rouge">INSERT INTO</code>와 <code class="language-plaintext highlighter-rouge">SELECT</code> 쿼리를 실행할 때, prepared statement를 사용하고 있습니다. placeholder(<code class="language-plaintext highlighter-rouge">%s</code>)를 사용하여 변수를 입력받을 수 있는 쿼리 템플릿을 만들어 놓고, <code class="language-plaintext highlighter-rouge">params</code>를 사용하여 해당 쿼리에서 사용할 변수를 함께 DBMS로 제출합니다.</p>
-
-<h1 id="prepared-statement가-필요한-이유">prepared statement가 필요한 이유</h1>
-
-<h2 id="1-sql-injection">1. SQL injection</h2>
-<p>첫번째는 보안 때문입니다. statement만 사용하여 DBMS에 쿼리를 제출할 경우 개발자가 의도하지 않은 쿼리가 제출되지 않을 수 있습니다. 이러한 해킹 기법을 SQL injection이라고 합니다. 예를 들어 아래와 같이 string으로만 쿼리를 제출한다고 가정해보겠습니다.</p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">conn</span> <span class="o">=</span> <span class="n">mysql</span><span class="p">.</span><span class="n">connector</span><span class="p">.</span><span class="n">connect</span><span class="p">(</span><span class="n">database</span><span class="o">=</span><span class="s">"mysql"</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="s">"root"</span><span class="p">)</span>
-<span class="n">cursor</span> <span class="o">=</span> <span class="n">conn</span><span class="p">.</span><span class="n">cursor</span><span class="p">()</span>
-
-
-<span class="n">your_name</span> <span class="o">=</span> <span class="nb">input</span><span class="p">()</span>
-<span class="n">cursor</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s">"SELECT * FROM products WHERE name = </span><span class="si">{</span><span class="n">your_name</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
-</code></pre></div></div>
-
-<p>일반적인 사용자라면 본인의 이름만 입력하겠지만, 어떤 해커가 아래처럼 쿼리를 작성하여 input으로 제출한다면 DB에 본인이 원하는 데이터를 주입하거나, 심지어는 삭제할 수도 있습니다.</p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">your_name</span> <span class="o">=</span> <span class="s">"'ANYTHING' AND 1=1; DELETE FROM products WHERE 1=1"</span>
-
-<span class="c1"># 위 입력을 받는 경우에 실제 실행되는 쿼리는 아래와 같습니다
-</span><span class="s">"""
-SELECT * 
-FROM products
-WHERE name = 'ANYTHING' AND 1=1;
-DELETE FROM products WHERE 1=1 
-"""</span>
-</code></pre></div></div>
-<p>위처럼 prepared statement를 사용하지 않으면 의도와 다른 쿼리가 실행되는 것을 막을 수 없습니다.</p>
-
-<h2 id="2-유지-보수">2. 유지 보수</h2>
-
-<p>prepared statement를 사용하면 유지보수가 편해집니다. 어플리케이션에서 사용할 쿼리 템플릿이 정해져있고, 템플릿에 입력할 변수를 관리하기 때문입니다. 예를 들어, 어플리케이션에 쿼리를 제출할 때마다 문자열 기반의 쿼리를 작성하는 것은 언제 어떤 쿼리를 제출했는지 추적하기 어렵습니다. 이는 추후에 쿼리를 수정하는 등의 유지 보수가 필요한 상황이 발생했을 때, 코드를 관리하고 수정하기 어렵게 만듭니다. 이에 반해 prepared statement로 제출할 쿼리를 미리 정의해놓았기 때문에 추후에 쿼리를 수정해야할 일이 있을 때 수정해야할 부분을 명확하게 알 수 있습니다.</p>
-
-<h2 id="3-query-caching">3. Query Caching</h2>
-
-<p>prepared statement의 장점 중 쿼리의 반복 실행 시 효율성이 보장되는 가장 큰 이유이며 prepared statement를 사용하는 가장 큰 이유라고도 할 수 있습니다.</p>
-
-<p>DB는 일반적인 statement를 입력받으면 아래의 세 과정을 거칩니다.</p>
-
-<ol>
-  <li>Query parsing</li>
-  <li>Optimization</li>
-  <li>Execution</li>
-</ol>
-
-<p>그러나 prepared statement를 입력받는 경우에 DB는 첫 입력에만 1~3의 과정을 거치고 다음 입력부터는 캐시에 저장해둔 정보를 기반으로 쿼리를 실행합니다. 즉, 반복 횟수가 많아질수록 prepared statement가 더 유리해집니다. 이런 점 때문에 prepared statement가 반복되는 쿼리에 있어서 더 효율적이라고 말합니다.</p>
-
-<h1 id="query-caching-이란">Query Caching 이란?</h1>
-
-<p>쿼리 캐싱은 과거에 실행된 쿼리와 정확하게 같은 쿼리가 실행되었을 때, 과거에 실행된 쿼리 결과를 캐시에 저장해두었다가 반환해주는 것입니다. 이러한 쿼리 캐싱은 <code class="language-plaintext highlighter-rouge">SELECT</code> 쿼리에 대해서만 동작합니다. 같은 결과를 조회하는 동일한 쿼리에 대해서 두번째 실행부터는 쿼리 분석, 컴파일, 실행의 과정을 거치지 않고 미리 저장해둔 결과를 반환합니다.</p>
-
-<p>다만, 리서치를 조금 해보니 최근 버전의 DBMS에서는 해당 기능을 점차 지원하고 있지 않는 것으로 보입니다. MySQL도 8.0버전 이후로는 쿼리 캐시 기능을 제거하였으며 MariaDB도 10.1.7버전 이후로는 기본값이 비활성화인 것으로 보입니다. 이렇게 쿼리 캐싱 기능이 점차 비활성화되고 있는 이유는 멀티 코어 시스템에서는 쿼리 캐싱 기능이 확장되지 않기 때문이라고 합니다.</p>
-
-<p>쿼리 캐싱이 동작하기 위해서는 제한 조건이 존재합니다.</p>
-<ol>
-  <li>정확하게 같은 쿼리여야한다: 작성된 쿼리의 대소문자까지도 정확하게 일치해야합니다. 이는 쿼리 캐싱을 찾을 때 해당 쿼리의 byte를 검색 key로 사용하기 때문입니다.</li>
-  <li>조회하는 테이블에 UPDATE/DELETE/INSERT와 같은 데이터 변화가 없어야한다: 쿼리 캐싱된 결과는 해당 테이블이 업데이트되면 즉시 삭제됩니다. 따라서 빈번한 읽기가 발생하는 테이블에 대해서 쿼리 캐싱은 기대 효과를 얻기 어렵습니다.</li>
-</ol>
+<h2 id="variable-cache">Variable Cache</h2>
 
 <p>[참고]<br />
-<a href="https://ko.wikipedia.org/wiki/%ED%94%84%EB%A6%AC%ED%8E%98%EC%96%B4%EB%93%9C_%EC%8A%A4%ED%85%8C%EC%9D%B4%ED%8A%B8%EB%A8%BC%ED%8A%B8">[wikipedia]프리페어드 스테이트먼트</a><br />
-<a href="https://youtu.be/FoZ2cucLiDs?si=kele-Cb_tPCcCk-v">[youtube]코딩애플-SQL injection 공격</a><br />
-<a href="https://jupiny.com/2021/01/10/mysql-query-cache-disadvantage/">MySQL Query Cache은 무조건 좋을까? (Feat. query cache lock)</a></p>
+<a href="https://wookiist.dev/168">[Airflow] Airflow DAG Serialization</a><br />
+<a href="https://medium.com/apache-airflow/the-ins-and-outs-of-airflows-new-secrets-cache-f7b9ec25ca1e">The ins and outs of Airflow’s new Secrets Cache</a></p>
 
                 </div>
             </section>
@@ -416,7 +324,7 @@ DELETE FROM products WHERE 1=1
                         <header class="read-next-card-header">
                             <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
                             
-                                <h3 class="read-next-card-header-title"><a href="/tag/database/">Database</a></h3>
+                                <h3 class="read-next-card-header-title"><a href="/tag/airflow/">Airflow</a></h3>
                             
                         </header>
                         <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
@@ -426,22 +334,6 @@ DELETE FROM products WHERE 1=1
                                 
                                 
                                   
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
                                     
                                   
                                 
@@ -462,12 +354,7 @@ DELETE FROM products WHERE 1=1
                                   
                                 
                                   
-                                    
-                                        
-                                        
-                                            <li><a href="/oracle-connection">Oracle DB Connection String</a></li>
-                                        
-                                    
+                                
                                   
                                 
                                   
@@ -508,20 +395,7 @@ DELETE FROM products WHERE 1=1
                                     
                                         
                                         
-                                            <li><a href="/DBCP">DataBase Connection Pool</a></li>
-                                        
-                                    
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                    
-                                        
-                                        
-                                            <li><a href="/EXP-LOG-SUM">EXP-SUM-LOG / LOG-SUM-EXP</a></li>
+                                            <li><a href="/airflow1">What is Airflow?</a></li>
                                         
                                     
                                   
@@ -543,10 +417,25 @@ DELETE FROM products WHERE 1=1
                                   
                                 
                                   
-                                    
-                                        
-                                        
-                                    
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
                                   
                                 
                                   
@@ -554,9 +443,9 @@ DELETE FROM products WHERE 1=1
                             </ul>
                         </div>
                         <footer class="read-next-card-footer">
-                            <a href="/tag/database/">
+                            <a href="/tag/airflow/">
                                 
-                                    See all 4 posts  →
+                                    See all 1 posts  →
                                 
                             </a>
                         </footer>
@@ -569,57 +458,6 @@ DELETE FROM products WHERE 1=1
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
             
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/spark-salting">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/salting.jpeg)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/spark-salting">
-                <header class="post-card-header">
-                    
-                        
-                            
-                                <span class="post-card-tags">Hadoop</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">Salting in Spark</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다.
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      4 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-            
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
             
@@ -627,26 +465,26 @@ DELETE FROM products WHERE 1=1
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/multi-stage-and-builder-pattern">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/kubernetes/docker-logo.png)"></div>
+            <a class="post-card-image-link" href="/dbt-trino-temp-view">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/dbt/dbt-logo.jpg)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/multi-stage-and-builder-pattern">
+            <a class="post-card-content-link" href="/dbt-trino-temp-view">
                 <header class="post-card-header">
                     
                         
                             
-                                <span class="post-card-tags">Kubernetes</span>
+                                <span class="post-card-tags">Dbt</span>
                             
                         
                     
 
-                    <h2 class="post-card-title">multi-stage와 Builder Pattern</h2>
+                    <h2 class="post-card-title">Running Models in Parallel with dbt-trino</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>DataHub로 알아본 Docker build 전략 (multi-stage, Builder pattern)
+                        <p>dbt trino에서 파티션이 있는 모델을 병렬 실행하기 위한 매크로 수정 방법
 
 </p>
                     
@@ -688,18 +526,18 @@ DELETE FROM products WHERE 1=1
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">prepared statement</div>
+    <div class="floating-header-title">Variables & Dag Parsing</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=prepared+statement&amp;url=https://gyuhoonk.github.ioprepared-statement"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Variables+%26+Dag+Parsing&amp;url=https://gyuhoonk.github.iovariables"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.ioprepared-statement"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iovariables"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 
@@ -891,30 +729,5 @@ $(document).ready(function () {
     <!-- ghost_foot -->
     <!-- math LaTex-->
     
-     <script type="text/x-mathjax-config">
-	MathJax.Hub.Config({
-	TeX: {
-		equationNumbers: {
-		autoNumber: "AMS"
-		}
-	},
-	tex2jax: {
-		inlineMath: [ ['$', '$'] ],
-		displayMath: [ ['$$', '$$'] ],
-		processEscapes: true,
-		}
-	});
-	MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-	MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-</script>
-
-<script type="text/javascript" async
-src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
-</script>
-
 </body>
 </html>

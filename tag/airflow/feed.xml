@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/airflow/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2024-06-02T19:03:03+09:00</updated>
+  <updated>2024-11-09T22:00:43+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/airflow/feed.xml</id>
 
   
@@ -30,6 +30,87 @@
   
   
 
+  
+    <entry>
+      <title type="html">Variables &amp;amp; Dag Parsing</title>
+      <link href="https://gyuhoonk.github.io/variables" rel="alternate" type="text/html" title="Variables &amp; Dag Parsing" />
+      <published>2024-11-08T22:30:00+09:00</published>
+      <updated>2024-11-08T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/variables</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/variables">&lt;p&gt;Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;variables&quot;&gt;Variables&lt;/h2&gt;
+
+&lt;h3 id=&quot;key-value&quot;&gt;key value&lt;/h3&gt;
+
+&lt;h3 id=&quot;json-serialize&quot;&gt;json serialize&lt;/h3&gt;
+
+&lt;h3 id=&quot;암호화-fernet_key&quot;&gt;암호화 (fernet_key)&lt;/h3&gt;
+
+&lt;h2 id=&quot;best-practice&quot;&gt;Best Practice&lt;/h2&gt;
+
+&lt;h3 id=&quot;good&quot;&gt;Good&lt;/h3&gt;
+&lt;h4 id=&quot;execute-내부에서는-자유롭게-사용&quot;&gt;execute() 내부에서는 자유롭게 사용&lt;/h4&gt;
+
+&lt;h4 id=&quot;jinja-template-사용하여-전달&quot;&gt;jinja template 사용하여 전달&lt;/h4&gt;
+
+&lt;h3 id=&quot;bad&quot;&gt;Bad&lt;/h3&gt;
+
+&lt;h4 id=&quot;top-level-python-코드에서-get-메소드-사용&quot;&gt;TOP LEVEL PYTHON 코드에서 get 메소드 사용&lt;/h4&gt;
+
+&lt;h4 id=&quot;대체-방법&quot;&gt;대체 방법&lt;/h4&gt;
+&lt;ul&gt;
+  &lt;li&gt;jinja&lt;/li&gt;
+  &lt;li&gt;task(execute) 내에서 get 메소드 사용&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;dag-parsing&quot;&gt;Dag Parsing&lt;/h2&gt;
+
+&lt;h3 id=&quot;top-level-python-code&quot;&gt;Top Level Python Code&lt;/h3&gt;
+
+&lt;h3 id=&quot;dag-parsing-1&quot;&gt;Dag Parsing&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;Dag Serializtion의 Dag File Processing&lt;/li&gt;
+  &lt;li&gt;Airflow에서 사용하고 있는 MySQL(Metadata DataBase)와 연결되지 않는 것이 좋음&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;dag-running&quot;&gt;Dag Running&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;실제로 실행&lt;/li&gt;
+  &lt;li&gt;Airflow에서 사용하고 있는 MySQL(Metadata DataBase)와 연결됨&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;variable-cache&quot;&gt;Variable Cache&lt;/h2&gt;
+
+&lt;p&gt;[참고]&lt;br /&gt;
+&lt;a href=&quot;https://wookiist.dev/168&quot;&gt;[Airflow] Airflow DAG Serialization&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://medium.com/apache-airflow/the-ins-and-outs-of-airflows-new-secrets-cache-f7b9ec25ca1e&quot;&gt;The ins and outs of Airflow’s new Secrets Cache&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="airflow" />
+      
+
+      
+        <summary type="html">Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다.</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">What is Airflow?</title>

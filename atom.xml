@@ -8,6 +8,36 @@
     
       
       <item>
+        <title>Variables &amp; Dag Parsing</title>
+        
+          <description>&lt;p&gt;Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Fri, 08 Nov 2024 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/variables</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/variables</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>Running Models in Parallel with dbt-trino</title>
+        
+          <description>&lt;p&gt;dbt trino에서 파티션이 있는 모델을 병렬 실행하기 위한 매크로 수정 방법&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sun, 09 Jun 2024 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/dbt-trino-temp-view</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/dbt-trino-temp-view</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Spring Dependency Injection, Component Scan</title>
         
           <description>&lt;p&gt;Spring의 의존관계 주입 방법과 Component Scan에 대해서 알아봅니다&lt;/p&gt;
