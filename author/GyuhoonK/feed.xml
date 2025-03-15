@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2024-11-09T22:00:43+09:00</updated>
+  <updated>2025-03-15T16:46:57+09:00</updated>
   <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
 
   
@@ -41,50 +41,185 @@
 
 &lt;h2 id=&quot;variables&quot;&gt;Variables&lt;/h2&gt;
 
-&lt;h3 id=&quot;key-value&quot;&gt;key value&lt;/h3&gt;
+&lt;p&gt;Airflow의 variables에 값을 저장해두면, 실행 중인 airflow의 어디서든 해당 값을 불러와 사용할 수 있습니다.&lt;br /&gt;
+Web UI에서는 [Admin]&amp;gt;[Variables]에서 값을 추가/삭제할 수 있고, 대량으로 값을 입력해야하는 경우에는 json 파일을 작성하여 업로드할 수도 있습니다.&lt;br /&gt;
+아래와 같이 CLI를 이용하는 방법도 있습니다.&lt;/p&gt;
 
-&lt;h3 id=&quot;json-serialize&quot;&gt;json serialize&lt;/h3&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# test.json을 variables로 업로드&lt;/span&gt;
+airflow variables import test.json
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
 
-&lt;h3 id=&quot;암호화-fernet_key&quot;&gt;암호화 (fernet_key)&lt;/h3&gt;
+&lt;p&gt;CLI에는 get, set, list 등 다양한 &lt;a href=&quot;https://airflow.apache.org/docs/apache-airflow/stable/cli-and-env-variables-ref.html#variables&quot;&gt;sub command&lt;/a&gt;가 존재합니다&lt;/p&gt;
+
+&lt;p&gt;airflow variables는 아래 세 가지 특징으로 설명할 수 있습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1-keyvalue-store&quot;&gt;[1] key/value store&lt;/h3&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;a general key/value store&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;airflow 공식 문서에서 variables를 위와 같이 설명합니다.&lt;br /&gt;
+json 파일을 이용하여 variables를 추가하는 부분에서 예상하셨을 수도 있지만, airflow variables는 key/value 포맷입니다. 따라서 아래와 같이 저장됩니다.&lt;/p&gt;
+&lt;div class=&quot;language-markdown highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;| Key       | Value          |
+|-----------|----------------|
+| example_1 | value_1        |
+| example_2 | value_2        |
+| example_3 | value_3        |
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;2-json-deserialize&quot;&gt;[2] Json Deserialize&lt;/h3&gt;
+&lt;p&gt;variables는 json deserialize 사용할 수 있습니다. 따라서 아래와 같이 입력되있는 경우에&lt;/p&gt;
+&lt;div class=&quot;language-markdown highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;| Key       | Value                   |
+|-----------|-------------------------|
+| bar       | {'a': 'value_1'}        |
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;아래 코드에서 bar는 dict로 저장됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Variable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bar&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;deserialize_json&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bar&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'a'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;'value1'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;jinja template으로 사용하는 경우에도 마찬가지로 json deserialize를 적용할 수 있습니다.&lt;/p&gt;
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# Auto-deserialize JSON value&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; 
+&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;s2&quot;&gt;&quot;a&quot;&lt;/span&gt;: &lt;span class=&quot;s2&quot;&gt;&quot;value_1&quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;3-암호화-fernet_key&quot;&gt;[3] 암호화 (fernet_key)&lt;/h3&gt;
+&lt;p&gt;variables는 기본적으로 &lt;a href=&quot;https://airflow.apache.org/docs/apache-airflow/stable/security/secrets/fernet.html&quot;&gt;fernet&lt;/a&gt;을 이용하여 암호화를 수행합니다.&lt;/p&gt;
+
+&lt;p&gt;fernet key는 airflow 시작 시에 자동으로 생성되며 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[core]&lt;/code&gt; 섹션의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fernet_key&lt;/code&gt;에 저장됩니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;[core]
+fernet_key = *********YOUR_UNIQUE_FERNET_KEY*********
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;fernet key를 가지고 있지 않으면 variables를 읽거나 조작할 수 없다고 설명합니다.&lt;br /&gt;
+variables를 저장하는 DB에서 아래 테이블을 조회해보면 어떤 의미인지 알 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-sql highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;SELECT&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;`key`&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;val&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;is_encrypted&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;FROM&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;airflow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;variable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;fernet 암호화가 적용되었기 때문에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;val&lt;/code&gt; 컬럼에 저장된 값(value)이 평문이 아니라 암호화된 값임을 확인할 수 있습니다.&lt;br /&gt;
+사실 fernet 암호화는 variables 분 아니라 password, connection을 저장할 때도 적용됩니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;best-practice&quot;&gt;Best Practice&lt;/h2&gt;
 
-&lt;h3 id=&quot;good&quot;&gt;Good&lt;/h3&gt;
-&lt;h4 id=&quot;execute-내부에서는-자유롭게-사용&quot;&gt;execute() 내부에서는 자유롭게 사용&lt;/h4&gt;
+&lt;p&gt;&lt;a href=&quot;https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html#airflow-variables&quot;&gt;Best Practices - variables&lt;/a&gt;에서 variables에 대한 사용을 어떻게 가이드하고 있는지 살펴보겠습니다.&lt;/p&gt;
 
-&lt;h4 id=&quot;jinja-template-사용하여-전달&quot;&gt;jinja template 사용하여 전달&lt;/h4&gt;
+&lt;h3 id=&quot;bad-examples&quot;&gt;Bad Examples&lt;/h3&gt;
 
-&lt;h3 id=&quot;bad&quot;&gt;Bad&lt;/h3&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# dags/test-dag.py
+&lt;/span&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;airflow.models&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Variable&lt;/span&gt;
 
-&lt;h4 id=&quot;top-level-python-코드에서-get-메소드-사용&quot;&gt;TOP LEVEL PYTHON 코드에서 get 메소드 사용&lt;/h4&gt;
+&lt;span class=&quot;n&quot;&gt;foo_var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Variable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# AVOID THAT
+&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;bash_use_variable_bad_1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BashOperator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;task_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bash_use_variable_bad_1&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;bash_command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;echo variable foo=${foo_env}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+    &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo_env&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;foo_var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# AVOID THAT
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
-&lt;h4 id=&quot;대체-방법&quot;&gt;대체 방법&lt;/h4&gt;
+&lt;span class=&quot;n&quot;&gt;bash_use_variable_bad_2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BashOperator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;task_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bash_use_variable_bad_2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;bash_command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;echo variable foo=$&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Variable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'foo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# AVOID THAT
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;bash_use_variable_bad_3&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BashOperator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;task_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bash_use_variable_bad_3&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;bash_command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;echo variable foo=${foo_env}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo_env&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Variable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)}&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# AVOID THAT
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;위 코드에서 3가지의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AVOID THAT&lt;/code&gt;이 보입니다. 하지만 2가지로 분류할 수 있는데요. 아래와 같이 구분할 수 있습니다.&lt;/p&gt;
+
+&lt;h4 id=&quot;1-top-level-python-code에서-variables를-사용함&quot;&gt;[1] Top level python code에서 variables를 사용함&lt;/h4&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;foo_var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Variable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# AVOID THAT
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;위와 같이 DAG 파일 내에서 variables를 호출하게 되면 dag parsing마다 해당 vairable에 접근해야합니다.&lt;br /&gt;
+airflow에서 variable에 접근한다는 것은 MySQL에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;airflow.variables&lt;/code&gt; 테이블에 쿼리 실행을 요청한다는 의미입니다. &lt;br /&gt;
+아래처럼 수정한 뒤 파일을 실행해보면 해당 값에 접근 중임을 알 수 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;foo_var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Variable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# AVOID THAT
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;foo_var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# 값 확인을 위해 코드 추가
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c&quot;&gt;# 작성된 DAG py 파일을 실행해봅니다&lt;/span&gt;
+python dags/test-dag.py
+foo_var
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h4 id=&quot;2-operator에-변수-전달-시-variableget-사용&quot;&gt;[2] Operator에 변수 전달 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Variable.get&lt;/code&gt; 사용&lt;/h4&gt;
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;bash_use_variable_bad_2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BashOperator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;task_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bash_use_variable_bad_2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;bash_command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;echo variable foo=$&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Variable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;'foo'&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# AVOID THAT
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;위처럼 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BashOperator&lt;/code&gt;에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Variable.get&lt;/code&gt;을 이용하여 변수를 전달해선 안됩니다. 이 경우에도 [1]과 마찬가지로 dag parsing마다 쿼리 실행 을 요청합니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;1-2와-같은-사용을-피해야하는-이유&quot;&gt;[1], [2]와 같은 사용을 피해야하는 이유&lt;/h3&gt;
+
+&lt;p&gt;airflow 문서에서는 [1], [2]가 Base Examples인 이유를 아래처럼 설명합니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;In top-level code, variables using jinja templates do not produce a request until a task is running, whereas, Variable.get() produces a request every time the dag file is parsed by the scheduler if caching is not enabled. Using Variable.get() without enabling caching will lead to suboptimal performance in the dag file processing. In some cases this can cause the dag file to timeout before it is fully parsed.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;scheduler가 dag file을 process할 때마다 variable을 조회하는 요청을 생성하므로, 이는 최적이 아니다(suboptimal)라고 설명합니다.&lt;/p&gt;
+
+&lt;p&gt;dag file processing이란, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min_file_process_interval&lt;/code&gt;(default: 30s) 간격으로 dag file을 읽어들여 DAG object로 전환하는 작업입니다. 만약 top level code에서 variable을 사용하게 되면, processing할 때마다 불필요하게 variable을 조회하게 됩니다. 이는 MySQL connection을 과도하게 생성하고 variable을 조회하는 쿼리도 실행하므로 30초마다 airflow에 부하를 줍니다.&lt;/p&gt;
+
+&lt;p&gt;이러한 상황을 피해가 위해서 아래와 같은 방법을 사용할 수 있습니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;good-examples&quot;&gt;Good Examples&lt;/h3&gt;
+
+&lt;h4 id=&quot;1-task-내부에서는-자유롭게-사용&quot;&gt;[1] task 내부에서는 자유롭게 사용&lt;/h4&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;o&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;my_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;var&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Variable&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# This is ok since my_task is called only during task run, not during DAG scan.
+&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;var&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;주석에서 설명하고 있는대로, task 내부에서 variable을 호출하면 task execution에서만 variable을 조회하므로 dag processing에서 부하를 주지 않습니다.&lt;/p&gt;
+
+&lt;h4 id=&quot;2-jinja-template-사용하여-전달&quot;&gt;[2] jinja template 사용하여 전달&lt;/h4&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;bash_use_variable_good&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BashOperator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;task_id&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;bash_use_variable_good&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;bash_command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;echo variable foo=${foo_env}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;foo_env&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;{{ var.value.get('foo') }}&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;jinja template을 사용하는 경우 task execution할 때까지 variable을 조회하지 않으므로 부하를 줄일 수 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;variables-cache&quot;&gt;Variables Cache&lt;/h2&gt;
+
+&lt;p&gt;어떤 경우에는 위와 같은 Best Examples를 사용하지 못할 수도 있습니다. 이런 경우에는 variable chache를 고려해보아야합니다. 해당 기능은 아직 실험 단계(experimental feature)이긴 하지만, 사용할 수는 있습니다.&lt;/p&gt;
+
+&lt;p&gt;variables cache 긴으을 사용하게 되면, airflow에서 variables를 조회할 때 MySQL을 확인하는 것이 아니라 airflow 내에 cache된 값을 먼저 조회합니다.&lt;/p&gt;
+
+&lt;p&gt;이는 실험 기능으로 아직 많이 사용되는 값은 아니기 때문에 관련된 설정값만 살펴보고 마무리하겠습니다.&lt;/p&gt;
+
 &lt;ul&gt;
-  &lt;li&gt;jinja&lt;/li&gt;
-  &lt;li&gt;task(execute) 내에서 get 메소드 사용&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://airflow.apache.org/docs/apache-airflow/stable/configurations-ref.html#use-cache&quot;&gt;use_cache&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://airflow.apache.org/docs/apache-airflow/stable/configurations-ref.html#cache_ttl_seconds&quot;&gt;cache_ttl_seconds&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;h2 id=&quot;dag-parsing&quot;&gt;Dag Parsing&lt;/h2&gt;
-
-&lt;h3 id=&quot;top-level-python-code&quot;&gt;Top Level Python Code&lt;/h3&gt;
-
-&lt;h3 id=&quot;dag-parsing-1&quot;&gt;Dag Parsing&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Dag Serializtion의 Dag File Processing&lt;/li&gt;
-  &lt;li&gt;Airflow에서 사용하고 있는 MySQL(Metadata DataBase)와 연결되지 않는 것이 좋음&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;dag-running&quot;&gt;Dag Running&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;실제로 실행&lt;/li&gt;
-  &lt;li&gt;Airflow에서 사용하고 있는 MySQL(Metadata DataBase)와 연결됨&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;variable-cache&quot;&gt;Variable Cache&lt;/h2&gt;
 
 &lt;p&gt;[참고]&lt;br /&gt;
-&lt;a href=&quot;https://wookiist.dev/168&quot;&gt;[Airflow] Airflow DAG Serialization&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://medium.com/apache-airflow/the-ins-and-outs-of-airflows-new-secrets-cache-f7b9ec25ca1e&quot;&gt;The ins and outs of Airflow’s new Secrets Cache&lt;/a&gt;&lt;/p&gt;</content>
+&lt;a href=&quot;https://wookiist.dev/168&quot;&gt;[Airflow] Airflow DAG Serialization - 욱이의 IT 생존일지&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://medium.com/apache-airflow/the-ins-and-outs-of-airflows-new-secrets-cache-f7b9ec25ca1e&quot;&gt;The ins and outs of Airflow’s new Secrets Cache - Raphaël Vandon&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://spidyweb.tistory.com/536&quot;&gt;Airflow DAG Parsing - Spidy Web 블로그&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/dag-serialization.html&quot;&gt;Dag Serialization&lt;/a&gt;&lt;br /&gt;
+&lt;a href=&quot;https://airflow.apache.org/docs/apache-airflow/stable/authoring-and-scheduling/dagfile-processing.html#dag-file-processing&quot;&gt;Dag File Processing&lt;/a&gt;&lt;/p&gt;</content>
 
       
       

@@ -44,7 +44,7 @@
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Variables & Dag Parsing" />
-    <meta property="og:description" content="Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다. Variables key value json serialize 암호화 (fernet_key) Best Practice Good execute() 내부에서는 자유롭게 사용 jinja template 사용하여 전달 Bad TOP LEVEL PYTHON 코드에서 get 메소드 사용 대체 방법 jinja task(execute) 내에서 get 메소드 사용 Dag Parsing Top Level Python Code Dag" />
+    <meta property="og:description" content="Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다. Variables Airflow의 variables에 값을 저장해두면, 실행 중인 airflow의 어디서든 해당 값을 불러와 사용할 수 있습니다. Web UI에서는 [Admin]&gt;[Variables]에서 값을 추가/삭제할 수 있고, 대량으로 값을 입력해야하는 경우에는 json 파일을 작성하여 업로드할 수도 있습니다. 아래와 같이 CLI를 이용하는 방법도 있습니다. # test.json을 variables로" />
     <meta property="og:url" content="https://gyuhoonk.github.io/variables" />
     <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/airflow/airflow.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
@@ -54,7 +54,7 @@
     <meta property="article:tag" content="Airflow" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Variables & Dag Parsing" />
-    <meta name="twitter:description" content="Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다. Variables key value json serialize 암호화 (fernet_key) Best Practice Good execute() 내부에서는 자유롭게 사용 jinja template 사용하여 전달 Bad TOP LEVEL PYTHON 코드에서 get 메소드 사용 대체 방법 jinja task(execute) 내에서 get 메소드 사용 Dag Parsing Top Level Python Code Dag" />
+    <meta name="twitter:description" content="Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다. Variables Airflow의 variables에 값을 저장해두면, 실행 중인 airflow의 어디서든 해당 값을 불러와 사용할 수 있습니다. Web UI에서는 [Admin]&gt;[Variables]에서 값을 추가/삭제할 수 있고, 대량으로 값을 입력해야하는 경우에는 json 파일을 작성하여 업로드할 수도 있습니다. 아래와 같이 CLI를 이용하는 방법도 있습니다. # test.json을 variables로" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
     <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/airflow/airflow.png" />
     <meta name="twitter:label1" content="Written by" />
@@ -86,7 +86,7 @@
         "@type": "WebPage",
         "@id": "https://gyuhoonk.github.io/variables"
     },
-    "description": "Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다. Variables key value json serialize 암호화 (fernet_key) Best Practice Good execute() 내부에서는 자유롭게 사용 jinja template 사용하여 전달 Bad TOP LEVEL PYTHON 코드에서 get 메소드 사용 대체 방법 jinja task(execute) 내에서 get 메소드 사용 Dag Parsing Top Level Python Code Dag"
+    "description": "Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다. Variables Airflow의 variables에 값을 저장해두면, 실행 중인 airflow의 어디서든 해당 값을 불러와 사용할 수 있습니다. Web UI에서는 [Admin]&gt;[Variables]에서 값을 추가/삭제할 수 있고, 대량으로 값을 입력해야하는 경우에는 json 파일을 작성하여 업로드할 수도 있습니다. 아래와 같이 CLI를 이용하는 방법도 있습니다. # test.json을 variables로"
 }
     </script>
 
@@ -199,50 +199,185 @@ into the {body} of the default.hbs template -->
 
 <h2 id="variables">Variables</h2>
 
-<h3 id="key-value">key value</h3>
+<p>Airflow의 variables에 값을 저장해두면, 실행 중인 airflow의 어디서든 해당 값을 불러와 사용할 수 있습니다.<br />
+Web UI에서는 [Admin]&gt;[Variables]에서 값을 추가/삭제할 수 있고, 대량으로 값을 입력해야하는 경우에는 json 파일을 작성하여 업로드할 수도 있습니다.<br />
+아래와 같이 CLI를 이용하는 방법도 있습니다.</p>
 
-<h3 id="json-serialize">json serialize</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># test.json을 variables로 업로드</span>
+airflow variables import test.json
+</code></pre></div></div>
 
-<h3 id="암호화-fernet_key">암호화 (fernet_key)</h3>
+<p>CLI에는 get, set, list 등 다양한 <a href="https://airflow.apache.org/docs/apache-airflow/stable/cli-and-env-variables-ref.html#variables">sub command</a>가 존재합니다</p>
+
+<p>airflow variables는 아래 세 가지 특징으로 설명할 수 있습니다.</p>
+
+<h3 id="1-keyvalue-store">[1] key/value store</h3>
+<blockquote>
+  <p>a general key/value store</p>
+</blockquote>
+
+<p>airflow 공식 문서에서 variables를 위와 같이 설명합니다.<br />
+json 파일을 이용하여 variables를 추가하는 부분에서 예상하셨을 수도 있지만, airflow variables는 key/value 포맷입니다. 따라서 아래와 같이 저장됩니다.</p>
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>| Key       | Value          |
+|-----------|----------------|
+| example_1 | value_1        |
+| example_2 | value_2        |
+| example_3 | value_3        |
+</code></pre></div></div>
+
+<h3 id="2-json-deserialize">[2] Json Deserialize</h3>
+<p>variables는 json deserialize 사용할 수 있습니다. 따라서 아래와 같이 입력되있는 경우에</p>
+<div class="language-markdown highlighter-rouge"><div class="highlight"><pre class="highlight"><code>| Key       | Value                   |
+|-----------|-------------------------|
+| bar       | {'a': 'value_1'}        |
+
+</code></pre></div></div>
+
+<p>아래 코드에서 bar는 dict로 저장됩니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">bar</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"bar"</span><span class="p">,</span> <span class="n">deserialize_json</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">bar</span><span class="p">)</span>
+<span class="p">{</span><span class="s">'a'</span><span class="p">:</span> <span class="s">'value1'</span><span class="p">}</span>
+</code></pre></div></div>
+
+<p>jinja template으로 사용하는 경우에도 마찬가지로 json deserialize를 적용할 수 있습니다.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Auto-deserialize JSON value</span>
+<span class="nb">echo</span> 
+<span class="o">{</span>
+  <span class="s2">"a"</span>: <span class="s2">"value_1"</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<h3 id="3-암호화-fernet_key">[3] 암호화 (fernet_key)</h3>
+<p>variables는 기본적으로 <a href="https://airflow.apache.org/docs/apache-airflow/stable/security/secrets/fernet.html">fernet</a>을 이용하여 암호화를 수행합니다.</p>
+
+<p>fernet key는 airflow 시작 시에 자동으로 생성되며 <code class="language-plaintext highlighter-rouge">[core]</code> 섹션의 <code class="language-plaintext highlighter-rouge">fernet_key</code>에 저장됩니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[core]
+fernet_key = *********YOUR_UNIQUE_FERNET_KEY*********
+</code></pre></div></div>
+
+<p>fernet key를 가지고 있지 않으면 variables를 읽거나 조작할 수 없다고 설명합니다.<br />
+variables를 저장하는 DB에서 아래 테이블을 조회해보면 어떤 의미인지 알 수 있습니다.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="n">id</span><span class="p">,</span> <span class="nv">`key`</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">is_encrypted</span>
+<span class="k">FROM</span> <span class="n">airflow</span><span class="p">.</span><span class="k">variable</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>fernet 암호화가 적용되었기 때문에 <code class="language-plaintext highlighter-rouge">val</code> 컬럼에 저장된 값(value)이 평문이 아니라 암호화된 값임을 확인할 수 있습니다.<br />
+사실 fernet 암호화는 variables 분 아니라 password, connection을 저장할 때도 적용됩니다.</p>
 
 <h2 id="best-practice">Best Practice</h2>
 
-<h3 id="good">Good</h3>
-<h4 id="execute-내부에서는-자유롭게-사용">execute() 내부에서는 자유롭게 사용</h4>
+<p><a href="https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html#airflow-variables">Best Practices - variables</a>에서 variables에 대한 사용을 어떻게 가이드하고 있는지 살펴보겠습니다.</p>
 
-<h4 id="jinja-template-사용하여-전달">jinja template 사용하여 전달</h4>
+<h3 id="bad-examples">Bad Examples</h3>
 
-<h3 id="bad">Bad</h3>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># dags/test-dag.py
+</span><span class="kn">from</span> <span class="nn">airflow.models</span> <span class="kn">import</span> <span class="n">Variable</span>
 
-<h4 id="top-level-python-코드에서-get-메소드-사용">TOP LEVEL PYTHON 코드에서 get 메소드 사용</h4>
+<span class="n">foo_var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span>  <span class="c1"># AVOID THAT
+</span>
+<span class="n">bash_use_variable_bad_1</span> <span class="o">=</span> <span class="n">BashOperator</span><span class="p">(</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="s">"bash_use_variable_bad_1"</span><span class="p">,</span> 
+    <span class="n">bash_command</span><span class="o">=</span><span class="s">"echo variable foo=${foo_env}"</span><span class="p">,</span> 
+    <span class="n">env</span><span class="o">=</span><span class="p">{</span><span class="s">"foo_env"</span><span class="p">:</span> <span class="n">foo_var</span><span class="p">}</span>  <span class="c1"># AVOID THAT
+</span><span class="p">)</span>
 
-<h4 id="대체-방법">대체 방법</h4>
+<span class="n">bash_use_variable_bad_2</span> <span class="o">=</span> <span class="n">BashOperator</span><span class="p">(</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="s">"bash_use_variable_bad_2"</span><span class="p">,</span>
+    <span class="n">bash_command</span><span class="o">=</span><span class="sa">f</span><span class="s">"echo variable foo=$</span><span class="si">{</span><span class="n">Variable</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'foo'</span><span class="p">)</span><span class="si">}</span><span class="s">"</span>  <span class="c1"># AVOID THAT
+</span><span class="p">)</span>
+
+<span class="n">bash_use_variable_bad_3</span> <span class="o">=</span> <span class="n">BashOperator</span><span class="p">(</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="s">"bash_use_variable_bad_3"</span><span class="p">,</span>
+    <span class="n">bash_command</span><span class="o">=</span><span class="s">"echo variable foo=${foo_env}"</span><span class="p">,</span>
+    <span class="n">env</span><span class="o">=</span><span class="p">{</span><span class="s">"foo_env"</span><span class="p">:</span> <span class="n">Variable</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)}</span>  <span class="c1"># AVOID THAT
+</span><span class="p">)</span>
+</code></pre></div></div>
+<p>위 코드에서 3가지의 <code class="language-plaintext highlighter-rouge">AVOID THAT</code>이 보입니다. 하지만 2가지로 분류할 수 있는데요. 아래와 같이 구분할 수 있습니다.</p>
+
+<h4 id="1-top-level-python-code에서-variables를-사용함">[1] Top level python code에서 variables를 사용함</h4>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">foo_var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span>  <span class="c1"># AVOID THAT
+</span></code></pre></div></div>
+<p>위와 같이 DAG 파일 내에서 variables를 호출하게 되면 dag parsing마다 해당 vairable에 접근해야합니다.<br />
+airflow에서 variable에 접근한다는 것은 MySQL에서 <code class="language-plaintext highlighter-rouge">airflow.variables</code> 테이블에 쿼리 실행을 요청한다는 의미입니다. <br />
+아래처럼 수정한 뒤 파일을 실행해보면 해당 값에 접근 중임을 알 수 있습니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">foo_var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span>  <span class="c1"># AVOID THAT
+</span><span class="k">print</span><span class="p">(</span><span class="n">foo_var</span><span class="p">)</span> <span class="c1"># 값 확인을 위해 코드 추가
+</span></code></pre></div></div>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 작성된 DAG py 파일을 실행해봅니다</span>
+python dags/test-dag.py
+foo_var
+</code></pre></div></div>
+
+<h4 id="2-operator에-변수-전달-시-variableget-사용">[2] Operator에 변수 전달 시 <code class="language-plaintext highlighter-rouge">Variable.get</code> 사용</h4>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bash_use_variable_bad_2</span> <span class="o">=</span> <span class="n">BashOperator</span><span class="p">(</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="s">"bash_use_variable_bad_2"</span><span class="p">,</span>
+    <span class="n">bash_command</span><span class="o">=</span><span class="sa">f</span><span class="s">"echo variable foo=$</span><span class="si">{</span><span class="n">Variable</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">'foo'</span><span class="p">)</span><span class="si">}</span><span class="s">"</span>  <span class="c1"># AVOID THAT
+</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>위처럼 <code class="language-plaintext highlighter-rouge">BashOperator</code>에 <code class="language-plaintext highlighter-rouge">Variable.get</code>을 이용하여 변수를 전달해선 안됩니다. 이 경우에도 [1]과 마찬가지로 dag parsing마다 쿼리 실행 을 요청합니다.</p>
+
+<h3 id="1-2와-같은-사용을-피해야하는-이유">[1], [2]와 같은 사용을 피해야하는 이유</h3>
+
+<p>airflow 문서에서는 [1], [2]가 Base Examples인 이유를 아래처럼 설명합니다.</p>
+
+<blockquote>
+  <p>In top-level code, variables using jinja templates do not produce a request until a task is running, whereas, Variable.get() produces a request every time the dag file is parsed by the scheduler if caching is not enabled. Using Variable.get() without enabling caching will lead to suboptimal performance in the dag file processing. In some cases this can cause the dag file to timeout before it is fully parsed.</p>
+</blockquote>
+
+<p>scheduler가 dag file을 process할 때마다 variable을 조회하는 요청을 생성하므로, 이는 최적이 아니다(suboptimal)라고 설명합니다.</p>
+
+<p>dag file processing이란, <code class="language-plaintext highlighter-rouge">min_file_process_interval</code>(default: 30s) 간격으로 dag file을 읽어들여 DAG object로 전환하는 작업입니다. 만약 top level code에서 variable을 사용하게 되면, processing할 때마다 불필요하게 variable을 조회하게 됩니다. 이는 MySQL connection을 과도하게 생성하고 variable을 조회하는 쿼리도 실행하므로 30초마다 airflow에 부하를 줍니다.</p>
+
+<p>이러한 상황을 피해가 위해서 아래와 같은 방법을 사용할 수 있습니다.</p>
+
+<h3 id="good-examples">Good Examples</h3>
+
+<h4 id="1-task-내부에서는-자유롭게-사용">[1] task 내부에서는 자유롭게 사용</h4>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">@</span><span class="n">task</span>
+<span class="k">def</span> <span class="nf">my_task</span><span class="p">():</span>
+    <span class="n">var</span> <span class="o">=</span> <span class="n">Variable</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"foo"</span><span class="p">)</span>  <span class="c1"># This is ok since my_task is called only during task run, not during DAG scan.
+</span>    <span class="k">print</span><span class="p">(</span><span class="n">var</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>주석에서 설명하고 있는대로, task 내부에서 variable을 호출하면 task execution에서만 variable을 조회하므로 dag processing에서 부하를 주지 않습니다.</p>
+
+<h4 id="2-jinja-template-사용하여-전달">[2] jinja template 사용하여 전달</h4>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">bash_use_variable_good</span> <span class="o">=</span> <span class="n">BashOperator</span><span class="p">(</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="s">"bash_use_variable_good"</span><span class="p">,</span>
+    <span class="n">bash_command</span><span class="o">=</span><span class="s">"echo variable foo=${foo_env}"</span><span class="p">,</span>
+    <span class="n">env</span><span class="o">=</span><span class="p">{</span><span class="s">"foo_env"</span><span class="p">:</span> <span class="s">"{{ var.value.get('foo') }}"</span><span class="p">},</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>jinja template을 사용하는 경우 task execution할 때까지 variable을 조회하지 않으므로 부하를 줄일 수 있습니다.</p>
+
+<h2 id="variables-cache">Variables Cache</h2>
+
+<p>어떤 경우에는 위와 같은 Best Examples를 사용하지 못할 수도 있습니다. 이런 경우에는 variable chache를 고려해보아야합니다. 해당 기능은 아직 실험 단계(experimental feature)이긴 하지만, 사용할 수는 있습니다.</p>
+
+<p>variables cache 긴으을 사용하게 되면, airflow에서 variables를 조회할 때 MySQL을 확인하는 것이 아니라 airflow 내에 cache된 값을 먼저 조회합니다.</p>
+
+<p>이는 실험 기능으로 아직 많이 사용되는 값은 아니기 때문에 관련된 설정값만 살펴보고 마무리하겠습니다.</p>
+
 <ul>
-  <li>jinja</li>
-  <li>task(execute) 내에서 get 메소드 사용</li>
+  <li><a href="https://airflow.apache.org/docs/apache-airflow/stable/configurations-ref.html#use-cache">use_cache</a></li>
+  <li><a href="https://airflow.apache.org/docs/apache-airflow/stable/configurations-ref.html#cache_ttl_seconds">cache_ttl_seconds</a></li>
 </ul>
-
-<h2 id="dag-parsing">Dag Parsing</h2>
-
-<h3 id="top-level-python-code">Top Level Python Code</h3>
-
-<h3 id="dag-parsing-1">Dag Parsing</h3>
-<ul>
-  <li>Dag Serializtion의 Dag File Processing</li>
-  <li>Airflow에서 사용하고 있는 MySQL(Metadata DataBase)와 연결되지 않는 것이 좋음</li>
-</ul>
-
-<h3 id="dag-running">Dag Running</h3>
-<ul>
-  <li>실제로 실행</li>
-  <li>Airflow에서 사용하고 있는 MySQL(Metadata DataBase)와 연결됨</li>
-</ul>
-
-<h2 id="variable-cache">Variable Cache</h2>
 
 <p>[참고]<br />
-<a href="https://wookiist.dev/168">[Airflow] Airflow DAG Serialization</a><br />
-<a href="https://medium.com/apache-airflow/the-ins-and-outs-of-airflows-new-secrets-cache-f7b9ec25ca1e">The ins and outs of Airflow’s new Secrets Cache</a></p>
+<a href="https://wookiist.dev/168">[Airflow] Airflow DAG Serialization - 욱이의 IT 생존일지</a><br />
+<a href="https://medium.com/apache-airflow/the-ins-and-outs-of-airflows-new-secrets-cache-f7b9ec25ca1e">The ins and outs of Airflow’s new Secrets Cache - Raphaël Vandon</a><br />
+<a href="https://spidyweb.tistory.com/536">Airflow DAG Parsing - Spidy Web 블로그</a><br />
+<a href="https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/dag-serialization.html">Dag Serialization</a><br />
+<a href="https://airflow.apache.org/docs/apache-airflow/stable/authoring-and-scheduling/dagfile-processing.html#dag-file-processing">Dag File Processing</a></p>
 
                 </div>
             </section>
@@ -562,7 +697,7 @@ into the {body} of the default.hbs template -->
         <!-- The footer at the very bottom of the screen -->
         <footer class="site-footer outer">
             <div class="site-footer-content inner">
-                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2024</section>
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2025</section>
                 <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
                     <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
                     <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
