@@ -8,7 +8,7 @@
 	<lastBuildDate>Wed, 01 Oct 2025 22:30:00 +0900</lastBuildDate>
 	
 	<item>
-		<title>KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</title>
+		<title>KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</title>
         
         
             <description>&lt;ul&gt;

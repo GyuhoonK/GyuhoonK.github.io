@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/kubernetes/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2025-10-11T17:32:24+09:00</updated>
+  <updated>2025-10-11T17:40:00+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/kubernetes/feed.xml</id>
 
   
@@ -32,8 +32,8 @@
 
   
     <entry>
-      <title type="html">KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</title>
-      <link href="https://gyuhoonk.github.io/pod-operator-400" rel="alternate" type="text/html" title="KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?" />
+      <title type="html">KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</title>
+      <link href="https://gyuhoonk.github.io/pod-operator-400" rel="alternate" type="text/html" title="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" />
       <published>2025-10-01T22:30:00+09:00</published>
       <updated>2025-10-01T22:30:00+09:00</updated>
       <id>https://gyuhoonk.github.io/pod-operator-400</id>
@@ -61,7 +61,7 @@ Reason: Bad Request
 &lt;h3 id=&quot;kubernetesclientexceptionsapiexception-400-에러의-의미&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubernetes.client.exceptions.ApiException: (400)&lt;/code&gt; 에러의 의미&lt;/h3&gt;
 &lt;ul&gt;
   &lt;li&gt;생성된 Pod로부터 log를 읽을 수 없을 때 발생합니다.&lt;/li&gt;
-  &lt;li&gt;실제로 아직 Running pahse가 아닌 Pod(Pending pod)에 대해서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubectl logs &amp;lt;pod-name&amp;gt;&lt;/code&gt;를 실행하면 동일한 에러를 확인할 수 있습니다.&lt;/li&gt;
+  &lt;li&gt;실제로 아직 Running phase가 아닌 Pod(Pending pod)에 대해서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubectl logs &amp;lt;pod-name&amp;gt;&lt;/code&gt;를 실행하면 동일한 에러를 확인할 수 있습니다.&lt;/li&gt;
   &lt;li&gt;다만, airflow에 남은 로그를 확인해보았을 때, Pod는 이미 Running 상태인 것으로 보입니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Pod not yet started&lt;/code&gt; 로그는 Pod Phase가 Pending일 때의 로그인 것으로 확인했고, 해당 로그가 등장하지 않으면 Running 상태인 것으로 확인했기 때문입니다.&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -95,7 +95,7 @@ Reason: Bad Request
       &lt;li&gt;이 중에서 Pending, Running이 현재 발생하는 에러와 연관이 있습니다.&lt;/li&gt;
     &lt;/ul&gt;
   &lt;/li&gt;
-  &lt;li&gt;Pending Phase는 아직 Pod이 실행되지 않았고, 실행(Running)을 준비하는 단계입니다. k8s 클러스터로부터 Pod 생성이 허용되고, conatiner image를 다운로드 받습니다.&lt;/li&gt;
+  &lt;li&gt;Pending Phase는 아직 Pod이 실행되지 않았고, 실행(Running)을 준비하는 단계입니다. k8s 클러스터로부터 Pod 생성이 허용되고, container image를 다운로드 받습니다.&lt;/li&gt;
   &lt;li&gt;Running Phase는 실제로 Pod이 실행되는 단계입니다. Pod 내에 1개 이상의 container가 실행되고 있는 단계입니다.
     &lt;ul&gt;
       &lt;li&gt;즉, Running이라고 해서 모든 container가 running 상태는 아니라는 뜻입니다.&lt;/li&gt;
@@ -109,20 +109,19 @@ Reason: Bad Request
   &lt;li&gt;KubernetesPodOperator는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt; container를 생성하여 입력된 cmd, args를 실행합니다.&lt;/li&gt;
   &lt;li&gt;Pod Phase가 Running으로 돌입하면, 생성된 Pod 내에 base container의 로그를 가져오는 코드를 실행합니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fetch_requested_container_logs&lt;/code&gt;).&lt;/li&gt;
   &lt;li&gt;보통 KubernetesPodOperator를 사용하여 생성된 Pod은 base container 1개만 실행합니다(init container가 완료된 후 실행되는 container는 1개).&lt;/li&gt;
-  &lt;li&gt;그러나 XCom Push를 사용하기 위해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do_xcom_push=True&lt;/code&gt; 옵션을 주면 base conatiner 외에 xcom push을 위한 컨테이너(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;airflow-xcom-sidecar&lt;/code&gt;)를 생성합니다(=Side Car 패턴)&lt;/li&gt;
-  &lt;li&gt;해당 컨테이너는 base container의 작업이 완료되어도 volume이 삭제되지 않도록 유지하는 역할을 합니다. base conatiner의 작업이 종료되어도 XComPush path(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/airflow/xcom/return.json&lt;/code&gt;)에 대한 volume mount를 유지하여 airflow worker에서 해당 값을 참조할 수 있도록 하는 역할을 합니다.&lt;/li&gt;
-  &lt;li&gt;해당 컨테이너는 가벼운 docker image(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;alpine&lt;/code&gt;)를 사용하기 때문에 base conatiner에 비해 더 빠르게 시작됩니다.&lt;/li&gt;
+  &lt;li&gt;그러나 XCom Push를 사용하기 위해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do_xcom_push=True&lt;/code&gt; 옵션을 주면 base container 외에 xcom push을 위한 컨테이너(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;airflow-xcom-sidecar&lt;/code&gt;)를 생성합니다(=Side Car 패턴)&lt;/li&gt;
+  &lt;li&gt;해당 컨테이너는 base container의 작업이 완료되어도 volume이 삭제되지 않도록 유지하는 역할을 합니다. base container의 작업이 종료되어도 XComPush path(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/airflow/xcom/return.json&lt;/code&gt;)에 대한 volume mount를 유지하여 airflow worker에서 해당 값을 참조할 수 있도록 하는 역할을 합니다.&lt;/li&gt;
+  &lt;li&gt;해당 컨테이너는 가벼운 docker image(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;alpine&lt;/code&gt;)를 사용하기 때문에 base container에 비해 더 빠르게 시작됩니다.&lt;/li&gt;
   &lt;li&gt;위의 Pod Phase를 다시 보면, Pod의 Running Phase는 Pod 내의 N개의 container 중 1개의 container라도 running인 경우입니다.&lt;/li&gt;
   &lt;li&gt;따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;airflow-xcom-sidecar&lt;/code&gt;는 running, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt;는 waiting인 상태에서도 Pod Phase는 Running으로 돌입합니다.&lt;/li&gt;
-  &lt;li&gt;이렇게 되면 airflow는 base container의 log를 조회할 수 있다고 판단하여 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fetch_requested_container_logs&lt;/code&gt; 함수를 실행합니다.&lt;/li&gt;
-  &lt;li&gt;하지만 base conatiner가 아직 실행되지 않은 상태이기 때문에 존재하지 않는 container로의 요청이므로 400 error(Bad Request)가 발생합니다.&lt;/li&gt;
+  &lt;li&gt;Running Phase Pod에 대해서airflow는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fetch_requested_container_logs&lt;/code&gt; 함수를 실행합니다.&lt;/li&gt;
+  &lt;li&gt;하지만 base container가 아직 실행되지 않은 상태이기 때문에 존재하지 않는 container로의 요청이므로 400 error(Bad Request)가 발생합니다.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;providers-cncf-kubernetes1082에서의-변화&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;providers-cncf-kubernetes==10.8.2&lt;/code&gt;에서의 변화&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li&gt;Kubernetes는 init container를 제외하면 container들 간의 실행 순서(시작 순서)를 제어할 수 있는 방법은 제공하지 않습니다.&lt;/li&gt;
-  &lt;li&gt;혹은 특정 container가 running일 때 Pod가 Running Phase에 돌입한다던가 하는 방법도 존재하지 않습니다.&lt;/li&gt;
-  &lt;li&gt;따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fetch_requested_container_logs&lt;/code&gt;가 실행되기 전에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;await_pod_start&lt;/code&gt;를 수정하는 것이 적합한 방향입니다.&lt;/li&gt;
+  &lt;li&gt;최신 버전에서 이 부분에 대해 수정이 되었는지 확인해보았습니다.&lt;/li&gt;
+  &lt;li&gt;먼저 7.13.0에서의 await_pos_start 코드는 아래와 같습니다.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;## cncf/kubernetes/utils/pod_manager.py (apache-airflow-providers-cncf-kubernetes==7.13.0)
@@ -172,14 +171,17 @@ Reason: Bad Request
 
 &lt;ul&gt;
   &lt;li&gt;Pod 내에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;waiting&lt;/code&gt; state인 container에 대해서 Image 관련 에러가 발생하는 경우 조기에 실패시키는 코드입니다.&lt;/li&gt;
-  &lt;li&gt;그러나 여전히 Pod Phase에 의존하는 방식은 변경되지 않았습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base container가 시작되지 않음&lt;/code&gt; = &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;사용하는 docker image pull에 문제가 있음&lt;/code&gt;으로 판단하는 것 같습니다.&lt;/li&gt;
-  &lt;li&gt;클러스터 내 자원(CPU, memory)을 할당받지 못해 base conatiner가 늦게 시작되는 경우에 대해서는 감지하지 않는 것으로 보입니다.&lt;/li&gt;
-  &lt;li&gt;즉 여전히 ApiException(400)은 발생할 가능성이 있어 보입니다.&lt;/li&gt;
+  &lt;li&gt;그러나 여전히 Pod Phase에 의존하는 방식은 변경되지 않았습니다.&lt;/li&gt;
+  &lt;li&gt;어떤 이유에서든지 base container가 wating이고 sidecar container가 running이라면 여전히 동일한 에러가 발생할 것으로 보입니다.&lt;/li&gt;
+  &lt;li&gt;image 관련 에러가 발생하는 경우에는 추가된 코드를 통해 조기에 Pod을 종료시키지만, 클러스터 내 자원(CPU, memory)을 할당받지 못해 base container가 늦게 시작되는 경우에 대해서는 감지하지 않는 것으로 보입니다.&lt;/li&gt;
+  &lt;li&gt;즉, 여전히 ApiException(400)은 발생할 가능성이 있어 보입니다.&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;base-conatiner가-waiting인-경우에-대해서의-감지를-추가하기&quot;&gt;base conatiner가 waiting인 경우에 대해서의 감지를 추가하기&lt;/h2&gt;
+&lt;h2 id=&quot;base-container가-waiting인-경우에-대해서의-감지를-추가하기&quot;&gt;base container가 waiting인 경우에 대해서의 감지를 추가하기&lt;/h2&gt;
 &lt;ul&gt;
-  &lt;li&gt;(작성 중)&lt;/li&gt;
+  &lt;li&gt;Kubernetes는 init container를 제외하면 container들 간의 실행 순서(시작 순서)를 제어할 수 있는 방법은 제공하지 않습니다.&lt;/li&gt;
+  &lt;li&gt;혹은 특정 container가 running일 때 Pod가 Running Phase에 돌입한다던가 하는 방법도 존재하지 않습니다.&lt;/li&gt;
+  &lt;li&gt;따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fetch_requested_container_logs&lt;/code&gt;가 실행되기 전에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;await_pod_start&lt;/code&gt;를 수정하는 것이 적합한 방향입니다.&lt;/li&gt;
 &lt;/ul&gt;
 
 &lt;h2 id=&quot;결론&quot;&gt;결론&lt;/h2&gt;

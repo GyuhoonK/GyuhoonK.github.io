@@ -11,7 +11,7 @@
 
 
 
-    <title>KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</title>
+    <title>KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -43,7 +43,7 @@
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?" />
+    <meta property="og:title" content="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" />
     <meta property="og:description" content="KubernetesPodOperator 사용 시 kubernetes.client.exceptions.ApiException: (400)이 발생하는 원인에 대해서 분석합니다. 문제 상황: kubernetes.client.exceptions.ApiException: (400) 발생 File "/usr/local/lib/python3.12/site-packages/kubernetes/client/rest.py", line 234, in request raise ApiException(http_resp=r) kubernetes.client.exceptions.ApiException: (400) Reason: Bad Request ... [2025-10-01, 07:21:10 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name } [2025-10-01, 07:21:11 KST] {pod_manager.py:365} WARNING - Pod not yet" />
     <meta property="og:url" content="https://gyuhoonk.github.io/pod-operator-400" />
     <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/kubernetes/k8s-container.png" />
@@ -53,7 +53,7 @@
     <meta property="article:modified_time" content="2025-10-01T22:30:00+09:00" />
     <meta property="article:tag" content="Airflow" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?" />
+    <meta name="twitter:title" content="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" />
     <meta name="twitter:description" content="KubernetesPodOperator 사용 시 kubernetes.client.exceptions.ApiException: (400)이 발생하는 원인에 대해서 분석합니다. 문제 상황: kubernetes.client.exceptions.ApiException: (400) 발생 File "/usr/local/lib/python3.12/site-packages/kubernetes/client/rest.py", line 234, in request raise ApiException(http_resp=r) kubernetes.client.exceptions.ApiException: (400) Reason: Bad Request ... [2025-10-01, 07:21:10 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name } [2025-10-01, 07:21:11 KST] {pod_manager.py:365} WARNING - Pod not yet" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
     <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/kubernetes/k8s-container.png" />
@@ -99,7 +99,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" href="/feed.xml" />
 
     
 </head>
@@ -189,7 +189,7 @@ into the {body} of the default.hbs template -->
                         
                     
                 </section>
-                <h1 class="post-full-title">KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</h1>
+                <h1 class="post-full-title">KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</h1>
             </header>
 
             <!-- 
@@ -223,7 +223,7 @@ Reason: Bad Request
 <h3 id="kubernetesclientexceptionsapiexception-400-에러의-의미"><code class="language-plaintext highlighter-rouge">kubernetes.client.exceptions.ApiException: (400)</code> 에러의 의미</h3>
 <ul>
   <li>생성된 Pod로부터 log를 읽을 수 없을 때 발생합니다.</li>
-  <li>실제로 아직 Running pahse가 아닌 Pod(Pending pod)에 대해서 <code class="language-plaintext highlighter-rouge">kubectl logs &lt;pod-name&gt;</code>를 실행하면 동일한 에러를 확인할 수 있습니다.</li>
+  <li>실제로 아직 Running phase가 아닌 Pod(Pending pod)에 대해서 <code class="language-plaintext highlighter-rouge">kubectl logs &lt;pod-name&gt;</code>를 실행하면 동일한 에러를 확인할 수 있습니다.</li>
   <li>다만, airflow에 남은 로그를 확인해보았을 때, Pod는 이미 Running 상태인 것으로 보입니다. <code class="language-plaintext highlighter-rouge">Pod not yet started</code> 로그는 Pod Phase가 Pending일 때의 로그인 것으로 확인했고, 해당 로그가 등장하지 않으면 Running 상태인 것으로 확인했기 때문입니다.</li>
 </ul>
 
@@ -257,7 +257,7 @@ Reason: Bad Request
       <li>이 중에서 Pending, Running이 현재 발생하는 에러와 연관이 있습니다.</li>
     </ul>
   </li>
-  <li>Pending Phase는 아직 Pod이 실행되지 않았고, 실행(Running)을 준비하는 단계입니다. k8s 클러스터로부터 Pod 생성이 허용되고, conatiner image를 다운로드 받습니다.</li>
+  <li>Pending Phase는 아직 Pod이 실행되지 않았고, 실행(Running)을 준비하는 단계입니다. k8s 클러스터로부터 Pod 생성이 허용되고, container image를 다운로드 받습니다.</li>
   <li>Running Phase는 실제로 Pod이 실행되는 단계입니다. Pod 내에 1개 이상의 container가 실행되고 있는 단계입니다.
     <ul>
       <li>즉, Running이라고 해서 모든 container가 running 상태는 아니라는 뜻입니다.</li>
@@ -271,20 +271,19 @@ Reason: Bad Request
   <li>KubernetesPodOperator는 <code class="language-plaintext highlighter-rouge">base</code> container를 생성하여 입력된 cmd, args를 실행합니다.</li>
   <li>Pod Phase가 Running으로 돌입하면, 생성된 Pod 내에 base container의 로그를 가져오는 코드를 실행합니다(<code class="language-plaintext highlighter-rouge">fetch_requested_container_logs</code>).</li>
   <li>보통 KubernetesPodOperator를 사용하여 생성된 Pod은 base container 1개만 실행합니다(init container가 완료된 후 실행되는 container는 1개).</li>
-  <li>그러나 XCom Push를 사용하기 위해 <code class="language-plaintext highlighter-rouge">do_xcom_push=True</code> 옵션을 주면 base conatiner 외에 xcom push을 위한 컨테이너(<code class="language-plaintext highlighter-rouge">airflow-xcom-sidecar</code>)를 생성합니다(=Side Car 패턴)</li>
-  <li>해당 컨테이너는 base container의 작업이 완료되어도 volume이 삭제되지 않도록 유지하는 역할을 합니다. base conatiner의 작업이 종료되어도 XComPush path(<code class="language-plaintext highlighter-rouge">/airflow/xcom/return.json</code>)에 대한 volume mount를 유지하여 airflow worker에서 해당 값을 참조할 수 있도록 하는 역할을 합니다.</li>
-  <li>해당 컨테이너는 가벼운 docker image(<code class="language-plaintext highlighter-rouge">alpine</code>)를 사용하기 때문에 base conatiner에 비해 더 빠르게 시작됩니다.</li>
+  <li>그러나 XCom Push를 사용하기 위해 <code class="language-plaintext highlighter-rouge">do_xcom_push=True</code> 옵션을 주면 base container 외에 xcom push을 위한 컨테이너(<code class="language-plaintext highlighter-rouge">airflow-xcom-sidecar</code>)를 생성합니다(=Side Car 패턴)</li>
+  <li>해당 컨테이너는 base container의 작업이 완료되어도 volume이 삭제되지 않도록 유지하는 역할을 합니다. base container의 작업이 종료되어도 XComPush path(<code class="language-plaintext highlighter-rouge">/airflow/xcom/return.json</code>)에 대한 volume mount를 유지하여 airflow worker에서 해당 값을 참조할 수 있도록 하는 역할을 합니다.</li>
+  <li>해당 컨테이너는 가벼운 docker image(<code class="language-plaintext highlighter-rouge">alpine</code>)를 사용하기 때문에 base container에 비해 더 빠르게 시작됩니다.</li>
   <li>위의 Pod Phase를 다시 보면, Pod의 Running Phase는 Pod 내의 N개의 container 중 1개의 container라도 running인 경우입니다.</li>
   <li>따라서 <code class="language-plaintext highlighter-rouge">airflow-xcom-sidecar</code>는 running, <code class="language-plaintext highlighter-rouge">base</code>는 waiting인 상태에서도 Pod Phase는 Running으로 돌입합니다.</li>
-  <li>이렇게 되면 airflow는 base container의 log를 조회할 수 있다고 판단하여 <code class="language-plaintext highlighter-rouge">fetch_requested_container_logs</code> 함수를 실행합니다.</li>
-  <li>하지만 base conatiner가 아직 실행되지 않은 상태이기 때문에 존재하지 않는 container로의 요청이므로 400 error(Bad Request)가 발생합니다.</li>
+  <li>Running Phase Pod에 대해서airflow는 <code class="language-plaintext highlighter-rouge">fetch_requested_container_logs</code> 함수를 실행합니다.</li>
+  <li>하지만 base container가 아직 실행되지 않은 상태이기 때문에 존재하지 않는 container로의 요청이므로 400 error(Bad Request)가 발생합니다.</li>
 </ul>
 
 <h2 id="providers-cncf-kubernetes1082에서의-변화"><code class="language-plaintext highlighter-rouge">providers-cncf-kubernetes==10.8.2</code>에서의 변화</h2>
 <ul>
-  <li>Kubernetes는 init container를 제외하면 container들 간의 실행 순서(시작 순서)를 제어할 수 있는 방법은 제공하지 않습니다.</li>
-  <li>혹은 특정 container가 running일 때 Pod가 Running Phase에 돌입한다던가 하는 방법도 존재하지 않습니다.</li>
-  <li>따라서 <code class="language-plaintext highlighter-rouge">fetch_requested_container_logs</code>가 실행되기 전에 <code class="language-plaintext highlighter-rouge">await_pod_start</code>를 수정하는 것이 적합한 방향입니다.</li>
+  <li>최신 버전에서 이 부분에 대해 수정이 되었는지 확인해보았습니다.</li>
+  <li>먼저 7.13.0에서의 await_pos_start 코드는 아래와 같습니다.</li>
 </ul>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## cncf/kubernetes/utils/pod_manager.py (apache-airflow-providers-cncf-kubernetes==7.13.0)
@@ -334,14 +333,17 @@ Reason: Bad Request
 
 <ul>
   <li>Pod 내에 <code class="language-plaintext highlighter-rouge">waiting</code> state인 container에 대해서 Image 관련 에러가 발생하는 경우 조기에 실패시키는 코드입니다.</li>
-  <li>그러나 여전히 Pod Phase에 의존하는 방식은 변경되지 않았습니다. <code class="language-plaintext highlighter-rouge">base container가 시작되지 않음</code> = <code class="language-plaintext highlighter-rouge">사용하는 docker image pull에 문제가 있음</code>으로 판단하는 것 같습니다.</li>
-  <li>클러스터 내 자원(CPU, memory)을 할당받지 못해 base conatiner가 늦게 시작되는 경우에 대해서는 감지하지 않는 것으로 보입니다.</li>
-  <li>즉 여전히 ApiException(400)은 발생할 가능성이 있어 보입니다.</li>
+  <li>그러나 여전히 Pod Phase에 의존하는 방식은 변경되지 않았습니다.</li>
+  <li>어떤 이유에서든지 base container가 wating이고 sidecar container가 running이라면 여전히 동일한 에러가 발생할 것으로 보입니다.</li>
+  <li>image 관련 에러가 발생하는 경우에는 추가된 코드를 통해 조기에 Pod을 종료시키지만, 클러스터 내 자원(CPU, memory)을 할당받지 못해 base container가 늦게 시작되는 경우에 대해서는 감지하지 않는 것으로 보입니다.</li>
+  <li>즉, 여전히 ApiException(400)은 발생할 가능성이 있어 보입니다.</li>
 </ul>
 
-<h2 id="base-conatiner가-waiting인-경우에-대해서의-감지를-추가하기">base conatiner가 waiting인 경우에 대해서의 감지를 추가하기</h2>
+<h2 id="base-container가-waiting인-경우에-대해서의-감지를-추가하기">base container가 waiting인 경우에 대해서의 감지를 추가하기</h2>
 <ul>
-  <li>(작성 중)</li>
+  <li>Kubernetes는 init container를 제외하면 container들 간의 실행 순서(시작 순서)를 제어할 수 있는 방법은 제공하지 않습니다.</li>
+  <li>혹은 특정 container가 running일 때 Pod가 Running Phase에 돌입한다던가 하는 방법도 존재하지 않습니다.</li>
+  <li>따라서 <code class="language-plaintext highlighter-rouge">fetch_requested_container_logs</code>가 실행되기 전에 <code class="language-plaintext highlighter-rouge">await_pod_start</code>를 수정하는 것이 적합한 방향입니다.</li>
 </ul>
 
 <h2 id="결론">결론</h2>
@@ -645,13 +647,13 @@ Reason: Bad Request
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</div>
+    <div class="floating-header-title">KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=KubernetesPodOperator%EC%97%90%EC%84%9C+ApiException%28400%29%EC%9D%98+%EB%B0%9C%EC%83%9D%ED%95%98%EB%8A%94+%EC%9D%B4%EC%9C%A0%EB%8A%94%3F&amp;url=https://gyuhoonk.github.iopod-operator-400"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=KubernetesPodOperator%EC%97%90%EC%84%9C+ApiException%28400%29%EA%B0%80+%EB%B0%9C%EC%83%9D%ED%95%98%EB%8A%94+%EC%9B%90%EC%9D%B8&amp;url=https://gyuhoonk.github.iopod-operator-400"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 

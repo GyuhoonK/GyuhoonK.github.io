@@ -8,7 +8,7 @@
     
       
       <item>
-        <title>KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</title>
+        <title>KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</title>
         
           <description>&lt;ul&gt;
   &lt;li&gt;KubernetesPodOperator 사용 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubernetes.client.exceptions.ApiException: (400)&lt;/code&gt;이 발생하는 원인에 대해서 분석합니다.&lt;/li&gt;
