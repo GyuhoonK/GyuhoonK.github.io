@@ -8,6 +8,38 @@
     
       
       <item>
+        <title>KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</title>
+        
+          <description>&lt;ul&gt;
+  &lt;li&gt;KubernetesPodOperator 사용 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubernetes.client.exceptions.ApiException: (400)&lt;/code&gt;이 발생하는 원인에 대해서 분석합니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        
+        <pubDate>Wed, 01 Oct 2025 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/pod-operator-400</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/pod-operator-400</guid>
+      </item>
+      
+    
+      
+      <item>
+        <title>ConfigMap과 Secret의 차이점</title>
+        
+          <description>&lt;p&gt;ConfigMap과 Secret은 뭐가 다른걸까?&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 15 Mar 2025 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/configmap-secret</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/configmap-secret</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Variables &amp; Dag Parsing</title>
         
           <description>&lt;p&gt;Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다.&lt;/p&gt;

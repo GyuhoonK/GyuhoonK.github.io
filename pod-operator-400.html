@@ -11,7 +11,7 @@
 
 
 
-    <title>multi-stage와 Builder Pattern</title>
+    <title>KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,30 +37,30 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/multi-stage-and-builder-pattern" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/pod-operator-400" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="multi-stage와 Builder Pattern" />
-    <meta property="og:description" content="DataHub로 알아본 Docker build 전략 (multi-stage, Builder pattern) multi-stage build multi stage build는 2개 이상의 베이스 이미지를 이용합니다. 하나의 이미지 A에서는 빌드를 하고 빌드 결과물을 다른 이미지 B로 COPY합니다. Docker 공식 문서에서 제공하고 있는 예시를 살펴보겠습니다. # syntax=docker/dockerfile:1 FROM golang:1.16 AS builder WORKDIR /go/src/github.com/alexellis/href-counter/ RUN go get -d -v golang.org/x/net/html" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/multi-stage-and-builder-pattern" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/kubernetes/docker-logo.png" />
+    <meta property="og:title" content="KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?" />
+    <meta property="og:description" content="KubernetesPodOperator 사용 시 kubernetes.client.exceptions.ApiException: (400)이 발생하는 원인에 대해서 분석합니다. 문제 상황: kubernetes.client.exceptions.ApiException: (400) 발생 File "/usr/local/lib/python3.12/site-packages/kubernetes/client/rest.py", line 234, in request raise ApiException(http_resp=r) kubernetes.client.exceptions.ApiException: (400) Reason: Bad Request ... [2025-10-01, 07:21:10 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name } [2025-10-01, 07:21:11 KST] {pod_manager.py:365} WARNING - Pod not yet" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/pod-operator-400" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/kubernetes/k8s-container.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2023-06-10T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2023-06-10T22:30:00+09:00" />
-    <meta property="article:tag" content="Kubernetes" />
+    <meta property="article:published_time" content="2025-10-01T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2025-10-01T22:30:00+09:00" />
+    <meta property="article:tag" content="Airflow" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="multi-stage와 Builder Pattern" />
-    <meta name="twitter:description" content="DataHub로 알아본 Docker build 전략 (multi-stage, Builder pattern) multi-stage build multi stage build는 2개 이상의 베이스 이미지를 이용합니다. 하나의 이미지 A에서는 빌드를 하고 빌드 결과물을 다른 이미지 B로 COPY합니다. Docker 공식 문서에서 제공하고 있는 예시를 살펴보겠습니다. # syntax=docker/dockerfile:1 FROM golang:1.16 AS builder WORKDIR /go/src/github.com/alexellis/href-counter/ RUN go get -d -v golang.org/x/net/html" />
+    <meta name="twitter:title" content="KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?" />
+    <meta name="twitter:description" content="KubernetesPodOperator 사용 시 kubernetes.client.exceptions.ApiException: (400)이 발생하는 원인에 대해서 분석합니다. 문제 상황: kubernetes.client.exceptions.ApiException: (400) 발생 File "/usr/local/lib/python3.12/site-packages/kubernetes/client/rest.py", line 234, in request raise ApiException(http_resp=r) kubernetes.client.exceptions.ApiException: (400) Reason: Bad Request ... [2025-10-01, 07:21:10 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name } [2025-10-01, 07:21:11 KST] {pod_manager.py:365} WARNING - Pod not yet" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/kubernetes/docker-logo.png" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/kubernetes/k8s-container.png" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Kubernetes" />
+    <meta name="twitter:data2" content="Airflow" />
     <meta name="twitter:site" content="@" />
     <meta name="twitter:creator" content="@" />
     <meta property="og:image:width" content="1400" />
@@ -75,18 +75,18 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/multi-stage-and-builder-pattern",
+    "url": "https://gyuhoonk.github.io/pod-operator-400",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/kubernetes/docker-logo.png",
+        "url": "https://gyuhoonk.github.io/assets/built/images/kubernetes/k8s-container.png",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/multi-stage-and-builder-pattern"
+        "@id": "https://gyuhoonk.github.io/pod-operator-400"
     },
-    "description": "DataHub로 알아본 Docker build 전략 (multi-stage, Builder pattern) multi-stage build multi stage build는 2개 이상의 베이스 이미지를 이용합니다. 하나의 이미지 A에서는 빌드를 하고 빌드 결과물을 다른 이미지 B로 COPY합니다. Docker 공식 문서에서 제공하고 있는 예시를 살펴보겠습니다. # syntax=docker/dockerfile:1 FROM golang:1.16 AS builder WORKDIR /go/src/github.com/alexellis/href-counter/ RUN go get -d -v golang.org/x/net/html"
+    "description": "KubernetesPodOperator 사용 시 kubernetes.client.exceptions.ApiException: (400)이 발생하는 원인에 대해서 분석합니다. 문제 상황: kubernetes.client.exceptions.ApiException: (400) 발생 File "/usr/local/lib/python3.12/site-packages/kubernetes/client/rest.py", line 234, in request raise ApiException(http_resp=r) kubernetes.client.exceptions.ApiException: (400) Reason: Bad Request ... [2025-10-01, 07:21:10 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name } [2025-10-01, 07:21:11 KST] {pod_manager.py:365} WARNING - Pod not yet"
 }
     </script>
 
@@ -99,7 +99,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="multi-stage와 Builder Pattern" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?" href="/feed.xml" />
 
     
 </head>
@@ -171,13 +171,17 @@ into the {body} of the default.hbs template -->
 <main id="site-main" class="site-main outer" role="main">
     <div class="inner">
 
-        <article class="post-full  tag-kubernetes post tag-kubernetes ">
+        <article class="post-full  tag-airflow tag-kubernetes post tag-airflow ">
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="10 June 2023">10 June 2023</time>
+                    <time class="post-full-meta-date" datetime=" 1 October 2025"> 1 October 2025</time>
                     
                         <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/airflow/'>AIRFLOW</a>,
+                            
                         
                             
                                <a href='/tag/kubernetes/'>KUBERNETES</a>
@@ -185,163 +189,168 @@ into the {body} of the default.hbs template -->
                         
                     
                 </section>
-                <h1 class="post-full-title">multi-stage와 Builder Pattern</h1>
+                <h1 class="post-full-title">KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/kubernetes/docker-logo.png)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/kubernetes/k8s-container.png)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>DataHub로 알아본 Docker build 전략 (multi-stage, Builder pattern)</p>
-
-<h3 id="multi-stage-build">multi-stage build</h3>
-
-<p>multi stage build는 2개 이상의 베이스 이미지를 이용합니다. 하나의 이미지 A에서는 빌드를 하고 빌드 결과물을 다른 이미지 B로 COPY합니다.
-Docker 공식 문서에서 제공하고 있는 예시를 살펴보겠습니다.</p>
-
-<div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># syntax=docker/dockerfile:1</span>
-
-<span class="k">FROM</span><span class="s"> golang:1.16 AS builder</span>
-<span class="k">WORKDIR</span><span class="s"> /go/src/github.com/alexellis/href-counter/</span>
-<span class="k">RUN </span>go get <span class="nt">-d</span> <span class="nt">-v</span> golang.org/x/net/html  
-<span class="k">COPY</span><span class="s"> app.go ./</span>
-<span class="k">RUN </span><span class="nv">CGO_ENABLED</span><span class="o">=</span>0 go build <span class="nt">-a</span> <span class="nt">-installsuffix</span> cgo <span class="nt">-o</span> app .
-
-<span class="k">FROM</span><span class="s"> alpine:latest  </span>
-<span class="k">RUN </span>apk <span class="nt">--no-cache</span> add ca-certificates
-<span class="k">WORKDIR</span><span class="s"> /root/</span>
-<span class="k">COPY</span><span class="s"> --from=builder /go/src/github.com/alexellis/href-counter/app ./</span>
-<span class="k">CMD</span><span class="s"> ["./app"]</span>
-</code></pre></div></div>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker build <span class="nt">-t</span> alexellis2/href-counter:latest <span class="nb">.</span>
-</code></pre></div></div>
-
-<p><code class="language-plaintext highlighter-rouge">builder</code>로 네이밍한 <code class="language-plaintext highlighter-rouge">golang:1.16</code>은 빌드를 실행(<code class="language-plaintext highlighter-rouge">go build</code>)하고 빌드 결과물(<code class="language-plaintext highlighter-rouge">/go/src/github.com/alexellis/href-counter/app</code>)을 <code class="language-plaintext highlighter-rouge">alpine:latest</code>로 복사합니다.<br />
-이는 기존의 Builder pattern의 단점을 보완했습니다. Builder pattern이란 2개의 Dockerfile을 이용하는 방법입니다.</p>
-
-<h3 id="builder-pattern">Builder pattern</h3>
-
-<p>Builder pattern은 production image(배포용 이미지)의 레이어를 최소화(slimmed-down)하기 위해 제안되었습니다. 개발용 이미지와 배포용 이미지를 분리합니다. 즉, 개발용 이미지에서는 어플리케이션을 개발하고 빌드하기 위한 모든 이미지를 포함하지만, 배포용 이미지에서는 어플리케이션과 어플리케이션을 실행하기 위한 의존성만을 포함합니다.</p>
-
-<p>아래 예시에서, <code class="language-plaintext highlighter-rouge">build.Dockerfile</code>은 개발용 이미지이고, <code class="language-plaintext highlighter-rouge">Dockerfile</code>은 배포용 이미지입니다.</p>
-
-<p><code class="language-plaintext highlighter-rouge">build.Dockerfile</code></p>
-<div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># syntax=docker/dockerfile:1</span>
-<span class="k">FROM</span><span class="s"> golang:1.16</span>
-<span class="k">WORKDIR</span><span class="s"> /go/src/github.com/alexellis/href-counter/</span>
-<span class="k">COPY</span><span class="s"> app.go ./</span>
-<span class="k">RUN </span>go get <span class="nt">-d</span> <span class="nt">-v</span> golang.org/x/net/html <span class="se">\
-</span>  <span class="o">&amp;&amp;</span> <span class="nv">CGO_ENABLED</span><span class="o">=</span>0 go build <span class="nt">-a</span> <span class="nt">-installsuffix</span> cgo <span class="nt">-o</span> app .
-</code></pre></div></div>
-
-<p><code class="language-plaintext highlighter-rouge">Dockerfile</code></p>
-<div class="language-Dockerfile highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># syntax=docker/dockerfile:1</span>
-<span class="k">FROM</span><span class="s"> alpine:latest  </span>
-<span class="k">RUN </span>apk <span class="nt">--no-cache</span> add ca-certificates
-<span class="k">WORKDIR</span><span class="s"> /root/</span>
-<span class="k">COPY</span><span class="s"> app ./</span>
-<span class="k">CMD</span><span class="s"> ["./app"]</span>
-</code></pre></div></div>
-
-<p>기존 Builder pattern에서는 위 2개의 도커파일(<code class="language-plaintext highlighter-rouge">build.Dockerfile, Dockerfile</code>)을 차례로 실행합니다.</p>
-
-<div class="language-shell highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/bin/sh</span>
-<span class="nb">echo </span>Building alexellis2/href-counter:build
-docker build <span class="nt">-t</span> alexellis2/href-counter:build <span class="nb">.</span> <span class="nt">-f</span> build.Dockerfile
-
-docker container create <span class="nt">--name</span> extract alexellis2/href-counter:build  
-docker container <span class="nb">cp </span>extract:/go/src/github.com/alexellis/href-counter/app ./app  
-docker container <span class="nb">rm</span> <span class="nt">-f</span> extract
-
-<span class="nb">echo </span>Building alexellis2/href-counter:latest
-docker build <span class="nt">--no-cache</span> <span class="nt">-t</span> alexellis2/href-counter:latest <span class="nb">.</span>
-<span class="nb">rm</span> ./app
-</code></pre></div></div>
-
-<ol>
-  <li>첫번째 이미지(<code class="language-plaintext highlighter-rouge">build.Dockerfile</code>)를 빌드한다</li>
-  <li>첫번째 빌드에서 실행된 컨테이너에서 빌드 결과물(<code class="language-plaintext highlighter-rouge">app</code>)을 로컬로 복사한다(<code class="language-plaintext highlighter-rouge">docker container cp</code>)</li>
-  <li>두번째 이미지를 빌드하면, 로컬에 복사된 결과물을 컨테이너 내부로 가져온다.</li>
-</ol>
-
-<p>위와 같은 방법으로 빌드된 배포용 이미지는 최소한의 레이어만을 포함합니다. 즉, 배포에 더 용이합니다.
-그러나 아래와 같은 단점을 갖습니다.</p>
-
-<ul>
-  <li>2개의 빌드 파일을 작성해야한다(빌드용 이미지와 빌드 결과물을 옮길 최종 결과물 이미지)</li>
-  <li>빌드 과정에서 사용해야하는 커맨드가 많다(컨테이너 내부에 접속하여 결과물을 로컬로 옮겨야한다)</li>
-  <li>로컬 환경에 빌드 결과물이 남는다</li>
+                    <ul>
+  <li>KubernetesPodOperator 사용 시 <code class="language-plaintext highlighter-rouge">kubernetes.client.exceptions.ApiException: (400)</code>이 발생하는 원인에 대해서 분석합니다.</li>
 </ul>
 
-<h3 id="datahub-v010-이전의-빌드-전략-multi-stage-build">DataHub v0.10 이전의 빌드 전략: multi-stage build</h3>
-<p>v0.10 이전 DataHub는 docker 빌드 시 mutl-stage build를 이용했습니다.</p>
+<h2 id="문제-상황-kubernetesclientexceptionsapiexception-400-발생">문제 상황: <code class="language-plaintext highlighter-rouge">kubernetes.client.exceptions.ApiException: (400)</code> 발생</h2>
 
-<p>아래는 v0.8.40에서 datahub-gms를 빌드하는 Dockerfile의 일부입니다(<a href="https://github.com/acryldata/datahub/blob/v0.8.40/docker/datahub-gms/Dockerfile">docker/datahub-gms/Dockerfile</a>).</p>
-
-<div class="language-docker highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> --platform=$BUILDPLATFORM alpine:3.14 AS prod-build</span>
-
-<span class="c"># Upgrade Alpine and base packages</span>
-<span class="k">RUN </span>apk <span class="nt">--no-cache</span> <span class="nt">--update-cache</span> <span class="nt">--available</span> upgrade <span class="se">\
-</span>    <span class="o">&amp;&amp;</span> apk <span class="nt">--no-cache</span> add openjdk8 perl
-
-<span class="k">COPY</span><span class="s"> . /datahub-src</span>
-<span class="k">RUN </span><span class="nb">cd</span> /datahub-src <span class="o">&amp;&amp;</span> ./gradlew :metadata-service:war:build <span class="nt">-x</span> <span class="nb">test</span>
-<span class="k">RUN </span><span class="nb">cp</span> /datahub-src/metadata-service/war/build/libs/war.war /war.war
-
-<span class="k">FROM</span><span class="s"> base as prod-install</span>
-<span class="k">COPY</span><span class="s"> --from=prod-build /war.war /datahub/datahub-gms/bin/war.war</span>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  File "/usr/local/lib/python3.12/site-packages/kubernetes/client/rest.py", line 234, in request
+    raise ApiException(http_resp=r)
+kubernetes.client.exceptions.ApiException: (400)
+Reason: Bad Request
+...
+[2025-10-01, 07:21:10 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name }
+[2025-10-01, 07:21:11 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name }
+[2025-10-01, 07:21:42 KST] {pod.py:844} INFO - Deleting pod: { pod_name }
 </code></pre></div></div>
-
-<ol>
-  <li><code class="language-plaintext highlighter-rouge">prod-build</code>에서 <code class="language-plaintext highlighter-rouge">war.war</code>를 빌드한다.</li>
-  <li>빌드 결과를 <code class="language-plaintext highlighter-rouge">prod-install</code>로 COPY한다.</li>
-</ol>
-
-<p>multi-stage build 방식을 이용하기 때문에 위 Dockerfile을 실행할 때 로컬에 <code class="language-plaintext highlighter-rouge">war.war</code>는 남지 않습니다. 또한 builder pattern처럼 여러 개의 도커 커맨드를 실행할 필요가 없었습니다.</p>
-
-<h3 id="datahub-v0100의-빌드-전략-copy-from-local">DataHub v0.10.0의 빌드 전략: COPY from Local</h3>
-
-<p>그러나 v0.10.0 이후 DataHub는 multi-stage build 전략을 버렸습니다. 따져보자면 Builder Pattern에 가까운 빌드 전략을 채택했습니다. <code class="language-plaintext highlighter-rouge">prod-build</code>에서 <code class="language-plaintext highlighter-rouge">war.war</code>를 빌드했던 스텝을 없애고 로컬에 있는 빌드 결과물인 <code class="language-plaintext highlighter-rouge">war.war</code>를 컨테이너 내부로 COPY하고 있습니다.</p>
-
-<div class="language-docker highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">FROM</span><span class="s"> base as prod-install</span>
-<span class="k">COPY</span><span class="s"> war.war /datahub/datahub-gms/bin/war.war</span>
-</code></pre></div></div>
-
-<p>따라서 Dockerfile을 실행하기 전에 사용자는 먼저 로컬에서 빌드를 수행해야합니다. 아래와 같은 명령어를 순서대로 실행해야합니다.</p>
-
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./gradlew :metadata-service:war:build
-docker build <span class="nt">-t</span> datahub-gms:v0.10.0 <span class="nb">.</span> <span class="nt">-f</span> Dockerfile
-</code></pre></div></div>
-
-<p>해당 커밋에서는 이를 <code class="language-plaintext highlighter-rouge">Docker build externalized</code>라고 표현합니다. 
-<img src="../../assets/built/images/kubernetes/docker-build-externalized.png" alt="docker-build-externalized" /></p>
-
-<p>5번째 줄을 보면 해당 m1에서의 빌드속도가 7분 이하로 매우 빨라졌다고 설명하고 있습니다. 제 기억이 맞다면 v0.8.40에서 빌드 시 걸리는 속도가 20분 정도였으니 속도가 매우 빨라진 것은 맞는 것 같습니다.</p>
-
-<p>왜 이런 선택을 했을까요? 위와 같은 제안이 처음 등장한 것은 아래 PR입니다.</p>
-
-<p><a href="https://github.com/datahub-project/datahub/pull/6726">run java build in action runners instead of within Docker</a></p>
-
-<p>해당 PR은 Dockerfile로 빌드를 실행할 때, local build(ex. <code class="language-plaintext highlighter-rouge">./gradlew :metadata-service:war:build</code>)가 먼저 실행될 수 있도록 각 모듈별로 빌드 커맨드를 추가하고, docker 내부에서 빌드하는 부분(<code class="language-plaintext highlighter-rouge">prod-build</code>)을 빼자고 제안합니다.</p>
-
-<p>이 제안을 받아들여 david는 GHA(GitHub Actions)에서 소스코드 빌드 &amp; 도커 빌드가 동시에 실행될 수 있도록 <code class="language-plaintext highlighter-rouge">build.gradle</code>도 함께 수정한 것으로 보입니다.</p>
-
-<h3 id="정리">정리</h3>
 <ul>
-  <li>multi-stage build는 Builder Pattern에 비해 Dockerfile 작성과 실행이 간단하다.</li>
-  <li>Builder Pattern은 필요한 최소의 레이어만 배포하므로 가볍다.</li>
-  <li>필요에 따라 multi-stage build와 Builder Pattern 중에 선택하여 Dockerfile을 작성한다.</li>
+  <li>cncf-kubernetes==7.13.0 사용 시 위와 같은 로그를 남기며 KubernetesPodOpeartor가 실패하는 경우가 종종 발생합니다.</li>
+  <li>항상 발생하는 것은 아니며, 간헐적으로 발생했습니다. 특히, 대부분의 경우에 task를 재실행하면 Pod이 정상적으로 생성/실행되어서 해당 현상을 재현하기 어려웠고 원인을 파악하기 힘들었습니다.</li>
+  <li>task의 실패를 최소화하기 위해 원인을 파악하고 대응해보고자 합니다.</li>
+</ul>
+
+<h3 id="kubernetesclientexceptionsapiexception-400-에러의-의미"><code class="language-plaintext highlighter-rouge">kubernetes.client.exceptions.ApiException: (400)</code> 에러의 의미</h3>
+<ul>
+  <li>생성된 Pod로부터 log를 읽을 수 없을 때 발생합니다.</li>
+  <li>실제로 아직 Running pahse가 아닌 Pod(Pending pod)에 대해서 <code class="language-plaintext highlighter-rouge">kubectl logs &lt;pod-name&gt;</code>를 실행하면 동일한 에러를 확인할 수 있습니다.</li>
+  <li>다만, airflow에 남은 로그를 확인해보았을 때, Pod는 이미 Running 상태인 것으로 보입니다. <code class="language-plaintext highlighter-rouge">Pod not yet started</code> 로그는 Pod Phase가 Pending일 때의 로그인 것으로 확인했고, 해당 로그가 등장하지 않으면 Running 상태인 것으로 확인했기 때문입니다.</li>
+</ul>
+
+<h3 id="kubernetespodoperator는-언제-log를-가져오나">KubernetesPodOperator는 언제 log를 가져오나?</h3>
+<ul>
+  <li>KubernetesPodOperator의 동작 방식은 대략적으로 아래와 같습니다.
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">get_or_create_pod</code> : pod를 생성합니다</li>
+      <li><code class="language-plaintext highlighter-rouge">await_pod_start</code>: pod start를 대기합니다. 즉, pod가 Running phase가 될 때까지 대기합니다.</li>
+      <li><code class="language-plaintext highlighter-rouge">fetch_requested_container_logs</code>: Running Pod 내에 <code class="language-plaintext highlighter-rouge">base</code> container로부터 log를 가져옵니다.</li>
+      <li><code class="language-plaintext highlighter-rouge">clean_up</code>/<code class="language-plaintext highlighter-rouge">deleting_pod</code>: 위 과정 중에 에러가 발생하는 경우에 Pod를 삭제합니다.</li>
+    </ul>
+  </li>
+  <li>위 과정 중 <code class="language-plaintext highlighter-rouge">fetch_requested_container_logs</code>에서 문제가 발생하는 것으로 보입니다.</li>
+  <li>여기까지 보면 Running Pod 내부의 <code class="language-plaintext highlighter-rouge">base</code> container의 로그를 가져오지 못했기 때문에 에러가 발생하는 것으로 볼 수 있습니다.</li>
+</ul>
+
+<h2 id="running-pod에-대해서도-apiexception400이-발생할-수-있다">Running Pod에 대해서도 ApiException(400)이 발생할 수 있다</h2>
+<ul>
+  <li>위에서 Pending Pod에 대해 <code class="language-plaintext highlighter-rouge">kubectl logs</code> 명령어 실행 시 ApiException(400)이 발생한다고 말씀드렸습니다.</li>
+  <li>Running Pod에 대해서도 동일한 에러가 발생할 수 있습니다. 이는 Running Pod인 경우에 Pod 내의 모든 container가 실행 중인 상태는 아니기 때문입니다.</li>
+  <li>Pod 내에 a, b, c container를 실행한다고 가정할 때 a, b는 아직 실행되지 않아 <code class="language-plaintext highlighter-rouge">wataing</code> state이고, c만 실행되어 <code class="language-plaintext highlighter-rouge">running</code> state라면 이 Pod는 Running phase입니다.</li>
+  <li>이 때 a나 b의 log를 조회하려고 하면 ApiException(400)이 발생합니다(<code class="language-plaintext highlighter-rouge">kubectl logs &lt;pod-name&gt; --container a</code>).</li>
+</ul>
+
+<h3 id="참고pod-phase에-대하여">[참고]Pod Phase에 대하여</h3>
+
+<ul>
+  <li>Pod는 5개의 Phase를 갖습니다.(Pending, Running, Succeeded, Failed, Unknown)
+    <ul>
+      <li>이 중에서 Pending, Running이 현재 발생하는 에러와 연관이 있습니다.</li>
+    </ul>
+  </li>
+  <li>Pending Phase는 아직 Pod이 실행되지 않았고, 실행(Running)을 준비하는 단계입니다. k8s 클러스터로부터 Pod 생성이 허용되고, conatiner image를 다운로드 받습니다.</li>
+  <li>Running Phase는 실제로 Pod이 실행되는 단계입니다. Pod 내에 1개 이상의 container가 실행되고 있는 단계입니다.
+    <ul>
+      <li>즉, Running이라고 해서 모든 container가 running 상태는 아니라는 뜻입니다.</li>
+      <li>pod 내에 sidecar 형태로 3개의 container를 선언했고, 이 중 1개의 container라도 running에 돌입했다면 pod phase는 running이 됩니다.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="에러의-원인-xcompush를-위해-추가된-airflow-xcom-sidecar">에러의 원인: XComPush를 위해 추가된 airflow-xcom-sidecar</h2>
+<ul>
+  <li>KubernetesPodOperator는 <code class="language-plaintext highlighter-rouge">base</code> container를 생성하여 입력된 cmd, args를 실행합니다.</li>
+  <li>Pod Phase가 Running으로 돌입하면, 생성된 Pod 내에 base container의 로그를 가져오는 코드를 실행합니다(<code class="language-plaintext highlighter-rouge">fetch_requested_container_logs</code>).</li>
+  <li>보통 KubernetesPodOperator를 사용하여 생성된 Pod은 base container 1개만 실행합니다(init container가 완료된 후 실행되는 container는 1개).</li>
+  <li>그러나 XCom Push를 사용하기 위해 <code class="language-plaintext highlighter-rouge">do_xcom_push=True</code> 옵션을 주면 base conatiner 외에 xcom push을 위한 컨테이너(<code class="language-plaintext highlighter-rouge">airflow-xcom-sidecar</code>)를 생성합니다(=Side Car 패턴)</li>
+  <li>해당 컨테이너는 base container의 작업이 완료되어도 volume이 삭제되지 않도록 유지하는 역할을 합니다. base conatiner의 작업이 종료되어도 XComPush path(<code class="language-plaintext highlighter-rouge">/airflow/xcom/return.json</code>)에 대한 volume mount를 유지하여 airflow worker에서 해당 값을 참조할 수 있도록 하는 역할을 합니다.</li>
+  <li>해당 컨테이너는 가벼운 docker image(<code class="language-plaintext highlighter-rouge">alpine</code>)를 사용하기 때문에 base conatiner에 비해 더 빠르게 시작됩니다.</li>
+  <li>위의 Pod Phase를 다시 보면, Pod의 Running Phase는 Pod 내의 N개의 container 중 1개의 container라도 running인 경우입니다.</li>
+  <li>따라서 <code class="language-plaintext highlighter-rouge">airflow-xcom-sidecar</code>는 running, <code class="language-plaintext highlighter-rouge">base</code>는 waiting인 상태에서도 Pod Phase는 Running으로 돌입합니다.</li>
+  <li>이렇게 되면 airflow는 base container의 log를 조회할 수 있다고 판단하여 <code class="language-plaintext highlighter-rouge">fetch_requested_container_logs</code> 함수를 실행합니다.</li>
+  <li>하지만 base conatiner가 아직 실행되지 않은 상태이기 때문에 존재하지 않는 container로의 요청이므로 400 error(Bad Request)가 발생합니다.</li>
+</ul>
+
+<h2 id="providers-cncf-kubernetes1082에서의-변화"><code class="language-plaintext highlighter-rouge">providers-cncf-kubernetes==10.8.2</code>에서의 변화</h2>
+<ul>
+  <li>Kubernetes는 init container를 제외하면 container들 간의 실행 순서(시작 순서)를 제어할 수 있는 방법은 제공하지 않습니다.</li>
+  <li>혹은 특정 container가 running일 때 Pod가 Running Phase에 돌입한다던가 하는 방법도 존재하지 않습니다.</li>
+  <li>따라서 <code class="language-plaintext highlighter-rouge">fetch_requested_container_logs</code>가 실행되기 전에 <code class="language-plaintext highlighter-rouge">await_pod_start</code>를 수정하는 것이 적합한 방향입니다.</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">## cncf/kubernetes/utils/pod_manager.py (apache-airflow-providers-cncf-kubernetes==7.13.0)
+</span>    <span class="k">def</span> <span class="nf">await_pod_start</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">pod</span><span class="p">:</span> <span class="n">V1Pod</span><span class="p">,</span> <span class="n">startup_timeout</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">120</span><span class="p">,</span> <span class="n">startup_check_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="s">"""
+        Wait for the pod to reach phase other than ``Pending``.
+
+        :param pod:
+        :param startup_timeout: Timeout (in seconds) for startup of the pod
+            (if pod is pending for too long, fails task)
+        :param startup_check_interval: Interval (in seconds) between checks
+        :return:
+        """</span>
+        <span class="n">curr_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">remote_pod</span> <span class="o">=</span> <span class="bp">self</span><span class="p">.</span><span class="n">read_pod</span><span class="p">(</span><span class="n">pod</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">remote_pod</span><span class="p">.</span><span class="n">status</span><span class="p">.</span><span class="n">phase</span> <span class="o">!=</span> <span class="n">PodPhase</span><span class="p">.</span><span class="n">PENDING</span><span class="p">:</span> <span class="c1">## &lt;- PodPhase를 기준으로 판단하고 있음
+</span>                <span class="k">break</span>
+            <span class="bp">self</span><span class="p">.</span><span class="n">log</span><span class="p">.</span><span class="n">warning</span><span class="p">(</span><span class="s">"Pod not yet started: %s"</span><span class="p">,</span> <span class="n">pod</span><span class="p">.</span><span class="n">metadata</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">time</span><span class="p">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">curr_time</span> <span class="o">&gt;=</span> <span class="n">startup_timeout</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="sa">f</span><span class="s">"Pod took longer than </span><span class="si">{</span><span class="n">startup_timeout</span><span class="si">}</span><span class="s"> seconds to start. "</span>
+                    <span class="s">"Check the pod events in kubernetes to determine why."</span>
+                <span class="p">)</span>
+                <span class="k">raise</span> <span class="n">PodLaunchFailedException</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+            <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">startup_check_interval</span><span class="p">)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>최신 버전(<code class="language-plaintext highlighter-rouge">providers-cncf-kubernetes==10.8.2</code>)에서는 아래와 같이 container state를 확인하는 <a href="https://github.com/apache/airflow/blob/providers-cncf-kubernetes/10.8.2/providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L445">코드</a>가 추가되었습니다.</li>
+</ul>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="k">if</span> <span class="n">pod_status</span><span class="p">.</span><span class="n">container_statuses</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">container_status</span> <span class="ow">in</span> <span class="n">pod_status</span><span class="p">.</span><span class="n">container_statuses</span><span class="p">:</span>
+                <span class="n">container_state</span><span class="p">:</span> <span class="n">V1ContainerState</span> <span class="o">=</span> <span class="n">container_status</span><span class="p">.</span><span class="n">state</span>
+                <span class="n">container_waiting</span><span class="p">:</span> <span class="n">V1ContainerStateWaiting</span> <span class="o">|</span> <span class="bp">None</span> <span class="o">=</span> <span class="n">container_state</span><span class="p">.</span><span class="n">waiting</span>
+                <span class="k">if</span> <span class="n">container_waiting</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">container_waiting</span><span class="p">.</span><span class="n">reason</span> <span class="ow">in</span> <span class="p">[</span><span class="s">"ErrImagePull"</span><span class="p">,</span> <span class="s">"InvalidImageName"</span><span class="p">]:</span>
+                        <span class="bp">self</span><span class="p">.</span><span class="n">log</span><span class="p">.</span><span class="n">info</span><span class="p">(</span><span class="s">"::endgroup::"</span><span class="p">)</span>
+                        <span class="k">raise</span> <span class="n">PodLaunchFailedException</span><span class="p">(</span>
+                            <span class="sa">f</span><span class="s">"Pod docker image cannot be pulled, unable to start: </span><span class="si">{</span><span class="n">container_waiting</span><span class="p">.</span><span class="n">reason</span><span class="si">}</span><span class="s">"</span>
+                            <span class="sa">f</span><span class="s">"</span><span class="se">\n</span><span class="si">{</span><span class="n">container_waiting</span><span class="p">.</span><span class="n">message</span><span class="si">}</span><span class="s">"</span>
+                        <span class="p">)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Pod 내에 <code class="language-plaintext highlighter-rouge">waiting</code> state인 container에 대해서 Image 관련 에러가 발생하는 경우 조기에 실패시키는 코드입니다.</li>
+  <li>그러나 여전히 Pod Phase에 의존하는 방식은 변경되지 않았습니다. <code class="language-plaintext highlighter-rouge">base container가 시작되지 않음</code> = <code class="language-plaintext highlighter-rouge">사용하는 docker image pull에 문제가 있음</code>으로 판단하는 것 같습니다.</li>
+  <li>클러스터 내 자원(CPU, memory)을 할당받지 못해 base conatiner가 늦게 시작되는 경우에 대해서는 감지하지 않는 것으로 보입니다.</li>
+  <li>즉 여전히 ApiException(400)은 발생할 가능성이 있어 보입니다.</li>
+</ul>
+
+<h2 id="base-conatiner가-waiting인-경우에-대해서의-감지를-추가하기">base conatiner가 waiting인 경우에 대해서의 감지를 추가하기</h2>
+<ul>
+  <li>(작성 중)</li>
+</ul>
+
+<h2 id="결론">결론</h2>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">do_xcom_push=True</code> 사용 시 Pod Phase와 base container state의 불일치로 인해 해당 에러가 발생할 수 있습니다.</li>
 </ul>
 
 <p>[참고]<br />
-<a href="https://github.com/datahub-project/datahub/pull/6744">datahub PR#6744</a><br />
-<a href="https://github.com/datahub-project/datahub/pull/6726">datahub PR#6726</a><br />
-<a href="https://docs.docker.com/build/building/multi-stage/">multi-stage</a>
-<a href="https://blog.alexellis.io/mutli-stage-docker-builds/">Builder pattern vs. Multi-stage builds in Docker</a></p>
+<a href="https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase">Pod Phase</a></p>
 
                 </div>
             </section>
@@ -423,7 +432,7 @@ docker build <span class="nt">-t</span> datahub-gms:v0.10.0 <span class="nb">.</
                         <header class="read-next-card-header">
                             <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
                             
-                                <h3 class="read-next-card-header-title"><a href="/tag/kubernetes/">Kubernetes</a></h3>
+                                <h3 class="read-next-card-header-title"><a href="/tag/airflow/">Airflow</a></h3>
                             
                         </header>
                         <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
@@ -434,52 +443,6 @@ docker build <span class="nt">-t</span> datahub-gms:v0.10.0 <span class="nb">.</
                                 
                                   
                                     
-                                        
-                                        
-                                            <li><a href="/pod-operator-400">KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</a></li>
-                                        
-                                    
-                                  
-                                
-                                  
-                                    
-                                        
-                                        
-                                            <li><a href="/configmap-secret">ConfigMap과 Secret의 차이점</a></li>
-                                        
-                                    
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                    
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
-                                  
-                                
                                   
                                 
                                   
@@ -488,7 +451,7 @@ docker build <span class="nt">-t</span> datahub-gms:v0.10.0 <span class="nb">.</
                                     
                                         
                                         
-                                            <li><a href="/pod-container">Pod와 Container</a></li>
+                                            <li><a href="/variables">Variables & Dag Parsing</a></li>
                                         
                                     
                                   
@@ -515,6 +478,45 @@ docker build <span class="nt">-t</span> datahub-gms:v0.10.0 <span class="nb">.</
                                 
                                   
                                 
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/airflow1">What is Airflow?</a></li>
+                                        
+                                    
                                   
                                 
                                   
@@ -560,9 +562,9 @@ docker build <span class="nt">-t</span> datahub-gms:v0.10.0 <span class="nb">.</
                             </ul>
                         </div>
                         <footer class="read-next-card-footer">
-                            <a href="/tag/kubernetes/">
+                            <a href="/tag/airflow/">
                                 
-                                    See all 3 posts  →
+                                    See all 2 posts  →
                                 
                             </a>
                         </footer>
@@ -575,57 +577,6 @@ docker build <span class="nt">-t</span> datahub-gms:v0.10.0 <span class="nb">.</
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
             
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/prepared-statement">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/database/preparedstatement.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/prepared-statement">
-                <header class="post-card-header">
-                    
-                        
-                            
-                                <span class="post-card-tags">Database</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">prepared statement</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>prepared statement
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      3 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-            
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
             
@@ -633,26 +584,26 @@ docker build <span class="nt">-t</span> datahub-gms:v0.10.0 <span class="nb">.</
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/non-deterministic-udf">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/hadoop/determinstic-vs-non-deterministic.webp)"></div>
+            <a class="post-card-image-link" href="/configmap-secret">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/kubernetes/k8s-secret.jpg)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/non-deterministic-udf">
+            <a class="post-card-content-link" href="/configmap-secret">
                 <header class="post-card-header">
                     
                         
                             
-                                <span class="post-card-tags">Hadoop</span>
+                                <span class="post-card-tags">Kubernetes</span>
                             
                         
                     
 
-                    <h2 class="post-card-title">non-deterministic UDF</h2>
+                    <h2 class="post-card-title">ConfigMap과 Secret의 차이점</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>non-determinitic UDF 구현하기
+                        <p>ConfigMap과 Secret은 뭐가 다른걸까?
 
 </p>
                     
@@ -672,7 +623,7 @@ docker build <span class="nt">-t</span> datahub-gms:v0.10.0 <span class="nb">.</
                 <span class="reading-time">
                     
                     
-                      3 min read
+                      1 min read
                     
                 </span>
             </footer>
@@ -694,18 +645,18 @@ docker build <span class="nt">-t</span> datahub-gms:v0.10.0 <span class="nb">.</
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">multi-stage와 Builder Pattern</div>
+    <div class="floating-header-title">KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=multi-stage%EC%99%80+Builder+Pattern&amp;url=https://gyuhoonk.github.iomulti-stage-and-builder-pattern"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=KubernetesPodOperator%EC%97%90%EC%84%9C+ApiException%28400%29%EC%9D%98+%EB%B0%9C%EC%83%9D%ED%95%98%EB%8A%94+%EC%9D%B4%EC%9C%A0%EB%8A%94%3F&amp;url=https://gyuhoonk.github.iopod-operator-400"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iomulti-stage-and-builder-pattern"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iopod-operator-400"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 

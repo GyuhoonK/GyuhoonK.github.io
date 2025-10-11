@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/airflow/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2025-03-15T16:46:57+09:00</updated>
+  <updated>2025-10-11T17:32:24+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/airflow/feed.xml</id>
 
   
@@ -30,6 +30,193 @@
   
   
 
+  
+    <entry>
+      <title type="html">KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?</title>
+      <link href="https://gyuhoonk.github.io/pod-operator-400" rel="alternate" type="text/html" title="KubernetesPodOperator에서 ApiException(400)의 발생하는 이유는?" />
+      <published>2025-10-01T22:30:00+09:00</published>
+      <updated>2025-10-01T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/pod-operator-400</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/pod-operator-400">&lt;ul&gt;
+  &lt;li&gt;KubernetesPodOperator 사용 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubernetes.client.exceptions.ApiException: (400)&lt;/code&gt;이 발생하는 원인에 대해서 분석합니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;문제-상황-kubernetesclientexceptionsapiexception-400-발생&quot;&gt;문제 상황: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubernetes.client.exceptions.ApiException: (400)&lt;/code&gt; 발생&lt;/h2&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;  File &quot;/usr/local/lib/python3.12/site-packages/kubernetes/client/rest.py&quot;, line 234, in request
+    raise ApiException(http_resp=r)
+kubernetes.client.exceptions.ApiException: (400)
+Reason: Bad Request
+...
+[2025-10-01, 07:21:10 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name }
+[2025-10-01, 07:21:11 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name }
+[2025-10-01, 07:21:42 KST] {pod.py:844} INFO - Deleting pod: { pod_name }
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;cncf-kubernetes==7.13.0 사용 시 위와 같은 로그를 남기며 KubernetesPodOpeartor가 실패하는 경우가 종종 발생합니다.&lt;/li&gt;
+  &lt;li&gt;항상 발생하는 것은 아니며, 간헐적으로 발생했습니다. 특히, 대부분의 경우에 task를 재실행하면 Pod이 정상적으로 생성/실행되어서 해당 현상을 재현하기 어려웠고 원인을 파악하기 힘들었습니다.&lt;/li&gt;
+  &lt;li&gt;task의 실패를 최소화하기 위해 원인을 파악하고 대응해보고자 합니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;kubernetesclientexceptionsapiexception-400-에러의-의미&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubernetes.client.exceptions.ApiException: (400)&lt;/code&gt; 에러의 의미&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;생성된 Pod로부터 log를 읽을 수 없을 때 발생합니다.&lt;/li&gt;
+  &lt;li&gt;실제로 아직 Running pahse가 아닌 Pod(Pending pod)에 대해서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubectl logs &amp;lt;pod-name&amp;gt;&lt;/code&gt;를 실행하면 동일한 에러를 확인할 수 있습니다.&lt;/li&gt;
+  &lt;li&gt;다만, airflow에 남은 로그를 확인해보았을 때, Pod는 이미 Running 상태인 것으로 보입니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Pod not yet started&lt;/code&gt; 로그는 Pod Phase가 Pending일 때의 로그인 것으로 확인했고, 해당 로그가 등장하지 않으면 Running 상태인 것으로 확인했기 때문입니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;kubernetespodoperator는-언제-log를-가져오나&quot;&gt;KubernetesPodOperator는 언제 log를 가져오나?&lt;/h3&gt;
+&lt;ul&gt;
+  &lt;li&gt;KubernetesPodOperator의 동작 방식은 대략적으로 아래와 같습니다.
+    &lt;ul&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;get_or_create_pod&lt;/code&gt; : pod를 생성합니다&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;await_pod_start&lt;/code&gt;: pod start를 대기합니다. 즉, pod가 Running phase가 될 때까지 대기합니다.&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fetch_requested_container_logs&lt;/code&gt;: Running Pod 내에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt; container로부터 log를 가져옵니다.&lt;/li&gt;
+      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;clean_up&lt;/code&gt;/&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;deleting_pod&lt;/code&gt;: 위 과정 중에 에러가 발생하는 경우에 Pod를 삭제합니다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;위 과정 중 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fetch_requested_container_logs&lt;/code&gt;에서 문제가 발생하는 것으로 보입니다.&lt;/li&gt;
+  &lt;li&gt;여기까지 보면 Running Pod 내부의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt; container의 로그를 가져오지 못했기 때문에 에러가 발생하는 것으로 볼 수 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;running-pod에-대해서도-apiexception400이-발생할-수-있다&quot;&gt;Running Pod에 대해서도 ApiException(400)이 발생할 수 있다&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;위에서 Pending Pod에 대해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubectl logs&lt;/code&gt; 명령어 실행 시 ApiException(400)이 발생한다고 말씀드렸습니다.&lt;/li&gt;
+  &lt;li&gt;Running Pod에 대해서도 동일한 에러가 발생할 수 있습니다. 이는 Running Pod인 경우에 Pod 내의 모든 container가 실행 중인 상태는 아니기 때문입니다.&lt;/li&gt;
+  &lt;li&gt;Pod 내에 a, b, c container를 실행한다고 가정할 때 a, b는 아직 실행되지 않아 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;wataing&lt;/code&gt; state이고, c만 실행되어 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;running&lt;/code&gt; state라면 이 Pod는 Running phase입니다.&lt;/li&gt;
+  &lt;li&gt;이 때 a나 b의 log를 조회하려고 하면 ApiException(400)이 발생합니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubectl logs &amp;lt;pod-name&amp;gt; --container a&lt;/code&gt;).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;참고pod-phase에-대하여&quot;&gt;[참고]Pod Phase에 대하여&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Pod는 5개의 Phase를 갖습니다.(Pending, Running, Succeeded, Failed, Unknown)
+    &lt;ul&gt;
+      &lt;li&gt;이 중에서 Pending, Running이 현재 발생하는 에러와 연관이 있습니다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;Pending Phase는 아직 Pod이 실행되지 않았고, 실행(Running)을 준비하는 단계입니다. k8s 클러스터로부터 Pod 생성이 허용되고, conatiner image를 다운로드 받습니다.&lt;/li&gt;
+  &lt;li&gt;Running Phase는 실제로 Pod이 실행되는 단계입니다. Pod 내에 1개 이상의 container가 실행되고 있는 단계입니다.
+    &lt;ul&gt;
+      &lt;li&gt;즉, Running이라고 해서 모든 container가 running 상태는 아니라는 뜻입니다.&lt;/li&gt;
+      &lt;li&gt;pod 내에 sidecar 형태로 3개의 container를 선언했고, 이 중 1개의 container라도 running에 돌입했다면 pod phase는 running이 됩니다.&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;에러의-원인-xcompush를-위해-추가된-airflow-xcom-sidecar&quot;&gt;에러의 원인: XComPush를 위해 추가된 airflow-xcom-sidecar&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;KubernetesPodOperator는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt; container를 생성하여 입력된 cmd, args를 실행합니다.&lt;/li&gt;
+  &lt;li&gt;Pod Phase가 Running으로 돌입하면, 생성된 Pod 내에 base container의 로그를 가져오는 코드를 실행합니다(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fetch_requested_container_logs&lt;/code&gt;).&lt;/li&gt;
+  &lt;li&gt;보통 KubernetesPodOperator를 사용하여 생성된 Pod은 base container 1개만 실행합니다(init container가 완료된 후 실행되는 container는 1개).&lt;/li&gt;
+  &lt;li&gt;그러나 XCom Push를 사용하기 위해 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do_xcom_push=True&lt;/code&gt; 옵션을 주면 base conatiner 외에 xcom push을 위한 컨테이너(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;airflow-xcom-sidecar&lt;/code&gt;)를 생성합니다(=Side Car 패턴)&lt;/li&gt;
+  &lt;li&gt;해당 컨테이너는 base container의 작업이 완료되어도 volume이 삭제되지 않도록 유지하는 역할을 합니다. base conatiner의 작업이 종료되어도 XComPush path(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;/airflow/xcom/return.json&lt;/code&gt;)에 대한 volume mount를 유지하여 airflow worker에서 해당 값을 참조할 수 있도록 하는 역할을 합니다.&lt;/li&gt;
+  &lt;li&gt;해당 컨테이너는 가벼운 docker image(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;alpine&lt;/code&gt;)를 사용하기 때문에 base conatiner에 비해 더 빠르게 시작됩니다.&lt;/li&gt;
+  &lt;li&gt;위의 Pod Phase를 다시 보면, Pod의 Running Phase는 Pod 내의 N개의 container 중 1개의 container라도 running인 경우입니다.&lt;/li&gt;
+  &lt;li&gt;따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;airflow-xcom-sidecar&lt;/code&gt;는 running, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base&lt;/code&gt;는 waiting인 상태에서도 Pod Phase는 Running으로 돌입합니다.&lt;/li&gt;
+  &lt;li&gt;이렇게 되면 airflow는 base container의 log를 조회할 수 있다고 판단하여 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fetch_requested_container_logs&lt;/code&gt; 함수를 실행합니다.&lt;/li&gt;
+  &lt;li&gt;하지만 base conatiner가 아직 실행되지 않은 상태이기 때문에 존재하지 않는 container로의 요청이므로 400 error(Bad Request)가 발생합니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;providers-cncf-kubernetes1082에서의-변화&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;providers-cncf-kubernetes==10.8.2&lt;/code&gt;에서의 변화&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;Kubernetes는 init container를 제외하면 container들 간의 실행 순서(시작 순서)를 제어할 수 있는 방법은 제공하지 않습니다.&lt;/li&gt;
+  &lt;li&gt;혹은 특정 container가 running일 때 Pod가 Running Phase에 돌입한다던가 하는 방법도 존재하지 않습니다.&lt;/li&gt;
+  &lt;li&gt;따라서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;fetch_requested_container_logs&lt;/code&gt;가 실행되기 전에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;await_pod_start&lt;/code&gt;를 수정하는 것이 적합한 방향입니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;## cncf/kubernetes/utils/pod_manager.py (apache-airflow-providers-cncf-kubernetes==7.13.0)
+&lt;/span&gt;    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;await_pod_start&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;V1Pod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;startup_timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;120&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;startup_check_interval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;s&quot;&gt;&quot;&quot;&quot;
+        Wait for the pod to reach phase other than ``Pending``.
+
+        :param pod:
+        :param startup_timeout: Timeout (in seconds) for startup of the pod
+            (if pod is pending for too long, fails task)
+        :param startup_check_interval: Interval (in seconds) between checks
+        :return:
+        &quot;&quot;&quot;&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;curr_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;remote_pod&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read_pod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;remote_pod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;phase&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PodPhase&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;PENDING&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;## &amp;lt;- PodPhase를 기준으로 판단하고 있음
+&lt;/span&gt;                &lt;span class=&quot;k&quot;&gt;break&lt;/span&gt;
+            &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;warning&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Pod not yet started: %s&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;metadata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;curr_time&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;startup_timeout&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                    &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Pod took longer than &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startup_timeout&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; seconds to start. &quot;&lt;/span&gt;
+                    &lt;span class=&quot;s&quot;&gt;&quot;Check the pod events in kubernetes to determine why.&quot;&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PodLaunchFailedException&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sleep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;startup_check_interval&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;최신 버전(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;providers-cncf-kubernetes==10.8.2&lt;/code&gt;)에서는 아래와 같이 container state를 확인하는 &lt;a href=&quot;https://github.com/apache/airflow/blob/providers-cncf-kubernetes/10.8.2/providers/cncf/kubernetes/src/airflow/providers/cncf/kubernetes/utils/pod_manager.py#L445&quot;&gt;코드&lt;/a&gt;가 추가되었습니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pod_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;container_statuses&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;container_status&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pod_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;container_statuses&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;container_state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;V1ContainerState&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;container_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;state&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;container_waiting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;V1ContainerStateWaiting&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;container_state&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;waiting&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;container_waiting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;container_waiting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reason&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;ErrImagePull&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;InvalidImageName&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;
+                        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;log&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;info&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;::endgroup::&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+                        &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;PodLaunchFailedException&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                            &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Pod docker image cannot be pulled, unable to start: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;container_waiting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reason&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;
+                            &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;container_waiting&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;
+                        &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Pod 내에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;waiting&lt;/code&gt; state인 container에 대해서 Image 관련 에러가 발생하는 경우 조기에 실패시키는 코드입니다.&lt;/li&gt;
+  &lt;li&gt;그러나 여전히 Pod Phase에 의존하는 방식은 변경되지 않았습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;base container가 시작되지 않음&lt;/code&gt; = &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;사용하는 docker image pull에 문제가 있음&lt;/code&gt;으로 판단하는 것 같습니다.&lt;/li&gt;
+  &lt;li&gt;클러스터 내 자원(CPU, memory)을 할당받지 못해 base conatiner가 늦게 시작되는 경우에 대해서는 감지하지 않는 것으로 보입니다.&lt;/li&gt;
+  &lt;li&gt;즉 여전히 ApiException(400)은 발생할 가능성이 있어 보입니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;base-conatiner가-waiting인-경우에-대해서의-감지를-추가하기&quot;&gt;base conatiner가 waiting인 경우에 대해서의 감지를 추가하기&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;(작성 중)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;결론&quot;&gt;결론&lt;/h2&gt;
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;do_xcom_push=True&lt;/code&gt; 사용 시 Pod Phase와 base container state의 불일치로 인해 해당 에러가 발생할 수 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;[참고]&lt;br /&gt;
+&lt;a href=&quot;https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#pod-phase&quot;&gt;Pod Phase&lt;/a&gt;&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="airflow" />
+      
+        <category term="kubernetes" />
+      
+
+      
+        <summary type="html">KubernetesPodOperator 사용 시 kubernetes.client.exceptions.ApiException: (400)이 발생하는 원인에 대해서 분석합니다.</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">Variables &amp;amp; Dag Parsing</title>
