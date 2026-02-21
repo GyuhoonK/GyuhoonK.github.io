@@ -11,7 +11,7 @@
 
 
 
-    <title>Oracle DB Connection String</title>
+    <title>MySQL Index 개념 정리</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,26 +37,26 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/oracle-connection" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/mysql-index" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Oracle DB Connection String" />
-    <meta property="og:description" content="oracle database connection String 설정에 대해 알아봅니다. JDBC Driver JDBC 드라이버는 Java App이 데이터베이스와 상호작용(데이터를 가져오거나 저장)하는 것을 가능하게 합니다. JDBC 클래스는 java.sql 패키지에 포함되어 있습니다. javax.sql.JDBC는 아래와 같은 역할을 합니다. 데이터베이스와 같은 데이터 소스와의 연결 쿼리를 전송 작성한 쿼리에 대한 응답(데이터)을 처리하고 반환 JDK와 함께 제공되는 java.sql 패키지에는 기능을" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/oracle-connection" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/database/oracle.png" />
+    <meta property="og:title" content="MySQL Index 개념 정리" />
+    <meta property="og:description" content="면접 준비용 MySQL Index 개념 정리 1. Index는 왜 사용하는 것인가? 목적: 데이터 검색 속도의 향상(SELECT 쿼리 최적화) Full Table Scan을 피하자 1-1. Index가 없다면? 특정 record를 찾기 위해 모든 record와 일일히 대조해봐야함 Full Table Scan 발생 -&gt; 시간 오래걸림 &amp; 리소스 소모 높음 1-2. Index를 사용하면? 특정 컬럼(들)의 값과" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/mysql-index" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/database/b+tree.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2022-12-24T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2022-12-24T22:30:00+09:00" />
+    <meta property="article:published_time" content="2026-02-20T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2026-02-20T22:30:00+09:00" />
     <meta property="article:tag" content="Database" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Oracle DB Connection String" />
-    <meta name="twitter:description" content="oracle database connection String 설정에 대해 알아봅니다. JDBC Driver JDBC 드라이버는 Java App이 데이터베이스와 상호작용(데이터를 가져오거나 저장)하는 것을 가능하게 합니다. JDBC 클래스는 java.sql 패키지에 포함되어 있습니다. javax.sql.JDBC는 아래와 같은 역할을 합니다. 데이터베이스와 같은 데이터 소스와의 연결 쿼리를 전송 작성한 쿼리에 대한 응답(데이터)을 처리하고 반환 JDK와 함께 제공되는 java.sql 패키지에는 기능을" />
+    <meta name="twitter:title" content="MySQL Index 개념 정리" />
+    <meta name="twitter:description" content="면접 준비용 MySQL Index 개념 정리 1. Index는 왜 사용하는 것인가? 목적: 데이터 검색 속도의 향상(SELECT 쿼리 최적화) Full Table Scan을 피하자 1-1. Index가 없다면? 특정 record를 찾기 위해 모든 record와 일일히 대조해봐야함 Full Table Scan 발생 -&gt; 시간 오래걸림 &amp; 리소스 소모 높음 1-2. Index를 사용하면? 특정 컬럼(들)의 값과" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/database/oracle.png" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/database/b+tree.png" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
@@ -75,18 +75,18 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/oracle-connection",
+    "url": "https://gyuhoonk.github.io/mysql-index",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/database/oracle.png",
+        "url": "https://gyuhoonk.github.io/assets/built/images/database/b+tree.png",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/oracle-connection"
+        "@id": "https://gyuhoonk.github.io/mysql-index"
     },
-    "description": "oracle database connection String 설정에 대해 알아봅니다. JDBC Driver JDBC 드라이버는 Java App이 데이터베이스와 상호작용(데이터를 가져오거나 저장)하는 것을 가능하게 합니다. JDBC 클래스는 java.sql 패키지에 포함되어 있습니다. javax.sql.JDBC는 아래와 같은 역할을 합니다. 데이터베이스와 같은 데이터 소스와의 연결 쿼리를 전송 작성한 쿼리에 대한 응답(데이터)을 처리하고 반환 JDK와 함께 제공되는 java.sql 패키지에는 기능을"
+    "description": "면접 준비용 MySQL Index 개념 정리 1. Index는 왜 사용하는 것인가? 목적: 데이터 검색 속도의 향상(SELECT 쿼리 최적화) Full Table Scan을 피하자 1-1. Index가 없다면? 특정 record를 찾기 위해 모든 record와 일일히 대조해봐야함 Full Table Scan 발생 -&gt; 시간 오래걸림 &amp; 리소스 소모 높음 1-2. Index를 사용하면? 특정 컬럼(들)의 값과"
 }
     </script>
 
@@ -99,33 +99,8 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="Oracle DB Connection String" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="MySQL Index 개념 정리" href="/feed.xml" />
 
-    
-      <script type="text/x-mathjax-config">
-	MathJax.Hub.Config({
-	TeX: {
-		equationNumbers: {
-		autoNumber: "AMS"
-		}
-	},
-	tex2jax: {
-		inlineMath: [ ['$', '$'] ],
-		displayMath: [ ['$$', '$$'] ],
-		processEscapes: true,
-		}
-	});
-	MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-	MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-</script>
-
-<script type="text/javascript" async
-src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
-</script>
     
 </head>
 <body class="post-template">
@@ -200,7 +175,7 @@ into the {body} of the default.hbs template -->
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="24 December 2022">24 December 2022</time>
+                    <time class="post-full-meta-date" datetime="20 February 2026">20 February 2026</time>
                     
                         <span class="date-divider">/</span>
                         
@@ -210,186 +185,293 @@ into the {body} of the default.hbs template -->
                         
                     
                 </section>
-                <h1 class="post-full-title">Oracle DB Connection String</h1>
+                <h1 class="post-full-title">MySQL Index 개념 정리</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/database/oracle.png)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/database/b+tree.png)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>oracle database connection String 설정에 대해 알아봅니다.</p>
+                    <p>면접 준비용 MySQL Index 개념 정리</p>
 
-<h1 id="jdbc-driver">JDBC Driver</h1>
-<p>JDBC 드라이버는 Java App이 데이터베이스와 상호작용(데이터를 가져오거나 저장)하는 것을 가능하게 합니다. JDBC 클래스는  <code class="language-plaintext highlighter-rouge">java.sql</code> 패키지에 포함되어 있습니다. <code class="language-plaintext highlighter-rouge">javax.sql.JDBC</code>는 아래와 같은 역할을 합니다.</p>
+<h1 id="1-index는-왜-사용하는-것인가">1. Index는 왜 사용하는 것인가?</h1>
 
 <ul>
-  <li>데이터베이스와 같은 데이터 소스와의 연결</li>
-  <li>쿼리를 전송</li>
-  <li>작성한 쿼리에 대한 응답(데이터)을 처리하고 반환</li>
+  <li>목적: <strong>데이터 검색 속도의 향상(SELECT 쿼리 최적화)</strong></li>
+  <li>Full Table Scan을 피하자</li>
 </ul>
 
-<p>JDK와 함께 제공되는 <code class="language-plaintext highlighter-rouge">java.sql</code> 패키지에는 기능을 구현하고 있는 여러 클래스를 포함하고 있으며, 서드 파티 드라이버를 이용하여 실제로 구현할 수 있습니다. 서드 파티 공급자(vendor)는 그들의 데이터베이스 드라이버에 <code class="language-plaintext highlighter-rouge">java.sql.Driver</code> 인터페이스를 구현해야합니다. 이러한 JDBC 드라이버는 사용되는 기술과 연결되는 데이터베이스에 따라 4가지 타입으로 구분됩니다.</p>
-<h2 id="type-1-bridge-driver">Type-1: Bridge Driver</h2>
-<p>Type-1 Driver JDBC는 브릿지 드라이버(bridge driver)라고도 불립니다. Type-1은 각각의 클라이언트에 설치된 ODBC 드라이버에 접근할 수 있는 다리(bridge)를 제공합니다. Type-1은 JDBC 메소드 호출(calls to JDBC methods)를 ODBC 함수 호출(calls to ODBC functions)로 치환합니다. 브릿지 드라이버는 설치되어있는 ODBC 드라이버에 의해 제공되는 데이터베이스 연결에 JDBC App이 즉각 접근할 수 있도록 합니다.</p>
+<h2 id="1-1-index가-없다면">1-1. Index가 없다면?</h2>
 <ul>
-  <li>장점
-    <ul>
-      <li>하나의 드라이버로 다른 데이터 소스에 접근할 수 있습니다.</li>
-      <li>모든 ODBC가 제공되는 데이터베이스에 사용할 수 있습니다.</li>
-    </ul>
-  </li>
-  <li>단점
-    <ul>
-      <li>Java APP은 ODBC에만 의존해야합니다.</li>
-      <li>모든 클라이언트는 ODBC를 설치해야합니다.</li>
-      <li>JDBC 메소드 호출을 ODBC 함수 호출로 변환하기 때문에 성능이 하락할 수 있습니다.</li>
-    </ul>
-  </li>
+  <li>특정 record를 찾기 위해 모든 record와 일일히 대조해봐야함</li>
+  <li>Full Table Scan 발생 -&gt; 시간 오래걸림 &amp; 리소스 소모 높음</li>
 </ul>
 
-<h2 id="type-2-oracle-call-interfaceoci-driver">Type-2: Oracle Call Interface(OCI) Driver</h2>
-<p>Oracle client 설치와 함께 클라이언트 측에서 사용됩니다. App과 함께할 때에만 사용될 수 있습니다. 즉, Type-2 드라이버는 Java App과 함께 사용됩니다. Type-2 드라이버는 특정 플랫폼에 맞는 OCI 라이브러리를 요구합니다. InterProcessCommunication(IPC), named pipes, TCP/IP, Internetwork Packet Exchange/Sequenced Packet Exchange(IPX/SPX)를 포함하는 설치된 모든 Oracle Net adapter를 지원합니다.</p>
-
-<p>Java와 C를 이용하여 작성된 OCI 드라이버는 C-entry 포인트를 호출하는 네이티브 메서드를 이용하여 JDBC  호출을 OCI 호출로 변환합니다. 이러한 호출 과정에서 Oracle Net Service를 이용하여 데이터베이스와 커뮤니케이션합니다.</p>
-
-<p>OCI 드라이버는 클아이언트 컴퓨터에 설치되어 있는 OCI 라이브러리, C-entry points, Oracle Net, core 라이브러리와 다른 필수적인 파일들을 이용합니다.<br />
-OCI는 3세대 언어의 네이티브 프로시저 또는 함수 호출을 사용하여 Oracle Database에 액세스하고 SQL 문 처리의 모든 단계를 제어하는 응용프로그램을 만들 수 있는 API입니다.</p>
-
-<h2 id="type-3-network-protocol-driver">Type-3: Network Protocol Driver</h2>
-<p>JDBC 호출을 직간접적으로 vendor-specific database protocol로 변환해주는 application server를 이용합니다. Type-3 드라이버는 JDBC 호출을 middleware vendor’s protocol로 변환합니다. 이후에 변환된 프로토콜은 다양한  데이터베이스에 연결을 제공하고 있는 middleware server에 의해 database-specific protocol로 다시 변환됩니다.</p>
-
-<p>middleware는 OS와 OS에서 실행되는 App 사이에 있는 소프트웨어입니다. 필수적으로 hidden translation layer로서 기능하면서, middleware는 분산 응용프로그램(distributed application)을 위한 데이터 매니지먼트와 커뮤니케이션을 가능케 합니다.</p>
+<h2 id="1-2-index를-사용하면">1-2. Index를 사용하면?</h2>
 <ul>
-  <li>장점
-    <ul>
-      <li>사용자가 여러 개의 데이터베이스에 연결해야하고, 하나의 드라이버를 사용하고 싶을 경우에 사용됩니다.</li>
-      <li>이미 서버에 설치되어 있으므로 클라이언트 측에 드라이버 코드를 설치할 필요가 없습니다.</li>
-      <li>백엔드 서버 컴포넌트는 데이터베이스가 실행되고 있는 OS에 최적화되어있습니다.</li>
-      <li>Type-1, Type-2에 비해 좋은 성능을 보입니다.</li>
-    </ul>
-  </li>
-  <li>단점
-    <ul>
-      <li>middleware가 다른 머신에서 실행 중이라면, Type-4가 더 효과적일 수 있습니다.</li>
-      <li>database에 특화된 코드가 middleware 서버에 설치되어 있어야합니다.</li>
-    </ul>
-  </li>
+  <li>특정 컬럼(들)의 값과 그 값이 저장된 실제 데이터의 물리적 주소를 매핑하여 미리 정렬</li>
+  <li>데이터베이스는 테이블 전체를 뒤지지 않고, 특정 record를 빠르게 찾아낼 수 있음</li>
 </ul>
 
-<h2 id="type-4-native-protocol-driver">Type-4: Native Protocol Driver</h2>
-<p>데이터베이스와 직접적으로 상호작용합니다. native database library를 필요로 하지 않기 때문에 <strong>Thin Driver</strong>라고도 불립니다. native library는 물론, middleware server도 필요로 하지 않으므로, no-client-side이며 no-server-side로 설치됩니다. 완벽하게 Java로 작성되어 있기 때문에 이동가능한(portable) 드라이버입니다.</p>
+<h1 id="2-index-사용의-장단점">2. Index 사용의 장단점</h1>
 
-<p>Thin Driver는 JDBC 호출을 직접적으로 vendor-specific database protocol로 변환합니다. 또한, Thin Driver는 플랫폼에 영향을 받지 않습니다(platform-independent). 하지만, native protocol을 사용하기 때문에 데이터베이스에 영향을 받습니다.(Protocol can establish a connection between particular server only)</p>
-
-<h1 id="jdbc-name-url">JDBC Name URL</h1>
-<p>JDBC NAME URL의 템플릿은 아래와 같습니다.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jdbc:oracle:[driver_type]:[username/password]@[database_specifier]
-</code></pre></div></div>
-<p>이 중 <code class="language-plaintext highlighter-rouge">driver_type</code>과 <code class="language-plaintext highlighter-rouge">database_specifier</code>에 대해서 설명해보고자 합니다.</p>
-
-<h2 id="driver_type"><code class="language-plaintext highlighter-rouge">driver_type</code></h2>
-<p>어떤 <code class="language-plaintext highlighter-rouge">driver_type</code>을 사용하는지를 결정합니다. 드라이버 타입에 맞는 이름을 작성해주어야합니다.</p>
-<h3 id="server-side-internal-driver-kprb">server-side internal driver: <code class="language-plaintext highlighter-rouge">kprb</code></h3>
-<p>server-side internal driver를 사용하는 경우에 <code class="language-plaintext highlighter-rouge">kprb</code>로 입력해야합니다. 이 경우에 다른 속성은 모두 무시됩니다.</p>
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Connection</span> <span class="n">conn</span> <span class="o">=</span> <span class="nc">DriverManager</span><span class="o">.</span><span class="na">getConnection</span> 
-                  <span class="o">(</span><span class="s">"jdbc:oracle:kprb:@"</span> <span class="o">+</span> <span class="n">database</span><span class="o">,</span> <span class="n">user</span><span class="o">,</span> <span class="n">password</span><span class="o">);</span>
-</code></pre></div></div>
-
-<h3 id="jdbc-thin-or-oci-driver-thinoci">JDBC Thin or OCI Driver: <code class="language-plaintext highlighter-rouge">thin</code>/<code class="language-plaintext highlighter-rouge">oci</code></h3>
-<p>Thin이나 OCI 드라이버를 사용하는 경우입니다.</p>
+<h2 id="장점-pros">장점 (Pros)</h2>
 <ul>
-  <li>URL 세팅이 user/password를 포함할 수 있다면, 아래와 같이 작성합니다. 특히, <code class="language-plaintext highlighter-rouge">thin</code>이 이에 해당합니다.<br />
-<code class="language-plaintext highlighter-rouge">jdbc:oracle:thin:HR/hr@localhost:5221:orcl</code></li>
-  <li>url property가 존재한다면, tnsEntry, driverType, portNumber, networkProtocol, serverName, databaseName property는 모두 무시됩니다.</li>
-  <li>tnsEntry property가 존재하고, url property가 존재하지 않는다면, databaseName, serverName, portNumber, networkProtocol property는 모두 무시됩니다.</li>
-  <li>OCI 드라이버를 사용하고 <code class="language-plaintext highlighter-rouge">networkProtocol</code>이 <code class="language-plaintext highlighter-rouge">ipc</code>로 셋팅되어있다면, 다른 셋팅은 모두 무시됩니다.</li>
+  <li>검색 속도 대폭 향상: WHERE 절을 통한 조건 검색 시 처리 속도가 비약적으로 빨라집니다.</li>
+  <li>정렬 및 그룹화 효율: 이미 데이터가 정렬된 상태로 저장되므로 ORDER BY나 GROUP BY 작업 시 부하를 크게 줄일 수 있습니다.</li>
+  <li>시스템 부하 감소: 테이블 전체를 읽는 디스크 I/O를 줄여 시스템 전체의 성능이 안정됩니다.</li>
 </ul>
 
-<h2 id="database_specifier"><code class="language-plaintext highlighter-rouge">database_specifier</code></h2>
-<p>database specifier는 어플리케이션이 연결을 필요로하는 특정 데이터베이스를 확인하기 위해 사용됩니다. 일부 데이터베이스는 오직 thin에서만, 혹은 오직 oci 드라이버에서만 작동합니다. thin, oci 모두 사용할 수 있는 데이터베이스(oracle)도 존재합니다.</p>
-<h3 id="ipv6를-지원한다">IPv6를 지원한다</h3>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)
-    (HOST=[2001:0db8:7654:3210:FEDC:BA98:7654:3210])(PORT=5521))
-    (CONNECT_DATA=(SERVICE_NAME=sales.example.com))
-</code></pre></div></div>
-<p>위처럼 IPv6로 host를 전달할 수 있습니다.</p>
-<h3 id="supported-database-specifiers">Supported Database Specifiers</h3>
-<p>데이터베이스에 따라 database specifier를 사용할 수 있는 드라이버 타입이 다릅니다. 구체적인 내용은 아래 표와 같습니다.</p>
+<h2 id="단점cons">단점(Cons)</h2>
+<ul>
+  <li>저장 공간 차지: 인덱스 자체도 별도의 자료구조로 저장되므로, 데이터베이스 내에 추가적인 디스크 공간(보통 테이블 크기의 10% 내외)을 차지합니다.</li>
+  <li>데이터 변경 시 성능 저하 (DML 오버헤드): INSERT, UPDATE, DELETE 작업이 발생할 때마다 테이블의 데이터뿐만 아니라 <strong>인덱스 데이터도 함께 수정하고 재정렬</strong>해야 하므로, 쓰기 속도가 느려집니다.</li>
+</ul>
+
+<h2 id="결론">결론</h2>
+<ul>
+  <li>인덱스는 ‘읽기(Read)’ 성능을 높이기 위해 <strong>‘쓰기(Write)’ 성능과 ‘저장 공간’</strong>을 지불하는 거래(Trade-off)입니다.</li>
+</ul>
+
+<h1 id="3-index의-구현">3. Index의 구현</h1>
+
+<p>MySQL(특히 기본 스토리지 엔진인 InnoDB)에서 인덱스를 구현하는 데 주로 사용되는 핵심 자료구조는 다음과 같습니다.</p>
+
+<h2 id="3-1-b-tree-btree-인덱스">3-1. B-Tree (B+Tree) 인덱스</h2>
+<p>가장 범용적이고 기본적으로 사용되는 인덱스 알고리즘입니다. MySQL의 InnoDB는 B-Tree의 확장 형태인 B+Tree를 사용합니다.</p>
+
+<ul>
+  <li>
+    <p>구조: 최상위의 루트 노드(Root node), 중간의 브랜치 노드(Branch node), 최하위의 리프 노드(Leaf node)로 구성된 트리 구조입니다.</p>
+  </li>
+  <li>
+    <p>특징: 모든 실제 데이터(또는 포인터)는 최하위 <strong>리프 노드에만 존재</strong>하며, 리프 노드들끼리는 연결 리스트(Linked List)로 이어져 있습니다.</p>
+  </li>
+  <li>
+    <p>장점: <code class="language-plaintext highlighter-rouge">SELECT * FROM users WHERE age = 30</code> 같은 일치 검색뿐만 아니라, <code class="language-plaintext highlighter-rouge">WHERE age BETWEEN 20 AND 30</code> 같은 범위(Range) 검색에 매우 탁월한 성능을 발휘합니다. 리프 노드를 타고 쭉 스캔하면 되기 때문입니다.</p>
+  </li>
+</ul>
+
+<p><img src="../../assets/built/images/database/b+tree.png" alt="b+tree" /></p>
+
+<h2 id="3-2-hash-인덱스">3-2. Hash 인덱스</h2>
+<p>키 값을 해시 함수에 넣어 나온 결과로 메모리 주소를 찾아가는 방식입니다.</p>
+
+<ul>
+  <li>
+    <p>장점: <code class="language-plaintext highlighter-rouge">=</code> 연산자를 이용한 정확한 일치(Exact Match) 검색에 매우 빠릅니다.</p>
+  </li>
+  <li>
+    <p>단점: 해시 함수의 특성상 값이 조금만 달라져도 완전히 다른 해시값이 나오기 때문에, 부등호(&lt;, &gt;)를 사용하는 범위 검색에는 사용할 수 없습니다. 주로 메모리 기반 테이블이나 InnoDB의 ‘어댑티브 해시 인덱스(Adaptive Hash Index)’ 등 보조적인 용도로 사용됩니다.</p>
+  </li>
+</ul>
+
+<h2 id="3-3-index가-사용되지-않는-쿼리-사용">3-3. Index가 사용되지 않는 쿼리 사용</h2>
+
+<h3 id="1-like-검색에서-와일드카드가-맨-앞에-올-때">1. LIKE 검색에서 와일드카드(%)가 맨 앞에 올 때</h3>
+<ul>
+  <li>가장 흔하게 발생하는 인덱스 무용지물 케이스</li>
+  <li>상황: <code class="language-plaintext highlighter-rouge">SELECT * FROM users WHERE name LIKE '%철수';</code></li>
+  <li>이유: B+Tree는 기본적으로 데이터가 ‘왼쪽에서 오른쪽으로(Left-to-Right)’ 정렬되어 있습니다. 종이 사전에서 단어를 찾는 것과 같습니다. ‘apple’을 찾으려면 ‘a’부터 찾고 그다음 ‘p’를 찾습니다.</li>
+  <li>최악인 이유: 검색어 앞에 %가 붙으면, 시작 글자가 무엇인지 알 수 없으므로 B+Tree의 정렬된 구조(루트 -&gt; 브랜치 -&gt; 리프 노드 탐색)를 전혀 이용할 수 없습니다. 결국 데이터베이스는 <strong>인덱스 풀 스캔(Index Full Scan)이나 테이블 풀 스캔(Table Full Scan)</strong>을 강제당하며 $O(N)$의 탐색 시간을 소모하게 됩니다.</li>
+</ul>
+
+<h3 id="2-인덱스-컬럼의-값을-가공하거나-타입이-다를-때">2. 인덱스 컬럼의 값을 가공하거나 타입이 다를 때</h3>
+<ul>
+  <li>인덱스가 걸려있는 컬럼 자체에 연산을 가하거나 함수를 씌우면 인덱스가 깨집니다.</li>
+  <li>상황 (함수 사용): <code class="language-plaintext highlighter-rouge">SELECT * FROM users WHERE YEAR(created_at) = 2023;</code></li>
+  <li>상황 (타입 불일치): <code class="language-plaintext highlighter-rouge">SELECT * FROM users WHERE phone_number = 01012345678;</code> (문자열 컬럼에 숫자 입력)</li>
+  <li>이유: B+Tree 인덱스는 테이블에 저장된 <strong>‘원본 값’</strong>을 기준으로 정렬된 트리를 만듭니다. 쿼리에서 YEAR() 같은 함수로 값을 가공해버리면, B+Tree 안에 그 가공된 값은 존재하지 않습니다.</li>
+  <li>최악인 이유: 데이터베이스 엔진은 모든 행(Row)의 created_at 값을 하나하나 꺼내서 YEAR() 함수를 실행해 본 뒤에야 2023년인지 판단할 수 있습니다. (암묵적 형변환도 마찬가지입니다.) 이 역시 풀 테이블 스캔을 유발합니다.</li>
+</ul>
+
+<h3 id="3-무작위-값uuid-등을-기본키로-설정하고-대량-insert-할-때">3. 무작위 값(UUID 등)을 기본키로 설정하고 대량 INSERT 할 때</h3>
+<ul>
+  <li>이 경우는 ‘검색(SELECT)’이 아니라 <strong>‘쓰기(INSERT)’</strong> 시에 발생하는 물리적인 최악의 상황입니다.</li>
+  <li>상황: 순차적으로 증가하는 숫자(AUTO_INCREMENT)가 아니라, 규칙 없이 무작위로 생성되는 UUID나 해시값을 클러스터링 인덱스(기본키)로 사용할 때.</li>
+  <li>이유: B+Tree는 데이터가 항상 정렬된 상태를 유지해야 합니다. 데이터베이스는 디스크를 ‘페이지(Page)’라는 블록 단위로 관리하는데, 무작위 값이 들어오면 기존에 꽉 차 있던 페이지 중간에 데이터를 억지로 끼워 넣어야 합니다.</li>
+  <li>최악인 이유 (페이지 분할 - Page Split): 공간이 없는 페이지 중간에 데이터가 들어오면, 데이터베이스는 해당 페이지를 반으로 쪼개서 두 개의 페이지로 나누는 ‘페이지 분할(Page Split)’ 작업을 수행합니다. 이 과정에서 막대한 디스크 I/O가 발생하며 쓰기 성능이 수십 배 이상 곤두박질칩니다. 또한, 디스크 공간이 조각나는 <strong>단편화(Fragmentation)</strong>가 발생하여 추후 검색 속도까지 느려집니다.</li>
+</ul>
+
+<h3 id="4-손익분기점을-넘는-대량의-데이터를-조회할-때-랜덤-io의-저주">4. 손익분기점을 넘는 대량의 데이터를 조회할 때 (랜덤 I/O의 저주)</h3>
+<ul>
+  <li>인덱스를 타는 것이 무조건 빠른 것은 아닙니다.</li>
+  <li>상황: 카디널리티가 낮은 컬럼(예: 성별, 상태값 등)에 인덱스를 걸고, 전체 테이블 데이터의 약 20%~25% 이상을 조회하는 쿼리를 날릴 때. (<code class="language-plaintext highlighter-rouge">WHERE status = 'ACTIVE'</code>)</li>
+  <li>이유: 인덱스를 거쳐서 실제 테이블의 데이터를 가져오는 작업(인덱스 룩업)은 디스크의 이곳저곳을 찌르는 <strong>랜덤 I/O(Random I/O)</strong>입니다. 반면, 테이블 전체를 그냥 처음부터 끝까지 무식하게 읽는 풀 테이블 스캔은 디스크를 연속해서 읽는 <strong>순차 I/O(Sequential I/O)</strong>입니다. 디스크의 물리적 특성상 순차 I/O가 랜덤 I/O보다 훨씬 빠릅니다.</li>
+  <li>최악인 이유: 옵티마이저(Optimizer)가 바보같이 인덱스를 억지로 타게 만들면(또는 사용자가 힌트로 강제하면), 데이터를 하나 찾을 때마다 디스크 헤더가 미친 듯이 움직이며 엄청난 오버헤드를 발생시킵니다. 전체 데이터의 20% 이상을 읽을 바에는 차라리 풀 테이블 스캔을 하는 것이 훨씬 빠릅니다.</li>
+</ul>
+
+<h1 id="4-cardinality와-index">4. Cardinality와 Index</h1>
+
+<p><strong>카디널리티(Cardinality)</strong>는 집합론의 용어로, 데이터베이스에서는 <strong>‘특정 컬럼이 가지는 고유한 값의 개수(중복도)’</strong>를 의미합니다.</p>
+
+<ul>
+  <li>카디널리티가 높다: 고유한 값이 많다 (중복도가 낮다).
+    <ul>
+      <li>예시: 주민등록번호, 이메일, 휴대전화 번호. (모든 사람의 값이 다름)</li>
+    </ul>
+  </li>
+  <li>카디널리티가 낮다: 고유한 값이 적다 (중복도가 높다).
+    <ul>
+      <li>예시: 성별(남/여), 국적, 학년. (값이 몇 개로 한정됨)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>인덱스 키의 카디널리티는 <strong>“어떤 컬럼에 인덱스를 걸어야 가장 효율적인가?”</strong>를 결정하는 가장 중요한 기준입니다.</p>
+
+<p>인덱스는 카디널리티가 높은(고유값이 많은) 컬럼에 생성해야 효과가 좋습니다.</p>
+
+<ul>
+  <li>
+    <p>구체적인 예시: 100만 명의 유저 데이터가 있습니다.</p>
+
+    <ul>
+      <li>
+        <p>나쁜 인덱스 (카디널리티 낮음): 성별 컬럼에 인덱스를 걸고 남성을 찾습니다. 인덱스를 타더라도 결국 50만 건의 데이터를 읽어야 합니다. 인덱스를 거치는 비용 때문에 오히려 풀 테이블 스캔보다 느려질 수 있습니다.</p>
+      </li>
+      <li>
+        <p>좋은 인덱스 (카디널리티 높음): 이메일 컬럼에 인덱스를 걸고 특정 이메일을 찾습니다. 단 몇 번의 트리 탐색만으로 정확히 1건의 데이터를 걸러낼 수 있습니다.</p>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="5-index-types">5. Index Types</h1>
+
+<ul>
+  <li>MySQL의 InnoDB 스토리지 엔진을 이해하려면 클러스터링 인덱스와 보조 인덱스의 차이를 이해하는 것이 중요합니다.</li>
+  <li>복합 인덱스는 2개 이상의 컬럼을 index로 사용하는 경우입니다.</li>
+</ul>
+
+<h2 id="5-1-클러스터링-인덱스-clustered-index">5-1. 클러스터링 인덱스 (Clustered Index):</h2>
+
+<ul>
+  <li>테이블의 <strong>기본키(Primary Key)</strong>에 의해 자동으로 생성됩니다.</li>
+  <li>특징: 인덱스의 리프 노드 자체가 <strong>실제 테이블의 데이터 행(Row)</strong>입니다. 즉, 데이터가 기본키 순서대로 디스크에 정렬되어 저장됩니다. (사전과 같습니다. 단어 자체가 알파벳 순으로 정렬되어 있고 그 옆에 바로 뜻이 적혀 있습니다.)</li>
+</ul>
+
+<h2 id="5-2-보조-인덱스--논클러스터드-인덱스-secondary-index">5-2. 보조 인덱스 / 논클러스터드 인덱스 (Secondary Index)</h2>
+
+<ul>
+  <li>사용자가 성능을 위해 추가로 생성하는 일반적인 인덱스입니다(<code class="language-plaintext highlighter-rouge">CREATE INDEX</code>).</li>
+  <li>특징: 이 인덱스의 리프 노드에는 실제 데이터가 아니라, 해당 데이터의 기본키(Primary Key) 값이 저장되어 있습니다.</li>
+  <li>검색 과정: 보조 인덱스에서 검색 -&gt; 기본키 값을 찾음 -&gt; 그 기본키 값으로 다시 클러스터링 인덱스를 검색 -&gt; 실제 데이터 획득. (이를 인덱스 룩업이라 합니다.)</li>
+</ul>
+
+<h2 id="5-3-복합-인덱스-composite-index--다중-컬럼-인덱스">5-3. 복합 인덱스 (Composite Index / 다중 컬럼 인덱스)</h2>
+<ul>
+  <li>두 개 이상의 컬럼을 묶어서 하나의 인덱스로 만드는 것입니다.</li>
+  <li>예시: (성, 이름)으로 묶인 복합 인덱스.</li>
+  <li>주의점: 전화번호부에서 ‘김 철수’를 찾는 것과 같습니다. ‘김’씨 성을 먼저 찾고, 그 안에서 ‘철수’를 찾습니다. 따라서 <code class="language-plaintext highlighter-rouge">WHERE 성 = '김'</code>으로는 인덱스를 탈 수 있지만, <code class="language-plaintext highlighter-rouge">WHERE 이름 = '철수'</code> 로 검색하면 앞의 ‘성’을 모르기 때문에 인덱스를 활용할 수 없습니다. <strong>컬럼의 순서</strong>가 매우 중요합니다.</li>
+</ul>
+
+<h2 id="5-4-커버링-인덱스-covering-index">5-4. 커버링 인덱스 (Covering Index)</h2>
+<ul>
+  <li>
+    <p>쿼리에 필요한 모든 데이터가 보조 인덱스에 이미 다 포함되어 있어서, 실제 테이블의 데이터 블록(클러스터링 인덱스)에 접근할 필요가 전혀 없는 <strong>상태</strong>를 말합니다. 성능이 비약적으로 빠릅니다.</p>
+  </li>
+  <li>
+    <p>예시: (이름, 나이)로 복합 인덱스가 걸려있을 때, <code class="language-plaintext highlighter-rouge">SELECT 나이 FROM users WHERE 이름 = '김철수'</code> 쿼리를 날리면, 인덱스 트리 안에 이미 ‘나이’ 정보가 있으므로 실제 테이블로 이동하는 과정을 생략합니다.</p>
+  </li>
+</ul>
+
+<h1 id="6-분산-처리-엔진hive-trino과-mysql의-비교">6. 분산 처리 엔진(Hive, Trino)과 MySQL의 비교</h1>
+<p>분산 처리 엔진(Trino, Hive)과 MySQL은 데이터를 다루는 근본적인 목적이 다르며, 이는 ‘인덱스’를 대하는 방식과 아키텍처에서 가장 극명하게 드러납니다.</p>
+
+<p>MySQL이 <code class="language-plaintext highlighter-rouge">건초 더미에서 바늘 하나를 빠르게 찾는 방식(B-Tree)</code>라면, Trino나 Hive는 <code class="language-plaintext highlighter-rouge">필요 없는 건초 더미를 통째로 무시하고, 남은 건초 더미들을 병렬로 빠르게 훑는 방식(Data Skipping)</code>을 취합니다.</p>
+
+<h2 id="6-1-목적에-따른-인덱스-접근-방식의-차이">6-1. 목적에 따른 인덱스 접근 방식의 차이</h2>
+<ul>
+  <li>MySQL (OLTP 관점)
+    <ul>
+      <li>목적: 사용자의 가입, 결제, 정보 수정 등 개별 트랜잭션의 빠른 점 검색(Point Query) 및 업데이트에 최적화되어 있습니다.</li>
+      <li>인덱스 형태: B-Tree (또는 B+Tree) 구조를 사용합니다.</li>
+      <li>특징: 데이터베이스가 각 행(Row)의 정확한 물리적 위치를 알고 있습니다. 인덱스를 타면 테이블 전체를 읽지 않고도 디스크의 특정 블록으로 직행하여 데이터를 가져옵니다.</li>
+    </ul>
+  </li>
+  <li>Trino / Hive (OLAP 관점)
+    <ul>
+      <li>목적: 페타바이트급의 대용량 데이터를 스캔하여 통계를 내거나 집계(Aggregation)하는 분석 쿼리에 최적화되어 있습니다.</li>
+      <li>인덱스 형태: 대규모 분산 환경에서는 데이터가 수많은 서버에 흩어져 있고 끊임없이 쌓이기 때문에, MySQL과 같은 전통적인 B-Tree 인덱스를 만들고 유지하는 비용(오버헤드)이 너무 큽니다.</li>
+      <li>특징: 개별 행(Row)을 찾는 인덱스 대신, 쿼리 엔진이 엄청난 양의 데이터를 병렬로 읽어들이되 ‘읽을 필요가 없는 데이터를 뭉텅이로 걸러내는(Data Skipping)’ 메타데이터 기반의 방식을 인덱스의 대체재로 사용합니다.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="6-2-분산-처리-엔진의-인덱스-대체-기술">6-2. 분산 처리 엔진의 ‘인덱스’ 대체 기술</h2>
+<p>Trino나 Hive 같은 분산 쿼리 엔진은 전통적인 인덱스가 없는 대신, 보통 하둡(HDFS)이나 S3 같은 객체 저장소에 데이터를 <strong>컬럼형 포맷(Parquet, ORC)</strong>으로 저장하며 다음 기술들을 활용해 검색 속도를 높입니다.</p>
+
+<h3 id="-파티셔닝-partitioning">① 파티셔닝 (Partitioning)</h3>
+<ul>
+  <li>
+    <p>가장 원시적이고 강력한 대용량 데이터 필터링 방식입니다. 데이터를 특정 기준(예: 날짜, 국가)에 따라 아예 물리적인 디렉토리(폴더) 단위로 분리하여 저장합니다.</p>
+  </li>
+  <li>
+    <p>효과: <code class="language-plaintext highlighter-rouge">WHERE date = '2026-02-21'</code> 이라는 쿼리를 실행하면, 엔진은 다른 날짜의 폴더는 아예 쳐다보지도 않고 해당 폴더의 파일들만 병렬로 읽습니다. B-Tree 인덱스의 ‘범위 검색’과 유사한 효과를 냅니다.</p>
+  </li>
+</ul>
+
+<h3 id="-zone-maps-최소최대값-메타데이터-통계">② Zone Maps (최소/최대값 메타데이터 통계)</h3>
+<ul>
+  <li>Parquet나 ORC 같은 파일 포맷은 데이터를 ‘블록(Block)’ 단위로 쪼개어 저장하면서, 각 블록마다 내부 데이터의 <strong>통계 정보</strong>(최솟값, 최댓값, Null 개수 등)를 파일 헤더(메타데이터)에 기록해 둡니다.</li>
+  <li>효과: 쿼리가 <code class="language-plaintext highlighter-rouge">WHERE age &gt; 30</code>을 요청할 때, 어떤 데이터 블록의 age 최댓값이 25로 기록되어 있다면 엔진은 해당 블록의 실제 데이터를 열어보지 않고 통째로 스킵(Data Skipping) 합니다. 이를 거시적인 관점의 인덱스로 볼 수 있습니다.</li>
+</ul>
+
+<h3 id="-블룸-필터-bloom-filter">③ 블룸 필터 (Bloom Filter)</h3>
+<ul>
+  <li>특정 데이터가 ‘이 블록에 절대 존재하지 않음’을 확률적으로 매우 빠르게 판별해 내는 가벼운 자료구조입니다.</li>
+  <li>효과: 해시 함수를 활용하여 데이터 블록에 특정 값이 있는지 훑어봅니다. 블룸 필터가 “없다”고 판단하면 디스크에서 그 블록을 읽지 않고 건너뛰어 I/O 성능을 크게 향상시킵니다.</li>
+  <li>블룸필터는 SQLite와 같은 RDB에서도 사용되는 자료구조입니다(분산 처리 엔진에서만 사용되는 것은 아닙니다).</li>
+</ul>
+
+<h2 id="6-3-요약">6-3. 요약</h2>
 
 <table>
   <thead>
     <tr>
-      <th>Specifier</th>
-      <th>Supported Drivers</th>
-      <th>Example</th>
+      <th style="text-align: left">구분</th>
+      <th style="text-align: left">MySQL (관계형 DB)</th>
+      <th style="text-align: left">Trino / Hive (분산 처리 엔진)</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td>Oracle Net connection descriptor</td>
-      <td>Thin, OCI</td>
-      <td>Thin, using an address list:<code class="language-plaintext highlighter-rouge">url="jdbc:oracle:thin:@(DESCRIPTION=  (LOAD_BALANCE=on) (ADDRESS_LIST=  (ADDRESS=(PROTOCOL=TCP)(HOST=host1) (PORT=5221)) (ADDRESS=(PROTOCOL=TCP)(HOST=host2)(PORT=5221))) (CONNECT_DATA=(SERVICE_NAME=orcl)))" </code>OCI, using a cluster:<code class="language-plaintext highlighter-rouge">"jdbc:oracle:oci:@(DESCRIPTION=  (ADDRESS=(PROTOCOL=TCP)(HOST=cluster_alias)    (PORT=5221))    (CONNECT_DATA=(SERVICE_NAME=orcl)))"</code></td>
+      <td style="text-align: left"><strong>주요 워크로드</strong></td>
+      <td style="text-align: left">OLTP (단건 조회, 잦은 업데이트)</td>
+      <td style="text-align: left">OLAP (대규모 스캔, 집계, 분석)</td>
     </tr>
     <tr>
-      <td>Thin-style service name</td>
-      <td>Thin</td>
-      <td>Refer to <a href="https://docs.oracle.com/database/121/JJDBC/urls.htm#BEIDHCBA">“Thin-style Service Name Syntax”</a> for details.<code class="language-plaintext highlighter-rouge">"jdbc:oracle:thin:HR/hr@//localhost:5221/orcl" </code></td>
+      <td style="text-align: left"><strong>인덱스의 단위</strong></td>
+      <td style="text-align: left"><strong>행(Row) 단위</strong>의 미시적 접근</td>
+      <td style="text-align: left"><strong>파일/블록(Block) 단위</strong>의 거시적 접근</td>
     </tr>
     <tr>
-      <td>LDAP syntax</td>
-      <td>Thin</td>
-      <td>Refer to <a href="https://docs.oracle.com/database/121/JJDBC/urls.htm#CHDBICFA">LDAP Syntax</a> for details.<code class="language-plaintext highlighter-rouge">"jdbc:oracle:thin:@ldap://ldap.example.com:7777/sales,cn=OracleContext,dc=com" </code></td>
+      <td style="text-align: left"><strong>데이터 필터링 원리</strong></td>
+      <td style="text-align: left">B-Tree를 타고 내려가 <strong>특정 위치(포인터)를 찾음</strong></td>
+      <td style="text-align: left">통계 정보(메타데이터)를 보고 <strong>불필요한 덩어리를 버림</strong></td>
     </tr>
     <tr>
-      <td>Bequeath connection</td>
-      <td>OCI</td>
-      <td>Empty. That is, nothing after @<code class="language-plaintext highlighter-rouge">"jdbc:oracle:oci:HR/hr/@" </code></td>
+      <td style="text-align: left"><strong>사용 기술</strong></td>
+      <td style="text-align: left">B+Tree, Hash 인덱스 등</td>
+      <td style="text-align: left">파티셔닝, Zone Maps(Min/Max), Bloom Filter</td>
     </tr>
     <tr>
-      <td>TNSNames alias</td>
-      <td>Thin, OCI</td>
-      <td>Refer to <a href="https://docs.oracle.com/database/121/JJDBC/urls.htm#BEIDIJCE">“TNSNames Alias Syntax”</a> for details.<code class="language-plaintext highlighter-rouge">OracleDataSource ods = new OracleDataSource(); ods.setTNSEntryName("MyTNSAlias");</code></td>
+      <td style="text-align: left"><strong>데이터 저장 방식</strong></td>
+      <td style="text-align: left">로우(Row) 기반 저장</td>
+      <td style="text-align: left">컬럼(Column) 기반 저장 (Parquet, ORC 등)</td>
     </tr>
   </tbody>
 </table>
 
-<h1 id="2-node-rac-db-stystem">2-Node RAC DB Stystem</h1>
-<p>database specifier를 작성할 때, <code class="language-plaintext highlighter-rouge">ADDRESS_LIST</code>라는 옵션은 왜 존재하는 것일까요? 위의 예시에서 <code class="language-plaintext highlighter-rouge">ADDRESS_LIST</code>에 2개의 host가 작성되어있음을 확인할 수 있습니다.</p>
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>jdbc:oracle:thin:@(DESCRIPTION=  (LOAD_BALANCE=on) 
-  (ADDRESS_LIST=  
-    (ADDRESS=(PROTOCOL=TCP)(HOST=host1)(PORT=5221)) 
-    (ADDRESS=(PROTOCOL=TCP)(HOST=host2)(PORT=5221))) 
-  (CONNECT_DATA=(SERVICE_NAME=orcl)))
-</code></pre></div></div>
-<p>이는 oracle이 2-Node RAC(Real Application Clusters) DB System을 지원하기 때문입니다. 이는 고가용성(High Availability)를 위해 고안된 시스템입니다.</p>
-
-<p><img src="../../assets/built/images/database/OracleRAC_nodes.jpeg" alt="2-node-rac-db-system" /></p>
-
-<p>이러한 구조를 갖게 되면, 메인으로 연결된 노드(<code class="language-plaintext highlighter-rouge">Node1</code>)에 대한 연결이 실패하더라도, 예비 노드(<code class="language-plaintext highlighter-rouge">Node2</code>)로 즉각 연결하여 DB 연결이 끊어지는 문제를 방지할 수 있습니다.<br />
-2-Node RAC DB System이 주는 장점은 아래와 같습니다.</p>
-<ol>
-  <li>Load balancing<br />
-DB에 요청이 많을 경우 2개 노드에 분산하여 처리할 수 있습니다(로드 밸런싱). 다만 성능 이슈가 발생할 수 있으므로 해당 옵션은 꺼두는 것을 권장합니다(<code class="language-plaintext highlighter-rouge">LOAD_BALANCE=OFF</code>).</li>
-  <li>SCAN (Single Client Access Name)<br />
-node에 대해 기술하지 않아도, RAC failover가 가능합니다. 기존에는 initial node와 failover node를 설정해야했지만, JDBC URL를 작성하여 oracle과 연결하면 SCAN이 자동으로 initial/failover를 선택합니다.</li>
-  <li>High availability (Failover)<br />
-최초 연결 시에 <code class="language-plaintext highlighter-rouge">FAILOVER=ON</code> 옵션을 주고 연결하면 timeout 내에 해당 노드와 연결이 되지 않았을 때 다른 노드로 자동으로 연결을 수행합니다.</li>
-  <li>High availability (Failover), continued<br />
-이러한 고가용성은 연결 중에도 작동합니다. 연결된 노드에 장애가 발생하여 connection이 중간에 끊어지면 다른 노드로 자동으로 연결을 수행합니다. 이때, <code class="language-plaintext highlighter-rouge">lifespan</code> 옵션을 설정하면 장애가 발생한 노드가 복구되었는지 확인하여 기존 노드로 연결을 수정합니다.</li>
-</ol>
+<p>결과적으로 분산 환경에서 Trino나 Hive로 쿼리 튜닝을 할 때는 MySQL처럼 ‘어떤 컬럼에 인덱스를 걸지’ 고민하는 것이 아니라, ‘데이터를 어떤 단위로 파티셔닝할지’, 그리고 ‘Parquet 같은 컬럼형 포맷의 사이즈와 정렬을 어떻게 최적화하여 Data Skipping을 극대화할지’를 고민해야 합니다.</p>
 
 <p>[참고]<br />
-<a href="https://www.geeksforgeeks.org/jdbc-type-1-driver/?ref=rp">JDBC – Type 1 Driver
-</a><br />
-<a href="https://docs.oracle.com/en/database/oracle/oracle-database/21/jjdbc/introducing-JDBC.html#GUID-D6975767-9F5A-4B30-8910-9298DDD7FEF0">Overview of Oracle JDBC Drivers</a><br />
-<a href="https://docs.oracle.com/cd/A97335_02/apps.102/a83724/advanc4.htm">JDBC in the Server: the Server-Side Internal Driver
-</a><br />
-<a href="https://docs.oracle.com/database/121/ODPNT/featConnecting.htm#ODPNT164">oracle-featConnecting</a><br />
-<a href="https://docs.oracle.com/database/121/JJDBC/urls.htm#JJDBC28267">oracle-urls</a><br />
-<a href="https://www.ibm.com/docs/en/b2b-integrator/5.2?topic=odcm-using-oracle-real-application-clusters-rac-high-availability">Using Oracle Real Application Clusters (RAC) for High Availability</a></p>
+<a href="https://codingapple.com/blog/bloom-filter/">DB 사용량을 줄이는 블룸필터 Bloom Filter</a><br />
+<a href="https://hoing.io/archives/5960">MySQL Clustered Index 와 Fast Index Creation In InnoDB</a></p>
 
                 </div>
             </section>
@@ -482,11 +564,6 @@ node에 대해 기술하지 않아도, RAC failover가 가능합니다. 기존�
                                 
                                   
                                     
-                                        
-                                        
-                                            <li><a href="/mysql-index">MySQL Index 개념 정리</a></li>
-                                        
-                                    
                                   
                                 
                                   
@@ -535,6 +612,11 @@ node에 대해 기술하지 않아도, RAC failover가 가능합니다. 기존�
                                   
                                 
                                   
+                                    
+                                        
+                                        
+                                            <li><a href="/oracle-connection">Oracle DB Connection String</a></li>
+                                        
                                     
                                   
                                 
@@ -635,18 +717,25 @@ node에 대해 기술하지 않아도, RAC failover가 가능합니다. 기존�
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
             
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
                 
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/pod-container">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/kubernetes/pod.webp)"></div>
+            <a class="post-card-image-link" href="/pod-operator-400">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/kubernetes/k8s-container.png)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/pod-container">
+            <a class="post-card-content-link" href="/pod-operator-400">
                 <header class="post-card-header">
                     
+                        
+                            
+                               <span class="post-card-tags">Airflow</span>
+                            
                         
                             
                                 <span class="post-card-tags">Kubernetes</span>
@@ -654,11 +743,13 @@ node에 대해 기술하지 않아도, RAC failover가 가능합니다. 기존�
                         
                     
 
-                    <h2 class="post-card-title">Pod와 Container</h2>
+                    <h2 class="post-card-title">KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>Container와 Pod의 기본개념을 확인해봅니다.
+                        <p>
+  KubernetesPodOperator 사용 시 kubernetes.client.exceptions.ApiException: (400)이 발생하는 원인에 대해서 분석합니다.
+
 
 </p>
                     
@@ -687,60 +778,6 @@ node에 대해 기술하지 않아도, RAC failover가 가능합니다. 기존�
 
             
 
-            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
-            
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/special-permissions">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/linux/linux_logo.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/special-permissions">
-                <header class="post-card-header">
-                    
-                        
-                            
-                                <span class="post-card-tags">Linux</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">Linux 사용자 관리, 파일속성 그리고, 특수권한</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>Linux 사용자 관리, 파일속성 그리고, 특수권한에 대해서 알아봅니다.
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      8 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-            
-
         </div>
     </div>
 </aside>
@@ -754,18 +791,18 @@ node에 대해 기술하지 않아도, RAC failover가 가능합니다. 기존�
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">Oracle DB Connection String</div>
+    <div class="floating-header-title">MySQL Index 개념 정리</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Oracle+DB+Connection+String&amp;url=https://gyuhoonk.github.iooracle-connection"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=MySQL+Index+%EA%B0%9C%EB%85%90+%EC%A0%95%EB%A6%AC&amp;url=https://gyuhoonk.github.iomysql-index"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iooracle-connection"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iomysql-index"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 
@@ -957,30 +994,5 @@ $(document).ready(function () {
     <!-- ghost_foot -->
     <!-- math LaTex-->
     
-     <script type="text/x-mathjax-config">
-	MathJax.Hub.Config({
-	TeX: {
-		equationNumbers: {
-		autoNumber: "AMS"
-		}
-	},
-	tex2jax: {
-		inlineMath: [ ['$', '$'] ],
-		displayMath: [ ['$$', '$$'] ],
-		processEscapes: true,
-		}
-	});
-	MathJax.Hub.Register.MessageHook("Math Processing Error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-	MathJax.Hub.Register.MessageHook("TeX Jax - parse error",function (message) {
-		alert("Math Processing Error: "+message[1]);
-	});
-</script>
-
-<script type="text/javascript" async
-src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
-</script>
-
 </body>
 </html>

@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>MySQL Index 개념 정리</title>
+        
+          <description>&lt;p&gt;면접 준비용 MySQL Index 개념 정리&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Fri, 20 Feb 2026 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/mysql-index</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/mysql-index</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</title>
         
           <description>&lt;ul&gt;
