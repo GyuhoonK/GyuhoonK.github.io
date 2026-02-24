@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2026-02-24T16:27:34+09:00</updated>
+  <updated>2026-02-24T16:31:53+09:00</updated>
   <id>https://gyuhoonk.github.io/tag/hadoop/feed.xml</id>
 
   
@@ -100,14 +100,19 @@
 
 &lt;h1 id=&quot;4-fault-tolerance-3-way-replication-vs-erasure-coding&quot;&gt;4. Fault Tolerance: 3-way Replication vs Erasure Coding&lt;/h1&gt;
 &lt;p&gt;서버에 불이 나거나 디스크가 파괴되는 “완전 손실” 상황에서 두 스토리지는 어떻게 데이터를 복구할까요?&lt;/p&gt;
+
 &lt;h2 id=&quot;hdfs-3-way-replication&quot;&gt;HDFS: 3-way Replication&lt;/h2&gt;
+
 &lt;p&gt;HDFS는 데이터 Block 하나를 서로 다른 3대의 DataNode에 똑같이 복사해 둡니다.&lt;/p&gt;
 &lt;ul&gt;
   &lt;li&gt;복구 방식: 특정 DataNode가 완전히 파괴되어 데이터가 손실되어도, 다른 노드에 똑같은 데이터가 살아있습니다. 살아있는 노드에서 새로운 노드로 데이터를 단순히 네트워크 복사(Copy)하면 복구가 끝납니다.&lt;/li&gt;
-  &lt;li&gt;단점: Storage Overhead가 &lt;strong&gt;300%&lt;/strong&gt;입니다. 1PB의 데이터를 저장하려면 3PB의 물리적 디스크가 필요할 정도로 극도로 비효율적입니다.
-    &lt;h2 id=&quot;s3-erasure-coding&quot;&gt;S3: Erasure Coding&lt;/h2&gt;
-    &lt;p&gt;Erasure Coding(EC)은 데이터를 $k$개의 Data Chunk로 쪼개고, 복구를 위한 $m$개의 Parity Chunk를 수학적으로 계산해 냅니다. 총 $n$ ($n = k + m$)개의 Chunk를 서로 다른 노드에 분산 저장합니다.&lt;/p&gt;
-  &lt;/li&gt;
+  &lt;li&gt;단점: Storage Overhead가 &lt;strong&gt;300%&lt;/strong&gt;입니다. 1PB의 데이터를 저장하려면 3PB의 물리적 디스크가 필요할 정도로 극도로 비효율적입니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;s3-erasure-coding&quot;&gt;S3: Erasure Coding&lt;/h2&gt;
+
+&lt;p&gt;Erasure Coding(EC)은 데이터를 $k$개의 Data Chunk로 쪼개고, 복구를 위한 $m$개의 Parity Chunk를 수학적으로 계산해 냅니다. 총 $n$ ($n = k + m$)개의 Chunk를 서로 다른 노드에 분산 저장합니다.&lt;/p&gt;
+&lt;ul&gt;
   &lt;li&gt;복구 방식: 특정 노드에 벼락이 떨어져 원본 Data Chunk가 완전히 손실되더라도 복구가 가능합니다. 살아남은 Data Chunk와 Parity Chunk 중 어떤 종류든 상관없이 $k$개만 온전히 살아있다면, 행렬 역연산을 통해 소실된 원본 데이터를 100% 완벽하게 재구성(Reconstruct)해 냅니다.&lt;/li&gt;
   &lt;li&gt;장점: Storage Overhead가 4+2 구성 기준 150% 수준으로 매우 낮습니다. 적은 디스크 용량으로도 HDFS 이상의 내결함성(Fault Tolerance)을 제공합니다. (단, 복구 시 CPU 연산 비용이 발생합니다.)&lt;/li&gt;
 &lt;/ul&gt;
@@ -118,14 +123,48 @@
 &lt;p&gt;특히 최근 Modern Data Stack의 핵심인 &lt;strong&gt;dbt(data build tool)&lt;/strong&gt;를 보면 이를 명확히 알 수 있습니다. 과거에는 S3 데이터를 분석하려면 Data Warehouse로 복사(Load)해야 했지만, 지금은 dbt-spark, dbt-athena 등을 통해 S3를 &lt;strong&gt;First-class citizen(일급 시민)&lt;/strong&gt;으로 대우합니다. 데이터 이동 없이 S3 raw 버킷을 직접 소스로 매핑하고, SQL 변환 결과를 다시 S3 위에 Apache Iceberg나 Parquet 포맷으로 직접 Materialize(구체화) 할 수 있습니다.&lt;/p&gt;
 
 &lt;h1 id=&quot;6-summary-실무-아키텍처의-최종-선택&quot;&gt;6. Summary: 실무 아키텍처의 최종 선택&lt;/h1&gt;
-&lt;p&gt;| 비교 항목 (Category) | HDFS (Hadoop Distributed File System) | S3 (Object Storage) |
-| :— | :— | :— |
-| &lt;strong&gt;Namespace (구조)&lt;/strong&gt; | Hierarchical Tree (계층형 디렉토리 구조) | Flat Namespace (Key 기반 $O(1)$ 직접 접근) |
-| &lt;strong&gt;Data Update (수정)&lt;/strong&gt; | Append-only (데이터 이어쓰기만 가능) | Immutable (데이터 불변, 전체 덮어쓰기 필요) |
-| &lt;strong&gt;Architecture (설계)&lt;/strong&gt; | Coupled (Compute와 Storage 결합, Data Locality 활용) | Separated (Compute와 Storage 분리, 독립적 Scale-out) |
-| &lt;strong&gt;I/O Type (입출력)&lt;/strong&gt; | Disk I/O (로컬 디스크 직접 접근) | Network I/O (HTTP REST API를 통한 네트워크 통신) |
-| &lt;strong&gt;Fault Tolerance (복구)&lt;/strong&gt; | 3-way Replication (단순 복사, Storage Overhead 300%) | Erasure Coding (수학적 복원, Storage Overhead 약 150%) |
-| &lt;strong&gt;Best Use Case (추천)&lt;/strong&gt; | 기존 On-premise 환경, 극단적인 Low Latency가 필요한 Batch | 현대적인 Data Lake 구축, Cloud Native 및 dbt 기반 파이프라인 |&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;비교 항목 (Category)&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;HDFS (Hadoop Distributed File System)&lt;/th&gt;
+      &lt;th style=&quot;text-align: left&quot;&gt;S3 (Object Storage)&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;Namespace (구조)&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Hierarchical Tree (계층형 디렉토리 구조)&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Flat Namespace (Key 기반 $O(1)$ 직접 접근)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;Data Update (수정)&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Append-only (데이터 이어쓰기만 가능)&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Immutable (데이터 불변, 전체 덮어쓰기 필요)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;Architecture (설계)&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Coupled (Compute와 Storage 결합, Data Locality 활용)&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Separated (Compute와 Storage 분리, 독립적 Scale-out)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;I/O Type (입출력)&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Disk I/O (로컬 디스크 직접 접근)&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Network I/O (HTTP REST API를 통한 네트워크 통신)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;Fault Tolerance (복구)&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;3-way Replication (단순 복사, Storage Overhead 300%)&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;Erasure Coding (수학적 복원, Storage Overhead 약 150%)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;&lt;strong&gt;Best Use Case (추천)&lt;/strong&gt;&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;기존 On-premise 환경, 극단적인 Low Latency가 필요한 Batch&lt;/td&gt;
+      &lt;td style=&quot;text-align: left&quot;&gt;현대적인 Data Lake 구축, Cloud Native 및 dbt 기반 파이프라인&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
 
 &lt;h1 id=&quot;결론&quot;&gt;결론&lt;/h1&gt;
 &lt;p&gt;이미 거대한 On-premise 인프라를 운영 중이고 초고속 로컬 I/O가 필수적인 특수 환경이 아니라면, 확장성, 비용, 생태계 호환성을 모두 갖춘 S3 기반의 Separation Architecture를 채택하는 것이 현대 데이터 플랫폼 설계의 Best Practice입니다.&lt;/p&gt;</content>
