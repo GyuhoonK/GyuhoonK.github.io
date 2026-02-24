@@ -5,8 +5,21 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Fri, 20 Feb 2026 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sat, 21 Feb 2026 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>HDFS와 S3 비교하기</title>
+        
+        
+            <description>&lt;p&gt;스토리지의 양대 산맥: HDFS와 S3를 비교해봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 21 Feb 2026 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/hdfs-s3</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/hdfs-s3</guid>
+      </item>
+    
 	<item>
 		<title>MySQL Index 개념 정리</title>
         
@@ -124,19 +137,6 @@
         <pubDate>Fri, 19 Jan 2024 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/get-bean</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/get-bean</guid>
-      </item>
-    
-	<item>
-		<title>DIP(Dependency Inversion Principle),의존관계 역전 원칙</title>
-        
-        
-            <description>&lt;p&gt;의존관계 역전 원칙과 이를 지키기 위한 의존관계 주입(Depdendency Injection, DI)에 대해서 알아봅니다&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Fri, 05 Jan 2024 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/dependency-inversion-principle</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/dependency-inversion-principle</guid>
       </item>
     
   </channel>

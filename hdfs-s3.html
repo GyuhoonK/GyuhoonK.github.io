@@ -11,7 +11,7 @@
 
 
 
-    <title>non-deterministic UDF</title>
+    <title>HDFS와 S3 비교하기</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -37,26 +37,26 @@
     </script>
 <meta name="description" content="Data Engineering" />
     <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/non-deterministic-udf" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/hdfs-s3" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="non-deterministic UDF" />
-    <meta property="og:description" content="non-determinitic UDF 구현하기 non-deterministic function이란? non-deterministic이라고 했으니, deterministic가 아닌 UDF입니다. 먼저, deterministic function이란 무엇인지 살펴보았습니다. (Deterministic and nondeterministic functions) Deterministic functions always return the same result any time they’re called with a specific set of input values and given the same state of the database. Nondeterministic functions may return different" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/non-deterministic-udf" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/determinstic-vs-non-deterministic.webp" />
+    <meta property="og:title" content="HDFS와 S3 비교하기" />
+    <meta property="og:description" content="스토리지의 양대 산맥: HDFS와 S3를 비교해봅니다. 과거 On-premise 환경에서는 Hadoop 생태계의 HDFS(Hadoop Distributed File System)가 절대적인 표준이었습니다. 하지만 Cloud Native 환경과 Modern Data Stack이 발전하면서 현재는 Amazon S3와 같은 Object Storage가 대세로 자리 잡았습니다. 오늘 포스팅에서는 두 스토리지의 근본적인 아키텍처 차이부터 데이터 수정 방식, Network I/O의 딜레마, 그리고 데이터를 완벽하게" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/hdfs-s3" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/hdfs-s3.jpg" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
-    <meta property="article:published_time" content="2023-05-16T22:30:00+09:00" />
-    <meta property="article:modified_time" content="2023-05-16T22:30:00+09:00" />
+    <meta property="article:published_time" content="2026-02-21T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2026-02-21T22:30:00+09:00" />
     <meta property="article:tag" content="Hadoop" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="non-deterministic UDF" />
-    <meta name="twitter:description" content="non-determinitic UDF 구현하기 non-deterministic function이란? non-deterministic이라고 했으니, deterministic가 아닌 UDF입니다. 먼저, deterministic function이란 무엇인지 살펴보았습니다. (Deterministic and nondeterministic functions) Deterministic functions always return the same result any time they’re called with a specific set of input values and given the same state of the database. Nondeterministic functions may return different" />
+    <meta name="twitter:title" content="HDFS와 S3 비교하기" />
+    <meta name="twitter:description" content="스토리지의 양대 산맥: HDFS와 S3를 비교해봅니다. 과거 On-premise 환경에서는 Hadoop 생태계의 HDFS(Hadoop Distributed File System)가 절대적인 표준이었습니다. 하지만 Cloud Native 환경과 Modern Data Stack이 발전하면서 현재는 Amazon S3와 같은 Object Storage가 대세로 자리 잡았습니다. 오늘 포스팅에서는 두 스토리지의 근본적인 아키텍처 차이부터 데이터 수정 방식, Network I/O의 딜레마, 그리고 데이터를 완벽하게" />
     <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/determinstic-vs-non-deterministic.webp" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/hadoop/hdfs-s3.jpg" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
@@ -75,18 +75,18 @@
         "name": "Gyuhoon Kim",
         "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "https://gyuhoonk.github.io/non-deterministic-udf",
+    "url": "https://gyuhoonk.github.io/hdfs-s3",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/hadoop/determinstic-vs-non-deterministic.webp",
+        "url": "https://gyuhoonk.github.io/assets/built/images/hadoop/hdfs-s3.jpg",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/non-deterministic-udf"
+        "@id": "https://gyuhoonk.github.io/hdfs-s3"
     },
-    "description": "non-determinitic UDF 구현하기 non-deterministic function이란? non-deterministic이라고 했으니, deterministic가 아닌 UDF입니다. 먼저, deterministic function이란 무엇인지 살펴보았습니다. (Deterministic and nondeterministic functions) Deterministic functions always return the same result any time they’re called with a specific set of input values and given the same state of the database. Nondeterministic functions may return different"
+    "description": "스토리지의 양대 산맥: HDFS와 S3를 비교해봅니다. 과거 On-premise 환경에서는 Hadoop 생태계의 HDFS(Hadoop Distributed File System)가 절대적인 표준이었습니다. 하지만 Cloud Native 환경과 Modern Data Stack이 발전하면서 현재는 Amazon S3와 같은 Object Storage가 대세로 자리 잡았습니다. 오늘 포스팅에서는 두 스토리지의 근본적인 아키텍처 차이부터 데이터 수정 방식, Network I/O의 딜레마, 그리고 데이터를 완벽하게"
 }
     </script>
 
@@ -99,7 +99,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="non-deterministic UDF" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="HDFS와 S3 비교하기" href="/feed.xml" />
 
     
 </head>
@@ -175,7 +175,7 @@ into the {body} of the default.hbs template -->
 
             <header class="post-full-header">
                 <section class="post-full-meta">
-                    <time class="post-full-meta-date" datetime="16 May 2023">16 May 2023</time>
+                    <time class="post-full-meta-date" datetime="21 February 2026">21 February 2026</time>
                     
                         <span class="date-divider">/</span>
                         
@@ -185,163 +185,108 @@ into the {body} of the default.hbs template -->
                         
                     
                 </section>
-                <h1 class="post-full-title">non-deterministic UDF</h1>
+                <h1 class="post-full-title">HDFS와 S3 비교하기</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/hadoop/determinstic-vs-non-deterministic.webp)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/hadoop/hdfs-s3.jpg)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <p>non-determinitic UDF 구현하기</p>
+                    <p>스토리지의 양대 산맥: HDFS와 S3를 비교해봅니다.</p>
 
-<h3 id="non-deterministic-function이란">non-deterministic function이란?</h3>
+<p>과거 On-premise 환경에서는 Hadoop 생태계의 <strong>HDFS(Hadoop Distributed File System)</strong>가 절대적인 표준이었습니다. 하지만 Cloud Native 환경과 Modern Data Stack이 발전하면서 현재는 Amazon S3와 같은 Object Storage가 대세로 자리 잡았습니다.</p>
 
-<p><code class="language-plaintext highlighter-rouge">non-deterministic</code>이라고 했으니, <code class="language-plaintext highlighter-rouge">deterministic</code>가 아닌 UDF입니다. 먼저, deterministic function이란 무엇인지 살펴보았습니다. <br />
-<a href="https://learn.microsoft.com/en-us/sql/relational-databases/user-defined-functions/">(Deterministic and nondeterministic functions)</a></p>
+<p>오늘 포스팅에서는 두 스토리지의 근본적인 아키텍처 차이부터 데이터 수정 방식, Network I/O의 딜레마, 그리고 데이터를 완벽하게 보호하는 Fault Tolerance 메커니즘까지 모두 종합하여 파헤쳐 보겠습니다.</p>
 
-<blockquote>
-  <p>Deterministic functions always return the same result any time they’re called with a specific set of input values and given the same state of the database.</p>
-</blockquote>
+<h1 id="1-storage-paradigm-hierarchical-vs-flat-namespace">1. Storage Paradigm: Hierarchical vs. Flat Namespace</h1>
+<p>두 스토리지의 가장 큰 차이는 데이터를 구조화하고 식별하는 방식에 있습니다.</p>
 
-<blockquote>
-  <p>Nondeterministic functions may return different results each time they’re called with a specific set of input values even if the database state that they access remains the same.</p>
-</blockquote>
+<h2 id="hdfs-hierarchical-directory-structure">HDFS: Hierarchical Directory Structure</h2>
+<p>HDFS는 우리가 흔히 쓰는 Linux File System과 동일한 <strong>Hierarchical(계층형) 구조</strong>를 가집니다. 디렉토리를 만들고 그 안에 파일을 넣는 방식입니다. 큰 파일은 보통 128MB 크기의 Block 단위로 쪼개져 여러 대의 서버(DataNode)에 분산 저장됩니다.</p>
 
-<p>deterministic function은 같은 입력(input)에 대해서 항상 같은 결과를 반환하는 함수입니다. 반대로
-non-deterministic은 deterministic이 아닌 함수로서, 같은 입력에 대해서 다른 결과를 반환할 수 있는 함수입니다.</p>
+<h2 id="s3-flat-namespace와-key">S3: Flat Namespace와 Key</h2>
+<p>반면 S3는 Object Storage입니다. S3에 저장되는 object key를 보면 <code class="language-plaintext highlighter-rouge">logs/2026/02/21/app.log</code> 처럼 폴더 구조가 있는 것 같지만, 이는 시각적인 렌더링에 불과합니다. 실제 S3 내부는 <strong>디렉토리 개념이 없는 완벽한 Flat Namespace</strong>입니다.</p>
 
-<p>우리가 알고 있는 대부분의 함수는 deterministic function입니다.</p>
+<h3 id="-기술적-차이-metadata-bottleneck과-namespace-구조">💡 기술적 차이: Metadata Bottleneck과 Namespace 구조</h3>
 
-<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="k">AVG</span><span class="p">(</span><span class="n">col1</span><span class="p">)</span> <span class="k">AS</span> <span class="n">avg_col1</span>
-<span class="k">FROM</span> <span class="n">my_table</span>
-</code></pre></div></div>
-
-<p><code class="language-plaintext highlighter-rouge">AVG</code> 함수는 my_table에 저장된 데이터가 변하지 않는 한, 같은 입력(<code class="language-plaintext highlighter-rouge">col1</code>)에 대해서 항상 같은 값을 반환합니다.</p>
-
-<p>반대로 아래와 같은함수들은 non-deterministic function입니다.</p>
+<p>파일이 수억 개 이상으로 늘어나는 Big Data 환경에서 스토리지를 평가할 때, 가장 눈여겨봐야 할 기술적 차이는 <strong>Namespace 구조에 따른 Metadata 처리 방식</strong>입니다.</p>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">current_timestamp</code>처럼 현재 시간을 출력하는 함수</li>
-  <li><code class="language-plaintext highlighter-rouge">rank</code>, <code class="language-plaintext highlighter-rouge">row_number</code>처럼 같은 컬럼 내에서도 다른 값을 부여하는 함수</li>
-  <li><code class="language-plaintext highlighter-rouge">rand</code>, <code class="language-plaintext highlighter-rouge">uuid</code>처럼 랜덤 값을 부여하는 함수</li>
+  <li>
+    <p><strong>HDFS (Hierarchical Tree의 한계):</strong> HDFS는 전통적인 파일 시스템처럼 디렉토리 기반의 Tree 구조를 가집니다. 따라서 특정 파일에 접근하려면 마스터 서버(NameNode)가 Root 디렉토리부터 하위 폴더들을 순차적으로 타고 내려가며(Traversal) 권한과 위치를 확인해야 합니다. 파일 개수가 수억 개로 급증하면 이 Tree를 순회하고 관리하는 메타데이터 연산 자체가 엄청난 <strong>Bottleneck(병목)</strong>을 유발하며, NameNode의 메모리 한계가 곧 클러스터 전체의 용량 한계가 됩니다.</p>
+  </li>
+  <li>
+    <p><strong>S3 (Flat Namespace와 $O(1)$ 접근):</strong> 반면 S3는 디렉토리라는 개념 자체가 없는 평면적인(Flat) 구조의 Object Storage입니다. <code class="language-plaintext highlighter-rouge">logs/2026/02/21/app.log</code> 처럼 폴더 경로처럼 보이는 전체 문자열은 사실 경로가 아니라, 그 자체로 단일하고 고유한 <strong>Key(식별자)</strong>에 불과합니다. S3는 디렉토리를 순회할 필요 없이 이 Key 값을 통해 Hash Table처럼 Object의 물리적 위치에 $O(1)$ 시간 복잡도로 직접 접근합니다. 이 덕분에 단일 마스터 노드의 병목 없이, 무한에 가까운 극단적인 Scale-out 환경을 안정적으로 지원할 수 있습니다.</p>
+  </li>
 </ul>
 
-<p>위 함수들은 모두 같은 입력에 대해 여러번 실행했을 때 실행 시마다 다른 결과를 반환할 수 있습니다.</p>
+<h1 id="2-data-update-mechanism-append-only-vs-immutable">2. Data Update Mechanism: Append-only vs Immutable</h1>
+<p>데이터를 어떻게 수정하고 갱신하는지도 아키텍처 선택에 큰 영향을 미칩니다.</p>
 
-<h3 id="stateful-function이란">stateful function이란?</h3>
-
-<blockquote>
-  <p>If a UDF stores state based on the sequence of records it has processed, it is stateful. A stateful UDF cannot be used in certain expressions such as case statement and certain optimizations such as AND/OR short circuiting don’t apply for such UDFs, as they need to be invoked for each record. row_sequence is an example of stateful UDF. A stateful UDF is considered to be non-deterministic, irrespective of what deterministic() returns.</p>
-</blockquote>
-
-<p>UDF가 실행되는 과정에서 레코드들에 대한 순서 상태(state based on the sequence)를 저장하고 있는 경우 이를 stateful하다고 말합니다. <code class="language-plaintext highlighter-rouge">row_sequence</code>가 이에 해당합니다. <code class="language-plaintext highlighter-rouge">row_sequence</code>는 레코드를 정렬하고 해당 레코드의 순서를 기억하고 있기 때문입니다.
-실제로 <code class="language-plaintext highlighter-rouge">row_seqence</code>를 구현한 코드를 보면 더 직관적으로 이해할 수 있습니다.</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@UDFType</span><span class="o">(</span><span class="n">deterministic</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">stateful</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UDFRowSequence</span> <span class="kd">extends</span> <span class="no">UDF</span>
-<span class="o">{</span>
-  <span class="kd">private</span> <span class="nc">LongWritable</span> <span class="n">result</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">LongWritable</span><span class="o">();</span>
-
-  <span class="kd">public</span> <span class="nf">UDFRowSequence</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">result</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="mi">0</span><span class="o">);</span>
-  <span class="o">}</span>
-
-  <span class="kd">public</span> <span class="nc">LongWritable</span> <span class="nf">evaluate</span><span class="o">()</span> <span class="o">{</span>
-    <span class="n">result</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="n">result</span><span class="o">.</span><span class="na">get</span><span class="o">()</span> <span class="o">+</span> <span class="mi">1</span><span class="o">);</span>
-    <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p>함수가 실행되는 동안에 <code class="language-plaintext highlighter-rouge">result</code>에 저장된 값을 참고하여 1씩 증가해나갑니다.</p>
-
-<h3 id="non-deterministic-udf-정의하기">non-deterministic UDF 정의하기</h3>
-
-<p>위의 <code class="language-plaintext highlighter-rouge">row_sequence</code>에서 보았던 예시처럼 어노테이션을 추가합니다. <br />
-<code class="language-plaintext highlighter-rouge">deterministic = false, stateful = true</code>은 non-deterministic &amp; stateful UDF를 정의하겠다는 의미입니다.</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@UDFType</span><span class="o">(</span><span class="n">deterministic</span> <span class="o">=</span> <span class="kc">false</span><span class="o">,</span> <span class="n">stateful</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UDFNonDetStatfule</span> <span class="kd">extends</span> <span class="no">UDF</span>
-<span class="o">{</span>
-    <span class="kd">public</span> <span class="nc">Text</span> <span class="nf">evaluate</span><span class="o">()</span> <span class="o">{</span>
-        <span class="c1">// 함수 정의</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p>단순히 non-deterministic UDF를 정의하려면 <code class="language-plaintext highlighter-rouge">stateful = False</code>로 선언하면 됩니다(기본값이 False이므로 인자를 전달하지 않으면 됩니다).</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@UDFType</span><span class="o">(</span><span class="n">deterministic</span> <span class="o">=</span> <span class="kc">false</span><span class="o">)</span>
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UDFNonDet</span> <span class="kd">extends</span> <span class="no">UDF</span>
-<span class="o">{</span>
-    <span class="kd">public</span> <span class="nc">Text</span> <span class="nf">evaluate</span><span class="o">()</span> <span class="o">{</span>
-        <span class="c1">// 함수 정의</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<h3 id="impala에서는-non-deterministic-udf를-사용할-수-없다">Impala에서는 non-deterministic UDF를 사용할 수 없다</h3>
-
-<p>이처럼 Hive에서는 non-deterministic, stateful UDF를 지원하지만 impala에서는 이를 지원하지 않습니다.</p>
-
-<blockquote>
-  <p>All Impala UDFs must be deterministic, that is, produce the same output each time when passed the same argument values. For example, an Impala UDF must not call functions such as rand() to produce different values for each invocation. It must not retrieve data from external sources, such as from disk or over the network.
-An Impala UDF must not spawn other threads or processes.</p>
-</blockquote>
-
-<p>cloudera 공식 문서에서는 impala UDF의 구현 시 제한 사항에 대해 설명하고 있습니다. <code class="language-plaintext highlighter-rouge">rand()</code>와 같은 함수를 호출하여 각 invacation(함수의 실행/호출)이 다른 값을 생성해서는 안된다고 말합니다. 즉, non-deterministic UDF는 구현이 불가능하며 impala에서 사용하는 모든 UDF는 반드시 deterministic해야합니다.</p>
-
-<p>물론 impala의 built-in function 중에는 non-deterministic function이 존재합니다(<code class="language-plaintext highlighter-rouge">current_timestamp, row_num, rank, uuid</code> 등). 특히 <code class="language-plaintext highlighter-rouge">uuid</code>는 비교적 나중에 추가된 함수인데 이 함수를 추가하는 <a href="https://github.com/cloudera/Impala/commit/12d605d3c20f431d709a515ab5d34615cba0d9e7#diff-b6f339610307238fc9855de9fd8fde22fd65ed11204a8accb2e6fe11255d6c2f">커밋</a>을 확인해보면 java가 아니라 C/C++을 이용했음을 확인할 수 있습니다.</p>
-
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">UuidPrepare</span><span class="p">(</span><span class="n">FunctionContext</span><span class="o">*</span> <span class="n">ctx</span><span class="p">,</span>
-    <span class="n">FunctionContext</span><span class="o">::</span><span class="n">FunctionStateScope</span> <span class="n">scope</span><span class="p">)</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">scope</span> <span class="o">==</span> <span class="n">FunctionContext</span><span class="o">::</span><span class="n">THREAD_LOCAL</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">ctx</span><span class="o">-&gt;</span><span class="n">GetFunctionState</span><span class="p">(</span><span class="n">FunctionContext</span><span class="o">::</span><span class="n">THREAD_LOCAL</span><span class="p">)</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
-      <span class="n">boost</span><span class="o">::</span><span class="n">uuids</span><span class="o">::</span><span class="n">random_generator</span><span class="o">*</span> <span class="n">uuid_gen</span> <span class="o">=</span>
-        <span class="k">new</span> <span class="n">boost</span><span class="o">::</span><span class="n">uuids</span><span class="o">::</span><span class="n">random_generator</span><span class="p">;</span>
-      <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">SetFunctionState</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">uuid_gen</span><span class="p">);</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="n">StringVal</span> <span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">Uuid</span><span class="p">(</span><span class="n">FunctionContext</span><span class="o">*</span> <span class="n">ctx</span><span class="p">)</span> <span class="p">{</span>
-  <span class="kt">void</span><span class="o">*</span> <span class="n">uuid_gen</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">GetFunctionState</span><span class="p">(</span><span class="n">FunctionContext</span><span class="o">::</span><span class="n">THREAD_LOCAL</span><span class="p">);</span>
-  <span class="n">DCHECK</span><span class="p">(</span><span class="n">uuid_gen</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">);</span>
-  <span class="n">boost</span><span class="o">::</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span> <span class="n">uuid_value</span> <span class="o">=</span>
-    <span class="p">(</span><span class="o">*</span><span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">boost</span><span class="o">::</span><span class="n">uuids</span><span class="o">::</span><span class="n">random_generator</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">uuid_gen</span><span class="p">))();</span>
-  <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">cxx_string</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">uuids</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">uuid_value</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">StringVal</span><span class="o">::</span><span class="n">CopyFrom</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span>
-      <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="kt">uint8_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">cxx_string</span><span class="p">.</span><span class="n">c_str</span><span class="p">()),</span>
-      <span class="n">cxx_string</span><span class="p">.</span><span class="n">length</span><span class="p">());</span>
-<span class="p">}</span>
-
-<span class="kt">void</span> <span class="n">UtilityFunctions</span><span class="o">::</span><span class="n">UuidClose</span><span class="p">(</span><span class="n">FunctionContext</span><span class="o">*</span> <span class="n">ctx</span><span class="p">,</span>
-    <span class="n">FunctionContext</span><span class="o">::</span><span class="n">FunctionStateScope</span> <span class="n">scope</span><span class="p">){</span>
-  <span class="k">if</span> <span class="p">(</span><span class="n">scope</span> <span class="o">==</span> <span class="n">FunctionContext</span><span class="o">::</span><span class="n">THREAD_LOCAL</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">void</span><span class="o">*</span> <span class="n">uuid_gen</span> <span class="o">=</span> <span class="n">ctx</span><span class="o">-&gt;</span><span class="n">GetFunctionState</span><span class="p">(</span><span class="n">FunctionContext</span><span class="o">::</span><span class="n">THREAD_LOCAL</span><span class="p">);</span>
-    <span class="n">DCHECK</span><span class="p">(</span><span class="n">uuid_gen</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">);</span>
-    <span class="k">delete</span> <span class="n">uuid_gen</span><span class="p">;</span>
-  <span class="p">}</span>
-<span class="p">}</span>
-
-</code></pre></div></div>
-
-<h3 id="정리">정리</h3>
+<h2 id="hdfs-append-only">HDFS (Append-only)</h2>
 <ul>
-  <li>non-deterministic function은 같은 input에 대해 다른 값을 반환할 수 있는 함수이다</li>
-  <li>stateful function은 함수가 실행되는 동안 그 상태(state)를 유지하는 함수이다.</li>
-  <li>Impala에서 non-deterministic UDF는 사용할 수 없다</li>
+  <li>
+    <p>한 번 쓰인 데이터의 중간을 수정(Update)할 수 없습니다. 파일의 끝에 새로운 데이터를 이어 쓰는 Append-only 연산만 지원합니다.</p>
+  </li>
+  <li>
+    <p>구체적인 예시: Debezium 같은 CDC 툴로 RDBMS의 변경 사항을 캡처할 때, user_id: 1의 이름이 “A”에서 “B”로 바뀌면 기존 “A”를 찾아 덮어쓰지 않습니다. 파일 맨 끝에 <code class="language-plaintext highlighter-rouge">{"user_id": 1, "name": "B", "op": "update"}</code> 로그를 추가(Append)합니다. 이후 연산 엔진(Spark, Flink 등)이 최신 Timestamp를 기준으로 최종 상태를 병합(Merge)합니다.</p>
+  </li>
 </ul>
 
-<p>[참고]<br />
-<a href="https://learn.microsoft.com/en-us/sql/relational-databases/user-defined-functions/deterministic-and-nondeterministic-functions?view=sql-server-ver16">Deterministic and nondeterministic functions</a><br />
-<a href="https://svn.apache.org/repos/infra/websites/production/hive/content/javadocs/r2.1.1/api/org/apache/hadoop/hive/ql/udf/UDFType.html">UDFType</a><br />
-<a href="https://issues.cloudera.org/browse/IMPALA-1477?jql=ORDER%20BY%20%22summary%22%20ASC">Add UUID function</a><br />
-<a href="https://docs.cloudera.com/runtime/7.2.10/impala-sql-reference/topics/impala-udf-limitations-and-restrictions-for-impala-udfs.html">Limitations and restrictions for Impala UDFs
-</a></p>
+<h2 id="s3-immutable">S3 (Immutable)</h2>
+<ul>
+  <li>데이터가 아예 불변(Immutable)합니다. 데이터의 일부만 수정하는 것은 불가능하며, 수정이 필요하면 전체 Object를 새로운 데이터로 덮어씌워야(Overwrite) 합니다.</li>
+</ul>
+
+<h1 id="3-data-locality와-network-io의-딜레마">3. Data Locality와 Network I/O의 딜레마</h1>
+<p>성능에 가장 큰 영향을 미치는 것은 데이터와 컴퓨팅 리소스의 물리적 위치입니다.</p>
+
+<h2 id="hdfs의-무기-data-locality">HDFS의 무기: Data Locality</h2>
+<p>HDFS는 Coupled(결합된) 아키텍처입니다. Spark Executor가 연산을 수행할 때, 자신이 떠 있는 바로 그 서버의 로컬 디스크에서 데이터를 직접 읽습니다. 이 Data Locality 덕분에 Network를 타지 않고 순수 Disk I/O만 발생하여 속도가 매우 빠릅니다.</p>
+
+<h2 id="s3의-문제점-network-io">S3의 문제점: Network I/O</h2>
+<p>S3는 Separation of Compute and Storage(컴퓨팅과 스토리지의 분리) 아키텍처입니다. Spark가 S3에 있는 데이터를 읽으려면 반드시 REST API를 통해 네트워크를 타고 패킷을 다운로드해야 하는 Network I/O가 발생합니다.</p>
+
+<h2 id="on-premise-s3를-구축한다면">On-premise S3를 구축한다면?</h2>
+<p>사내 망에 MinIO 같은 오픈소스로 S3를 직접 구축하면 AWS를 쓸 때보다 Latency는 대폭 줄어듭니다. 하지만 Compute 노드와 Storage 노드가 물리적으로 분리되어 있다는 사실은 변하지 않습니다. 초고속 Local Switch 망을 타야 하므로, 태생적인 Network Overhead는 여전히 존재합니다.</p>
+
+<h2 id="그럼에도-s3-구조를-선택하는-이유">그럼에도 S3 구조를 선택하는 이유</h2>
+<p>현대의 100GbE 네트워크 대역폭은 일반적인 SSD의 Disk I/O 속도를 추월했습니다. Network Overhead가 예전만큼 치명적인 Bottleneck이 아니기 때문에, Compute와 Storage를 분리하여 필요한 리소스만 독립적으로 Scale-out 하는 유연성과 비용 효율성을 취하는 것이 실무적으로 압도적인 이득입니다.</p>
+
+<h1 id="4-fault-tolerance-3-way-replication-vs-erasure-coding">4. Fault Tolerance: 3-way Replication vs Erasure Coding</h1>
+<p>서버에 불이 나거나 디스크가 파괴되는 “완전 손실” 상황에서 두 스토리지는 어떻게 데이터를 복구할까요?</p>
+<h2 id="hdfs-3-way-replication">HDFS: 3-way Replication</h2>
+<p>HDFS는 데이터 Block 하나를 서로 다른 3대의 DataNode에 똑같이 복사해 둡니다.</p>
+<ul>
+  <li>복구 방식: 특정 DataNode가 완전히 파괴되어 데이터가 손실되어도, 다른 노드에 똑같은 데이터가 살아있습니다. 살아있는 노드에서 새로운 노드로 데이터를 단순히 네트워크 복사(Copy)하면 복구가 끝납니다.</li>
+  <li>단점: Storage Overhead가 <strong>300%</strong>입니다. 1PB의 데이터를 저장하려면 3PB의 물리적 디스크가 필요할 정도로 극도로 비효율적입니다.
+    <h2 id="s3-erasure-coding">S3: Erasure Coding</h2>
+    <p>Erasure Coding(EC)은 데이터를 $k$개의 Data Chunk로 쪼개고, 복구를 위한 $m$개의 Parity Chunk를 수학적으로 계산해 냅니다. 총 $n$ ($n = k + m$)개의 Chunk를 서로 다른 노드에 분산 저장합니다.</p>
+  </li>
+  <li>복구 방식: 특정 노드에 벼락이 떨어져 원본 Data Chunk가 완전히 손실되더라도 복구가 가능합니다. 살아남은 Data Chunk와 Parity Chunk 중 어떤 종류든 상관없이 $k$개만 온전히 살아있다면, 행렬 역연산을 통해 소실된 원본 데이터를 100% 완벽하게 재구성(Reconstruct)해 냅니다.</li>
+  <li>장점: Storage Overhead가 4+2 구성 기준 150% 수준으로 매우 낮습니다. 적은 디스크 용량으로도 HDFS 이상의 내결함성(Fault Tolerance)을 제공합니다. (단, 복구 시 CPU 연산 비용이 발생합니다.)</li>
+</ul>
+
+<h1 id="5-modern-data-ecosystem-dbt와-s3의-만남">5. Modern Data Ecosystem: dbt와 S3의 만남</h1>
+<p>현재 실무에서 S3가 사실상 표준(De facto standard)으로 자리 잡은 이유는 생태계의 완벽한 지원 덕분입니다. HDFS는 유지보수 리소스가 엄청나게 드는 반면, S3는 Fully Managed 서비스이기 때문입니다.</p>
+
+<p>특히 최근 Modern Data Stack의 핵심인 <strong>dbt(data build tool)</strong>를 보면 이를 명확히 알 수 있습니다. 과거에는 S3 데이터를 분석하려면 Data Warehouse로 복사(Load)해야 했지만, 지금은 dbt-spark, dbt-athena 등을 통해 S3를 <strong>First-class citizen(일급 시민)</strong>으로 대우합니다. 데이터 이동 없이 S3 raw 버킷을 직접 소스로 매핑하고, SQL 변환 결과를 다시 S3 위에 Apache Iceberg나 Parquet 포맷으로 직접 Materialize(구체화) 할 수 있습니다.</p>
+
+<h1 id="6-summary-실무-아키텍처의-최종-선택">6. Summary: 실무 아키텍처의 최종 선택</h1>
+<p>| 비교 항목 (Category) | HDFS (Hadoop Distributed File System) | S3 (Object Storage) |
+| :— | :— | :— |
+| <strong>Namespace (구조)</strong> | Hierarchical Tree (계층형 디렉토리 구조) | Flat Namespace (Key 기반 $O(1)$ 직접 접근) |
+| <strong>Data Update (수정)</strong> | Append-only (데이터 이어쓰기만 가능) | Immutable (데이터 불변, 전체 덮어쓰기 필요) |
+| <strong>Architecture (설계)</strong> | Coupled (Compute와 Storage 결합, Data Locality 활용) | Separated (Compute와 Storage 분리, 독립적 Scale-out) |
+| <strong>I/O Type (입출력)</strong> | Disk I/O (로컬 디스크 직접 접근) | Network I/O (HTTP REST API를 통한 네트워크 통신) |
+| <strong>Fault Tolerance (복구)</strong> | 3-way Replication (단순 복사, Storage Overhead 300%) | Erasure Coding (수학적 복원, Storage Overhead 약 150%) |
+| <strong>Best Use Case (추천)</strong> | 기존 On-premise 환경, 극단적인 Low Latency가 필요한 Batch | 현대적인 Data Lake 구축, Cloud Native 및 dbt 기반 파이프라인 |</p>
+
+<h1 id="결론">결론</h1>
+<p>이미 거대한 On-premise 인프라를 운영 중이고 초고속 로컬 I/O가 필수적인 특수 환경이 아니라면, 확장성, 비용, 생태계 호환성을 모두 갖춘 S3 기반의 Separation Architecture를 채택하는 것이 현대 데이터 플랫폼 설계의 Best Practice입니다.</p>
 
                 </div>
             </section>
@@ -434,11 +379,6 @@ An Impala UDF must not spawn other threads or processes.</p>
                                 
                                   
                                     
-                                        
-                                        
-                                            <li><a href="/hdfs-s3">HDFS와 S3 비교하기</a></li>
-                                        
-                                    
                                   
                                 
                                   
@@ -475,6 +415,11 @@ An Impala UDF must not spawn other threads or processes.</p>
                                   
                                 
                                   
+                                    
+                                        
+                                        
+                                            <li><a href="/non-deterministic-udf">non-deterministic UDF</a></li>
+                                        
                                     
                                   
                                 
@@ -629,57 +574,6 @@ An Impala UDF must not spawn other threads or processes.</p>
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
             
-                
-
-    <article class="post-card post-template">
-        
-            <a class="post-card-image-link" href="/multi-stage-and-builder-pattern">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/kubernetes/docker-logo.png)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/multi-stage-and-builder-pattern">
-                <header class="post-card-header">
-                    
-                        
-                            
-                                <span class="post-card-tags">Kubernetes</span>
-                            
-                        
-                    
-
-                    <h2 class="post-card-title">multi-stage와 Builder Pattern</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>DataHub로 알아본 Docker build 전략 (multi-stage, Builder pattern)
-
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/GyuhoonK/">GyuhoonK</a>
-                        </span>
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      3 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-            
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
             
@@ -687,26 +581,26 @@ An Impala UDF must not spawn other threads or processes.</p>
 
     <article class="post-card post-template">
         
-            <a class="post-card-image-link" href="/avro-to-python">
-                <div class="post-card-image" style="background-image: url(/assets/built/images/python/avro-to-python.png)"></div>
+            <a class="post-card-image-link" href="/mysql-index">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/database/b+tree.png)"></div>
             </a>
         
         <div class="post-card-content">
-            <a class="post-card-content-link" href="/avro-to-python">
+            <a class="post-card-content-link" href="/mysql-index">
                 <header class="post-card-header">
                     
                         
                             
-                                <span class="post-card-tags">Python</span>
+                                <span class="post-card-tags">Database</span>
                             
                         
                     
 
-                    <h2 class="post-card-title">Sharing Avro Schema to Python</h2>
+                    <h2 class="post-card-title">MySQL Index 개념 정리</h2>
                 </header>
                 <section class="post-card-excerpt">
                     
-                        <p>DataHub에서 avro schema 파일(avsc)을 사용하는 방법
+                        <p>면접 준비용 MySQL Index 개념 정리
 
 </p>
                     
@@ -726,7 +620,7 @@ An Impala UDF must not spawn other threads or processes.</p>
                 <span class="reading-time">
                     
                     
-                      3 min read
+                      8 min read
                     
                 </span>
             </footer>
@@ -748,18 +642,18 @@ An Impala UDF must not spawn other threads or processes.</p>
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">non-deterministic UDF</div>
+    <div class="floating-header-title">HDFS와 S3 비교하기</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=non-deterministic+UDF&amp;url=https://gyuhoonk.github.ionon-deterministic-udf"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=HDFS%EC%99%80+S3+%EB%B9%84%EA%B5%90%ED%95%98%EA%B8%B0&amp;url=https://gyuhoonk.github.iohdfs-s3"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
         </a>
-        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.ionon-deterministic-udf"
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iohdfs-s3"
             onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
 

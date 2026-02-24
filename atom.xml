@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>HDFS와 S3 비교하기</title>
+        
+          <description>&lt;p&gt;스토리지의 양대 산맥: HDFS와 S3를 비교해봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 21 Feb 2026 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/hdfs-s3</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/hdfs-s3</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>MySQL Index 개념 정리</title>
         
           <description>&lt;p&gt;면접 준비용 MySQL Index 개념 정리&lt;/p&gt;
