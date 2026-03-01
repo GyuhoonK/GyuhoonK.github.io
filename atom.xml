@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>FastAPI 내부 구조, 의존성 주입, Celery</title>
+        
+          <description>&lt;h1 id=&quot;fastapi-해부하기-내부-구조부터-비동기-동작-원리-di-그리고-celery-연동까지&quot;&gt;[FastAPI 해부하기] 내부 구조부터 비동기 동작 원리, DI, 그리고 Celery 연동까지&lt;/h1&gt;
+
+</description>
+        
+        <pubDate>Sun, 01 Mar 2026 09:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/fastapi-1</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/fastapi-1</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>HDFS와 S3 비교하기</title>
         
           <description>&lt;p&gt;스토리지의 양대 산맥: HDFS와 S3를 비교해봅니다.&lt;/p&gt;
