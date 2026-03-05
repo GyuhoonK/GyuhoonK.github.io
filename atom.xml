@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>Kubernetes Service Type</title>
+        
+          <description>&lt;h1 id=&quot;k8s-쿠버네티스-service서비스-완벽-가이드-개념부터-ingress-연동까지&quot;&gt;[K8s] 쿠버네티스 Service(서비스) 완벽 가이드: 개념부터 Ingress 연동까지&lt;/h1&gt;
+
+</description>
+        
+        <pubDate>Wed, 04 Mar 2026 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/kube-service-type</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/kube-service-type</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>FastAPI 내부 구조, 의존성 주입, Celery</title>
         
           <description>&lt;h1 id=&quot;fastapi-해부하기-내부-구조부터-비동기-동작-원리-di-그리고-celery-연동까지&quot;&gt;[FastAPI 해부하기] 내부 구조부터 비동기 동작 원리, DI, 그리고 Celery 연동까지&lt;/h1&gt;
@@ -72,7 +87,7 @@
       <item>
         <title>ConfigMap과 Secret의 차이점</title>
         
-          <description>&lt;p&gt;ConfigMap과 Secret은 뭐가 다른걸까?&lt;/p&gt;
+          <description>&lt;h1 id=&quot;kubernetes-configmap과-secret의-차이점&quot;&gt;Kubernetes: ConfigMap과 Secret의 차이점&lt;/h1&gt;
 
 </description>
         
