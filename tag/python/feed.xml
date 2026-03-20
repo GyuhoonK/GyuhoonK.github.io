@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="https://gyuhoonk.github.io/tag/python/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2026-03-05T22:50:39+09:00</updated>
-  <id>https://gyuhoonk.github.io/tag/python/feed.xml</id>
+  <link href="http://localhost:4000/tag/python/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2026-03-16T22:02:42+09:00</updated>
+  <id>http://localhost:4000/tag/python/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">FastAPI 내부 구조, 의존성 주입, Celery</title>
-      <link href="https://gyuhoonk.github.io/fastapi-1" rel="alternate" type="text/html" title="FastAPI 내부 구조, 의존성 주입, Celery" />
+      <link href="http://localhost:4000/fastapi-1" rel="alternate" type="text/html" title="FastAPI 내부 구조, 의존성 주입, Celery" />
       <published>2026-03-01T09:30:00+09:00</published>
       <updated>2026-03-01T09:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/fastapi-1</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/fastapi-1">&lt;h1 id=&quot;fastapi-해부하기-내부-구조부터-비동기-동작-원리-di-그리고-celery-연동까지&quot;&gt;[FastAPI 해부하기] 내부 구조부터 비동기 동작 원리, DI, 그리고 Celery 연동까지&lt;/h1&gt;
+      <id>http://localhost:4000/fastapi-1</id>
+      <content type="html" xml:base="http://localhost:4000/fastapi-1">&lt;h1 id=&quot;fastapi-해부하기-내부-구조부터-비동기-동작-원리-di-그리고-celery-연동까지&quot;&gt;[FastAPI 해부하기] 내부 구조부터 비동기 동작 원리, DI, 그리고 Celery 연동까지&lt;/h1&gt;
 
 &lt;p&gt;FastAPI의 내부 동작 원리, 특히 비동기(Async) 처리와 이벤트 루프, 의존성 주입(DI), 그리고 실제 운영에 필요한 백그라운드 작업 처리 방식까지 논리적인 흐름에 따라 깊이 있게 파헤쳐 보겠습니다.&lt;/p&gt;
 
@@ -272,11 +272,11 @@
   
     <entry>
       <title type="html">Sharing Avro Schema to Python</title>
-      <link href="https://gyuhoonk.github.io/avro-to-python" rel="alternate" type="text/html" title="Sharing Avro Schema to Python" />
+      <link href="http://localhost:4000/avro-to-python" rel="alternate" type="text/html" title="Sharing Avro Schema to Python" />
       <published>2023-05-07T22:30:00+09:00</published>
       <updated>2023-05-07T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/avro-to-python</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/avro-to-python">&lt;p&gt;DataHub에서 avro schema 파일(avsc)을 사용하는 방법&lt;/p&gt;
+      <id>http://localhost:4000/avro-to-python</id>
+      <content type="html" xml:base="http://localhost:4000/avro-to-python">&lt;p&gt;DataHub에서 avro schema 파일(avsc)을 사용하는 방법&lt;/p&gt;
 
 &lt;h3 id=&quot;datahub-cli-패키지&quot;&gt;DataHub CLI 패키지&lt;/h3&gt;
 &lt;p&gt;DataHub는 DataHub API를 python 패키지로 제공하고 있습니다. &lt;a href=&quot;https://pypi.org/project/acryl-datahub/&quot;&gt;acryl-datahub&lt;/a&gt;&lt;/p&gt;
@@ -466,11 +466,11 @@ avsc 파일을 생성하기 위해서는 &lt;code class=&quot;language-plaintext
   
     <entry>
       <title type="html">jaydebeapi - Class not found Error</title>
-      <link href="https://gyuhoonk.github.io/jaydebeapi_class_not_found" rel="alternate" type="text/html" title="jaydebeapi - Class not found Error" />
+      <link href="http://localhost:4000/jaydebeapi_class_not_found" rel="alternate" type="text/html" title="jaydebeapi - Class not found Error" />
       <published>2023-03-25T22:30:00+09:00</published>
       <updated>2023-03-25T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/jaydebeapi_class_not_found</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/jaydebeapi_class_not_found">&lt;p&gt;jaydebeapi로 DB 연결 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TypeError: Class not found&lt;/code&gt; 원인 파악&lt;/p&gt;
+      <id>http://localhost:4000/jaydebeapi_class_not_found</id>
+      <content type="html" xml:base="http://localhost:4000/jaydebeapi_class_not_found">&lt;p&gt;jaydebeapi로 DB 연결 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TypeError: Class not found&lt;/code&gt; 원인 파악&lt;/p&gt;
 
 &lt;h3 id=&quot;에러-로그&quot;&gt;에러 로그&lt;/h3&gt;
 
@@ -675,11 +675,11 @@ jpype는 JVM을 종료(shutdown)하는 API도 제공합니다.
   
     <entry>
       <title type="html">변수를 전달하는 decorator</title>
-      <link href="https://gyuhoonk.github.io/decorator" rel="alternate" type="text/html" title="변수를 전달하는 decorator" />
+      <link href="http://localhost:4000/decorator" rel="alternate" type="text/html" title="변수를 전달하는 decorator" />
       <published>2023-03-18T22:30:00+09:00</published>
       <updated>2023-03-18T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/decorator</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/decorator">&lt;p&gt;변수를 생성해 함수로 전달하는 데코레이터 만들기&lt;/p&gt;
+      <id>http://localhost:4000/decorator</id>
+      <content type="html" xml:base="http://localhost:4000/decorator">&lt;p&gt;변수를 생성해 함수로 전달하는 데코레이터 만들기&lt;/p&gt;
 
 &lt;h2 id=&quot;decorator를-사용하고-싶었던-이유&quot;&gt;decorator를 사용하고 싶었던 이유&lt;/h2&gt;
 &lt;p&gt;요즘 작업 중인 업무 중에, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;connection&lt;/code&gt;을 선언한 뒤 해당 커넥션 객체를 이용하여 서버와 통신하는 작업을 많이 하고 있습니다. 예를 들어, DB와 연결하는 connection를 함수내에서 선언하고 이를 이용해서 작업하는 식입니다.&lt;/p&gt;
@@ -857,11 +857,11 @@ PEP-318에서는 아래와 같은 예시로 데코레이터의 편리성을 설�
   
     <entry>
       <title type="html">Threading in Python</title>
-      <link href="https://gyuhoonk.github.io/threading-in-python" rel="alternate" type="text/html" title="Threading in Python" />
+      <link href="http://localhost:4000/threading-in-python" rel="alternate" type="text/html" title="Threading in Python" />
       <published>2021-11-01T22:30:00+09:00</published>
       <updated>2021-11-01T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/threading-in-python</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/threading-in-python">&lt;p&gt;Python - Thread, Mutex, Semaphore&lt;/p&gt;
+      <id>http://localhost:4000/threading-in-python</id>
+      <content type="html" xml:base="http://localhost:4000/threading-in-python">&lt;p&gt;Python - Thread, Mutex, Semaphore&lt;/p&gt;
 
 &lt;h1 id=&quot;thread란-&quot;&gt;Thread란 ?&lt;/h1&gt;
 
@@ -1155,11 +1155,11 @@ PEP-318에서는 아래와 같은 예시로 데코레이터의 편리성을 설�
   
     <entry>
       <title type="html">AWS S3와 zip 파일</title>
-      <link href="https://gyuhoonk.github.io/boto3-zipfile" rel="alternate" type="text/html" title="AWS S3와 zip 파일" />
+      <link href="http://localhost:4000/boto3-zipfile" rel="alternate" type="text/html" title="AWS S3와 zip 파일" />
       <published>2021-09-01T22:30:00+09:00</published>
       <updated>2021-09-01T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/boto3-zipfile</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/boto3-zipfile">&lt;p&gt;AWS S3 내 zip 파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
+      <id>http://localhost:4000/boto3-zipfile</id>
+      <content type="html" xml:base="http://localhost:4000/boto3-zipfile">&lt;p&gt;AWS S3 내 zip 파일을 다운로드 받지 않고, 내용물만 다운로드 받기&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/aws-s3-structure.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 

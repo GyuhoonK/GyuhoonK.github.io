@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="https://gyuhoonk.github.io/tag/dbt/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2026-03-05T22:50:39+09:00</updated>
-  <id>https://gyuhoonk.github.io/tag/dbt/feed.xml</id>
+  <link href="http://localhost:4000/tag/dbt/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2026-03-16T22:02:42+09:00</updated>
+  <id>http://localhost:4000/tag/dbt/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">Running Models in Parallel with dbt-trino</title>
-      <link href="https://gyuhoonk.github.io/dbt-trino-temp-view" rel="alternate" type="text/html" title="Running Models in Parallel with dbt-trino" />
+      <link href="http://localhost:4000/dbt-trino-temp-view" rel="alternate" type="text/html" title="Running Models in Parallel with dbt-trino" />
       <published>2024-06-09T22:30:00+09:00</published>
       <updated>2024-06-09T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/dbt-trino-temp-view</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/dbt-trino-temp-view">&lt;p&gt;dbt trino에서 파티션이 있는 모델을 병렬 실행하기 위한 매크로 수정 방법&lt;/p&gt;
+      <id>http://localhost:4000/dbt-trino-temp-view</id>
+      <content type="html" xml:base="http://localhost:4000/dbt-trino-temp-view">&lt;p&gt;dbt trino에서 파티션이 있는 모델을 병렬 실행하기 위한 매크로 수정 방법&lt;/p&gt;
 
 &lt;h3 id=&quot;dbt-trino&quot;&gt;dbt-trino&lt;/h3&gt;
 

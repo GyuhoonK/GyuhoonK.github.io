@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2026-03-05T22:50:39+09:00</updated>
-  <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
+  <link href="http://localhost:4000/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2026-03-16T22:02:42+09:00</updated>
+  <id>http://localhost:4000/author/GyuhoonK/feed.xml</id>
 
   
   
@@ -32,14 +32,104 @@
 
   
     <entry>
+      <title type="html">airflow triggerer</title>
+      <link href="http://localhost:4000/airflow-triggerer" rel="alternate" type="text/html" title="airflow triggerer" />
+      <published>2026-03-14T22:30:00+09:00</published>
+      <updated>2026-03-14T22:30:00+09:00</updated>
+      <id>http://localhost:4000/airflow-triggerer</id>
+      <content type="html" xml:base="http://localhost:4000/airflow-triggerer">&lt;h1 id=&quot;문제-상황&quot;&gt;문제 상황&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때&lt;/li&gt;
+  &lt;li&gt;worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임
+    &lt;ul&gt;
+      &lt;li&gt;이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨
+    &lt;ul&gt;
+      &lt;li&gt;Pod Adoptation이 불가능함&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;worker 재배포, 재시작을 포함하여 모든 상황에서 KPO가 연속성을 유지할 순 없을까?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;대응---deferrable&quot;&gt;대응 - deferrable&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;KPO에는 deferrable 옵션이 있음&lt;/li&gt;
+  &lt;li&gt;KPO는 defer모드에서 Pod를 생성한 뒤 Pod 감시 역할을 triggerer에 이관함&lt;/li&gt;
+  &lt;li&gt;triggerer는 Pod를 감시하다가 Pod가 완료되면(실패/성공) 다시 worker를 trigger함 (TriggerEvent -&amp;gt; Worker)&lt;/li&gt;
+  &lt;li&gt;&amp;lt;worker(KPO) - triggerer - Pod &amp;gt; Lifecyle 에 대한 이미지 추가&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;triggerdagrunoperator에도-적용-가능&quot;&gt;TriggerDagRunOperator에도 적용 가능&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;마찬가지 로직에 대한 설명&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;triggerer-race-condition&quot;&gt;triggerer race condition&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;보통 triggerer는 HA을 위해 2개 이상 배포함. 하나의 triggerer가 down되면 나머지 triggerer가 상태 체크를 할 수 있도록&lt;/li&gt;
+  &lt;li&gt;그런데 triggerer가 2개 이상일 때, deferred 상태를 바로 탈출해버리는 경우가 있음&lt;/li&gt;
+  &lt;li&gt;이는 2개 triggerer가 동시에 trigger job을 할당 받으면서, 서로 이미 할당 받은 trigger는 완료시켜버리는 로직이 있기 때문(CancelledError)&lt;/li&gt;
+  &lt;li&gt;
+    &lt;구체적인 설명=&quot;&quot; 이미지=&quot;&quot;&gt;
+&lt;/구체적인&gt;
+  &lt;/li&gt;
+  &lt;li&gt;위 상황이 발생하는 원인은? 아직 조사 중&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;sequenceDiagram
+    participant w as Worker
+    participant p as Pod
+    participant t as Triggerer
+    participant table as MySQL(trigger테이블)
+    rect rgb(255, 255, 200)
+    w-&amp;gt;&amp;gt;p: Pod 생성
+    w-&amp;gt;&amp;gt;t: 
+    end
+    
+    
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="airflow" />
+      
+        <category term="kubernetes" />
+      
+
+      
+        <summary type="html">문제 상황 Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때 worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임 이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음 worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨 Pod Adoptation이 불가능함</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
       <title type="html">Kubernetes Service Type</title>
-      <link href="https://gyuhoonk.github.io/kube-service-type" rel="alternate" type="text/html" title="Kubernetes Service Type" />
+      <link href="http://localhost:4000/kube-service-type" rel="alternate" type="text/html" title="Kubernetes Service Type" />
       <published>2026-03-04T22:30:00+09:00</published>
       <updated>2026-03-04T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/kube-service-type</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/kube-service-type">&lt;h1 id=&quot;k8s-쿠버네티스-service서비스-완벽-가이드-개념부터-ingress-연동까지&quot;&gt;[K8s] 쿠버네티스 Service(서비스) 완벽 가이드: 개념부터 Ingress 연동까지&lt;/h1&gt;
+      <id>http://localhost:4000/kube-service-type</id>
+      <content type="html" xml:base="http://localhost:4000/kube-service-type">&lt;h1 id=&quot;k8s-쿠버네티스-service서비스-완벽-가이드-개념부터-ingress-연동까지&quot;&gt;[K8s] 쿠버네티스 Service(서비스) 완벽 가이드: 개념부터 Ingress 연동까지&lt;/h1&gt;
 
-&lt;p&gt;쿠버네티스(Kubernetes) 환경에서 애플리케이션을 배포하다 보면 반드시 마주치는 개념이 있습니다. 바로 &lt;strong&gt;Service(서비스)&lt;/strong&gt;입니다. 파드(Pod)를 띄우는 것만으로는 외부와 통신할 수 없으며, 내부 컴포넌트 간의 안정적인 연결도 보장할 수 없습니다.&lt;/p&gt;
+&lt;p&gt;파드(Pod)를 띄우는 것만으로는 외부와 통신할 수 없으며, 내부 컴포넌트 간의 안정적인 연결도 보장할 수 없습니다. 외부와 통신을 위해서는 반드시 Serivce가 필요합니다.&lt;/p&gt;
 
 &lt;p&gt;이번 포스트에서는 쿠버네티스 Service가 왜 필요한지(배경지식)부터, 각 타입별 특징과 실제 사용 예시, 그리고 L7 라우팅을 위한 Ingress와 수동 Endpoints 연결 같은 응용 방법까지 한 번에 정리해 보겠습니다.&lt;/p&gt;
 
@@ -249,11 +339,11 @@
   
     <entry>
       <title type="html">FastAPI 내부 구조, 의존성 주입, Celery</title>
-      <link href="https://gyuhoonk.github.io/fastapi-1" rel="alternate" type="text/html" title="FastAPI 내부 구조, 의존성 주입, Celery" />
+      <link href="http://localhost:4000/fastapi-1" rel="alternate" type="text/html" title="FastAPI 내부 구조, 의존성 주입, Celery" />
       <published>2026-03-01T09:30:00+09:00</published>
       <updated>2026-03-01T09:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/fastapi-1</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/fastapi-1">&lt;h1 id=&quot;fastapi-해부하기-내부-구조부터-비동기-동작-원리-di-그리고-celery-연동까지&quot;&gt;[FastAPI 해부하기] 내부 구조부터 비동기 동작 원리, DI, 그리고 Celery 연동까지&lt;/h1&gt;
+      <id>http://localhost:4000/fastapi-1</id>
+      <content type="html" xml:base="http://localhost:4000/fastapi-1">&lt;h1 id=&quot;fastapi-해부하기-내부-구조부터-비동기-동작-원리-di-그리고-celery-연동까지&quot;&gt;[FastAPI 해부하기] 내부 구조부터 비동기 동작 원리, DI, 그리고 Celery 연동까지&lt;/h1&gt;
 
 &lt;p&gt;FastAPI의 내부 동작 원리, 특히 비동기(Async) 처리와 이벤트 루프, 의존성 주입(DI), 그리고 실제 운영에 필요한 백그라운드 작업 처리 방식까지 논리적인 흐름에 따라 깊이 있게 파헤쳐 보겠습니다.&lt;/p&gt;
 
@@ -488,11 +578,11 @@
   
     <entry>
       <title type="html">HDFS와 S3 비교하기</title>
-      <link href="https://gyuhoonk.github.io/hdfs-s3" rel="alternate" type="text/html" title="HDFS와 S3 비교하기" />
+      <link href="http://localhost:4000/hdfs-s3" rel="alternate" type="text/html" title="HDFS와 S3 비교하기" />
       <published>2026-02-21T22:30:00+09:00</published>
       <updated>2026-02-21T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/hdfs-s3</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/hdfs-s3">&lt;p&gt;스토리지의 양대 산맥: HDFS와 S3를 비교해봅니다.&lt;/p&gt;
+      <id>http://localhost:4000/hdfs-s3</id>
+      <content type="html" xml:base="http://localhost:4000/hdfs-s3">&lt;p&gt;스토리지의 양대 산맥: HDFS와 S3를 비교해봅니다.&lt;/p&gt;
 
 &lt;p&gt;과거 On-premise 환경에서는 Hadoop 생태계의 &lt;strong&gt;HDFS(Hadoop Distributed File System)&lt;/strong&gt;가 절대적인 표준이었습니다. 하지만 Cloud Native 환경과 Modern Data Stack이 발전하면서 현재는 Amazon S3와 같은 Object Storage가 대세로 자리 잡았습니다.&lt;/p&gt;
 
@@ -652,11 +742,11 @@
   
     <entry>
       <title type="html">MySQL Index 개념 정리</title>
-      <link href="https://gyuhoonk.github.io/mysql-index" rel="alternate" type="text/html" title="MySQL Index 개념 정리" />
+      <link href="http://localhost:4000/mysql-index" rel="alternate" type="text/html" title="MySQL Index 개념 정리" />
       <published>2026-02-20T22:30:00+09:00</published>
       <updated>2026-02-20T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/mysql-index</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/mysql-index">&lt;p&gt;면접 준비용 MySQL Index 개념 정리&lt;/p&gt;
+      <id>http://localhost:4000/mysql-index</id>
+      <content type="html" xml:base="http://localhost:4000/mysql-index">&lt;p&gt;면접 준비용 MySQL Index 개념 정리&lt;/p&gt;
 
 &lt;h1 id=&quot;1-index는-왜-사용하는-것인가&quot;&gt;1. Index는 왜 사용하는 것인가?&lt;/h1&gt;
 
@@ -962,11 +1052,11 @@
   
     <entry>
       <title type="html">KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</title>
-      <link href="https://gyuhoonk.github.io/pod-operator-400" rel="alternate" type="text/html" title="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" />
+      <link href="http://localhost:4000/pod-operator-400" rel="alternate" type="text/html" title="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" />
       <published>2025-10-01T22:30:00+09:00</published>
       <updated>2025-10-01T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/pod-operator-400</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/pod-operator-400">&lt;ul&gt;
+      <id>http://localhost:4000/pod-operator-400</id>
+      <content type="html" xml:base="http://localhost:4000/pod-operator-400">&lt;ul&gt;
   &lt;li&gt;KubernetesPodOperator 사용 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubernetes.client.exceptions.ApiException: (400)&lt;/code&gt;이 발생하는 원인에 대해서 분석합니다.&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -1151,11 +1241,11 @@ Reason: Bad Request
   
     <entry>
       <title type="html">ConfigMap과 Secret의 차이점</title>
-      <link href="https://gyuhoonk.github.io/configmap-secret" rel="alternate" type="text/html" title="ConfigMap과 Secret의 차이점" />
+      <link href="http://localhost:4000/configmap-secret" rel="alternate" type="text/html" title="ConfigMap과 Secret의 차이점" />
       <published>2025-03-15T22:30:00+09:00</published>
       <updated>2025-03-15T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/configmap-secret</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/configmap-secret">&lt;h1 id=&quot;kubernetes-configmap과-secret의-차이점&quot;&gt;Kubernetes: ConfigMap과 Secret의 차이점&lt;/h1&gt;
+      <id>http://localhost:4000/configmap-secret</id>
+      <content type="html" xml:base="http://localhost:4000/configmap-secret">&lt;h1 id=&quot;kubernetes-configmap과-secret의-차이점&quot;&gt;Kubernetes: ConfigMap과 Secret의 차이점&lt;/h1&gt;
 
 &lt;p&gt;Kubernetes에서 애플리케이션을 배포할 때, 환경 설정을 컨테이너 이미지와 분리하기 위해 사용하는 두 가지 주요 리소스가 바로 &lt;strong&gt;ConfigMap&lt;/strong&gt;과 &lt;strong&gt;Secret&lt;/strong&gt;입니다. 이 글에서는 두 리소스의 목적과 기술적 차이점을 명확히 비교해 봅니다.&lt;/p&gt;
 
@@ -1319,11 +1409,11 @@ Reason: Bad Request
   
     <entry>
       <title type="html">Variables &amp;amp; Dag Parsing</title>
-      <link href="https://gyuhoonk.github.io/variables" rel="alternate" type="text/html" title="Variables &amp; Dag Parsing" />
+      <link href="http://localhost:4000/variables" rel="alternate" type="text/html" title="Variables &amp; Dag Parsing" />
       <published>2024-11-08T22:30:00+09:00</published>
       <updated>2024-11-08T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/variables</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/variables">&lt;p&gt;Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다.&lt;/p&gt;
+      <id>http://localhost:4000/variables</id>
+      <content type="html" xml:base="http://localhost:4000/variables">&lt;p&gt;Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;variables&quot;&gt;Variables&lt;/h2&gt;
 
@@ -1535,11 +1625,11 @@ foo_var
   
     <entry>
       <title type="html">Running Models in Parallel with dbt-trino</title>
-      <link href="https://gyuhoonk.github.io/dbt-trino-temp-view" rel="alternate" type="text/html" title="Running Models in Parallel with dbt-trino" />
+      <link href="http://localhost:4000/dbt-trino-temp-view" rel="alternate" type="text/html" title="Running Models in Parallel with dbt-trino" />
       <published>2024-06-09T22:30:00+09:00</published>
       <updated>2024-06-09T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/dbt-trino-temp-view</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/dbt-trino-temp-view">&lt;p&gt;dbt trino에서 파티션이 있는 모델을 병렬 실행하기 위한 매크로 수정 방법&lt;/p&gt;
+      <id>http://localhost:4000/dbt-trino-temp-view</id>
+      <content type="html" xml:base="http://localhost:4000/dbt-trino-temp-view">&lt;p&gt;dbt trino에서 파티션이 있는 모델을 병렬 실행하기 위한 매크로 수정 방법&lt;/p&gt;
 
 &lt;h3 id=&quot;dbt-trino&quot;&gt;dbt-trino&lt;/h3&gt;
 
@@ -1735,11 +1825,11 @@ dbt run -m model_A --vars &quot;{'date': '2024-06-03'}&quot;
   
     <entry>
       <title type="html">Spring Dependency Injection, Component Scan</title>
-      <link href="https://gyuhoonk.github.io/depdendency-injection" rel="alternate" type="text/html" title="Spring Dependency Injection, Component Scan" />
+      <link href="http://localhost:4000/depdendency-injection" rel="alternate" type="text/html" title="Spring Dependency Injection, Component Scan" />
       <published>2024-06-01T22:30:00+09:00</published>
       <updated>2024-06-01T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/depdendency-injection</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/depdendency-injection">&lt;p&gt;Spring의 의존관계 주입 방법과 Component Scan에 대해서 알아봅니다&lt;/p&gt;
+      <id>http://localhost:4000/depdendency-injection</id>
+      <content type="html" xml:base="http://localhost:4000/depdendency-injection">&lt;p&gt;Spring의 의존관계 주입 방법과 Component Scan에 대해서 알아봅니다&lt;/p&gt;
 
 &lt;h2 id=&quot;의존관계-자동-주입&quot;&gt;의존관계 자동 주입&lt;/h2&gt;
 &lt;ul&gt;
@@ -1882,124 +1972,6 @@ dbt run -m model_A --vars &quot;{'date': '2024-06-03'}&quot;
 
       
         <summary type="html">Spring의 의존관계 주입 방법과 Component Scan에 대해서 알아봅니다</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">Spring Singleton Container</title>
-      <link href="https://gyuhoonk.github.io/singleton" rel="alternate" type="text/html" title="Spring Singleton Container" />
-      <published>2024-03-09T22:30:00+09:00</published>
-      <updated>2024-03-09T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/singleton</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/singleton">&lt;p&gt;Spring Container에서 지원하는 싱글톤 컨테이너에 대해서 알아봅니다.&lt;/p&gt;
-
-&lt;h2 id=&quot;spring-container는-기본적으로-singleton이다&quot;&gt;Spring Container는 기본적으로 Singleton이다&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Bean을 미리 생성하고 제공한다&lt;/li&gt;
-  &lt;li&gt;ApplicationContext가 Singleton Registry의 역할을 한다&lt;/li&gt;
-  &lt;li&gt;Singleton Registry 덕분에 싱글톤 패턴의 단점(안티패턴)을 극복할 수 있다&lt;/li&gt;
-  &lt;li&gt;싱글톤 패턴만 지원하는 것은 아니다, 요청 시 마다 새로운 객체(Bean)를 생성하는 기능도 제공한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;[참고] 싱글톤 패턴의 문제점&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;구현 코드 자체가 길어진다&lt;/li&gt;
-  &lt;li&gt;의존 관게상 클라이언트가 구체 클래스에 의존한다 ⇒ DIP를 위반한다&lt;/li&gt;
-  &lt;li&gt;클라이언트가 구체 클래스에 의존하기 때문에 OCP 원칙을 위반할 가능성이 높다&lt;/li&gt;
-  &lt;li&gt;테스트가 어렵다&lt;/li&gt;
-  &lt;li&gt;내부 속성을 변경하거나 초기화하기 어렵다&lt;/li&gt;
-  &lt;li&gt;private 생성자로 자식 클래스를 만들기 어렵다&lt;/li&gt;
-  &lt;li&gt;결론적으로, 유연성이 떨어진다&lt;/li&gt;
-  &lt;li&gt;위와 같은 문제점 때문에 &lt;strong&gt;안티패턴&lt;/strong&gt;이라고도 불린다&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;싱글톤-방식-구현-시-주의점-stateless&quot;&gt;싱글톤 방식 구현 시 주의점: Stateless&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;싱글톤 패턴은 상태를 유지(stateful)하게 설계해선 안되고, 무상태(stateless)로 설계해야한다
-    &lt;ul&gt;
-      &lt;li&gt;특정 클라이언트에 의존적인 field가 있어선 안된다&lt;/li&gt;
-      &lt;li&gt;특정 클라이언트가 값을 변경할 수 있어서는 안된다&lt;/li&gt;
-      &lt;li&gt;가급적 읽기만 가능해야한다&lt;/li&gt;
-      &lt;li&gt;필드 대신에 자바에서 공유되지 않는 지역변수, 파라미터, threadlocal 등을 사용한다&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;싱글톤-패턴을-위한-annotation-configuration&quot;&gt;싱글톤 패턴을 위한 Annotation: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@Configuration&lt;/code&gt;&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;AppConfig.java: Bean 생성 시 마다 새로운 객체를 생성하는 것처럼 보인다
-    &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@Configuration&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AppConfig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberService&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;memberService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;nc&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;AppConfig.memberService&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;MemberServiceImpl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// cmd + opt + m (리팩토링)&lt;/span&gt;
-
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-    &lt;span class=&quot;nd&quot;&gt;@Bean&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;orderService&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;nc&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;AppConfig.orderService&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;OrderServiceImpl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-    &lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;memberRepository&lt;/code&gt;는 2번 생성되는 것처럼 보이지만, 실제로 생성된 Bean을 조회해보면 1회만 생성된다(생성자 자체가 1회만 호출된다)&lt;/p&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@Configuration&lt;/code&gt;은 CGLIB이라는 바이트 코드 조작 라이브러리를 이용하여 AppConfig를 상속받은 임의의 다른 클래스를 Spring Bean으로 등록한다.
-    &lt;ul&gt;
-      &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;class hello.demo.AppConfig$$SpringCGLIB$$0&lt;/code&gt;: Spring 내에서 클래스로 등록되는 것을 확인할 수 있다. 이는 CGLIB에 의해 AppConfig를 상속받은 임의의 다른 클래스이다.&lt;/li&gt;
-      &lt;li&gt;아마도 위 클래스 내에 이미 해당 클래스가 생성되었다면 추가로 생성하지 않는 방어로직이 있을 것이다 (코드를 더 깊게 보지는 않았다)&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@Configuration&lt;/code&gt;을 사용하지 않으면, Bean 객체가 순수한 java 클래스이다
-    &lt;ul&gt;
-      &lt;li&gt;객체 생성 시마다 Bean을 생성한다 ⇒ 동일한 객체가 N번 생성되므로 싱글톤 패턴이 깨진다&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@Bean&lt;/code&gt; 대신에 클래스 작성 시에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@Autowired&lt;/code&gt;를 이용할 수도 있다
-    &lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;MemberServiceImpl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;memberRepository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;    &lt;/div&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h2 id=&quot;정리&quot;&gt;정리&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;Spring은 기본적으로 싱글톤 패턴 디자인을 지원한다.&lt;/li&gt;
-  &lt;li&gt;싱글톤 패턴 디자인에서는 객체가 stateless하도록 설계해야한다.&lt;/li&gt;
-  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@Configuration&lt;/code&gt; 어노테이션을 사용하면, 의존성에 따라 생성이 필요한 객체(Bean)을 1회만 생성한다.&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;[참고]&lt;br /&gt;
-&lt;a href=&quot;https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81-%ED%95%B5%EC%8B%AC-%EC%9B%90%EB%A6%AC-%EA%B8%B0%EB%B3%B8%ED%8E%B8/dashboard&quot;&gt;[inflearn]스프링 핵심 원리 - 기본편&lt;/a&gt;&lt;br /&gt;
-&lt;a href=&quot;https://docs.spring.io/spring-framework/reference/core/beans/definition.html&quot;&gt;[Spring]Bean Overview
-&lt;/a&gt;&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="spring" />
-      
-
-      
-        <summary type="html">Spring Container에서 지원하는 싱글톤 컨테이너에 대해서 알아봅니다.</summary>
       
 
       

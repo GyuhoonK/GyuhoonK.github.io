@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="https://gyuhoonk.github.io/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2026-03-05T22:50:39+09:00</updated>
-  <id>https://gyuhoonk.github.io/tag/hadoop/feed.xml</id>
+  <link href="http://localhost:4000/tag/hadoop/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2026-03-16T22:02:42+09:00</updated>
+  <id>http://localhost:4000/tag/hadoop/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">HDFS와 S3 비교하기</title>
-      <link href="https://gyuhoonk.github.io/hdfs-s3" rel="alternate" type="text/html" title="HDFS와 S3 비교하기" />
+      <link href="http://localhost:4000/hdfs-s3" rel="alternate" type="text/html" title="HDFS와 S3 비교하기" />
       <published>2026-02-21T22:30:00+09:00</published>
       <updated>2026-02-21T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/hdfs-s3</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/hdfs-s3">&lt;p&gt;스토리지의 양대 산맥: HDFS와 S3를 비교해봅니다.&lt;/p&gt;
+      <id>http://localhost:4000/hdfs-s3</id>
+      <content type="html" xml:base="http://localhost:4000/hdfs-s3">&lt;p&gt;스토리지의 양대 산맥: HDFS와 S3를 비교해봅니다.&lt;/p&gt;
 
 &lt;p&gt;과거 On-premise 환경에서는 Hadoop 생태계의 &lt;strong&gt;HDFS(Hadoop Distributed File System)&lt;/strong&gt;가 절대적인 표준이었습니다. 하지만 Cloud Native 환경과 Modern Data Stack이 발전하면서 현재는 Amazon S3와 같은 Object Storage가 대세로 자리 잡았습니다.&lt;/p&gt;
 
@@ -197,11 +197,11 @@
   
     <entry>
       <title type="html">Salting in Spark</title>
-      <link href="https://gyuhoonk.github.io/spark-salting" rel="alternate" type="text/html" title="Salting in Spark" />
+      <link href="http://localhost:4000/spark-salting" rel="alternate" type="text/html" title="Salting in Spark" />
       <published>2023-12-30T22:30:00+09:00</published>
       <updated>2023-12-30T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/spark-salting</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/spark-salting">&lt;p&gt;Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
+      <id>http://localhost:4000/spark-salting</id>
+      <content type="html" xml:base="http://localhost:4000/spark-salting">&lt;p&gt;Data Skewness를 해결하는 Spark Salting Key 기법에 대해서 알아봅니다.&lt;/p&gt;
 
 &lt;h3 id=&quot;what-is-salting-in-spark&quot;&gt;What is Salting in Spark?&lt;/h3&gt;
 
@@ -406,11 +406,11 @@ skewness는 spark job의 실패를 초래할 수도 있습니다. 특정 task가
   
     <entry>
       <title type="html">non-deterministic UDF</title>
-      <link href="https://gyuhoonk.github.io/non-deterministic-udf" rel="alternate" type="text/html" title="non-deterministic UDF" />
+      <link href="http://localhost:4000/non-deterministic-udf" rel="alternate" type="text/html" title="non-deterministic UDF" />
       <published>2023-05-16T22:30:00+09:00</published>
       <updated>2023-05-16T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/non-deterministic-udf</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/non-deterministic-udf">&lt;p&gt;non-determinitic UDF 구현하기&lt;/p&gt;
+      <id>http://localhost:4000/non-deterministic-udf</id>
+      <content type="html" xml:base="http://localhost:4000/non-deterministic-udf">&lt;p&gt;non-determinitic UDF 구현하기&lt;/p&gt;
 
 &lt;h3 id=&quot;non-deterministic-function이란&quot;&gt;non-deterministic function이란?&lt;/h3&gt;
 
@@ -586,11 +586,11 @@ An Impala UDF must not spawn other threads or processes.&lt;/p&gt;
   
     <entry>
       <title type="html">WITH절/VIEW 사용 시 쿼리 플랜에 대해서</title>
-      <link href="https://gyuhoonk.github.io/impala-with-clause" rel="alternate" type="text/html" title="WITH절/VIEW 사용 시 쿼리 플랜에 대해서" />
+      <link href="http://localhost:4000/impala-with-clause" rel="alternate" type="text/html" title="WITH절/VIEW 사용 시 쿼리 플랜에 대해서" />
       <published>2023-02-16T22:30:00+09:00</published>
       <updated>2023-02-16T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/impala-with-clause</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/impala-with-clause">&lt;p&gt;WITH절/VIEW 사용은 효율적인 쿼리플랜과 관련이 없다&lt;/p&gt;
+      <id>http://localhost:4000/impala-with-clause</id>
+      <content type="html" xml:base="http://localhost:4000/impala-with-clause">&lt;p&gt;WITH절/VIEW 사용은 효율적인 쿼리플랜과 관련이 없다&lt;/p&gt;
 
 &lt;h3 id=&quot;with절cte&quot;&gt;WITH절(CTE)&lt;/h3&gt;
 &lt;p&gt;WITH절은 SELECT문을 전에 작성하여 복잡한 쿼리를 alias로 처리할 수 있도록 도와줍니다. SELECT문 내에서 여러번 반복해서 사용해야하는 구문을 미리 WITH절로 정의해놓음으로써 작성되는 쿼리의 복잡성을 낮출 수 있습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CREATE VIEW&lt;/code&gt;와 비슷하지만, WITH절 내에서 정의된 컬럼명과 테이블은 쿼리 세션이 종료되면 유지되지 않는다는 차이점이 있습니다. 또한, WITH절은 존재하는 테이블/뷰의 이름과 중복되더라도 충돌이 발생하지 않습니다.&lt;/p&gt;
@@ -765,11 +765,11 @@ An Impala UDF must not spawn other threads or processes.&lt;/p&gt;
   
     <entry>
       <title type="html">enableHiveSupport</title>
-      <link href="https://gyuhoonk.github.io/enableHiveSupport" rel="alternate" type="text/html" title="enableHiveSupport" />
+      <link href="http://localhost:4000/enableHiveSupport" rel="alternate" type="text/html" title="enableHiveSupport" />
       <published>2022-06-16T22:30:00+09:00</published>
       <updated>2022-06-16T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/enableHiveSupport</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/enableHiveSupport">&lt;p&gt;Spark enableHiveSupport(Hive metaStore)&lt;/p&gt;
+      <id>http://localhost:4000/enableHiveSupport</id>
+      <content type="html" xml:base="http://localhost:4000/enableHiveSupport">&lt;p&gt;Spark enableHiveSupport(Hive metaStore)&lt;/p&gt;
 
 &lt;h1 id=&quot;hive-table-in-spark&quot;&gt;Hive Table in Spark&lt;/h1&gt;
 
@@ -927,11 +927,11 @@ WHERE col1 = 'a'
   
     <entry>
       <title type="html">Parquet and Predicate PushDown</title>
-      <link href="https://gyuhoonk.github.io/parquet-ppd" rel="alternate" type="text/html" title="Parquet and Predicate PushDown" />
+      <link href="http://localhost:4000/parquet-ppd" rel="alternate" type="text/html" title="Parquet and Predicate PushDown" />
       <published>2022-04-21T22:30:00+09:00</published>
       <updated>2022-04-21T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/parquet-ppd</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/parquet-ppd">&lt;p&gt;parquet 포맷과 predicate pushdown에 대해서&lt;/p&gt;
+      <id>http://localhost:4000/parquet-ppd</id>
+      <content type="html" xml:base="http://localhost:4000/parquet-ppd">&lt;p&gt;parquet 포맷과 predicate pushdown에 대해서&lt;/p&gt;
 
 &lt;h1 id=&quot;apache-parquet&quot;&gt;Apache Parquet&lt;/h1&gt;
 
@@ -1226,11 +1226,11 @@ B: ...
   
     <entry>
       <title type="html">repartition in Spark</title>
-      <link href="https://gyuhoonk.github.io/spark-repartition" rel="alternate" type="text/html" title="repartition in Spark" />
+      <link href="http://localhost:4000/spark-repartition" rel="alternate" type="text/html" title="repartition in Spark" />
       <published>2022-03-12T22:30:00+09:00</published>
       <updated>2022-03-12T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/spark-repartition</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/spark-repartition">&lt;p&gt;repartition 파헤치기&lt;/p&gt;
+      <id>http://localhost:4000/spark-repartition</id>
+      <content type="html" xml:base="http://localhost:4000/spark-repartition">&lt;p&gt;repartition 파헤치기&lt;/p&gt;
 
 &lt;h1 id=&quot;repartition-&quot;&gt;Repartition ?&lt;/h1&gt;
 
@@ -1522,11 +1522,11 @@ partition key is TreeSet(9, 19, 29)
   
     <entry>
       <title type="html">Partition, Spill in Spark</title>
-      <link href="https://gyuhoonk.github.io/spark-shuffle-partition" rel="alternate" type="text/html" title="Partition, Spill in Spark" />
+      <link href="http://localhost:4000/spark-shuffle-partition" rel="alternate" type="text/html" title="Partition, Spill in Spark" />
       <published>2022-02-09T22:30:00+09:00</published>
       <updated>2022-02-09T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/spark-shuffle-partition</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/spark-shuffle-partition">&lt;p&gt;Partition, Spill in Spark&lt;/p&gt;
+      <id>http://localhost:4000/spark-shuffle-partition</id>
+      <content type="html" xml:base="http://localhost:4000/spark-shuffle-partition">&lt;p&gt;Partition, Spill in Spark&lt;/p&gt;
 
 &lt;h2 id=&quot;spark-needs-performance-tuning&quot;&gt;Spark Needs Performance Tuning&lt;/h2&gt;
 
@@ -1773,11 +1773,11 @@ partition key is TreeSet(9, 19, 29)
   
     <entry>
       <title type="html">hadoop distcp</title>
-      <link href="https://gyuhoonk.github.io/hadoop-distcp" rel="alternate" type="text/html" title="hadoop distcp" />
+      <link href="http://localhost:4000/hadoop-distcp" rel="alternate" type="text/html" title="hadoop distcp" />
       <published>2022-01-20T22:30:00+09:00</published>
       <updated>2022-01-20T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/hadoop-distcp</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/hadoop-distcp">&lt;p&gt;hadoop distcp 명령어&lt;/p&gt;
+      <id>http://localhost:4000/hadoop-distcp</id>
+      <content type="html" xml:base="http://localhost:4000/hadoop-distcp">&lt;p&gt;hadoop distcp 명령어&lt;/p&gt;
 
 &lt;h1 id=&quot;distcp&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;distcp&lt;/code&gt;&lt;/h1&gt;
 
@@ -2000,11 +2000,11 @@ partition key is TreeSet(9, 19, 29)
   
     <entry>
       <title type="html">Overwrite Partition in Spark</title>
-      <link href="https://gyuhoonk.github.io/spark-overwrite-partition" rel="alternate" type="text/html" title="Overwrite Partition in Spark" />
+      <link href="http://localhost:4000/spark-overwrite-partition" rel="alternate" type="text/html" title="Overwrite Partition in Spark" />
       <published>2021-12-21T22:30:00+09:00</published>
       <updated>2021-12-21T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/spark-overwrite-partition</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/spark-overwrite-partition">&lt;p&gt;Spark를 이용하여 특정 파티션만 overwrite하기&lt;/p&gt;
+      <id>http://localhost:4000/spark-overwrite-partition</id>
+      <content type="html" xml:base="http://localhost:4000/spark-overwrite-partition">&lt;p&gt;Spark를 이용하여 특정 파티션만 overwrite하기&lt;/p&gt;
 
 &lt;h1 id=&quot;partitioned-table-in-hive&quot;&gt;Partitioned Table in Hive&lt;/h1&gt;
 

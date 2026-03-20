@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="https://gyuhoonk.github.io/tag/airflow/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2026-03-05T22:50:39+09:00</updated>
-  <id>https://gyuhoonk.github.io/tag/airflow/feed.xml</id>
+  <link href="http://localhost:4000/tag/airflow/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2026-03-16T22:02:42+09:00</updated>
+  <id>http://localhost:4000/tag/airflow/feed.xml</id>
 
   
   
@@ -32,12 +32,102 @@
 
   
     <entry>
+      <title type="html">airflow triggerer</title>
+      <link href="http://localhost:4000/airflow-triggerer" rel="alternate" type="text/html" title="airflow triggerer" />
+      <published>2026-03-14T22:30:00+09:00</published>
+      <updated>2026-03-14T22:30:00+09:00</updated>
+      <id>http://localhost:4000/airflow-triggerer</id>
+      <content type="html" xml:base="http://localhost:4000/airflow-triggerer">&lt;h1 id=&quot;문제-상황&quot;&gt;문제 상황&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때&lt;/li&gt;
+  &lt;li&gt;worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임
+    &lt;ul&gt;
+      &lt;li&gt;이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨
+    &lt;ul&gt;
+      &lt;li&gt;Pod Adoptation이 불가능함&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;worker 재배포, 재시작을 포함하여 모든 상황에서 KPO가 연속성을 유지할 순 없을까?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;대응---deferrable&quot;&gt;대응 - deferrable&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;KPO에는 deferrable 옵션이 있음&lt;/li&gt;
+  &lt;li&gt;KPO는 defer모드에서 Pod를 생성한 뒤 Pod 감시 역할을 triggerer에 이관함&lt;/li&gt;
+  &lt;li&gt;triggerer는 Pod를 감시하다가 Pod가 완료되면(실패/성공) 다시 worker를 trigger함 (TriggerEvent -&amp;gt; Worker)&lt;/li&gt;
+  &lt;li&gt;&amp;lt;worker(KPO) - triggerer - Pod &amp;gt; Lifecyle 에 대한 이미지 추가&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;triggerdagrunoperator에도-적용-가능&quot;&gt;TriggerDagRunOperator에도 적용 가능&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;마찬가지 로직에 대한 설명&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;triggerer-race-condition&quot;&gt;triggerer race condition&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;보통 triggerer는 HA을 위해 2개 이상 배포함. 하나의 triggerer가 down되면 나머지 triggerer가 상태 체크를 할 수 있도록&lt;/li&gt;
+  &lt;li&gt;그런데 triggerer가 2개 이상일 때, deferred 상태를 바로 탈출해버리는 경우가 있음&lt;/li&gt;
+  &lt;li&gt;이는 2개 triggerer가 동시에 trigger job을 할당 받으면서, 서로 이미 할당 받은 trigger는 완료시켜버리는 로직이 있기 때문(CancelledError)&lt;/li&gt;
+  &lt;li&gt;
+    &lt;구체적인 설명=&quot;&quot; 이미지=&quot;&quot;&gt;
+&lt;/구체적인&gt;
+  &lt;/li&gt;
+  &lt;li&gt;위 상황이 발생하는 원인은? 아직 조사 중&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;sequenceDiagram
+    participant w as Worker
+    participant p as Pod
+    participant t as Triggerer
+    participant table as MySQL(trigger테이블)
+    rect rgb(255, 255, 200)
+    w-&amp;gt;&amp;gt;p: Pod 생성
+    w-&amp;gt;&amp;gt;t: 
+    end
+    
+    
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="airflow" />
+      
+        <category term="kubernetes" />
+      
+
+      
+        <summary type="html">문제 상황 Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때 worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임 이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음 worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨 Pod Adoptation이 불가능함</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
       <title type="html">KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</title>
-      <link href="https://gyuhoonk.github.io/pod-operator-400" rel="alternate" type="text/html" title="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" />
+      <link href="http://localhost:4000/pod-operator-400" rel="alternate" type="text/html" title="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" />
       <published>2025-10-01T22:30:00+09:00</published>
       <updated>2025-10-01T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/pod-operator-400</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/pod-operator-400">&lt;ul&gt;
+      <id>http://localhost:4000/pod-operator-400</id>
+      <content type="html" xml:base="http://localhost:4000/pod-operator-400">&lt;ul&gt;
   &lt;li&gt;KubernetesPodOperator 사용 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubernetes.client.exceptions.ApiException: (400)&lt;/code&gt;이 발생하는 원인에 대해서 분석합니다.&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -222,11 +312,11 @@ Reason: Bad Request
   
     <entry>
       <title type="html">Variables &amp;amp; Dag Parsing</title>
-      <link href="https://gyuhoonk.github.io/variables" rel="alternate" type="text/html" title="Variables &amp; Dag Parsing" />
+      <link href="http://localhost:4000/variables" rel="alternate" type="text/html" title="Variables &amp; Dag Parsing" />
       <published>2024-11-08T22:30:00+09:00</published>
       <updated>2024-11-08T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/variables</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/variables">&lt;p&gt;Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다.&lt;/p&gt;
+      <id>http://localhost:4000/variables</id>
+      <content type="html" xml:base="http://localhost:4000/variables">&lt;p&gt;Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;variables&quot;&gt;Variables&lt;/h2&gt;
 
@@ -438,11 +528,11 @@ foo_var
   
     <entry>
       <title type="html">What is Airflow?</title>
-      <link href="https://gyuhoonk.github.io/airflow1" rel="alternate" type="text/html" title="What is Airflow?" />
+      <link href="http://localhost:4000/airflow1" rel="alternate" type="text/html" title="What is Airflow?" />
       <published>2022-02-28T22:30:00+09:00</published>
       <updated>2022-02-28T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/airflow1</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/airflow1">&lt;p&gt;Basic Concepts of Airflow&lt;/p&gt;
+      <id>http://localhost:4000/airflow1</id>
+      <content type="html" xml:base="http://localhost:4000/airflow1">&lt;p&gt;Basic Concepts of Airflow&lt;/p&gt;
 
 &lt;h2 id=&quot;orchestrator&quot;&gt;Orchestrator&lt;/h2&gt;
 

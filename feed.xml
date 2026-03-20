@@ -3,10 +3,36 @@
   <channel>
     <title></title>
     <description>Data Engineering</description>
-    <link>https://gyuhoonk.github.io</link>
-    <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Wed, 04 Mar 2026 22:30:00 +0900</lastBuildDate>
+    <link>http://localhost:4000</link>
+    <atom:link href="http://localhost:4000/feed.xml" rel="self" type="application/rss+xml" />
+	<lastBuildDate>Sat, 14 Mar 2026 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>airflow triggerer</title>
+        
+        
+            <description>&lt;h1 id=&quot;문제-상황&quot;&gt;문제 상황&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때&lt;/li&gt;
+  &lt;li&gt;worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임
+    &lt;ul&gt;
+      &lt;li&gt;이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨
+    &lt;ul&gt;
+      &lt;li&gt;Pod Adoptation이 불가능함&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+</description>
+        
+        <pubDate>Sat, 14 Mar 2026 22:30:00 +0900</pubDate>
+        <link>http://localhost:4000/airflow-triggerer</link>
+        <guid isPermaLink="true">http://localhost:4000/airflow-triggerer</guid>
+      </item>
+    
 	<item>
 		<title>Kubernetes Service Type</title>
         
@@ -16,8 +42,8 @@
 </description>
         
         <pubDate>Wed, 04 Mar 2026 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/kube-service-type</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/kube-service-type</guid>
+        <link>http://localhost:4000/kube-service-type</link>
+        <guid isPermaLink="true">http://localhost:4000/kube-service-type</guid>
       </item>
     
 	<item>
@@ -29,8 +55,8 @@
 </description>
         
         <pubDate>Sun, 01 Mar 2026 09:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/fastapi-1</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/fastapi-1</guid>
+        <link>http://localhost:4000/fastapi-1</link>
+        <guid isPermaLink="true">http://localhost:4000/fastapi-1</guid>
       </item>
     
 	<item>
@@ -42,8 +68,8 @@
 </description>
         
         <pubDate>Sat, 21 Feb 2026 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/hdfs-s3</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/hdfs-s3</guid>
+        <link>http://localhost:4000/hdfs-s3</link>
+        <guid isPermaLink="true">http://localhost:4000/hdfs-s3</guid>
       </item>
     
 	<item>
@@ -55,8 +81,8 @@
 </description>
         
         <pubDate>Fri, 20 Feb 2026 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/mysql-index</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/mysql-index</guid>
+        <link>http://localhost:4000/mysql-index</link>
+        <guid isPermaLink="true">http://localhost:4000/mysql-index</guid>
       </item>
     
 	<item>
@@ -70,8 +96,8 @@
 </description>
         
         <pubDate>Wed, 01 Oct 2025 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/pod-operator-400</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/pod-operator-400</guid>
+        <link>http://localhost:4000/pod-operator-400</link>
+        <guid isPermaLink="true">http://localhost:4000/pod-operator-400</guid>
       </item>
     
 	<item>
@@ -83,8 +109,8 @@
 </description>
         
         <pubDate>Sat, 15 Mar 2025 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/configmap-secret</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/configmap-secret</guid>
+        <link>http://localhost:4000/configmap-secret</link>
+        <guid isPermaLink="true">http://localhost:4000/configmap-secret</guid>
       </item>
     
 	<item>
@@ -96,8 +122,8 @@
 </description>
         
         <pubDate>Fri, 08 Nov 2024 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/variables</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/variables</guid>
+        <link>http://localhost:4000/variables</link>
+        <guid isPermaLink="true">http://localhost:4000/variables</guid>
       </item>
     
 	<item>
@@ -109,8 +135,8 @@
 </description>
         
         <pubDate>Sun, 09 Jun 2024 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/dbt-trino-temp-view</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/dbt-trino-temp-view</guid>
+        <link>http://localhost:4000/dbt-trino-temp-view</link>
+        <guid isPermaLink="true">http://localhost:4000/dbt-trino-temp-view</guid>
       </item>
     
 	<item>
@@ -122,21 +148,8 @@
 </description>
         
         <pubDate>Sat, 01 Jun 2024 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/depdendency-injection</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/depdendency-injection</guid>
-      </item>
-    
-	<item>
-		<title>Spring Singleton Container</title>
-        
-        
-            <description>&lt;p&gt;Spring Container에서 지원하는 싱글톤 컨테이너에 대해서 알아봅니다.&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Sat, 09 Mar 2024 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/singleton</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/singleton</guid>
+        <link>http://localhost:4000/depdendency-injection</link>
+        <guid isPermaLink="true">http://localhost:4000/depdendency-injection</guid>
       </item>
     
   </channel>

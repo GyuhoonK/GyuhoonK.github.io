@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="https://gyuhoonk.github.io/tag/kubernetes/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2026-03-05T22:50:39+09:00</updated>
-  <id>https://gyuhoonk.github.io/tag/kubernetes/feed.xml</id>
+  <link href="http://localhost:4000/tag/kubernetes/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2026-03-16T22:02:42+09:00</updated>
+  <id>http://localhost:4000/tag/kubernetes/feed.xml</id>
 
   
   
@@ -32,14 +32,104 @@
 
   
     <entry>
+      <title type="html">airflow triggerer</title>
+      <link href="http://localhost:4000/airflow-triggerer" rel="alternate" type="text/html" title="airflow triggerer" />
+      <published>2026-03-14T22:30:00+09:00</published>
+      <updated>2026-03-14T22:30:00+09:00</updated>
+      <id>http://localhost:4000/airflow-triggerer</id>
+      <content type="html" xml:base="http://localhost:4000/airflow-triggerer">&lt;h1 id=&quot;문제-상황&quot;&gt;문제 상황&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때&lt;/li&gt;
+  &lt;li&gt;worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임
+    &lt;ul&gt;
+      &lt;li&gt;이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨
+    &lt;ul&gt;
+      &lt;li&gt;Pod Adoptation이 불가능함&lt;/li&gt;
+    &lt;/ul&gt;
+  &lt;/li&gt;
+  &lt;li&gt;worker 재배포, 재시작을 포함하여 모든 상황에서 KPO가 연속성을 유지할 순 없을까?&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;대응---deferrable&quot;&gt;대응 - deferrable&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;KPO에는 deferrable 옵션이 있음&lt;/li&gt;
+  &lt;li&gt;KPO는 defer모드에서 Pod를 생성한 뒤 Pod 감시 역할을 triggerer에 이관함&lt;/li&gt;
+  &lt;li&gt;triggerer는 Pod를 감시하다가 Pod가 완료되면(실패/성공) 다시 worker를 trigger함 (TriggerEvent -&amp;gt; Worker)&lt;/li&gt;
+  &lt;li&gt;&amp;lt;worker(KPO) - triggerer - Pod &amp;gt; Lifecyle 에 대한 이미지 추가&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;triggerdagrunoperator에도-적용-가능&quot;&gt;TriggerDagRunOperator에도 적용 가능&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;마찬가지 로직에 대한 설명&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;triggerer-race-condition&quot;&gt;triggerer race condition&lt;/h1&gt;
+&lt;ul&gt;
+  &lt;li&gt;보통 triggerer는 HA을 위해 2개 이상 배포함. 하나의 triggerer가 down되면 나머지 triggerer가 상태 체크를 할 수 있도록&lt;/li&gt;
+  &lt;li&gt;그런데 triggerer가 2개 이상일 때, deferred 상태를 바로 탈출해버리는 경우가 있음&lt;/li&gt;
+  &lt;li&gt;이는 2개 triggerer가 동시에 trigger job을 할당 받으면서, 서로 이미 할당 받은 trigger는 완료시켜버리는 로직이 있기 때문(CancelledError)&lt;/li&gt;
+  &lt;li&gt;
+    &lt;구체적인 설명=&quot;&quot; 이미지=&quot;&quot;&gt;
+&lt;/구체적인&gt;
+  &lt;/li&gt;
+  &lt;li&gt;위 상황이 발생하는 원인은? 아직 조사 중&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;sequenceDiagram
+    participant w as Worker
+    participant p as Pod
+    participant t as Triggerer
+    participant table as MySQL(trigger테이블)
+    rect rgb(255, 255, 200)
+    w-&amp;gt;&amp;gt;p: Pod 생성
+    w-&amp;gt;&amp;gt;t: 
+    end
+    
+    
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;[참고]&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="airflow" />
+      
+        <category term="kubernetes" />
+      
+
+      
+        <summary type="html">문제 상황 Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때 worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임 이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음 worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨 Pod Adoptation이 불가능함</summary>
+      
+
+      
+      
+    </entry>
+  
+    <entry>
       <title type="html">Kubernetes Service Type</title>
-      <link href="https://gyuhoonk.github.io/kube-service-type" rel="alternate" type="text/html" title="Kubernetes Service Type" />
+      <link href="http://localhost:4000/kube-service-type" rel="alternate" type="text/html" title="Kubernetes Service Type" />
       <published>2026-03-04T22:30:00+09:00</published>
       <updated>2026-03-04T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/kube-service-type</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/kube-service-type">&lt;h1 id=&quot;k8s-쿠버네티스-service서비스-완벽-가이드-개념부터-ingress-연동까지&quot;&gt;[K8s] 쿠버네티스 Service(서비스) 완벽 가이드: 개념부터 Ingress 연동까지&lt;/h1&gt;
+      <id>http://localhost:4000/kube-service-type</id>
+      <content type="html" xml:base="http://localhost:4000/kube-service-type">&lt;h1 id=&quot;k8s-쿠버네티스-service서비스-완벽-가이드-개념부터-ingress-연동까지&quot;&gt;[K8s] 쿠버네티스 Service(서비스) 완벽 가이드: 개념부터 Ingress 연동까지&lt;/h1&gt;
 
-&lt;p&gt;쿠버네티스(Kubernetes) 환경에서 애플리케이션을 배포하다 보면 반드시 마주치는 개념이 있습니다. 바로 &lt;strong&gt;Service(서비스)&lt;/strong&gt;입니다. 파드(Pod)를 띄우는 것만으로는 외부와 통신할 수 없으며, 내부 컴포넌트 간의 안정적인 연결도 보장할 수 없습니다.&lt;/p&gt;
+&lt;p&gt;파드(Pod)를 띄우는 것만으로는 외부와 통신할 수 없으며, 내부 컴포넌트 간의 안정적인 연결도 보장할 수 없습니다. 외부와 통신을 위해서는 반드시 Serivce가 필요합니다.&lt;/p&gt;
 
 &lt;p&gt;이번 포스트에서는 쿠버네티스 Service가 왜 필요한지(배경지식)부터, 각 타입별 특징과 실제 사용 예시, 그리고 L7 라우팅을 위한 Ingress와 수동 Endpoints 연결 같은 응용 방법까지 한 번에 정리해 보겠습니다.&lt;/p&gt;
 
@@ -249,11 +339,11 @@
   
     <entry>
       <title type="html">KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</title>
-      <link href="https://gyuhoonk.github.io/pod-operator-400" rel="alternate" type="text/html" title="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" />
+      <link href="http://localhost:4000/pod-operator-400" rel="alternate" type="text/html" title="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" />
       <published>2025-10-01T22:30:00+09:00</published>
       <updated>2025-10-01T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/pod-operator-400</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/pod-operator-400">&lt;ul&gt;
+      <id>http://localhost:4000/pod-operator-400</id>
+      <content type="html" xml:base="http://localhost:4000/pod-operator-400">&lt;ul&gt;
   &lt;li&gt;KubernetesPodOperator 사용 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;kubernetes.client.exceptions.ApiException: (400)&lt;/code&gt;이 발생하는 원인에 대해서 분석합니다.&lt;/li&gt;
 &lt;/ul&gt;
 
@@ -438,11 +528,11 @@ Reason: Bad Request
   
     <entry>
       <title type="html">ConfigMap과 Secret의 차이점</title>
-      <link href="https://gyuhoonk.github.io/configmap-secret" rel="alternate" type="text/html" title="ConfigMap과 Secret의 차이점" />
+      <link href="http://localhost:4000/configmap-secret" rel="alternate" type="text/html" title="ConfigMap과 Secret의 차이점" />
       <published>2025-03-15T22:30:00+09:00</published>
       <updated>2025-03-15T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/configmap-secret</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/configmap-secret">&lt;h1 id=&quot;kubernetes-configmap과-secret의-차이점&quot;&gt;Kubernetes: ConfigMap과 Secret의 차이점&lt;/h1&gt;
+      <id>http://localhost:4000/configmap-secret</id>
+      <content type="html" xml:base="http://localhost:4000/configmap-secret">&lt;h1 id=&quot;kubernetes-configmap과-secret의-차이점&quot;&gt;Kubernetes: ConfigMap과 Secret의 차이점&lt;/h1&gt;
 
 &lt;p&gt;Kubernetes에서 애플리케이션을 배포할 때, 환경 설정을 컨테이너 이미지와 분리하기 위해 사용하는 두 가지 주요 리소스가 바로 &lt;strong&gt;ConfigMap&lt;/strong&gt;과 &lt;strong&gt;Secret&lt;/strong&gt;입니다. 이 글에서는 두 리소스의 목적과 기술적 차이점을 명확히 비교해 봅니다.&lt;/p&gt;
 
@@ -606,11 +696,11 @@ Reason: Bad Request
   
     <entry>
       <title type="html">multi-stage와 Builder Pattern</title>
-      <link href="https://gyuhoonk.github.io/multi-stage-and-builder-pattern" rel="alternate" type="text/html" title="multi-stage와 Builder Pattern" />
+      <link href="http://localhost:4000/multi-stage-and-builder-pattern" rel="alternate" type="text/html" title="multi-stage와 Builder Pattern" />
       <published>2023-06-10T22:30:00+09:00</published>
       <updated>2023-06-10T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/multi-stage-and-builder-pattern</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/multi-stage-and-builder-pattern">&lt;p&gt;DataHub로 알아본 Docker build 전략 (multi-stage, Builder pattern)&lt;/p&gt;
+      <id>http://localhost:4000/multi-stage-and-builder-pattern</id>
+      <content type="html" xml:base="http://localhost:4000/multi-stage-and-builder-pattern">&lt;p&gt;DataHub로 알아본 Docker build 전략 (multi-stage, Builder pattern)&lt;/p&gt;
 
 &lt;h3 id=&quot;multi-stage-build&quot;&gt;multi-stage build&lt;/h3&gt;
 
@@ -786,11 +876,11 @@ docker build &lt;span class=&quot;nt&quot;&gt;-t&lt;/span&gt; datahub-gms:v0.10.
   
     <entry>
       <title type="html">Pod와 Container</title>
-      <link href="https://gyuhoonk.github.io/pod-container" rel="alternate" type="text/html" title="Pod와 Container" />
+      <link href="http://localhost:4000/pod-container" rel="alternate" type="text/html" title="Pod와 Container" />
       <published>2023-02-12T22:30:00+09:00</published>
       <updated>2023-02-12T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/pod-container</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/pod-container">&lt;p&gt;Container와 Pod의 기본개념을 확인해봅니다.&lt;/p&gt;
+      <id>http://localhost:4000/pod-container</id>
+      <content type="html" xml:base="http://localhost:4000/pod-container">&lt;p&gt;Container와 Pod의 기본개념을 확인해봅니다.&lt;/p&gt;
 
 &lt;h2 id=&quot;container란-무엇인가&quot;&gt;Container란 무엇인가?&lt;/h2&gt;
 &lt;blockquote&gt;

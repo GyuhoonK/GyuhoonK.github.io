@@ -36,8 +36,8 @@
     <!-- This tag outputs SEO meta+structured data and other important settings -->
     </script>
 <meta name="description" content="Data Engineering" />
-    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.png" type="image/png" />
-    <link rel="canonical" href="https://gyuhoonk.github.io/pod-operator-400" />
+    <link rel="shortcut icon" href="http://localhost:4000/assets/built/images/favicon.png" type="image/png" />
+    <link rel="canonical" href="http://localhost:4000/pod-operator-400" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
@@ -45,8 +45,8 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" />
     <meta property="og:description" content="KubernetesPodOperator 사용 시 kubernetes.client.exceptions.ApiException: (400)이 발생하는 원인에 대해서 분석합니다. 문제 상황: kubernetes.client.exceptions.ApiException: (400) 발생 File "/usr/local/lib/python3.12/site-packages/kubernetes/client/rest.py", line 234, in request raise ApiException(http_resp=r) kubernetes.client.exceptions.ApiException: (400) Reason: Bad Request ... [2025-10-01, 07:21:10 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name } [2025-10-01, 07:21:11 KST] {pod_manager.py:365} WARNING - Pod not yet" />
-    <meta property="og:url" content="https://gyuhoonk.github.io/pod-operator-400" />
-    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/kubernetes/k8s-container.png" />
+    <meta property="og:url" content="http://localhost:4000/pod-operator-400" />
+    <meta property="og:image" content="http://localhost:4000/assets/built/images/kubernetes/k8s-container.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
     <meta property="article:published_time" content="2025-10-01T22:30:00+09:00" />
@@ -55,8 +55,8 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" />
     <meta name="twitter:description" content="KubernetesPodOperator 사용 시 kubernetes.client.exceptions.ApiException: (400)이 발생하는 원인에 대해서 분석합니다. 문제 상황: kubernetes.client.exceptions.ApiException: (400) 발생 File "/usr/local/lib/python3.12/site-packages/kubernetes/client/rest.py", line 234, in request raise ApiException(http_resp=r) kubernetes.client.exceptions.ApiException: (400) Reason: Bad Request ... [2025-10-01, 07:21:10 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name } [2025-10-01, 07:21:11 KST] {pod_manager.py:365} WARNING - Pod not yet" />
-    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
-    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/kubernetes/k8s-container.png" />
+    <meta name="twitter:url" content="http://localhost:4000/" />
+    <meta name="twitter:image" content="http://localhost:4000/assets/built/images/kubernetes/k8s-container.png" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
@@ -73,18 +73,18 @@
     "publisher": {
         "@type": "Organization",
         "name": "Gyuhoon Kim",
-        "logo": "https://gyuhoonk.github.io/"
+        "logo": "http://localhost:4000/"
     },
-    "url": "https://gyuhoonk.github.io/pod-operator-400",
+    "url": "http://localhost:4000/pod-operator-400",
     "image": {
         "@type": "ImageObject",
-        "url": "https://gyuhoonk.github.io/assets/built/images/kubernetes/k8s-container.png",
+        "url": "http://localhost:4000/assets/built/images/kubernetes/k8s-container.png",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://gyuhoonk.github.io/pod-operator-400"
+        "@id": "http://localhost:4000/pod-operator-400"
     },
     "description": "KubernetesPodOperator 사용 시 kubernetes.client.exceptions.ApiException: (400)이 발생하는 원인에 대해서 분석합니다. 문제 상황: kubernetes.client.exceptions.ApiException: (400) 발생 File "/usr/local/lib/python3.12/site-packages/kubernetes/client/rest.py", line 234, in request raise ApiException(http_resp=r) kubernetes.client.exceptions.ApiException: (400) Reason: Bad Request ... [2025-10-01, 07:21:10 KST] {pod_manager.py:365} WARNING - Pod not yet started: { pod_name } [2025-10-01, 07:21:11 KST] {pod_manager.py:365} WARNING - Pod not yet"
 }
@@ -100,7 +100,13 @@
 
     <meta name="generator" content="Jekyll 3.6.2" />
     <link rel="alternate" type="application/rss+xml" title="KubernetesPodOperator에서 ApiException(400)가 발생하는 원인" href="/feed.xml" />
-
+ <script type="module">
+ import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+ mermaid.initialize({ startOnLoad: true });
+ await mermaid.run({
+     querySelector: '.language-mermaid',
+ });
+</script>
     
 </head>
 <body class="post-template">
@@ -118,7 +124,7 @@ into the {body} of the default.hbs template -->
     <div class="site-nav-left">
         
             
-                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+                <a class="site-nav-logo" href="http://localhost:4000/">Gyuhoon Kim</a>
             
         
         
@@ -444,6 +450,15 @@ Reason: Bad Request
                                 
                                 
                                   
+                                    
+                                        
+                                        
+                                            <li><a href="/airflow-triggerer">airflow triggerer</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
                                 
                                   
                                 
@@ -574,7 +589,7 @@ Reason: Bad Request
                         <footer class="read-next-card-footer">
                             <a href="/tag/airflow/">
                                 
-                                    See all 2 posts  →
+                                    See all 3 posts  →
                                 
                             </a>
                         </footer>
@@ -700,7 +715,7 @@ Reason: Bad Request
 <!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
 <div class="floating-header">
     <div class="floating-header-logo">
-        <a href="https://gyuhoonk.github.io/">
+        <a href="http://localhost:4000/">
             
             <span>Gyuhoon Kim</span>
         </a>
@@ -742,7 +757,7 @@ Reason: Bad Request
         <!-- The footer at the very bottom of the screen -->
         <footer class="site-footer outer">
             <div class="site-footer-content inner">
-                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2026</section>
+                <section class="copyright"><a href="http://localhost:4000/">Gyuhoon Kim</a> &copy; 2026</section>
                 <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
                     <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
                     <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
