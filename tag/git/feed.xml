@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="http://localhost:4000/tag/git/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2026-03-16T22:02:42+09:00</updated>
-  <id>http://localhost:4000/tag/git/feed.xml</id>
+  <link href="https://gyuhoonk.github.io/tag/git/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2026-03-20T23:51:56+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/git/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">merge vs. rebase</title>
-      <link href="http://localhost:4000/merge-rebase" rel="alternate" type="text/html" title="merge vs. rebase" />
+      <link href="https://gyuhoonk.github.io/merge-rebase" rel="alternate" type="text/html" title="merge vs. rebase" />
       <published>2022-05-14T22:30:00+09:00</published>
       <updated>2022-05-14T22:30:00+09:00</updated>
-      <id>http://localhost:4000/merge-rebase</id>
-      <content type="html" xml:base="http://localhost:4000/merge-rebase">&lt;p&gt;merge와 rebase 비교하기&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/merge-rebase</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/merge-rebase">&lt;p&gt;merge와 rebase 비교하기&lt;/p&gt;
 
 &lt;h1 id=&quot;merge--rebase&quot;&gt;Merge &amp;amp; Rebase&lt;/h1&gt;
 

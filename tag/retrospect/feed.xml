@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="http://localhost:4000/tag/retrospect/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2026-03-16T22:02:42+09:00</updated>
-  <id>http://localhost:4000/tag/retrospect/feed.xml</id>
+  <link href="https://gyuhoonk.github.io/tag/retrospect/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2026-03-20T23:51:56+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/retrospect/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">나의 첫 컨트리뷰션(Retrospect on my first contribution)</title>
-      <link href="http://localhost:4000/first-contributor" rel="alternate" type="text/html" title="나의 첫 컨트리뷰션(Retrospect on my first contribution)" />
+      <link href="https://gyuhoonk.github.io/first-contributor" rel="alternate" type="text/html" title="나의 첫 컨트리뷰션(Retrospect on my first contribution)" />
       <published>2022-11-05T22:30:00+09:00</published>
       <updated>2022-11-05T22:30:00+09:00</updated>
-      <id>http://localhost:4000/first-contributor</id>
-      <content type="html" xml:base="http://localhost:4000/first-contributor">&lt;p&gt;오픈소스 컨트리뷰션 회고&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/first-contributor</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/first-contributor">&lt;p&gt;오픈소스 컨트리뷰션 회고&lt;/p&gt;
 
 &lt;h1 id=&quot;datahub&quot;&gt;DataHub&lt;/h1&gt;
 

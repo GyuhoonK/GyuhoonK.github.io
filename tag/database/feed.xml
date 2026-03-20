@@ -2,10 +2,10 @@
 
 <feed xmlns="http://www.w3.org/2005/Atom" >
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
-  <link href="http://localhost:4000/tag/database/feed.xml" rel="self" type="application/atom+xml" />
-  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
-  <updated>2026-03-16T22:02:42+09:00</updated>
-  <id>http://localhost:4000/tag/database/feed.xml</id>
+  <link href="https://gyuhoonk.github.io/tag/database/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2026-03-20T23:51:56+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/database/feed.xml</id>
 
   
   
@@ -33,11 +33,11 @@
   
     <entry>
       <title type="html">MySQL Index 개념 정리</title>
-      <link href="http://localhost:4000/mysql-index" rel="alternate" type="text/html" title="MySQL Index 개념 정리" />
+      <link href="https://gyuhoonk.github.io/mysql-index" rel="alternate" type="text/html" title="MySQL Index 개념 정리" />
       <published>2026-02-20T22:30:00+09:00</published>
       <updated>2026-02-20T22:30:00+09:00</updated>
-      <id>http://localhost:4000/mysql-index</id>
-      <content type="html" xml:base="http://localhost:4000/mysql-index">&lt;p&gt;면접 준비용 MySQL Index 개념 정리&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/mysql-index</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/mysql-index">&lt;p&gt;면접 준비용 MySQL Index 개념 정리&lt;/p&gt;
 
 &lt;h1 id=&quot;1-index는-왜-사용하는-것인가&quot;&gt;1. Index는 왜 사용하는 것인가?&lt;/h1&gt;
 
@@ -343,11 +343,11 @@
   
     <entry>
       <title type="html">prepared statement</title>
-      <link href="http://localhost:4000/prepared-statement" rel="alternate" type="text/html" title="prepared statement" />
+      <link href="https://gyuhoonk.github.io/prepared-statement" rel="alternate" type="text/html" title="prepared statement" />
       <published>2023-10-29T22:30:00+09:00</published>
       <updated>2023-10-29T22:30:00+09:00</updated>
-      <id>http://localhost:4000/prepared-statement</id>
-      <content type="html" xml:base="http://localhost:4000/prepared-statement">&lt;p&gt;prepared statement&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/prepared-statement</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/prepared-statement">&lt;p&gt;prepared statement&lt;/p&gt;
 
 &lt;h1 id=&quot;prepared-statement란&quot;&gt;prepared statement란?&lt;/h1&gt;
 
@@ -491,11 +491,11 @@ DELETE FROM products WHERE 1=1
   
     <entry>
       <title type="html">Oracle DB Connection String</title>
-      <link href="http://localhost:4000/oracle-connection" rel="alternate" type="text/html" title="Oracle DB Connection String" />
+      <link href="https://gyuhoonk.github.io/oracle-connection" rel="alternate" type="text/html" title="Oracle DB Connection String" />
       <published>2022-12-24T22:30:00+09:00</published>
       <updated>2022-12-24T22:30:00+09:00</updated>
-      <id>http://localhost:4000/oracle-connection</id>
-      <content type="html" xml:base="http://localhost:4000/oracle-connection">&lt;p&gt;oracle database connection String 설정에 대해 알아봅니다.&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/oracle-connection</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/oracle-connection">&lt;p&gt;oracle database connection String 설정에 대해 알아봅니다.&lt;/p&gt;
 
 &lt;h1 id=&quot;jdbc-driver&quot;&gt;JDBC Driver&lt;/h1&gt;
 &lt;p&gt;JDBC 드라이버는 Java App이 데이터베이스와 상호작용(데이터를 가져오거나 저장)하는 것을 가능하게 합니다. JDBC 클래스는  &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;java.sql&lt;/code&gt; 패키지에 포함되어 있습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;javax.sql.JDBC&lt;/code&gt;는 아래와 같은 역할을 합니다.&lt;/p&gt;
@@ -694,11 +694,11 @@ node에 대해 기술하지 않아도, RAC failover가 가능합니다. 기존�
   
     <entry>
       <title type="html">DataBase Connection Pool</title>
-      <link href="http://localhost:4000/DBCP" rel="alternate" type="text/html" title="DataBase Connection Pool" />
+      <link href="https://gyuhoonk.github.io/DBCP" rel="alternate" type="text/html" title="DataBase Connection Pool" />
       <published>2022-01-06T22:30:00+09:00</published>
       <updated>2022-01-06T22:30:00+09:00</updated>
-      <id>http://localhost:4000/DBCP</id>
-      <content type="html" xml:base="http://localhost:4000/DBCP">&lt;p&gt;DBCP(DataBase Connection Pool)에 대해서&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/DBCP</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/DBCP">&lt;p&gt;DBCP(DataBase Connection Pool)에 대해서&lt;/p&gt;
 
 &lt;h1 id=&quot;database-connection&quot;&gt;DataBase Connection&lt;/h1&gt;
 
@@ -863,11 +863,11 @@ node에 대해 기술하지 않아도, RAC failover가 가능합니다. 기존�
   
     <entry>
       <title type="html">EXP-SUM-LOG / LOG-SUM-EXP</title>
-      <link href="http://localhost:4000/EXP-LOG-SUM" rel="alternate" type="text/html" title="EXP-SUM-LOG / LOG-SUM-EXP" />
+      <link href="https://gyuhoonk.github.io/EXP-LOG-SUM" rel="alternate" type="text/html" title="EXP-SUM-LOG / LOG-SUM-EXP" />
       <published>2021-12-29T22:30:00+09:00</published>
       <updated>2021-12-29T22:30:00+09:00</updated>
-      <id>http://localhost:4000/EXP-LOG-SUM</id>
-      <content type="html" xml:base="http://localhost:4000/EXP-LOG-SUM">&lt;p&gt;EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/EXP-LOG-SUM</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/EXP-LOG-SUM">&lt;p&gt;EXP-SUM-LOG / LOG-SUM-EXP trick에 대해서&lt;/p&gt;
 
 &lt;h1 id=&quot;sum-in-sql&quot;&gt;SUM in SQL&lt;/h1&gt;
 
@@ -1015,11 +1015,11 @@ FROM default.t_test;
   
     <entry>
       <title type="html">Connection to DataBase in Python, R</title>
-      <link href="http://localhost:4000/connect-to-database" rel="alternate" type="text/html" title="Connection to DataBase in Python, R" />
+      <link href="https://gyuhoonk.github.io/connect-to-database" rel="alternate" type="text/html" title="Connection to DataBase in Python, R" />
       <published>2021-09-06T22:30:00+09:00</published>
       <updated>2021-09-06T22:30:00+09:00</updated>
-      <id>http://localhost:4000/connect-to-database</id>
-      <content type="html" xml:base="http://localhost:4000/connect-to-database">&lt;p&gt;python, R에서 Database Server와 연결하기&lt;/p&gt;
+      <id>https://gyuhoonk.github.io/connect-to-database</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/connect-to-database">&lt;p&gt;python, R에서 Database Server와 연결하기&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;../../assets/built/images/odbc-architecture.png&quot; alt=&quot;image&quot; /&gt;&lt;/p&gt;
 

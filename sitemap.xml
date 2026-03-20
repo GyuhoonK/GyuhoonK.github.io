@@ -2,7 +2,7 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
-      <loc>http://localhost:4000/airflow-triggerer</loc>
+      <loc>https://gyuhoonk.github.io/airflow-triggerer</loc>
       
         <lastmod>2026-03-14T22:30:00+09:00</lastmod>
       
@@ -18,7 +18,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/kube-service-type</loc>
+      <loc>https://gyuhoonk.github.io/kube-service-type</loc>
       
         <lastmod>2026-03-04T22:30:00+09:00</lastmod>
       
@@ -34,7 +34,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/fastapi-1</loc>
+      <loc>https://gyuhoonk.github.io/fastapi-1</loc>
       
         <lastmod>2026-03-01T09:30:00+09:00</lastmod>
       
@@ -50,7 +50,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/hdfs-s3</loc>
+      <loc>https://gyuhoonk.github.io/hdfs-s3</loc>
       
         <lastmod>2026-02-21T22:30:00+09:00</lastmod>
       
@@ -66,7 +66,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/mysql-index</loc>
+      <loc>https://gyuhoonk.github.io/mysql-index</loc>
       
         <lastmod>2026-02-20T22:30:00+09:00</lastmod>
       
@@ -82,7 +82,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/pod-operator-400</loc>
+      <loc>https://gyuhoonk.github.io/pod-operator-400</loc>
       
         <lastmod>2025-10-01T22:30:00+09:00</lastmod>
       
@@ -98,7 +98,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/configmap-secret</loc>
+      <loc>https://gyuhoonk.github.io/configmap-secret</loc>
       
         <lastmod>2025-03-15T22:30:00+09:00</lastmod>
       
@@ -114,7 +114,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/variables</loc>
+      <loc>https://gyuhoonk.github.io/variables</loc>
       
         <lastmod>2024-11-08T22:30:00+09:00</lastmod>
       
@@ -130,7 +130,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/dbt-trino-temp-view</loc>
+      <loc>https://gyuhoonk.github.io/dbt-trino-temp-view</loc>
       
         <lastmod>2024-06-09T22:30:00+09:00</lastmod>
       
@@ -146,7 +146,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/depdendency-injection</loc>
+      <loc>https://gyuhoonk.github.io/depdendency-injection</loc>
       
         <lastmod>2024-06-01T22:30:00+09:00</lastmod>
       
@@ -162,7 +162,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/singleton</loc>
+      <loc>https://gyuhoonk.github.io/singleton</loc>
       
         <lastmod>2024-03-09T22:30:00+09:00</lastmod>
       
@@ -178,7 +178,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/bean-definition</loc>
+      <loc>https://gyuhoonk.github.io/bean-definition</loc>
       
         <lastmod>2024-02-18T22:30:00+09:00</lastmod>
       
@@ -194,7 +194,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/get-bean</loc>
+      <loc>https://gyuhoonk.github.io/get-bean</loc>
       
         <lastmod>2024-01-19T22:30:00+09:00</lastmod>
       
@@ -210,7 +210,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/dependency-inversion-principle</loc>
+      <loc>https://gyuhoonk.github.io/dependency-inversion-principle</loc>
       
         <lastmod>2024-01-05T22:30:00+09:00</lastmod>
       
@@ -226,7 +226,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/spark-salting</loc>
+      <loc>https://gyuhoonk.github.io/spark-salting</loc>
       
         <lastmod>2023-12-30T22:30:00+09:00</lastmod>
       
@@ -242,7 +242,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/prepared-statement</loc>
+      <loc>https://gyuhoonk.github.io/prepared-statement</loc>
       
         <lastmod>2023-10-29T22:30:00+09:00</lastmod>
       
@@ -258,7 +258,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/multi-stage-and-builder-pattern</loc>
+      <loc>https://gyuhoonk.github.io/multi-stage-and-builder-pattern</loc>
       
         <lastmod>2023-06-10T22:30:00+09:00</lastmod>
       
@@ -274,7 +274,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/non-deterministic-udf</loc>
+      <loc>https://gyuhoonk.github.io/non-deterministic-udf</loc>
       
         <lastmod>2023-05-16T22:30:00+09:00</lastmod>
       
@@ -290,7 +290,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/avro-to-python</loc>
+      <loc>https://gyuhoonk.github.io/avro-to-python</loc>
       
         <lastmod>2023-05-07T22:30:00+09:00</lastmod>
       
@@ -306,7 +306,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/jaydebeapi_class_not_found</loc>
+      <loc>https://gyuhoonk.github.io/jaydebeapi_class_not_found</loc>
       
         <lastmod>2023-03-25T22:30:00+09:00</lastmod>
       
@@ -322,7 +322,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/decorator</loc>
+      <loc>https://gyuhoonk.github.io/decorator</loc>
       
         <lastmod>2023-03-18T22:30:00+09:00</lastmod>
       
@@ -338,7 +338,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/load-avg</loc>
+      <loc>https://gyuhoonk.github.io/load-avg</loc>
       
         <lastmod>2023-03-11T22:30:00+09:00</lastmod>
       
@@ -354,7 +354,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/impala-with-clause</loc>
+      <loc>https://gyuhoonk.github.io/impala-with-clause</loc>
       
         <lastmod>2023-02-16T22:30:00+09:00</lastmod>
       
@@ -370,7 +370,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/pod-container</loc>
+      <loc>https://gyuhoonk.github.io/pod-container</loc>
       
         <lastmod>2023-02-12T22:30:00+09:00</lastmod>
       
@@ -386,7 +386,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/oracle-connection</loc>
+      <loc>https://gyuhoonk.github.io/oracle-connection</loc>
       
         <lastmod>2022-12-24T22:30:00+09:00</lastmod>
       
@@ -402,7 +402,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/special-permissions</loc>
+      <loc>https://gyuhoonk.github.io/special-permissions</loc>
       
         <lastmod>2022-11-19T22:30:00+09:00</lastmod>
       
@@ -418,7 +418,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/first-contributor</loc>
+      <loc>https://gyuhoonk.github.io/first-contributor</loc>
       
         <lastmod>2022-11-05T22:30:00+09:00</lastmod>
       
@@ -434,7 +434,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/sparkscala8</loc>
+      <loc>https://gyuhoonk.github.io/sparkscala8</loc>
       
         <lastmod>2022-08-27T22:30:00+09:00</lastmod>
       
@@ -450,7 +450,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/sparkscala7</loc>
+      <loc>https://gyuhoonk.github.io/sparkscala7</loc>
       
         <lastmod>2022-06-24T22:30:00+09:00</lastmod>
       
@@ -466,7 +466,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/enableHiveSupport</loc>
+      <loc>https://gyuhoonk.github.io/enableHiveSupport</loc>
       
         <lastmod>2022-06-16T22:30:00+09:00</lastmod>
       
@@ -482,7 +482,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/merge-rebase</loc>
+      <loc>https://gyuhoonk.github.io/merge-rebase</loc>
       
         <lastmod>2022-05-14T22:30:00+09:00</lastmod>
       
@@ -498,7 +498,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/parquet-ppd</loc>
+      <loc>https://gyuhoonk.github.io/parquet-ppd</loc>
       
         <lastmod>2022-04-21T22:30:00+09:00</lastmod>
       
@@ -514,7 +514,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/Subtree</loc>
+      <loc>https://gyuhoonk.github.io/Subtree</loc>
       
         <lastmod>2022-04-01T22:30:00+09:00</lastmod>
       
@@ -530,7 +530,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/spark-repartition</loc>
+      <loc>https://gyuhoonk.github.io/spark-repartition</loc>
       
         <lastmod>2022-03-12T22:30:00+09:00</lastmod>
       
@@ -546,7 +546,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/sparkscala6</loc>
+      <loc>https://gyuhoonk.github.io/sparkscala6</loc>
       
         <lastmod>2022-03-06T22:30:00+09:00</lastmod>
       
@@ -562,7 +562,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/airflow1</loc>
+      <loc>https://gyuhoonk.github.io/airflow1</loc>
       
         <lastmod>2022-02-28T22:30:00+09:00</lastmod>
       
@@ -578,7 +578,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/sparkscala5</loc>
+      <loc>https://gyuhoonk.github.io/sparkscala5</loc>
       
         <lastmod>2022-02-21T22:30:00+09:00</lastmod>
       
@@ -594,7 +594,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/sparkscala4</loc>
+      <loc>https://gyuhoonk.github.io/sparkscala4</loc>
       
         <lastmod>2022-02-21T22:30:00+09:00</lastmod>
       
@@ -610,7 +610,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/prefix-sum</loc>
+      <loc>https://gyuhoonk.github.io/prefix-sum</loc>
       
         <lastmod>2022-02-14T22:30:00+09:00</lastmod>
       
@@ -626,7 +626,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/spark-shuffle-partition</loc>
+      <loc>https://gyuhoonk.github.io/spark-shuffle-partition</loc>
       
         <lastmod>2022-02-09T22:30:00+09:00</lastmod>
       
@@ -642,7 +642,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/hadoop-distcp</loc>
+      <loc>https://gyuhoonk.github.io/hadoop-distcp</loc>
       
         <lastmod>2022-01-20T22:30:00+09:00</lastmod>
       
@@ -658,7 +658,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/sparkscala3</loc>
+      <loc>https://gyuhoonk.github.io/sparkscala3</loc>
       
         <lastmod>2022-01-15T22:30:00+09:00</lastmod>
       
@@ -674,7 +674,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/DBCP</loc>
+      <loc>https://gyuhoonk.github.io/DBCP</loc>
       
         <lastmod>2022-01-06T22:30:00+09:00</lastmod>
       
@@ -690,7 +690,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/sparkscala2</loc>
+      <loc>https://gyuhoonk.github.io/sparkscala2</loc>
       
         <lastmod>2022-01-03T22:30:00+09:00</lastmod>
       
@@ -706,7 +706,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/sparkscala1</loc>
+      <loc>https://gyuhoonk.github.io/sparkscala1</loc>
       
         <lastmod>2021-12-30T22:30:00+09:00</lastmod>
       
@@ -722,7 +722,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/EXP-LOG-SUM</loc>
+      <loc>https://gyuhoonk.github.io/EXP-LOG-SUM</loc>
       
         <lastmod>2021-12-29T22:30:00+09:00</lastmod>
       
@@ -738,7 +738,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/spark-overwrite-partition</loc>
+      <loc>https://gyuhoonk.github.io/spark-overwrite-partition</loc>
       
         <lastmod>2021-12-21T22:30:00+09:00</lastmod>
       
@@ -754,7 +754,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/melt-in-pyspark</loc>
+      <loc>https://gyuhoonk.github.io/melt-in-pyspark</loc>
       
         <lastmod>2021-11-25T22:30:00+09:00</lastmod>
       
@@ -770,7 +770,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/KMP</loc>
+      <loc>https://gyuhoonk.github.io/KMP</loc>
       
         <lastmod>2021-11-06T22:30:00+09:00</lastmod>
       
@@ -786,7 +786,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/threading-in-python</loc>
+      <loc>https://gyuhoonk.github.io/threading-in-python</loc>
       
         <lastmod>2021-11-01T22:30:00+09:00</lastmod>
       
@@ -802,7 +802,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/hive-merge-query</loc>
+      <loc>https://gyuhoonk.github.io/hive-merge-query</loc>
       
         <lastmod>2021-10-24T22:30:00+09:00</lastmod>
       
@@ -818,7 +818,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/bucket-hive-spark</loc>
+      <loc>https://gyuhoonk.github.io/bucket-hive-spark</loc>
       
         <lastmod>2021-10-09T22:30:00+09:00</lastmod>
       
@@ -834,7 +834,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/gaussian_kernel</loc>
+      <loc>https://gyuhoonk.github.io/gaussian_kernel</loc>
       
         <lastmod>2021-10-08T22:30:00+09:00</lastmod>
       
@@ -850,7 +850,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/hive-create-stmt</loc>
+      <loc>https://gyuhoonk.github.io/hive-create-stmt</loc>
       
         <lastmod>2021-09-16T22:30:00+09:00</lastmod>
       
@@ -866,7 +866,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/connect-to-database</loc>
+      <loc>https://gyuhoonk.github.io/connect-to-database</loc>
       
         <lastmod>2021-09-06T22:30:00+09:00</lastmod>
       
@@ -882,7 +882,7 @@
     </url>
   
     <url>
-      <loc>http://localhost:4000/boto3-zipfile</loc>
+      <loc>https://gyuhoonk.github.io/boto3-zipfile</loc>
       
         <lastmod>2021-09-01T22:30:00+09:00</lastmod>
       

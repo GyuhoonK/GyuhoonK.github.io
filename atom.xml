@@ -4,33 +4,20 @@
     <title> - Articles</title>
     <description>Data Engineering</description>
     <link>
-    http://localhost:4000</link>
+    https://gyuhoonk.github.io</link>
     
       
       <item>
-        <title>airflow triggerer</title>
+        <title>Airflow Triggerer 사용기</title>
         
-          <description>&lt;h1 id=&quot;문제-상황&quot;&gt;문제 상황&lt;/h1&gt;
-&lt;ul&gt;
-  &lt;li&gt;Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때&lt;/li&gt;
-  &lt;li&gt;worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임
-    &lt;ul&gt;
-      &lt;li&gt;이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-  &lt;li&gt;worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨
-    &lt;ul&gt;
-      &lt;li&gt;Pod Adoptation이 불가능함&lt;/li&gt;
-    &lt;/ul&gt;
-  &lt;/li&gt;
-&lt;/ul&gt;
+          <description>&lt;p&gt;Airflow Triggerer를 사용하면서 겪었던 장애를 정리합니다.&lt;/p&gt;
 
 </description>
         
         <pubDate>Sat, 14 Mar 2026 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/airflow-triggerer</link>
-        <guid isPermaLink="true">http://localhost:4000/airflow-triggerer</guid>
+        https://gyuhoonk.github.io/airflow-triggerer</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/airflow-triggerer</guid>
       </item>
       
     
@@ -44,8 +31,8 @@
         
         <pubDate>Wed, 04 Mar 2026 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/kube-service-type</link>
-        <guid isPermaLink="true">http://localhost:4000/kube-service-type</guid>
+        https://gyuhoonk.github.io/kube-service-type</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/kube-service-type</guid>
       </item>
       
     
@@ -59,8 +46,8 @@
         
         <pubDate>Sun, 01 Mar 2026 09:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/fastapi-1</link>
-        <guid isPermaLink="true">http://localhost:4000/fastapi-1</guid>
+        https://gyuhoonk.github.io/fastapi-1</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/fastapi-1</guid>
       </item>
       
     
@@ -74,8 +61,8 @@
         
         <pubDate>Sat, 21 Feb 2026 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/hdfs-s3</link>
-        <guid isPermaLink="true">http://localhost:4000/hdfs-s3</guid>
+        https://gyuhoonk.github.io/hdfs-s3</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/hdfs-s3</guid>
       </item>
       
     
@@ -89,8 +76,8 @@
         
         <pubDate>Fri, 20 Feb 2026 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/mysql-index</link>
-        <guid isPermaLink="true">http://localhost:4000/mysql-index</guid>
+        https://gyuhoonk.github.io/mysql-index</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/mysql-index</guid>
       </item>
       
     
@@ -106,8 +93,8 @@
         
         <pubDate>Wed, 01 Oct 2025 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/pod-operator-400</link>
-        <guid isPermaLink="true">http://localhost:4000/pod-operator-400</guid>
+        https://gyuhoonk.github.io/pod-operator-400</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/pod-operator-400</guid>
       </item>
       
     
@@ -121,8 +108,8 @@
         
         <pubDate>Sat, 15 Mar 2025 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/configmap-secret</link>
-        <guid isPermaLink="true">http://localhost:4000/configmap-secret</guid>
+        https://gyuhoonk.github.io/configmap-secret</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/configmap-secret</guid>
       </item>
       
     
@@ -136,8 +123,8 @@
         
         <pubDate>Fri, 08 Nov 2024 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/variables</link>
-        <guid isPermaLink="true">http://localhost:4000/variables</guid>
+        https://gyuhoonk.github.io/variables</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/variables</guid>
       </item>
       
     
@@ -151,8 +138,8 @@
         
         <pubDate>Sun, 09 Jun 2024 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/dbt-trino-temp-view</link>
-        <guid isPermaLink="true">http://localhost:4000/dbt-trino-temp-view</guid>
+        https://gyuhoonk.github.io/dbt-trino-temp-view</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/dbt-trino-temp-view</guid>
       </item>
       
     
@@ -166,8 +153,8 @@
         
         <pubDate>Sat, 01 Jun 2024 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/depdendency-injection</link>
-        <guid isPermaLink="true">http://localhost:4000/depdendency-injection</guid>
+        https://gyuhoonk.github.io/depdendency-injection</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/depdendency-injection</guid>
       </item>
       
     
@@ -181,8 +168,8 @@
         
         <pubDate>Sat, 09 Mar 2024 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/singleton</link>
-        <guid isPermaLink="true">http://localhost:4000/singleton</guid>
+        https://gyuhoonk.github.io/singleton</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/singleton</guid>
       </item>
       
     
@@ -196,8 +183,8 @@
         
         <pubDate>Sun, 18 Feb 2024 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/bean-definition</link>
-        <guid isPermaLink="true">http://localhost:4000/bean-definition</guid>
+        https://gyuhoonk.github.io/bean-definition</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/bean-definition</guid>
       </item>
       
     
@@ -211,8 +198,8 @@
         
         <pubDate>Fri, 19 Jan 2024 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/get-bean</link>
-        <guid isPermaLink="true">http://localhost:4000/get-bean</guid>
+        https://gyuhoonk.github.io/get-bean</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/get-bean</guid>
       </item>
       
     
@@ -226,8 +213,8 @@
         
         <pubDate>Fri, 05 Jan 2024 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/dependency-inversion-principle</link>
-        <guid isPermaLink="true">http://localhost:4000/dependency-inversion-principle</guid>
+        https://gyuhoonk.github.io/dependency-inversion-principle</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/dependency-inversion-principle</guid>
       </item>
       
     
@@ -241,8 +228,8 @@
         
         <pubDate>Sat, 30 Dec 2023 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/spark-salting</link>
-        <guid isPermaLink="true">http://localhost:4000/spark-salting</guid>
+        https://gyuhoonk.github.io/spark-salting</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-salting</guid>
       </item>
       
     
@@ -256,8 +243,8 @@
         
         <pubDate>Sun, 29 Oct 2023 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/prepared-statement</link>
-        <guid isPermaLink="true">http://localhost:4000/prepared-statement</guid>
+        https://gyuhoonk.github.io/prepared-statement</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/prepared-statement</guid>
       </item>
       
     
@@ -271,8 +258,8 @@
         
         <pubDate>Sat, 10 Jun 2023 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/multi-stage-and-builder-pattern</link>
-        <guid isPermaLink="true">http://localhost:4000/multi-stage-and-builder-pattern</guid>
+        https://gyuhoonk.github.io/multi-stage-and-builder-pattern</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/multi-stage-and-builder-pattern</guid>
       </item>
       
     
@@ -286,8 +273,8 @@
         
         <pubDate>Tue, 16 May 2023 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/non-deterministic-udf</link>
-        <guid isPermaLink="true">http://localhost:4000/non-deterministic-udf</guid>
+        https://gyuhoonk.github.io/non-deterministic-udf</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/non-deterministic-udf</guid>
       </item>
       
     
@@ -301,8 +288,8 @@
         
         <pubDate>Sun, 07 May 2023 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/avro-to-python</link>
-        <guid isPermaLink="true">http://localhost:4000/avro-to-python</guid>
+        https://gyuhoonk.github.io/avro-to-python</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/avro-to-python</guid>
       </item>
       
     
@@ -316,8 +303,8 @@
         
         <pubDate>Sat, 25 Mar 2023 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/jaydebeapi_class_not_found</link>
-        <guid isPermaLink="true">http://localhost:4000/jaydebeapi_class_not_found</guid>
+        https://gyuhoonk.github.io/jaydebeapi_class_not_found</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/jaydebeapi_class_not_found</guid>
       </item>
       
     
@@ -331,8 +318,8 @@
         
         <pubDate>Sat, 18 Mar 2023 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/decorator</link>
-        <guid isPermaLink="true">http://localhost:4000/decorator</guid>
+        https://gyuhoonk.github.io/decorator</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/decorator</guid>
       </item>
       
     
@@ -346,8 +333,8 @@
         
         <pubDate>Sat, 11 Mar 2023 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/load-avg</link>
-        <guid isPermaLink="true">http://localhost:4000/load-avg</guid>
+        https://gyuhoonk.github.io/load-avg</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/load-avg</guid>
       </item>
       
     
@@ -361,8 +348,8 @@
         
         <pubDate>Thu, 16 Feb 2023 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/impala-with-clause</link>
-        <guid isPermaLink="true">http://localhost:4000/impala-with-clause</guid>
+        https://gyuhoonk.github.io/impala-with-clause</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/impala-with-clause</guid>
       </item>
       
     
@@ -376,8 +363,8 @@
         
         <pubDate>Sun, 12 Feb 2023 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/pod-container</link>
-        <guid isPermaLink="true">http://localhost:4000/pod-container</guid>
+        https://gyuhoonk.github.io/pod-container</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/pod-container</guid>
       </item>
       
     
@@ -391,8 +378,8 @@
         
         <pubDate>Sat, 24 Dec 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/oracle-connection</link>
-        <guid isPermaLink="true">http://localhost:4000/oracle-connection</guid>
+        https://gyuhoonk.github.io/oracle-connection</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/oracle-connection</guid>
       </item>
       
     
@@ -406,8 +393,8 @@
         
         <pubDate>Sat, 19 Nov 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/special-permissions</link>
-        <guid isPermaLink="true">http://localhost:4000/special-permissions</guid>
+        https://gyuhoonk.github.io/special-permissions</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/special-permissions</guid>
       </item>
       
     
@@ -421,8 +408,8 @@
         
         <pubDate>Sat, 05 Nov 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/first-contributor</link>
-        <guid isPermaLink="true">http://localhost:4000/first-contributor</guid>
+        https://gyuhoonk.github.io/first-contributor</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/first-contributor</guid>
       </item>
       
     
@@ -436,8 +423,8 @@
         
         <pubDate>Sat, 27 Aug 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/sparkscala8</link>
-        <guid isPermaLink="true">http://localhost:4000/sparkscala8</guid>
+        https://gyuhoonk.github.io/sparkscala8</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala8</guid>
       </item>
       
     
@@ -451,8 +438,8 @@
         
         <pubDate>Fri, 24 Jun 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/sparkscala7</link>
-        <guid isPermaLink="true">http://localhost:4000/sparkscala7</guid>
+        https://gyuhoonk.github.io/sparkscala7</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala7</guid>
       </item>
       
     
@@ -466,8 +453,8 @@
         
         <pubDate>Thu, 16 Jun 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/enableHiveSupport</link>
-        <guid isPermaLink="true">http://localhost:4000/enableHiveSupport</guid>
+        https://gyuhoonk.github.io/enableHiveSupport</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/enableHiveSupport</guid>
       </item>
       
     
@@ -481,8 +468,8 @@
         
         <pubDate>Sat, 14 May 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/merge-rebase</link>
-        <guid isPermaLink="true">http://localhost:4000/merge-rebase</guid>
+        https://gyuhoonk.github.io/merge-rebase</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/merge-rebase</guid>
       </item>
       
     
@@ -496,8 +483,8 @@
         
         <pubDate>Thu, 21 Apr 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/parquet-ppd</link>
-        <guid isPermaLink="true">http://localhost:4000/parquet-ppd</guid>
+        https://gyuhoonk.github.io/parquet-ppd</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/parquet-ppd</guid>
       </item>
       
     
@@ -511,8 +498,8 @@
         
         <pubDate>Fri, 01 Apr 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/Subtree</link>
-        <guid isPermaLink="true">http://localhost:4000/Subtree</guid>
+        https://gyuhoonk.github.io/Subtree</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/Subtree</guid>
       </item>
       
     
@@ -526,8 +513,8 @@
         
         <pubDate>Sat, 12 Mar 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/spark-repartition</link>
-        <guid isPermaLink="true">http://localhost:4000/spark-repartition</guid>
+        https://gyuhoonk.github.io/spark-repartition</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-repartition</guid>
       </item>
       
     
@@ -541,8 +528,8 @@
         
         <pubDate>Sun, 06 Mar 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/sparkscala6</link>
-        <guid isPermaLink="true">http://localhost:4000/sparkscala6</guid>
+        https://gyuhoonk.github.io/sparkscala6</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala6</guid>
       </item>
       
     
@@ -556,8 +543,8 @@
         
         <pubDate>Mon, 28 Feb 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/airflow1</link>
-        <guid isPermaLink="true">http://localhost:4000/airflow1</guid>
+        https://gyuhoonk.github.io/airflow1</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/airflow1</guid>
       </item>
       
     
@@ -571,8 +558,8 @@
         
         <pubDate>Mon, 21 Feb 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/sparkscala5</link>
-        <guid isPermaLink="true">http://localhost:4000/sparkscala5</guid>
+        https://gyuhoonk.github.io/sparkscala5</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala5</guid>
       </item>
       
     
@@ -586,8 +573,8 @@
         
         <pubDate>Mon, 21 Feb 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/sparkscala4</link>
-        <guid isPermaLink="true">http://localhost:4000/sparkscala4</guid>
+        https://gyuhoonk.github.io/sparkscala4</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala4</guid>
       </item>
       
     
@@ -601,8 +588,8 @@
         
         <pubDate>Mon, 14 Feb 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/prefix-sum</link>
-        <guid isPermaLink="true">http://localhost:4000/prefix-sum</guid>
+        https://gyuhoonk.github.io/prefix-sum</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/prefix-sum</guid>
       </item>
       
     
@@ -616,8 +603,8 @@
         
         <pubDate>Wed, 09 Feb 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/spark-shuffle-partition</link>
-        <guid isPermaLink="true">http://localhost:4000/spark-shuffle-partition</guid>
+        https://gyuhoonk.github.io/spark-shuffle-partition</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-shuffle-partition</guid>
       </item>
       
     
@@ -631,8 +618,8 @@
         
         <pubDate>Thu, 20 Jan 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/hadoop-distcp</link>
-        <guid isPermaLink="true">http://localhost:4000/hadoop-distcp</guid>
+        https://gyuhoonk.github.io/hadoop-distcp</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/hadoop-distcp</guid>
       </item>
       
     
@@ -646,8 +633,8 @@
         
         <pubDate>Sat, 15 Jan 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/sparkscala3</link>
-        <guid isPermaLink="true">http://localhost:4000/sparkscala3</guid>
+        https://gyuhoonk.github.io/sparkscala3</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala3</guid>
       </item>
       
     
@@ -661,8 +648,8 @@
         
         <pubDate>Thu, 06 Jan 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/DBCP</link>
-        <guid isPermaLink="true">http://localhost:4000/DBCP</guid>
+        https://gyuhoonk.github.io/DBCP</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/DBCP</guid>
       </item>
       
     
@@ -676,8 +663,8 @@
         
         <pubDate>Mon, 03 Jan 2022 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/sparkscala2</link>
-        <guid isPermaLink="true">http://localhost:4000/sparkscala2</guid>
+        https://gyuhoonk.github.io/sparkscala2</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala2</guid>
       </item>
       
     
@@ -691,8 +678,8 @@
         
         <pubDate>Thu, 30 Dec 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/sparkscala1</link>
-        <guid isPermaLink="true">http://localhost:4000/sparkscala1</guid>
+        https://gyuhoonk.github.io/sparkscala1</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/sparkscala1</guid>
       </item>
       
     
@@ -706,8 +693,8 @@
         
         <pubDate>Wed, 29 Dec 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/EXP-LOG-SUM</link>
-        <guid isPermaLink="true">http://localhost:4000/EXP-LOG-SUM</guid>
+        https://gyuhoonk.github.io/EXP-LOG-SUM</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/EXP-LOG-SUM</guid>
       </item>
       
     
@@ -721,8 +708,8 @@
         
         <pubDate>Tue, 21 Dec 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/spark-overwrite-partition</link>
-        <guid isPermaLink="true">http://localhost:4000/spark-overwrite-partition</guid>
+        https://gyuhoonk.github.io/spark-overwrite-partition</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/spark-overwrite-partition</guid>
       </item>
       
     
@@ -736,8 +723,8 @@
         
         <pubDate>Thu, 25 Nov 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/melt-in-pyspark</link>
-        <guid isPermaLink="true">http://localhost:4000/melt-in-pyspark</guid>
+        https://gyuhoonk.github.io/melt-in-pyspark</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/melt-in-pyspark</guid>
       </item>
       
     
@@ -751,8 +738,8 @@
         
         <pubDate>Sat, 06 Nov 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/KMP</link>
-        <guid isPermaLink="true">http://localhost:4000/KMP</guid>
+        https://gyuhoonk.github.io/KMP</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/KMP</guid>
       </item>
       
     
@@ -766,8 +753,8 @@
         
         <pubDate>Mon, 01 Nov 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/threading-in-python</link>
-        <guid isPermaLink="true">http://localhost:4000/threading-in-python</guid>
+        https://gyuhoonk.github.io/threading-in-python</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/threading-in-python</guid>
       </item>
       
     
@@ -781,8 +768,8 @@
         
         <pubDate>Sun, 24 Oct 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/hive-merge-query</link>
-        <guid isPermaLink="true">http://localhost:4000/hive-merge-query</guid>
+        https://gyuhoonk.github.io/hive-merge-query</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/hive-merge-query</guid>
       </item>
       
     
@@ -796,8 +783,8 @@
         
         <pubDate>Sat, 09 Oct 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/bucket-hive-spark</link>
-        <guid isPermaLink="true">http://localhost:4000/bucket-hive-spark</guid>
+        https://gyuhoonk.github.io/bucket-hive-spark</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/bucket-hive-spark</guid>
       </item>
       
     
@@ -811,8 +798,8 @@
         
         <pubDate>Fri, 08 Oct 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/gaussian_kernel</link>
-        <guid isPermaLink="true">http://localhost:4000/gaussian_kernel</guid>
+        https://gyuhoonk.github.io/gaussian_kernel</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/gaussian_kernel</guid>
       </item>
       
     
@@ -826,8 +813,8 @@
         
         <pubDate>Thu, 16 Sep 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/hive-create-stmt</link>
-        <guid isPermaLink="true">http://localhost:4000/hive-create-stmt</guid>
+        https://gyuhoonk.github.io/hive-create-stmt</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/hive-create-stmt</guid>
       </item>
       
     
@@ -841,8 +828,8 @@
         
         <pubDate>Mon, 06 Sep 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/connect-to-database</link>
-        <guid isPermaLink="true">http://localhost:4000/connect-to-database</guid>
+        https://gyuhoonk.github.io/connect-to-database</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/connect-to-database</guid>
       </item>
       
     
@@ -856,8 +843,8 @@
         
         <pubDate>Wed, 01 Sep 2021 22:30:00 +0900</pubDate>
         <link>
-        http://localhost:4000/boto3-zipfile</link>
-        <guid isPermaLink="true">http://localhost:4000/boto3-zipfile</guid>
+        https://gyuhoonk.github.io/boto3-zipfile</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/boto3-zipfile</guid>
       </item>
       
     

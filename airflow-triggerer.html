@@ -11,7 +11,7 @@
 
 
 
-    <title>airflow triggerer</title>
+    <title>Airflow Triggerer 사용기</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -36,27 +36,27 @@
     <!-- This tag outputs SEO meta+structured data and other important settings -->
     </script>
 <meta name="description" content="Data Engineering" />
-    <link rel="shortcut icon" href="http://localhost:4000/assets/built/images/favicon.png" type="image/png" />
-    <link rel="canonical" href="http://localhost:4000/airflow-triggerer" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/airflow-triggerer" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Gyuhoon Kim" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="airflow triggerer" />
-    <meta property="og:description" content="문제 상황 Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때 worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임 이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음 worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨 Pod Adoptation이 불가능함 worker 재배포, 재시작을 포함하여 모든 상황에서 KPO가 연속성을 유지할" />
-    <meta property="og:url" content="http://localhost:4000/airflow-triggerer" />
-    <meta property="og:image" content="http://localhost:4000/assets/built/images/kubernetes/k8s-container.png" />
+    <meta property="og:title" content="Airflow Triggerer 사용기" />
+    <meta property="og:description" content="Airflow Triggerer를 사용하면서 겪었던 장애를 정리합니다. 문제 상황 airflow의 KubernetesPodOperator, TriggerDagRunOperator를 위주로 데이터 파이프라인을 구축하여 운영 중이었습니다. airflow를 재배포하거나 장애로 인해 airflow worker가 종료되는 경우에 이 operator들에 의해 실행되는 task들도 failed 처리됩니다. airflow를 운영하는 입장에서 이 문제를 해결하고 싶었고, 해결하기 위해 탐색해나가는 과정을 글로 기록합니다. KubernetesPodOperator의 연속성을 유지하자 KubernetesPodOperator(이하 KPO라" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/airflow-triggerer" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/airflow/airflow.png" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
     <meta property="article:author" content="https://www.facebook.com/" />
     <meta property="article:published_time" content="2026-03-14T22:30:00+09:00" />
     <meta property="article:modified_time" content="2026-03-14T22:30:00+09:00" />
     <meta property="article:tag" content="Airflow" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="airflow triggerer" />
-    <meta name="twitter:description" content="문제 상황 Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때 worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임 이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음 worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨 Pod Adoptation이 불가능함 worker 재배포, 재시작을 포함하여 모든 상황에서 KPO가 연속성을 유지할" />
-    <meta name="twitter:url" content="http://localhost:4000/" />
-    <meta name="twitter:image" content="http://localhost:4000/assets/built/images/kubernetes/k8s-container.png" />
+    <meta name="twitter:title" content="Airflow Triggerer 사용기" />
+    <meta name="twitter:description" content="Airflow Triggerer를 사용하면서 겪었던 장애를 정리합니다. 문제 상황 airflow의 KubernetesPodOperator, TriggerDagRunOperator를 위주로 데이터 파이프라인을 구축하여 운영 중이었습니다. airflow를 재배포하거나 장애로 인해 airflow worker가 종료되는 경우에 이 operator들에 의해 실행되는 task들도 failed 처리됩니다. airflow를 운영하는 입장에서 이 문제를 해결하고 싶었고, 해결하기 위해 탐색해나가는 과정을 글로 기록합니다. KubernetesPodOperator의 연속성을 유지하자 KubernetesPodOperator(이하 KPO라" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/airflow/airflow.png" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Gyuhoon Kim" />
     <meta name="twitter:label2" content="Filed under" />
@@ -73,20 +73,20 @@
     "publisher": {
         "@type": "Organization",
         "name": "Gyuhoon Kim",
-        "logo": "http://localhost:4000/"
+        "logo": "https://gyuhoonk.github.io/"
     },
-    "url": "http://localhost:4000/airflow-triggerer",
+    "url": "https://gyuhoonk.github.io/airflow-triggerer",
     "image": {
         "@type": "ImageObject",
-        "url": "http://localhost:4000/assets/built/images/kubernetes/k8s-container.png",
+        "url": "https://gyuhoonk.github.io/assets/built/images/airflow/airflow.png",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "http://localhost:4000/airflow-triggerer"
+        "@id": "https://gyuhoonk.github.io/airflow-triggerer"
     },
-    "description": "문제 상황 Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때 worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임 이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음 worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨 Pod Adoptation이 불가능함 worker 재배포, 재시작을 포함하여 모든 상황에서 KPO가 연속성을 유지할"
+    "description": "Airflow Triggerer를 사용하면서 겪었던 장애를 정리합니다. 문제 상황 airflow의 KubernetesPodOperator, TriggerDagRunOperator를 위주로 데이터 파이프라인을 구축하여 운영 중이었습니다. airflow를 재배포하거나 장애로 인해 airflow worker가 종료되는 경우에 이 operator들에 의해 실행되는 task들도 failed 처리됩니다. airflow를 운영하는 입장에서 이 문제를 해결하고 싶었고, 해결하기 위해 탐색해나가는 과정을 글로 기록합니다. KubernetesPodOperator의 연속성을 유지하자 KubernetesPodOperator(이하 KPO라"
 }
     </script>
 
@@ -99,7 +99,7 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="airflow triggerer" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Airflow Triggerer 사용기" href="/feed.xml" />
  <script type="module">
  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
  mermaid.initialize({ startOnLoad: true });
@@ -124,7 +124,7 @@ into the {body} of the default.hbs template -->
     <div class="site-nav-left">
         
             
-                <a class="site-nav-logo" href="http://localhost:4000/">Gyuhoon Kim</a>
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
             
         
         
@@ -195,69 +195,485 @@ into the {body} of the default.hbs template -->
                         
                     
                 </section>
-                <h1 class="post-full-title">airflow triggerer</h1>
+                <h1 class="post-full-title">Airflow Triggerer 사용기</h1>
             </header>
 
             <!-- 
-            <figure class="post-full-image" style="background-image: url(/assets/built/images/kubernetes/k8s-container.png)">
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/airflow/airflow.png)">
             </figure>
              -->
 
             <section class="post-full-content">
                 <div class="kg-card-markdown">
-                    <h1 id="문제-상황">문제 상황</h1>
-<ul>
-  <li>Airflow에서 KubernetesPodOperator를 사용하면서 airflow를 재배포할 때</li>
-  <li>worker가 killed 되면, KPO task는 failed 처리되지만 Pod는 계속 실행 상태임
-    <ul>
-      <li>이 경우에 Pod Adoptation에 의해 다른 worker가 Pod를 감시할 수 있음</li>
-    </ul>
-  </li>
-  <li>worker를 재실행하게 되면, KPO task가 terminated되면서 Pod가 종료됨
-    <ul>
-      <li>Pod Adoptation이 불가능함</li>
-    </ul>
-  </li>
-  <li>worker 재배포, 재시작을 포함하여 모든 상황에서 KPO가 연속성을 유지할 순 없을까?</li>
-</ul>
+                    <p>Airflow Triggerer를 사용하면서 겪었던 장애를 정리합니다.</p>
 
-<h1 id="대응---deferrable">대응 - deferrable</h1>
-<ul>
-  <li>KPO에는 deferrable 옵션이 있음</li>
-  <li>KPO는 defer모드에서 Pod를 생성한 뒤 Pod 감시 역할을 triggerer에 이관함</li>
-  <li>triggerer는 Pod를 감시하다가 Pod가 완료되면(실패/성공) 다시 worker를 trigger함 (TriggerEvent -&gt; Worker)</li>
-  <li>&lt;worker(KPO) - triggerer - Pod &gt; Lifecyle 에 대한 이미지 추가</li>
-</ul>
+<h1 id="문제-상황">문제 상황</h1>
 
-<h1 id="triggerdagrunoperator에도-적용-가능">TriggerDagRunOperator에도 적용 가능</h1>
-<ul>
-  <li>마찬가지 로직에 대한 설명</li>
-</ul>
+<p>airflow의 KubernetesPodOperator, TriggerDagRunOperator를 위주로 데이터 파이프라인을 구축하여 운영 중이었습니다. airflow를 재배포하거나 장애로 인해 airflow worker가 종료되는 경우에 이 operator들에 의해 실행되는 task들도 failed 처리됩니다.</p>
 
-<h1 id="triggerer-race-condition">triggerer race condition</h1>
-<ul>
-  <li>보통 triggerer는 HA을 위해 2개 이상 배포함. 하나의 triggerer가 down되면 나머지 triggerer가 상태 체크를 할 수 있도록</li>
-  <li>그런데 triggerer가 2개 이상일 때, deferred 상태를 바로 탈출해버리는 경우가 있음</li>
-  <li>이는 2개 triggerer가 동시에 trigger job을 할당 받으면서, 서로 이미 할당 받은 trigger는 완료시켜버리는 로직이 있기 때문(CancelledError)</li>
-  <li>
-    <구체적인 설명="" 이미지="">
-</구체적인>
-  </li>
-  <li>위 상황이 발생하는 원인은? 아직 조사 중</li>
-</ul>
+<p>airflow를 운영하는 입장에서 이 문제를 해결하고 싶었고, 해결하기 위해 탐색해나가는 과정을 글로 기록합니다.</p>
+
+<h1 id="kubernetespodoperator의-연속성을-유지하자">KubernetesPodOperator의 연속성을 유지하자</h1>
+
+<p>KubernetesPodOperator(이하 KPO라 적음)는 Pod을 생성하고, 해당 Pod phase가 Running에서 Failed 혹은 Succeeded로 변경되는 지를 감시합니다. 물론, 옵션에 따라 Pod 내부의 base conatiner를 감시하도록 설정할 수 있습니다. 여기서는 단순화하여 Pod phase를 기준으로 설명하겠습니다.</p>
 
 <pre><code class="language-mermaid">sequenceDiagram
-    participant w as Worker
-    participant p as Pod
-    participant t as Triggerer
-    participant table as MySQL(trigger테이블)
-    rect rgb(255, 255, 200)
-    w-&gt;&gt;p: Pod 생성
-    w-&gt;&gt;t: 
+    rect rgba(26, 255, 0, 0.7)
+        Note left of kpo: running
+        participant kpo as KubernetesPodOperator
+        participant p as Pod
+        kpo-&gt;&gt;+p: get_or_create_pod
+        loop
+        kpo-&gt;&gt;p: find_pod
+        p--&gt;&gt;kpo: pod status
+        end
+        p--&gt;&gt;-kpo: Succeeded/Failed
+        kpo-&gt;&gt;p: on_finish_action(delete/keep)
+    end
+    Note left of kpo: success / failed
+</code></pre>
+
+<h2 id="airflow-worker-장애sigkilled-pod-adoption">airflow worker 장애(SIGKILLED): Pod Adoption</h2>
+<p>KPO를 실행 중인 airflow worker가 장애로 인해 갑자기 종료된다면(worker get SIGKILLED) 어떻게 될까요?</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    rect rgba(26, 255, 0, 0.7)
+        Note left of kpo: running
+        participant kpo as KubernetesPodOperator
+        participant p as Pod
+        kpo-&gt;&gt;+p: get_or_create_pod
+        loop
+        kpo-&gt;&gt;p: find_pod
+        p--&gt;&gt;kpo: pod status
+        end
+    end
+    Note over kpo: SIGKILLED
+    rect rgba(255, 0, 0, 0.7)
+        Note left of kpo: failed
+        p--&gt;&gt;-p: Succeeded/Failed
+    end
+</code></pre>
+
+<p>위 다이어그램처럼 SIGKILLED로 인해 KPO가 중간에 비정상종료되더라도 KPO에 의해 생성된 Pod는 계속 실행됩니다. 그리고 Pod가 Succeeded되더라도 KPO 입장에서는 이를 알 수 없기 때문에 failed인 상태로 남아있습니다.</p>
+
+<p>대부분의 경우에 이런 현상이 발생하면 KPO를 재실행(retry)하여 새로운 Pod를 생성하여 작업을 재수행합니다. 하지만 Pod의 러닝타임이 몇 시간씩이나 걸리는 무거운 작업이라면 이는 부담스럽고 복구에 많은 시간이 소요됩니다. 뿐만 아니라 이미 Succeded Pod라면 재실행 자체가 불필요한 시도입니다.</p>
+
+<p>여기서 Pod Adoption이 등장합니다. airflow에 몇가지 설정을 주면 KPO를 재실행했을 때 기존에 KPO가 실행했던 Pod를 입양하여 그 상태를 다시 모니터링합니다.</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    rect rgba(26, 255, 0, 0.7)
+        Note left of kpo: running
+        participant kpo as KubernetesPodOperator
+        participant p as Pod
+        kpo-&gt;&gt;+p: get_or_create_pod
+        loop
+        kpo-&gt;&gt;p: find_pod
+        p--&gt;&gt;kpo: pod status
+        end
+    end
+    Note over kpo: SIGKILLED
+    rect rgba(255, 0, 0, 0.7)
+        Note left of kpo: failed
+        p--&gt;&gt;-p: Succeeded/Failed
+    end
+    rect rgba(26, 255, 0, 0.7)
+        Note left of kpo: running
+        p--&gt;&gt;kpo: Succeeded/Failed
+        kpo-&gt;&gt;p: on_finish_action(delete/keep)
+    end
+</code></pre>
+
+<p>재실행까지 Pod가 완료되지 않아도 로직은 같습니다. 1 try일 때 생성했던 Pod를 그대로 이어받아 Pod Phase를 감시합니다.</p>
+
+<p>이와 같은 Pod Adoptation이 동작하기 위해서는 아래와 같이 <code class="language-plaintext highlighter-rouge">reattach_on_restart=True</code>로 설정하고 반드시 <code class="language-plaintext highlighter-rouge">retries</code>를 2 이상으로 설정해야합니다. reattach(=pod adoption)은 KPO를 재실행(retry)하는 과정에서 기존에 이미 생성된 Pod가 있다면 해당 Pod를 찾아 입양하기 때문입니다. 입양할 Pod는 Pod의 label(dag_id, run_id, task_id로 조합)을 기준으로 찾게됩니다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>task = KubernetesPodOperator(
+    task_id="example_task",
+    namespace="default",
+    image="ubuntu:latest",
+    cmds=["bash", "-c"],
+    arguments=["echo hello &amp;&amp; sleep 300"],
+    reattach_on_restart=True, 
+    retries=2
+    ...
+)
+</code></pre></div></div>
+
+<h2 id="airflow-worker-재배포sigterm-delete-pod">airflow worker 재배포(SIGTERM): Delete Pod</h2>
+<p>worker 장애(SIGKILLED)에 대해서는 위와 같이 대응이 가능했으나 재배포 시에는 SIGKILLED가 아니라 SIGTERM이 발생합니다.</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    rect rgba(26, 255, 0, 0.7)
+        Note left of kpo: running
+        participant kpo as KubernetesPodOperator
+        participant p as Pod
+        kpo-&gt;&gt;+p: get_or_create_pod
+        loop
+        kpo-&gt;&gt;p: find_pod
+        p--&gt;&gt;kpo: pod status
+        end
+    end
+    Note over kpo: SIGTERM
+    rect rgba(255, 0, 0, 0.7)
+    Note left of kpo: failed
+        kpo-&gt;&gt;p: on_kill(delete_pod)
+        p--&gt;&gt;-kpo: pod deleted
     end
     
-    
+    Note left of kpo: success / failed
 </code></pre>
+
+<p>SIGTERM이 발생하면 KPO는 <code class="language-plaintext highlighter-rouge">on_kill</code>을 실행하여 실행 중인 Pod를 삭제해버립니다. KPO를 재실행해도 1 try 때 생성되었던 Pod는 이미 삭제되어 존재하기 때문에 Pod Adoption이 불가능합니다. 즉 위와 같은 설정으로는 airflow worker의 장애에는 대응할 수 있었으나 무중단 배포는 불가능했습니다.</p>
+
+<h2 id="deferrable">Deferrable</h2>
+
+<p>KPO의 deferrable을 적용하면 무중단 배포가 가능합니다. defer란 worker가 해당 task를 실행하지 않고(지연하고) triggerer에게 이관하는 것을 의미힙니다. triggerer는 operator에 정의된 조건을 만족할 때까지 대기하다가, 조건을 만족하면 operator를 다시 재실행합니다.</p>
+
+<p>KPO의 triggerer(KubernetesPodTrigger)는 Pod Phase가 Running을 벗어났을 때 KPO를 다시 실행시킵니다.</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    participant kpo as KPO (Worker)
+    participant t as Triggerer
+    participant p as Pod (K8s)
+
+    rect rgba(26, 255, 0, 0.7)
+        Note left of kpo: running
+        activate kpo
+        kpo-&gt;&gt;p: get_or_create_pod
+        activate p
+        kpo-&gt;&gt;t: defer (상태 모니터링 위임)
+        activate t
+        Note left of kpo: deferred (Worker 슬롯 반환)
+        deactivate kpo
+    end
+
+    rect rgba(255, 255, 0, 0.7)
+        Note over t, p: Triggerer Asynchronous Polling
+        loop Async Check
+            t-&gt;&gt;p: check_pod_status (비동기)
+            p--&gt;&gt;t: pod status (Running)
+        end
+        p--&gt;&gt;t: pod status (Succeeded / Failed)
+    end
+
+    rect rgba(26, 255, 0, 0.7)
+        t-&gt;&gt;kpo: fire event (Task Resume)
+        deactivate t
+        activate kpo
+        Note left of kpo: running (execute_complete)
+        kpo-&gt;&gt;p: fetch logs &amp; delete_pod
+        p--&gt;&gt;kpo: pod deleted
+        deactivate p
+        deactivate kpo
+    end
+    
+    Note left of kpo: success / failed
+</code></pre>
+
+<p>KPO가 실행된 뒤 Pod 생성까지만 성공하고 deferred 상태가 된다면 worker가 SIGKILLED, SIGTERM을 받더라도 관계 없이 Pod는 계속 실행됩니다. triggerer의 장애도 크게 상관 없습니다. triggerer는 poll 방식으로 특정 조건을 만족하면 KPO를 재개하는 event를 발행합니다. triggerer가 잠시 장애가 발생하더라도 재복구되어 끊어졌던 poll을 다시 할 수 있다면 airflow 외부의 Pod의 영속성은 계속 유지됩니다.</p>
+
+<h1 id="triggerdagrunoperator">TriggerDagRunOperator</h1>
+<p>지금까지 KPO를 기준으로 defer의 필요성에 대해 설명했습니다. TriggerDagRunOperator(이하 TDRO)도 KPO와 동일한 패턴을 가지고 있기 때문에 KPO를 적용하기에 적합합니다.</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    participant w as Worker (TriggerDagRunOperator)
+    participant db as Airflow DB (Target DAG)
+
+    rect rgba(26, 255, 0, 0.7)
+        Note left of w: running
+        activate w
+        w-&gt;&gt;db: Trigger Target DAG Run (대상 DAG 실행 요청)
+        activate db
+        
+        loop Synchronous Poke (동기식 상태 확인)
+            w-&gt;&gt;db: check_target_dag_status
+            db--&gt;&gt;w: status (Running)
+            Note left of w: Worker 슬롯 계속 점유 (Blocked)
+        end
+        
+        db--&gt;&gt;w: status (Success / Failed)
+        deactivate db
+        deactivate w
+    end
+    Note left of w: success / failed
+</code></pre>
+
+<p>이처럼 TDRO도 주기적으로 실행시킨 dagrun을 관찰하는 포지션이고 이는 굳이 worker cpu를 계속 점유하며 실행할 이유가 없는 동작입니다. 
+따라서 deferrable을 적용하면 아래와 같은 구조로 실행됩니다.</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    participant w as Worker (TriggerDagRunOperator)
+    participant t as Triggerer
+    participant db as Airflow DB (Target DAG)
+
+    rect rgba(26, 255, 0, 0.7)
+        Note left of w: running
+        activate w
+        w-&gt;&gt;db: Trigger Target DAG Run (대상 DAG 실행 요청)
+        activate db
+        w-&gt;&gt;t: defer (상태 모니터링 위임)
+        activate t
+        Note left of w: deferred (Worker 슬롯 반환)
+        deactivate w
+    end
+
+    rect rgba(255, 255, 0, 0.7)
+        Note over t, db: Triggerer Asynchronous Polling
+        loop Async Check (비동기 상태 확인)
+            t-&gt;&gt;db: check_dag_status (비동기 DB 조회)
+            db--&gt;&gt;t: dag status (Running)
+        end
+        db--&gt;&gt;t: dag status (Success / Failed)
+        deactivate db
+    end
+
+    rect rgba(26, 255, 0, 0.7)
+        t-&gt;&gt;w: fire event (Task Resume)
+        deactivate t
+        activate w
+        Note left of w: running (execute_complete)
+        w--&gt;&gt;w: check event status (최종 결과 확인)
+        deactivate w
+    end
+    
+    Note left of w: success / failed
+
+</code></pre>
+
+<h1 id="deferrable-활성화하기">deferrable 활성화하기</h1>
+
+<p>deferrable을 사용하기 위해선 두가지 작업이 필요합니다.</p>
+
+<h2 id="1-airflow-triggerer-추가">1. airflow triggerer 추가</h2>
+<p>airflow triggerer에 대해 처음 들어보셨을 수도 있습니다. triggerer를 실행하기는 쉽습니다. <code class="language-plaintext highlighter-rouge">airflow triggerer</code> 명령어가 끝입니다. 따로 복잡한 설정이 필요하지도 않습니다. 이미 airflow를 배포할 때 MySQL에 <code class="language-plaintext highlighter-rouge">trigger</code> 테이블도 생성되어 있을 겁니다. helm으롭 배포한다면 triggerer를 배포하는 template만 활성화하도록 수정해주면 됩니다. 보통 triggerer는 2개 이상 배포하여 HA(고가용성)을 확보합니다. 1대가 장애로 인해 다운되더라도 trigger job을 실행하기 위해서입니다.</p>
+
+<h2 id="2-deferrabletrue">2. <code class="language-plaintext highlighter-rouge">deferrable=True</code></h2>
+<p>deferrable이 사용 가능한 Operator에서 명시적으로 <code class="language-plaintext highlighter-rouge">deferrable=True</code>를 입력합니다.</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">task</span> <span class="o">=</span> <span class="n">KubernetesPodOperator</span><span class="p">(</span>
+    <span class="n">task_id</span><span class="o">=</span><span class="s">"example_task"</span><span class="p">,</span>
+    <span class="n">namespace</span><span class="o">=</span><span class="s">"default"</span><span class="p">,</span>
+    <span class="n">image</span><span class="o">=</span><span class="s">"ubuntu:latest"</span><span class="p">,</span>
+    <span class="n">cmds</span><span class="o">=</span><span class="p">[</span><span class="s">"bash"</span><span class="p">,</span> <span class="s">"-c"</span><span class="p">],</span>
+    <span class="n">arguments</span><span class="o">=</span><span class="p">[</span><span class="s">"echo hello &amp;&amp; sleep 300"</span><span class="p">],</span>
+    <span class="n">deferrable</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="p">...</span>
+<span class="p">)</span>
+
+<span class="n">task2</span> <span class="o">=</span> <span class="n">TriggerDagRunOperator</span><span class="p">(</span>
+    <span class="p">...</span>
+    <span class="n">deferrable</span><span class="o">=</span><span class="bp">True</span>
+    <span class="p">...</span>
+<span class="p">)</span>
+</code></pre></div></div>
+
+<p>defer 모드가 있는 모든 Operator를 일괄로 defer 모드로 전환하고 싶다면 <code class="language-plaintext highlighter-rouge">airflow.cfg</code>에서 다음 섹션을 수정하면 됩니다.</p>
+
+<pre><code class="language-cfg"># airflow.cfg
+[operator]
+default_deferrable=True
+</code></pre>
+
+<p>이렇게 설정하면 모든 deferrable이 사용 가능한 operator가 일괄로 defer 모드로 전환됩니다.</p>
+
+<h1 id="kpo--airflow-triggerer-사용기">KPO + airflow triggerer 사용기</h1>
+
+<p>이제부터는 KPO defer 모드로 airflow tirggerer를 사용하면서 겪었던 사례들에 대해 설명해보려고 합니다.triggerer 2대를 사용하면서 발생하는 race condition에 대한 디버깅 사례입니다.</p>
+
+<p>최신 버전을 사용하는 경우에 아래 내용은 의미가 없을 수 있지만 airflow 내부 동작을 이해하는 경험이었어서 정리해봅니다.</p>
+
+<h2 id="use_row_level_locking">use_row_level_locking</h2>
+
+<ol>
+  <li>triggerer를 2대 이상 운영한다</li>
+  <li>providers-cncf-kubernetes==7.14 버전을 사용한다 (최신 버전에서는 개선되었음)</li>
+</ol>
+
+<p>위 두 가지 조건에 모두 해당되고, 아래처럼 설정했다면 이런 현상이 발생할 수 있습니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>use_row_level_locking=False # default: True
+</code></pre></div></div>
+
+<p>보통 건드리지 않는 설정이긴 하지만, scheduler를 1개만 사용하고 있다면 설정하는 경우가 있기도 합니다.</p>
+
+<p>위 옵션을 적용하면 airflow 내부의 모든 쿼리가 <code class="language-plaintext highlighter-rouge">SELECT ... FOR UPDATE</code> 대신 단순히 <code class="language-plaintext highlighter-rouge">SELECT</code>만 실행하게 되어 성능이 조금 빨라지는 장점이 있습니다. 그러나 UPDATE를 위한 LOCK을 걸지 않기 때문에 아래와 같은 케이스가 발생할 수 있습니다.</p>
+
+<p>triggerer는 TriggerJob을 할당받기 위해 아직 할당되지 않은 TriggerJob을 검색합니다. 
+<code class="language-plaintext highlighter-rouge">Trigger.get_sorted_triggers</code>가 이 역할입니다. 이 함수는 아래와 같은 쿼리를 실행합니다.</p>
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="k">trigger</span><span class="p">.</span><span class="n">id</span>
+<span class="k">FROM</span> <span class="k">trigger</span>
+<span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">task_instance</span> 
+    <span class="k">ON</span> <span class="k">trigger</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">task_instance</span><span class="p">.</span><span class="n">trigger_id</span>
+<span class="k">WHERE</span> <span class="k">trigger</span><span class="p">.</span><span class="n">triggerer_id</span> <span class="k">IS</span> <span class="k">NULL</span> 
+   <span class="k">OR</span> <span class="k">trigger</span><span class="p">.</span><span class="n">triggerer_id</span> <span class="k">NOT</span> <span class="k">IN</span> <span class="p">(:</span><span class="n">alive_triggerer_ids_1</span><span class="p">,</span> <span class="p">:</span><span class="n">alive_triggerer_ids_2</span><span class="p">,</span> <span class="p">...)</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">COALESCE</span><span class="p">(</span><span class="n">task_instance</span><span class="p">.</span><span class="n">priority_weight</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">DESC</span><span class="p">,</span> <span class="k">trigger</span><span class="p">.</span><span class="n">created_date</span> <span class="k">ASC</span>
+<span class="k">LIMIT</span> <span class="p">:</span><span class="n">capacity</span><span class="p">;</span>
+</code></pre></div></div>
+<p>위 쿼리의 실행 결과는 triggerer를 할당받지 못한 TriggerJob들이고 이 TriggerJob들에 대해서 triggerer를 할당하게 됩니다.</p>
+
+<p>이때 triggerer-0, triggerer-1이 동시에 위 쿼리를 실행하면 동일한 TriggerJob을 2개의 triggerer가 동시에 할당받게됩니다.</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    autonumber
+    participant T0 as triggerer-0
+    participant DB as Airflow DB (trigger 테이블)
+    participant T1 as triggerer-1
+
+    Note over T0, T1: Race Condition 발생 우려 구간
+
+    rect rgb(141, 238, 245)
+        Note over T0, DB: 1. 동시에 get_sorted_triggers 실행 (SELECT)
+        T0-&gt;&gt;DB: SELECT unassigned triggers
+        T1-&gt;&gt;DB: SELECT unassigned triggers
+        
+        DB--&gt;&gt;T0: Return [TriggerJob-A]
+        DB--&gt;&gt;T1: Return [TriggerJob-A]
+    end
+
+    rect rgb(255, 166, 0)
+        Note over T0, DB: 2. 동시에 할당 시도 (UPDATE)
+        T0-&gt;&gt;DB: UPDATE trigger SET triggerer_id = 'triggerer-0' WHERE id = 'TriggerJob-A'
+        T1-&gt;&gt;DB: UPDATE trigger SET triggerer_id = 'triggerer-1' WHERE id = 'TriggerJob-A'
+        
+        DB--&gt;&gt;T0: Update Success
+        DB--&gt;&gt;T1: Update Success (T0의 결과를 덮어쓰기)
+    end
+    
+    Note over T0, T1: 우려되는 결과: 동일한 TriggerJob-A를 두 Triggerer가 동시에 자신의 메모리에 올리고 실행
+</code></pre>
+
+<p>이처럼 거의 동시에 2개의 triggerer(예: triggerer-0, triggerer-1)가 동일한 TriggerJob을 조회하여 경합(Race Condition)이 발생하면, TriggerJob을 할당받은 2대의 triggerer에서 강제 종료 신호(asyncio.CancelledError)가 발생합니다.</p>
+
+<p>문제는 triggerer 내부에서 실행 중인 코드 로직이 이 에러를 조용히 무시하지 않고, 작업을 끝내도록 이벤트(TriggerEvent)를 반환해 버린다는 점입니다. 이때 <code class="language-plaintext highlighter-rouge">KubernetesPodTriggerer</code>는 <a href="https://github.com/apache/airflow/blob/providers-cncf-kubernetes/7.14.0/airflow/providers/cncf/kubernetes/triggers/pod.py#L204"><code class="language-plaintext highlighter-rouge">CancellerError</code>를 발생시킵니다</a>. 이를 전달받은 Airflow 코어는 작업이 완료되었다고 착각하여 trigger 테이블에서 해당 TriggerJob 레코드를 영구 삭제해 버립니다.</p>
+
+<p>결과적으로 정당하게 할당받아 모니터링을 수행 중이던 triggerer-0은, 다음 상태 확인 주기에 DB에서 자신의 담당 레코드가 흔적 없이 사라진 것을 발견합니다. 이를 사용자에 의한 삭제로 오판한 triggerer-0마저 자신의 TriggerJob을 취소(Cancel)하게 되면서, 최종적으로 작업이 유실되는 연쇄 실패가 발생합니다.</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    autonumber
+    participant T0_Async as T0 (Async Thread)
+    participant T0_Main as T0 (Main Thread)
+    participant DB as Airflow DB (trigger 테이블)
+    participant T1_Main as T1 (Main Thread)
+    participant T1_Async as T1 (Async Thread)
+
+    Note over T0_Main, T1_Main: 1. 동시 조회 (Race Condition 발생)
+    T0_Main-&gt;&gt;DB: SELECT (할당되지 않은 TriggerJob 조회)
+    T1_Main-&gt;&gt;DB: SELECT (할당되지 않은 TriggerJob 조회)
+    DB--&gt;&gt;T0_Main: [TriggerJob-A] 반환
+    DB--&gt;&gt;T1_Main: [TriggerJob-A] 반환
+
+    rect rgb(255, 166, 0)
+        Note over T0_Main, T1_Main: 2. 맹목적인 UPDATE (Blind Overwrite)
+        T0_Main-&gt;&gt;DB: UPDATE triggerer_id='T0' WHERE id='TriggerJob-A'
+        T1_Main-&gt;&gt;DB: UPDATE triggerer_id='T1' WHERE id='TriggerJob-A'
+        Note left of DB: 낙관적 락(Optimistic Lock) 부재로 인해&lt;br/&gt;T0의 소유권을 T1이 무조건 덮어씀!
+    end
+
+    Note over T0_Async, T1_Async: 3. 검증 누락 및 동시 시작 (Starting 로그 발생 지점)
+    T0_Main-&gt;&gt;T0_Async: 내 DB 커밋이 성공했으니 TriggerJob-A 실행해!
+    Note left of T0_Async: "Starting trigger TriggerJob-A" 로그 출력&lt;br/&gt;(메모리 상에서 모니터링 시작)
+    T1_Main-&gt;&gt;T1_Async: 내 DB 커밋이 성공했으니 TriggerJob-A 실행해!
+    Note right of T1_Async: "Starting trigger TriggerJob-A" 로그 출력&lt;br/&gt;(메모리 상에서 모니터링 시작)
+
+    Note over T0_Main, DB: 4. 다음 Heartbeat 주기 (T0의 소유권 상실 인지)
+    T0_Main-&gt;&gt;DB: 현재 내 소유(triggerer_id='T0')인 작업들 목록 줘
+    DB--&gt;&gt;T0_Main: [빈 목록] (T1이 가져갔으므로 TriggerJob-A 없음)
+    
+    rect rgb(255, 0, 0)
+        Note over T0_Main, T0_Async: 5. 강제 취소 및 CancelledError 폭발
+        T0_Main-&gt;&gt;T0_Async: DB 확인해 보니 우리 작업이 아니네. task.cancel() 날려!
+        Note left of T0_Async: KPO 코루틴 내부에서&lt;br/&gt;asyncio.CancelledError 발생! 💥
+        Note left of T0_Async: (이후 KPO의 잘못된 예외 처리 로직이 발동하여&lt;br/&gt;이벤트를 반환하고 DB를 날려버리는 연쇄 파국 시작)
+    end
+</code></pre>
+
+<p>다이어그램엔 없지만, T0이 TriggerJob에 해당하는 레코드를 삭제해 버리기 때문에 T1도 다음 HeartBeat에서 본인이 실행해야하는 TriggerJob을 취소(CancellerError)를 발생시키게 됩니다(그리고 어차피 KPO가 재개되어 Running이기 때문에 T1이 발생시키는 TriggerEvent를 수신할 KPO도 존재하지 않습니다).</p>
+
+<p>이를 방지하는 방법은 간단합니다.</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>use_row_level_locking=True
+</code></pre></div></div>
+<p><code class="language-plaintext highlighter-rouge">SELECT ... FOR UPDATE</code> 쿼리가 실행되도록 하면 T0, T1가 동일한 TriggerJob을 절대 할당받을 수 없으므로 위 시나리오는 발생하지 않습니다.</p>
+
+<h2 id="slow-query로-인한-heartbeat-latency">slow query로 인한 Heartbeat Latency</h2>
+
+<ol>
+  <li>triggerer를 2대 이상 운영한다</li>
+  <li>airflow &lt; 3.01 버전을 사용한다 (최신 버전에서는 개선되었음)</li>
+  <li><code class="language-plaintext highlighter-rouge">task_instance</code> 테이블 사이즈가 매우 크다(airflow 운영을 오래했고 airflow db clean을 정기적으로 실행하지 않았다)</li>
+</ol>
+
+<p>위 두 가지 조건에 모두 해당되는 경우에 발생할 수 있습니다.</p>
+
+<p>Lock을 걸고 나서는 triggerer 간의 경합이 발생하지 않을거라 생각했지만, 실제는 달랐습니다.
+이번에는 Heartbeat 지연으로 인해 triggerer 간의 경합이 발생했습니다.</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    autonumber
+    participant T0 as triggerer-0
+    participant DB as Airflow DB
+    participant T1 as triggerer-1
+
+    Note over T0, DB: 1. triggerer-0이 TriggerJobA 할당
+    T0-&gt;&gt;DB: 할당 가능한 TriggerJob 조회 및 UPDATE
+    DB--&gt;&gt;T0: TriggerJobA 할당 완료 (triggerer_id='T0')
+    T0-&gt;&gt;T0: 로컬 메모리에서 TriggerJobA 실행 시작
+
+    rect rgb(255, 166, 0)
+        Note over T0, DB: 2. Heartbeat 지연 및 임계치 초과
+        Note left of T0: 정상적인 작동 중임에도 통신 지연
+        T0-xDB: Heartbeat 갱신 실패 (지연)
+        Note over DB: T0의 마지막 갱신 시간이&lt;br/&gt;triggerer_health_check_threshold 초과&lt;br/&gt;(DB는 T0를 down 상태로 간주)
+    end
+
+    rect rgb(255, 0, 0)
+        Note over DB, T1: 3. triggerer-1의 재할당 (소유권 탈취)
+        T1-&gt;&gt;DB: 죽은 triggerer(T0)의 고아(Orphan) TriggerJob 조회
+        DB--&gt;&gt;T1: TriggerJobA 반환
+        T1-&gt;&gt;DB: UPDATE triggerer_id='T1' WHERE id='TriggerJobA'
+        DB--&gt;&gt;T1: 할당 성공 (T1으로 덮어쓰기)
+        T1-&gt;&gt;T1: 로컬 메모리에서 TriggerJobA 실행 시작
+    end
+
+    Note over T0, T0: 4. triggerer-0 실제 동작 재개
+    Note left of T0: T0는 down된 적이 없으므로&lt;br/&gt;블로킹이 풀리자마자 원래 작업(TriggerJobA) 계속 수행
+
+    rect rgb(255, 100, 100)
+        Note over T0, T1: 5. 동시 수행 중 CancelledError 발생
+        Note over T0, T1: 두 Triggerer가 동일한 작업을 동시에 돌리는 상태 (Split Brain)
+        T0-&gt;&gt;DB: 뒤늦게 다음 Heartbeat 주기 도래 / 상태 확인
+        DB--&gt;&gt;T0: TriggerJobA의 주인이 'T1'으로 변경됨을 확인
+        Note left of T0: 소유권을 잃었음을 인지하고&lt;br/&gt;자신의 비동기 작업을 취소(Cancel)
+        Note left of T0: asyncio.CancelledError 발생! 💥
+    end
+</code></pre>
+
+<p>이러한 시나리오가 발생하는 근본적인 원인은 T0에서 발생한 heartbeat 지연 때문이고 제 경우에는 이는 slow query때문이었습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">Trigger.get_sorted_triggers</code>에서 실행했던 쿼리가 기억 나시나요?</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">SELECT</span> <span class="k">trigger</span><span class="p">.</span><span class="n">id</span>
+<span class="k">FROM</span> <span class="k">trigger</span>
+<span class="k">INNER</span> <span class="k">JOIN</span> <span class="n">task_instance</span> 
+    <span class="k">ON</span> <span class="k">trigger</span><span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">task_instance</span><span class="p">.</span><span class="n">trigger_id</span>
+<span class="k">WHERE</span> <span class="k">trigger</span><span class="p">.</span><span class="n">triggerer_id</span> <span class="k">IS</span> <span class="k">NULL</span> 
+   <span class="k">OR</span> <span class="k">trigger</span><span class="p">.</span><span class="n">triggerer_id</span> <span class="k">NOT</span> <span class="k">IN</span> <span class="p">(:</span><span class="n">alive_triggerer_ids_1</span><span class="p">,</span> <span class="p">:</span><span class="n">alive_triggerer_ids_2</span><span class="p">,</span> <span class="p">...)</span>
+<span class="k">ORDER</span> <span class="k">BY</span> <span class="n">COALESCE</span><span class="p">(</span><span class="n">task_instance</span><span class="p">.</span><span class="n">priority_weight</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">DESC</span><span class="p">,</span> <span class="k">trigger</span><span class="p">.</span><span class="n">created_date</span> <span class="k">ASC</span>
+<span class="k">LIMIT</span> <span class="p">:</span><span class="n">capacity</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>이 쿼리는 <code class="language-plaintext highlighter-rouge">trigger</code>, <code class="language-plaintext highlighter-rouge">task_instance</code> 2개의 테이블이 사용됩니다. airflow 내에서 실제로 실행될 때는 session 내에서 alive_triggerer_ids를 획득하는 쿼리가 서브쿼리 형태로 실행되기 때문에 <code class="language-plaintext highlighter-rouge">job</code>까지 총 3개의 테이블이 사용됩니다.</p>
+
+<p>쿼리 자체가 항상 문제가 되는 것은 아닙니다만, 이 쿼리는 <code class="language-plaintext highlighter-rouge">task_instance</code> 테이블 사이즈가 커지면 driving table이 <code class="language-plaintext highlighter-rouge">trigger</code>에서 <code class="language-plaintext highlighter-rouge">task_instance</code>로 변경됩니다. driving table이 변경되면 <code class="language-plaintext highlighter-rouge">task_instance에는</code> 필터링이 없기 때문에 해당 테이블을 FullScan하게 되고 실행 시간이 10초 이상 소요되는 slow query가 됩니다.</p>
+
+<p>triggerer는 매 loop마다 위 쿼리를 실행하므로 이 쿼리 완료에 10초 이상이 소요되면 hearbeat 지연이 더 자주 발생하고 위의 시퀀스처럼 TriggerJob 탈취 현상이 더 자주 발생하는 것입니다.</p>
+
+<p>해결책은 크게 두 가지입니다.</p>
+
+<h2 id="airflow-301-이상으로-업데이트">airflow 3.01 이상으로 업데이트</h2>
+
+<p>해당 쿼리의 문제점은 이 <a href="https://github.com/apache/airflow/pull/46303">PR</a>에서 보고되었고 해결책으로 JOIN HINT(<code class="language-plaintext highlighter-rouge">STRAIGHT_JOIN</code>)을 추가했습니다. 따라서 airflow 3.1에서는 위와 같은 slow query 이슈가 해결되었습니다.</p>
+
+<h2 id="task_instance-테이블-정리"><code class="language-plaintext highlighter-rouge">task_instance</code> 테이블 정리</h2>
+
+<p>이 현상은 <code class="language-plaintext highlighter-rouge">task_instance</code>의 크기가 매우 큰 경우에만 발생합니다. 따라서 <code class="language-plaintext highlighter-rouge">airflow db clean</code> 명령어를 이용하여 해당 테이블의 레코드를 삭제해주면 쿼리 실행 계획이 다시 <code class="language-plaintext highlighter-rouge">trigger</code>를 driving table로 사용하면서 자연스레 해결됩니다.</p>
 
 <p>[참고]</p>
 
@@ -565,19 +981,19 @@ into the {body} of the default.hbs template -->
 <!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
 <div class="floating-header">
     <div class="floating-header-logo">
-        <a href="http://localhost:4000/">
+        <a href="https://gyuhoonk.github.io/">
             
             <span>Gyuhoon Kim</span>
         </a>
     </div>
     <span class="floating-header-divider">&mdash;</span>
-    <div class="floating-header-title">airflow triggerer</div>
+    <div class="floating-header-title">Airflow Triggerer 사용기</div>
     <div class="floating-header-share">
         <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
     <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
 </svg>
 </div>
-        <a class="floating-header-share-tw" href="https://twitter.com/share?text=airflow+triggerer&amp;url=https://gyuhoonk.github.ioairflow-triggerer"
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Airflow+Triggerer+%EC%82%AC%EC%9A%A9%EA%B8%B0&amp;url=https://gyuhoonk.github.ioairflow-triggerer"
             onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
 
@@ -607,7 +1023,7 @@ into the {body} of the default.hbs template -->
         <!-- The footer at the very bottom of the screen -->
         <footer class="site-footer outer">
             <div class="site-footer-content inner">
-                <section class="copyright"><a href="http://localhost:4000/">Gyuhoon Kim</a> &copy; 2026</section>
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2026</section>
                 <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
                     <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
                     <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
