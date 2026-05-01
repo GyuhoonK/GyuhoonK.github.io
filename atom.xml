@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>DAG 순환 참조 판별 알고리즘 — Airflow와 dbt는 어떻게 검증할까</title>
+        
+          <description>&lt;p&gt;Airflow와 dbt가 DAG의 비순환 여부를 어떤 자료구조와 알고리즘으로 검증하는지 알아봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Fri, 01 May 2026 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/dag-cycle-detection</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/dag-cycle-detection</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>Airflow Triggerer 사용기</title>
         
           <description>&lt;p&gt;Airflow Triggerer를 사용하면서 겪었던 장애를 정리합니다.&lt;/p&gt;

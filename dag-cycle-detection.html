@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>DAG 순환 참조 판별 알고리즘 — Airflow와 dbt는 어떻게 검증할까</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    </script>
+<meta name="description" content="Data Engineering" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/dag-cycle-detection" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="DAG 순환 참조 판별 알고리즘 — Airflow와 dbt는 어떻게 검증할까" />
+    <meta property="og:description" content="Airflow와 dbt가 DAG의 비순환 여부를 어떤 자료구조와 알고리즘으로 검증하는지 알아봅니다. 왜 DAG는 검증되어야 할까 데이터 파이프라인을 다루는 오픈소스 도구는 거의 예외 없이 작업 간 의존 관계를 DAG(Directed Acyclic Graph, 방향성 비순환 그래프) 로 모델링합니다. Airflow의 task 의존성, dbt의 모델 ref() 의존성이 모두 그렇습니다. 그런데 사용자가 정의한 그래프가 정말로 DAG인지, 즉" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/dag-cycle-detection" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/algorithm/dag-cycle-detection.svg" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2026-05-01T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2026-05-01T22:30:00+09:00" />
+    <meta property="article:tag" content="Algorithm" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="DAG 순환 참조 판별 알고리즘 — Airflow와 dbt는 어떻게 검증할까" />
+    <meta name="twitter:description" content="Airflow와 dbt가 DAG의 비순환 여부를 어떤 자료구조와 알고리즘으로 검증하는지 알아봅니다. 왜 DAG는 검증되어야 할까 데이터 파이프라인을 다루는 오픈소스 도구는 거의 예외 없이 작업 간 의존 관계를 DAG(Directed Acyclic Graph, 방향성 비순환 그래프) 로 모델링합니다. Airflow의 task 의존성, dbt의 모델 ref() 의존성이 모두 그렇습니다. 그런데 사용자가 정의한 그래프가 정말로 DAG인지, 즉" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/algorithm/dag-cycle-detection.svg" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Algorithm" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "https://gyuhoonk.github.io/"
+    },
+    "url": "https://gyuhoonk.github.io/dag-cycle-detection",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://gyuhoonk.github.io/assets/built/images/algorithm/dag-cycle-detection.svg",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://gyuhoonk.github.io/dag-cycle-detection"
+    },
+    "description": "Airflow와 dbt가 DAG의 비순환 여부를 어떤 자료구조와 알고리즘으로 검증하는지 알아봅니다. 왜 DAG는 검증되어야 할까 데이터 파이프라인을 다루는 오픈소스 도구는 거의 예외 없이 작업 간 의존 관계를 DAG(Directed Acyclic Graph, 방향성 비순환 그래프) 로 모델링합니다. Airflow의 task 의존성, dbt의 모델 ref() 의존성이 모두 그렇습니다. 그런데 사용자가 정의한 그래프가 정말로 DAG인지, 즉"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="DAG 순환 참조 판별 알고리즘 — Airflow와 dbt는 어떻게 검증할까" href="/feed.xml" />
+ <script type="module">
+ import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+ mermaid.initialize({ startOnLoad: true });
+ await mermaid.run({
+     querySelector: '.language-mermaid',
+ });
+</script>
+    
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/kubernetes/">kubernetes</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-algorithm post tag-algorithm ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime=" 1 May 2026"> 1 May 2026</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/algorithm/'>ALGORITHM</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">DAG 순환 참조 판별 알고리즘 — Airflow와 dbt는 어떻게 검증할까</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/algorithm/dag-cycle-detection.svg)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>Airflow와 dbt가 DAG의 비순환 여부를 어떤 자료구조와 알고리즘으로 검증하는지 알아봅니다.</p>
+
+<h1 id="왜-dag는-검증되어야-할까">왜 DAG는 검증되어야 할까</h1>
+
+<p>데이터 파이프라인을 다루는 오픈소스 도구는 거의 예외 없이 작업 간 의존 관계를 <strong>DAG(Directed Acyclic Graph, 방향성 비순환 그래프)</strong> 로 모델링합니다. Airflow의 task 의존성, dbt의 모델 <code class="language-plaintext highlighter-rouge">ref()</code> 의존성이 모두 그렇습니다.</p>
+
+<p>그런데 사용자가 정의한 그래프가 <strong>정말로 DAG인지</strong>, 즉 사이클이 없는지를 누군가는 확인해줘야 합니다. 사이클이 존재하면 실행 순서 자체를 결정할 수 없기 때문에, “DAG”라는 이름은 사용자와의 약속이 아니라 도구가 <strong>검증해야 할 제약</strong>에 가깝습니다.</p>
+
+<h1 id="사이클-판별-알고리즘-두-갈래">사이클 판별 알고리즘 두 갈래</h1>
+
+<p>방향 그래프에서 사이클을 찾는 고전적인 방법은 크게 두 가지가 있습니다. 둘 다 시간복잡도는 \(O(V+E)\)로 동일하지만 사용 목적이 조금 다릅니다.</p>
+
+<h2 id="a-dfs-3-color-white--gray--black">(A) DFS 3-color (White / Gray / Black)</h2>
+
+<p>각 노드를 세 가지 상태로 관리하면서 깊이 우선 탐색을 수행합니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>상태</th>
+      <th>의미</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>White</td>
+      <td>아직 방문하지 않은 노드</td>
+    </tr>
+    <tr>
+      <td>Gray</td>
+      <td>현재 DFS 경로에 포함된 노드(탐색 중)</td>
+    </tr>
+    <tr>
+      <td>Black</td>
+      <td>자식까지 모두 탐색이 끝난 노드</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>탐색 중 인접 노드가 Gray 상태라면 <strong>back-edge</strong>(현재 경로로 되돌아가는 간선)를 발견한 것이고, 이는 곧 사이클이 존재한다는 의미입니다.</p>
+
+<p>상태 전이 자체는 다음과 같이 단순합니다.</p>
+
+<pre><code class="language-mermaid">stateDiagram-v2
+    [*] --&gt; White
+    White --&gt; Gray: DFS 진입
+    Gray --&gt; Black: 자식 탐색 완료
+    Gray --&gt; CycleDetected: GRAY 노드로의 간선 발견 (back-edge)
+    Black --&gt; [*]
+    CycleDetected --&gt; [*]: 예외 발생
+</code></pre>
+
+<p><code class="language-plaintext highlighter-rouge">A → B → C → A</code> 형태의 작은 사이클을 예로 들면, A에서 시작한 DFS가 다음과 같이 진행됩니다. 마지막 단계에서 C가 자기 인접 노드 A를 보는 순간 A는 이미 Gray이므로 곧바로 사이클로 판정됩니다.</p>
+
+<pre><code class="language-mermaid">flowchart TB
+    subgraph s1 ["Step 1: A 진입"]
+        direction LR
+        a1((A)):::gray --&gt; b1((B)):::white
+        b1 --&gt; c1((C)):::white
+        c1 --&gt; a1
+    end
+
+    subgraph s2 ["Step 2: B 진입"]
+        direction LR
+        a2((A)):::gray --&gt; b2((B)):::gray
+        b2 --&gt; c2((C)):::white
+        c2 --&gt; a2
+    end
+
+    subgraph s3 ["Step 3: C 진입 → back-edge!"]
+        direction LR
+        a3((A)):::gray --&gt; b3((B)):::gray
+        b3 --&gt; c3((C)):::gray
+        c3 ==&gt;|"GRAY 발견 → cycle"| a3
+    end
+
+    s1 ~~~ s2 ~~~ s3
+
+    classDef white fill:#ffffff,stroke:#374151,color:#111827
+    classDef gray fill:#9ca3af,stroke:#374151,color:#ffffff
+    classDef black fill:#1f2937,stroke:#000000,color:#ffffff
+</code></pre>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">WHITE</span><span class="p">,</span> <span class="n">GRAY</span><span class="p">,</span> <span class="n">BLACK</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">has_cycle</span><span class="p">(</span><span class="n">graph</span><span class="p">):</span>
+    <span class="n">color</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="n">WHITE</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">dfs</span><span class="p">(</span><span class="n">u</span><span class="p">):</span>
+        <span class="n">color</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="n">GRAY</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">color</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="n">GRAY</span><span class="p">:</span>        <span class="c1"># back-edge → cycle
+</span>                <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">if</span> <span class="n">color</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="n">WHITE</span> <span class="ow">and</span> <span class="n">dfs</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">True</span>
+        <span class="n">color</span><span class="p">[</span><span class="n">u</span><span class="p">]</span> <span class="o">=</span> <span class="n">BLACK</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="n">color</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="n">WHITE</span> <span class="ow">and</span> <span class="n">dfs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>DFS 방식의 장점은 사이클을 발견했을 때 <strong>사이클을 구성하는 노드 경로</strong> 자체를 그대로 보고할 수 있다는 점입니다.</p>
+
+<h2 id="b-kahns-algorithm-in-degree-위상정렬">(B) Kahn’s Algorithm (in-degree 위상정렬)</h2>
+
+<h3 id="in-degree란">in-degree란</h3>
+
+<p><strong>in-degree(진입 차수)</strong> 는 한 노드로 <strong>들어오는</strong> 간선의 개수입니다. 노드 <code class="language-plaintext highlighter-rouge">v</code>를 향하는 간선 <code class="language-plaintext highlighter-rouge">* → v</code>가 몇 개인지 세면 됩니다. 반대로 <code class="language-plaintext highlighter-rouge">v</code>에서 나가는 간선의 개수는 out-degree(진출 차수)라고 부릅니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">A → B</code>, <code class="language-plaintext highlighter-rouge">A → C</code>, <code class="language-plaintext highlighter-rouge">B → D</code>, <code class="language-plaintext highlighter-rouge">C → D</code>라는 작은 DAG를 예로 들어보겠습니다.</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    A(("A&lt;br/&gt;in=0")):::src --&gt; B(("B&lt;br/&gt;in=1")):::mid
+    A --&gt; C(("C&lt;br/&gt;in=1")):::mid
+    B --&gt; D(("D&lt;br/&gt;in=2")):::sink
+    C --&gt; D
+
+    classDef src fill:#ecfccb,stroke:#365314,color:#111827
+    classDef mid fill:#ffffff,stroke:#374151,color:#111827
+    classDef sink fill:#fee2e2,stroke:#7f1d1d,color:#111827
+</code></pre>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">A</code>: 들어오는 간선이 없으므로 0</li>
+  <li><code class="language-plaintext highlighter-rouge">B</code>: <code class="language-plaintext highlighter-rouge">A → B</code> 한 개라 1</li>
+  <li><code class="language-plaintext highlighter-rouge">C</code>: <code class="language-plaintext highlighter-rouge">A → C</code> 한 개라 1</li>
+  <li><code class="language-plaintext highlighter-rouge">D</code>: <code class="language-plaintext highlighter-rouge">B → D</code>, <code class="language-plaintext highlighter-rouge">C → D</code> 두 개라 2</li>
+</ul>
+
+<p>DAG의 시작점은 항상 <strong>in-degree가 0인 노드</strong>입니다. 사이클이 있는 그래프에서는 사이클을 구성하는 모든 노드가 서로를 가리키기 때문에, 그 노드들 중 in-degree가 0인 것이 단 하나도 존재하지 않습니다. 이 성질을 그대로 알고리즘으로 옮긴 것이 Kahn’s입니다.</p>
+
+<h3 id="알고리즘-진행">알고리즘 진행</h3>
+
+<p>진입 차수가 0인 노드를 큐에서 하나씩 꺼내고, 그 노드와 연결된 간선을 제거하면서 다른 노드의 in-degree를 갱신합니다. 모든 노드를 큐에서 꺼내면 위상정렬에 성공한 것이고, 끝까지 꺼낼 수 없는 노드가 남으면 그 노드들이 사이클에 속한다는 뜻입니다.</p>
+
+<p>위와 같은 DAG로 단계별 진행을 추적해보겠습니다. 각 노드 옆 괄호는 그 시점의 in-degree, 색깔은 노드 상태(흰색=대기, 회색=큐 안, 검정=처리 완료)를 의미합니다.</p>
+
+<pre><code class="language-mermaid">flowchart TB
+    subgraph k1 ["Step 1: 초기 — A의 in-degree만 0이라 큐에 들어감"]
+        direction LR
+        a1(["A (0)"]):::gray --&gt; b1(["B (1)"]):::white
+        a1 --&gt; c1(["C (1)"]):::white
+        b1 --&gt; d1(["D (2)"]):::white
+        c1 --&gt; d1
+    end
+
+    subgraph k2 ["Step 2: A 처리 → B, C in-degree 감소 후 큐 진입"]
+        direction LR
+        a2(["A (0)"]):::black --&gt; b2(["B (0)"]):::gray
+        a2 --&gt; c2(["C (0)"]):::gray
+        b2 --&gt; d2(["D (2)"]):::white
+        c2 --&gt; d2
+    end
+
+    subgraph k3 ["Step 3: B, C 처리 → D in-degree 0으로 큐 진입"]
+        direction LR
+        a3((A)):::black --&gt; b3((B)):::black
+        a3 --&gt; c3((C)):::black
+        b3 --&gt; d3(["D (0)"]):::gray
+        c3 --&gt; d3
+    end
+
+    subgraph k4 ["Step 4: D 처리 → 큐 빔, visited = 4 = |V| (사이클 없음)"]
+        direction LR
+        a4((A)):::black --&gt; b4((B)):::black
+        a4 --&gt; c4((C)):::black
+        b4 --&gt; d4((D)):::black
+        c4 --&gt; d4
+    end
+
+    k1 ~~~ k2 ~~~ k3 ~~~ k4
+
+    classDef white fill:#ffffff,stroke:#374151,color:#111827
+    classDef gray fill:#9ca3af,stroke:#374151,color:#ffffff
+    classDef black fill:#1f2937,stroke:#000000,color:#ffffff
+</code></pre>
+
+<p>반대로 사이클이 있는 그래프(<code class="language-plaintext highlighter-rouge">A → B → C → A</code>)에서는 모든 노드의 in-degree가 1 이상이라 <strong>초기 큐가 비어 있는 상태에서 시작</strong>합니다. 큐에 아무것도 들어오지 못한 채 루프가 끝나고 <code class="language-plaintext highlighter-rouge">visited = 0 ≠ |V| = 3</code>이 되어 사이클로 판정됩니다.</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    A(["A (1)"]):::white --&gt; B(["B (1)"]):::white
+    B --&gt; C(["C (1)"]):::white
+    C ==&gt;|"in-degree 0 노드 없음"| A
+
+    classDef white fill:#ffffff,stroke:#374151,color:#111827
+</code></pre>
+
+<p>다만 이 예시는 <strong>알고리즘이 시작도 못 하고 끝나버리는</strong> 극단적인 경우라, 칸 알고리즘이 실제로 어떻게 사이클을 “찾아내는지”를 보여주기엔 부족합니다. 좀 더 일반적인 케이스, 즉 <strong>그래프 일부는 정상 DAG이고 특정 영역에만 사이클이 있는</strong> 상황에서는 알고리즘이 중간까지 정상적으로 진행되다가 멈추는 모습을 볼 수 있습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">A → B → C → D → E</code>라는 파이프라인 끝부분에 <code class="language-plaintext highlighter-rouge">E → C</code> 간선이 추가되어 <code class="language-plaintext highlighter-rouge">C → D → E → C</code> 사이클이 생긴 그래프를 예로 들어보겠습니다.</p>
+
+<pre><code class="language-mermaid">flowchart TB
+    subgraph c1 ["Step 1: 초기 — A만 in-degree 0이라 큐에 들어감"]
+        direction LR
+        a1(["A (0)"]):::gray --&gt; b1(["B (1)"]):::white
+        b1 --&gt; c1n(["C (2)"]):::white
+        c1n --&gt; d1(["D (1)"]):::white
+        d1 --&gt; e1(["E (1)"]):::white
+        e1 --&gt; c1n
+    end
+
+    subgraph c2 ["Step 2: A 처리 → B in-degree 0으로 큐 진입"]
+        direction LR
+        a2(["A (0)"]):::black --&gt; b2(["B (0)"]):::gray
+        b2 --&gt; c2n(["C (2)"]):::white
+        c2n --&gt; d2(["D (1)"]):::white
+        d2 --&gt; e2(["E (1)"]):::white
+        e2 --&gt; c2n
+    end
+
+    subgraph c3 ["Step 3: B 처리 → C in-degree 1로 감소 (여전히 0 아님)"]
+        direction LR
+        a3((A)):::black --&gt; b3((B)):::black
+        b3 --&gt; c3n(["C (1)"]):::white
+        c3n --&gt; d3(["D (1)"]):::white
+        d3 --&gt; e3(["E (1)"]):::white
+        e3 --&gt; c3n
+    end
+
+    subgraph c4 ["Step 4: 큐 빔 → visited = 2 ≠ |V| = 5 → 사이클 판정"]
+        direction LR
+        a4((A)):::black --&gt; b4((B)):::black
+        b4 --&gt; c4n(["C (1)"]):::stuck
+        c4n --&gt; d4(["D (1)"]):::stuck
+        d4 --&gt; e4(["E (1)"]):::stuck
+        e4 --&gt; c4n
+    end
+
+    c1 ~~~ c2 ~~~ c3 ~~~ c4
+
+    classDef white fill:#ffffff,stroke:#374151,color:#111827
+    classDef gray fill:#9ca3af,stroke:#374151,color:#ffffff
+    classDef black fill:#1f2937,stroke:#000000,color:#ffffff
+    classDef stuck fill:#fecaca,stroke:#7f1d1d,color:#7f1d1d
+</code></pre>
+
+<p><code class="language-plaintext highlighter-rouge">A</code>와 <code class="language-plaintext highlighter-rouge">B</code>는 <strong>정상적으로 위상정렬 순서대로 처리</strong>되었습니다. 문제는 그다음입니다. <code class="language-plaintext highlighter-rouge">B</code>를 처리한 뒤 <code class="language-plaintext highlighter-rouge">C</code>의 in-degree는 2에서 1로 줄어들지만, <strong><code class="language-plaintext highlighter-rouge">E</code>가 아직 <code class="language-plaintext highlighter-rouge">C</code>로의 간선을 들고 있기 때문에 0에는 도달하지 못합니다</strong>. 동시에 <code class="language-plaintext highlighter-rouge">D</code>는 <code class="language-plaintext highlighter-rouge">C</code>에 막혀, <code class="language-plaintext highlighter-rouge">E</code>는 <code class="language-plaintext highlighter-rouge">D</code>에 막혀 영원히 큐에 들어오지 못합니다. 결국 <code class="language-plaintext highlighter-rouge">C, D, E</code>는 서로의 사이클에 묶여 어느 누구도 in-degree 0이 될 수 없는 상태로 남고, 큐가 빈 시점에서 <code class="language-plaintext highlighter-rouge">visited = 2</code>만 카운트된 채 알고리즘이 종료됩니다.</p>
+
+<p>위 그림에서 4단계의 빨간 노드(<code class="language-plaintext highlighter-rouge">C, D, E</code>)가 바로 <strong>사이클을 구성하면서 처리되지 못한 잔여 노드들</strong>입니다. 즉, “위상정렬을 끝까지 마치지 못하고 남은 노드들 = 사이클에 속한 노드들”이라는 칸 알고리즘의 핵심 통찰을 그대로 보여줍니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+
+<span class="k">def</span> <span class="nf">has_cycle_kahn</span><span class="p">(</span><span class="n">graph</span><span class="p">):</span>
+    <span class="n">indeg</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">u</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+            <span class="n">indeg</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">queue</span> <span class="o">=</span> <span class="n">deque</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">indeg</span><span class="p">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">d</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">queue</span><span class="p">:</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="n">queue</span><span class="p">.</span><span class="n">popleft</span><span class="p">()</span>
+        <span class="n">visited</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">graph</span><span class="p">[</span><span class="n">u</span><span class="p">]:</span>
+            <span class="n">indeg</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">indeg</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">queue</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">visited</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>  <span class="c1"># 전부 처리 못했으면 cycle
+</span></code></pre></div></div>
+
+<p>Kahn’s 방식의 장점은 사이클이 없는 정상 케이스에서 <strong>위상정렬 결과를 함께</strong> 얻는다는 점입니다.</p>
+
+<h2 id="두-알고리즘-비교">두 알고리즘 비교</h2>
+
+<p>두 알고리즘 모두 시간복잡도는 \(O(V+E)\)로 동일하지만, <strong>요구하는 자료구조와 사이클 검출 시 얻는 부산물</strong>이 다릅니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>항목</th>
+      <th>DFS 3-color</th>
+      <th>Kahn’s</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>필요한 자료구조</td>
+      <td>인접 리스트(out-going edges)만</td>
+      <td>인접 리스트 <strong>+ in-degree 카운터</strong></td>
+    </tr>
+    <tr>
+      <td>추가 전처리</td>
+      <td>색깔 초기화 \(O(V)\)</td>
+      <td>in-degree 한 번 스캔 \(O(V+E)\)</td>
+    </tr>
+    <tr>
+      <td>메모리</td>
+      <td>\(O(V)\) (color + DFS 스택)</td>
+      <td>\(O(V)\) (in-degree + queue)</td>
+    </tr>
+    <tr>
+      <td>사이클이 있을 때</td>
+      <td>back-edge 발견 즉시 종료</td>
+      <td>큐가 비고 <code class="language-plaintext highlighter-rouge">visited &lt; |V|</code> 확인</td>
+    </tr>
+    <tr>
+      <td>정상 종료 시 부산물</td>
+      <td>사이클 경로(또는 없음)</td>
+      <td><strong>위상정렬 결과</strong></td>
+    </tr>
+    <tr>
+      <td>자연스러운 그래프 표현</td>
+      <td>“각 노드가 자기 자식만 안다”</td>
+      <td>“전체 엣지 목록을 한 번에 본다”</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>이 차이가 사이클 검출만 따로 떼어 놓고 보면 작아 보이지만, <strong>그래프 자료구조 자체가 어떤 정보를 노출하느냐</strong>와 직결됩니다.</p>
+
+<ul>
+  <li>그래프가 “각 노드 객체가 자기 자식 ID 목록만 들고 있는” 형태로 흩어져 있다면, in-degree를 따로 누적하는 비용이 부담스럽습니다. 이런 경우엔 그 자료구조를 그대로 따라가는 DFS가 자연스럽습니다.</li>
+  <li>반대로 그래프 라이브러리처럼 노드/엣지를 별도 인덱스로 들고 있고 in-degree 조회가 빠른 자료구조라면, Kahn’s는 큰 부담 없이 위상정렬 결과까지 덤으로 얻을 수 있습니다.</li>
+</ul>
+
+<p>뒤에서 살펴볼 Airflow와 dbt가 같은 사이클 검출 문제를 두고 다른 선택을 한 배경에는 정확히 이 자료구조 차이가 있습니다.</p>
+
+<p>그렇다면 실제 오픈소스는 어떤 쪽을 선택했을까요.</p>
+
+<h1 id="airflow-자체-구현--iterative-dfs-3-color">Airflow: 자체 구현 + Iterative DFS 3-color</h1>
+
+<p>Airflow는 외부 그래프 라이브러리에 의존하지 않고 <strong>DAG 객체 안에 직접</strong> 자료구조와 검증 로직을 두고 있습니다.</p>
+
+<h2 id="자료구조-task_dict">자료구조: <code class="language-plaintext highlighter-rouge">task_dict</code></h2>
+
+<p><code class="language-plaintext highlighter-rouge">airflow/models/dag.py</code>의 <code class="language-plaintext highlighter-rouge">DAG</code> 클래스는 task를 단순 딕셔너리로 보관합니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">DAG</span><span class="p">(</span><span class="n">LoggingMixin</span><span class="p">):</span>
+    <span class="p">...</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">task_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">BaseOperator</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+</code></pre></div></div>
+
+<p>각 <code class="language-plaintext highlighter-rouge">BaseOperator</code>는 자기 자신의 직속 자식(downstream task) ID들을 <code class="language-plaintext highlighter-rouge">get_direct_relative_ids()</code>로 돌려주는 식으로 인접 관계를 노출합니다. 별도의 인접 리스트가 따로 있는 것이 아니라, <strong>각 task가 자기 이웃 정보를 들고 있는</strong> 형태입니다.</p>
+
+<h2 id="알고리즘-airflowutilsdag_cycle_testerpy의-check_cycle">알고리즘: <code class="language-plaintext highlighter-rouge">airflow/utils/dag_cycle_tester.py</code>의 <code class="language-plaintext highlighter-rouge">check_cycle</code></h2>
+
+<p>핵심 함수는 <code class="language-plaintext highlighter-rouge">airflow/utils/dag_cycle_tester.py</code>에 있는 <code class="language-plaintext highlighter-rouge">check_cycle(dag)</code>입니다 (예전 이름은 <code class="language-plaintext highlighter-rouge">test_cycle</code>이었습니다).</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+
+<span class="n">CYCLE_NEW</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">CYCLE_IN_PROGRESS</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">CYCLE_DONE</span> <span class="o">=</span> <span class="mi">2</span>
+
+<span class="k">def</span> <span class="nf">check_cycle</span><span class="p">(</span><span class="n">dag</span><span class="p">):</span>
+    <span class="n">visited</span> <span class="o">=</span> <span class="p">{</span><span class="n">task_id</span><span class="p">:</span> <span class="n">CYCLE_NEW</span> <span class="k">for</span> <span class="n">task_id</span> <span class="ow">in</span> <span class="n">dag</span><span class="p">.</span><span class="n">task_dict</span><span class="p">}</span>
+    <span class="n">path_stack</span> <span class="o">=</span> <span class="n">deque</span><span class="p">()</span>                     <span class="c1"># ← DFS 호출 스택을 직접 관리
+</span>    <span class="n">task_dict</span> <span class="o">=</span> <span class="n">dag</span><span class="p">.</span><span class="n">task_dict</span>
+
+    <span class="k">def</span> <span class="nf">_check_adjacent_tasks</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">current_task</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">adjacent_task</span> <span class="ow">in</span> <span class="n">current_task</span><span class="p">.</span><span class="n">get_direct_relative_ids</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">visited</span><span class="p">[</span><span class="n">adjacent_task</span><span class="p">]</span> <span class="o">==</span> <span class="n">CYCLE_IN_PROGRESS</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">AirflowDagCycleException</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s">"Cycle detected in DAG. Faulty task: </span><span class="si">{</span><span class="n">task_id</span><span class="si">}</span><span class="s">"</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">visited</span><span class="p">[</span><span class="n">adjacent_task</span><span class="p">]</span> <span class="o">==</span> <span class="n">CYCLE_NEW</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">adjacent_task</span>         <span class="c1"># 아직 안 가본 자식 하나 반환
+</span>        <span class="k">return</span> <span class="bp">None</span>                          <span class="c1"># 모든 자식이 이미 처리됨
+</span>
+    <span class="k">for</span> <span class="n">dag_task_id</span> <span class="ow">in</span> <span class="n">dag</span><span class="p">.</span><span class="n">task_dict</span><span class="p">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">visited</span><span class="p">[</span><span class="n">dag_task_id</span><span class="p">]</span> <span class="o">==</span> <span class="n">CYCLE_DONE</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">path_stack</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">dag_task_id</span><span class="p">)</span>       <span class="c1"># (1) 시작 노드 push
+</span>        <span class="k">while</span> <span class="n">path_stack</span><span class="p">:</span>
+            <span class="n">current_task_id</span> <span class="o">=</span> <span class="n">path_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="c1"># (2) 스택 top = 현재 DFS 위치
+</span>            <span class="k">if</span> <span class="n">visited</span><span class="p">[</span><span class="n">current_task_id</span><span class="p">]</span> <span class="o">==</span> <span class="n">CYCLE_NEW</span><span class="p">:</span>
+                <span class="n">visited</span><span class="p">[</span><span class="n">current_task_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">CYCLE_IN_PROGRESS</span>  <span class="c1"># WHITE → GRAY
+</span>            <span class="n">task</span> <span class="o">=</span> <span class="n">task_dict</span><span class="p">[</span><span class="n">current_task_id</span><span class="p">]</span>
+            <span class="n">child_to_check</span> <span class="o">=</span> <span class="n">_check_adjacent_tasks</span><span class="p">(</span><span class="n">current_task_id</span><span class="p">,</span> <span class="n">task</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">child_to_check</span><span class="p">:</span>
+                <span class="n">visited</span><span class="p">[</span><span class="n">current_task_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">CYCLE_DONE</span>         <span class="c1"># GRAY → BLACK
+</span>                <span class="n">path_stack</span><span class="p">.</span><span class="n">pop</span><span class="p">()</span>             <span class="c1"># (4) 자식 다 봤으니 pop (= return)
+</span>            <span class="k">else</span><span class="p">:</span>
+                <span class="n">path_stack</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">child_to_check</span><span class="p">)</span>  <span class="c1"># (3) 자식으로 들어감 (= 재귀 호출)
+</span></code></pre></div></div>
+
+<h3 id="deque가-어떤-역할을-하는가"><code class="language-plaintext highlighter-rouge">deque</code>가 어떤 역할을 하는가</h3>
+
+<p><code class="language-plaintext highlighter-rouge">deque</code>는 여기서 <strong>재귀 호출 스택을 직접 손으로 관리하는 자료구조</strong>로 쓰입니다. 재귀 DFS에서 자연스럽게 일어나는 세 가지 동작 — <strong>들어가기 / 현재 위치 보기 / 빠져나오기</strong> — 가 각각 <code class="language-plaintext highlighter-rouge">append</code> / <code class="language-plaintext highlighter-rouge">[-1]</code> / <code class="language-plaintext highlighter-rouge">pop</code> 으로 1:1 대응됩니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>재귀 DFS</th>
+      <th>iterative + <code class="language-plaintext highlighter-rouge">deque</code></th>
+      <th>의미</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">dfs(child)</code> 호출</td>
+      <td><code class="language-plaintext highlighter-rouge">path_stack.append(child)</code></td>
+      <td>자식으로 한 단계 깊이 들어감</td>
+    </tr>
+    <tr>
+      <td>현재 함수의 <code class="language-plaintext highlighter-rouge">self</code> 파라미터</td>
+      <td><code class="language-plaintext highlighter-rouge">path_stack[-1]</code></td>
+      <td>지금 어떤 노드를 처리 중인가</td>
+    </tr>
+    <tr>
+      <td>함수 <code class="language-plaintext highlighter-rouge">return</code></td>
+      <td><code class="language-plaintext highlighter-rouge">path_stack.pop()</code></td>
+      <td>자식 탐색 끝나서 한 단계 위로</td>
+    </tr>
+    <tr>
+      <td>호출 체인 자체</td>
+      <td><code class="language-plaintext highlighter-rouge">path_stack</code> 안의 task_id 목록</td>
+      <td>“지금까지 내려온 경로” = GRAY 노드들</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>특히 마지막 줄이 핵심입니다. <strong><code class="language-plaintext highlighter-rouge">path_stack</code> 안에 들어 있는 task들이 곧 현재 DFS 경로</strong>이고, 이들이 모두 <code class="language-plaintext highlighter-rouge">CYCLE_IN_PROGRESS</code>(=GRAY) 상태라는 점이 사이클 검출의 핵심입니다. 어떤 노드의 자식을 보러 갔다가 그 자식이 이미 GRAY라는 건 곧 <strong>그 자식이 이미 <code class="language-plaintext highlighter-rouge">path_stack</code>에 들어 있다 = 지금 내려온 경로 위에 있다 = back-edge</strong>라는 뜻이고, 그래서 <code class="language-plaintext highlighter-rouge">_check_adjacent_tasks</code> 안에서 곧바로 <code class="language-plaintext highlighter-rouge">AirflowDagCycleException</code>을 던집니다.</p>
+
+<p>이렇게 스택을 직접 다루는 방식의 장점은 <strong>Python 함수 호출 스택을 쓰지 않는다</strong>는 점입니다. Python의 기본 재귀 한도(<code class="language-plaintext highlighter-rouge">sys.getrecursionlimit() == 1000</code>)를 넘는 깊은 DAG에서 재귀 DFS는 <code class="language-plaintext highlighter-rouge">RecursionError</code>로 죽지만, <code class="language-plaintext highlighter-rouge">deque</code>는 힙 메모리만 허용한다면 수십만 노드도 처리할 수 있습니다. PR <a href="https://github.com/apache/airflow/pull/6175">#6175</a>이 해결한 문제가 정확히 이것입니다.</p>
+
+<p>사이클이 발견되면 <code class="language-plaintext highlighter-rouge">AirflowDagCycleException("Cycle detected in DAG. Faulty task: {task_id}")</code> 예외가 발생하며, DAG 파싱 단계에서 곧바로 실패하게 됩니다.</p>
+
+<h1 id="dbt-networkx-digraph--nxfind_cycle">dbt: NetworkX DiGraph + <code class="language-plaintext highlighter-rouge">nx.find_cycle</code></h1>
+
+<p>dbt는 정반대 방향의 선택을 했습니다. 그래프 자료구조를 직접 만드는 대신 <strong><code class="language-plaintext highlighter-rouge">networkx</code> 라이브러리에 위임</strong>합니다.</p>
+
+<h2 id="자료구조-linkergraph-networkxdigraph">자료구조: <code class="language-plaintext highlighter-rouge">Linker.graph</code> (<code class="language-plaintext highlighter-rouge">networkx.DiGraph</code>)</h2>
+
+<p><code class="language-plaintext highlighter-rouge">core/dbt/compilation.py</code>의 <code class="language-plaintext highlighter-rouge">Linker</code> 클래스 초기화 부분입니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="n">nx</span>
+
+<span class="k">class</span> <span class="nc">Linker</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">graph</span><span class="p">:</span> <span class="n">nx</span><span class="p">.</span><span class="n">DiGraph</span> <span class="o">=</span> <span class="n">nx</span><span class="p">.</span><span class="n">DiGraph</span><span class="p">(</span><span class="o">**</span><span class="n">data</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">nx.DiGraph</code>는 NetworkX가 제공하는 방향 그래프 자료구조로, 노드/엣지 추가, 인접 노드 조회, 위상정렬, 연결 컴포넌트 분석 같은 기능을 모두 포함하고 있습니다. dbt는 이 풍부한 API를 그대로 재활용합니다.</p>
+
+<h2 id="알고리즘-linkerfind_cycles--nxfind_cycle">알고리즘: <code class="language-plaintext highlighter-rouge">Linker.find_cycles</code> → <code class="language-plaintext highlighter-rouge">nx.find_cycle</code></h2>
+
+<p>같은 파일의 <code class="language-plaintext highlighter-rouge">find_cycles</code> 메서드는 NetworkX의 <code class="language-plaintext highlighter-rouge">find_cycle</code>을 호출하는 것이 사실상 전부입니다.</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">find_cycles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">cycle</span> <span class="o">=</span> <span class="n">nx</span><span class="p">.</span><span class="n">find_cycle</span><span class="p">(</span><span class="bp">self</span><span class="p">.</span><span class="n">graph</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">nx</span><span class="p">.</span><span class="n">NetworkXNoCycle</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">" --&gt; "</span><span class="p">.</span><span class="n">join</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cycle</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>흥미로운 점은 <strong><code class="language-plaintext highlighter-rouge">NetworkXNoCycle</code> 예외가 정상 케이스</strong>라는 것입니다. NetworkX는 사이클이 발견되지 않을 때 예외를 던지고, 발견되면 사이클을 구성하는 엣지 리스트를 반환하는 식의 인터페이스를 채택하고 있습니다.</p>
+
+<p>NetworkX 내부 구현을 들여다보면 <code class="language-plaintext highlighter-rouge">find_cycle</code>도 결국 <strong>DFS 기반 back-edge 탐지</strong>입니다. 즉 알고리즘 본질은 Airflow와 동일한데, dbt 입장에서는 그 구현을 직접 작성할 필요가 없는 셈이죠.</p>
+
+<p>호출 측인 <code class="language-plaintext highlighter-rouge">link_graph()</code>에서는 <code class="language-plaintext highlighter-rouge">find_cycles()</code>의 반환값이 <code class="language-plaintext highlighter-rouge">None</code>이 아니면 사이클 경로를 메시지에 담아 <code class="language-plaintext highlighter-rouge">CompilationError("Found a cycle: {path}")</code> 예외를 발생시킵니다. dbt 사용자가 모델 의존을 잘못 정의했을 때 흔히 마주치는 그 메시지입니다.</p>
+
+<h1 id="비교">비교</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>항목</th>
+      <th>Airflow</th>
+      <th>dbt</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>자료구조</td>
+      <td><code class="language-plaintext highlighter-rouge">Dict[str, BaseOperator]</code> (자체 구현)</td>
+      <td><code class="language-plaintext highlighter-rouge">networkx.DiGraph</code></td>
+    </tr>
+    <tr>
+      <td>인접 관계</td>
+      <td><code class="language-plaintext highlighter-rouge">BaseOperator.get_direct_relative_ids()</code></td>
+      <td>NetworkX 내부</td>
+    </tr>
+    <tr>
+      <td>알고리즘</td>
+      <td>3-color iterative DFS</td>
+      <td>DFS 기반 <code class="language-plaintext highlighter-rouge">nx.find_cycle</code></td>
+    </tr>
+    <tr>
+      <td>호출 함수</td>
+      <td><code class="language-plaintext highlighter-rouge">check_cycle(dag)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Linker.find_cycles()</code></td>
+    </tr>
+    <tr>
+      <td>사이클 시 예외</td>
+      <td><code class="language-plaintext highlighter-rouge">AirflowDagCycleException</code></td>
+      <td><code class="language-plaintext highlighter-rouge">CompilationError</code></td>
+    </tr>
+    <tr>
+      <td>재귀 회피</td>
+      <td>명시적 <code class="language-plaintext highlighter-rouge">deque</code> 스택</td>
+      <td>NetworkX 내부에서 처리</td>
+    </tr>
+    <tr>
+      <td>시간복잡도</td>
+      <td>\(O(V+E)\)</td>
+      <td>\(O(V+E)\)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="마무리">마무리</h1>
+
+<p>두 도구가 푸는 문제는 동일하고 알고리즘의 본질도 DFS로 같지만, 자료구조 선택은 정반대입니다.</p>
+
+<ul>
+  <li><strong>Airflow</strong>는 스케줄러 프로세스가 수많은 DAG를 반복적으로 파싱·검증해야 하는 환경입니다. 외부 라이브러리 의존을 줄이고 메모리·임포트 비용을 통제하기 위해 자체 자료구조와 검증 코드를 유지하는 쪽이 합리적입니다. 거대 DAG에 대비한 반복 DFS 전환(PR #6175)도 그 연장선입니다.</li>
+  <li><strong>dbt</strong>는 컴파일 단계에서 의존 그래프를 한 번 구축하고 검증하는 패턴입니다. 호출 빈도가 낮고, 위상정렬·서브그래프 추출 같은 풍부한 그래프 연산이 추가로 필요합니다. 이런 맥락에서는 NetworkX에 의존을 받아들이는 쪽이 코드량과 유지보수 부담을 모두 줄여줍니다.</li>
+</ul>
+
+<p>같은 알고리즘이라도 <strong>어떤 자료구조 위에 얹을지는 프로젝트의 실행 컨텍스트가 결정</strong>한다는 점이, 두 코드베이스를 나란히 놓고 봤을 때 가장 흥미로운 부분이었습니다.</p>
+
+<h1 id="참고">참고</h1>
+
+<ul>
+  <li><a href="https://github.com/apache/airflow/blob/main/airflow/utils/dag_cycle_tester.py">apache/airflow — <code class="language-plaintext highlighter-rouge">airflow/utils/dag_cycle_tester.py</code></a></li>
+  <li><a href="https://github.com/apache/airflow/pull/6175">apache/airflow PR #6175 — Fix recursion in DAG cycle testing</a></li>
+  <li><a href="https://github.com/dbt-labs/dbt-core/blob/main/core/dbt/compilation.py">dbt-labs/dbt-core — <code class="language-plaintext highlighter-rouge">core/dbt/compilation.py</code></a></li>
+  <li><a href="https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.cycles.find_cycle.html">NetworkX — <code class="language-plaintext highlighter-rouge">find_cycle</code> documentation</a></li>
+</ul>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            <!--  -->
+            <!-- utteranc setting -->
+            <script src="https://utteranc.es/client.js"
+                    repo="GyuhoonK/blog-comments"
+                    issue-term="pathname"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+                    <article class="read-next-card"
+                        
+                            style="background-image: url(/assets/built/images/spain-blog-cover.jpg)"
+                        
+                    >
+                        <header class="read-next-card-header">
+                            <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
+                            
+                                <h3 class="read-next-card-header-title"><a href="/tag/algorithm/">Algorithm</a></h3>
+                            
+                        </header>
+                        <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
+</div>
+                        <div class="read-next-card-content">
+                            <ul>
+                                
+                                
+                                  
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/Subtree">Softeer 거리 합 구하기</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/prefix-sum">누적 합(Prefix Sum)</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/KMP">Knuth–Morris–Pratt algorithm, KMP</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                            </ul>
+                        </div>
+                        <footer class="read-next-card-footer">
+                            <a href="/tag/algorithm/">
+                                
+                                    See all 3 posts  →
+                                
+                            </a>
+                        </footer>
+                    </article>
+                <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+                </script>
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/airflow-triggerer">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/airflow/airflow.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/airflow-triggerer">
+                <header class="post-card-header">
+                    
+                        
+                            
+                               <span class="post-card-tags">Airflow</span>
+                            
+                        
+                            
+                                <span class="post-card-tags">Kubernetes</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Airflow Triggerer 사용기</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Airflow Triggerer를 사용하면서 겪었던 장애를 정리합니다.
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      11 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://gyuhoonk.github.io/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">DAG 순환 참조 판별 알고리즘 — Airflow와 dbt는 어떻게 검증할까</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=DAG+%EC%88%9C%ED%99%98+%EC%B0%B8%EC%A1%B0+%ED%8C%90%EB%B3%84+%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98+%E2%80%94+Airflow%EC%99%80+dbt%EB%8A%94+%EC%96%B4%EB%96%BB%EA%B2%8C+%EA%B2%80%EC%A6%9D%ED%95%A0%EA%B9%8C&amp;url=https://gyuhoonk.github.iodag-cycle-detection"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iodag-cycle-detection"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2026</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+    <!-- math LaTex-->
+    
+</body>
+</html>

@@ -4,7 +4,7 @@
   <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
   <link href="https://gyuhoonk.github.io/author/GyuhoonK/feed.xml" rel="self" type="application/atom+xml" />
   <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
-  <updated>2026-03-20T23:51:56+09:00</updated>
+  <updated>2026-05-01T23:46:00+09:00</updated>
   <id>https://gyuhoonk.github.io/author/GyuhoonK/feed.xml</id>
 
   
@@ -30,6 +30,562 @@
   
   
 
+  
+    <entry>
+      <title type="html">DAG 순환 참조 판별 알고리즘 — Airflow와 dbt는 어떻게 검증할까</title>
+      <link href="https://gyuhoonk.github.io/dag-cycle-detection" rel="alternate" type="text/html" title="DAG 순환 참조 판별 알고리즘 — Airflow와 dbt는 어떻게 검증할까" />
+      <published>2026-05-01T22:30:00+09:00</published>
+      <updated>2026-05-01T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/dag-cycle-detection</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/dag-cycle-detection">&lt;p&gt;Airflow와 dbt가 DAG의 비순환 여부를 어떤 자료구조와 알고리즘으로 검증하는지 알아봅니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;왜-dag는-검증되어야-할까&quot;&gt;왜 DAG는 검증되어야 할까&lt;/h1&gt;
+
+&lt;p&gt;데이터 파이프라인을 다루는 오픈소스 도구는 거의 예외 없이 작업 간 의존 관계를 &lt;strong&gt;DAG(Directed Acyclic Graph, 방향성 비순환 그래프)&lt;/strong&gt; 로 모델링합니다. Airflow의 task 의존성, dbt의 모델 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ref()&lt;/code&gt; 의존성이 모두 그렇습니다.&lt;/p&gt;
+
+&lt;p&gt;그런데 사용자가 정의한 그래프가 &lt;strong&gt;정말로 DAG인지&lt;/strong&gt;, 즉 사이클이 없는지를 누군가는 확인해줘야 합니다. 사이클이 존재하면 실행 순서 자체를 결정할 수 없기 때문에, “DAG”라는 이름은 사용자와의 약속이 아니라 도구가 &lt;strong&gt;검증해야 할 제약&lt;/strong&gt;에 가깝습니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;사이클-판별-알고리즘-두-갈래&quot;&gt;사이클 판별 알고리즘 두 갈래&lt;/h1&gt;
+
+&lt;p&gt;방향 그래프에서 사이클을 찾는 고전적인 방법은 크게 두 가지가 있습니다. 둘 다 시간복잡도는 \(O(V+E)\)로 동일하지만 사용 목적이 조금 다릅니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;a-dfs-3-color-white--gray--black&quot;&gt;(A) DFS 3-color (White / Gray / Black)&lt;/h2&gt;
+
+&lt;p&gt;각 노드를 세 가지 상태로 관리하면서 깊이 우선 탐색을 수행합니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;상태&lt;/th&gt;
+      &lt;th&gt;의미&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;White&lt;/td&gt;
+      &lt;td&gt;아직 방문하지 않은 노드&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Gray&lt;/td&gt;
+      &lt;td&gt;현재 DFS 경로에 포함된 노드(탐색 중)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Black&lt;/td&gt;
+      &lt;td&gt;자식까지 모두 탐색이 끝난 노드&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;탐색 중 인접 노드가 Gray 상태라면 &lt;strong&gt;back-edge&lt;/strong&gt;(현재 경로로 되돌아가는 간선)를 발견한 것이고, 이는 곧 사이클이 존재한다는 의미입니다.&lt;/p&gt;
+
+&lt;p&gt;상태 전이 자체는 다음과 같이 단순합니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;stateDiagram-v2
+    [*] --&amp;gt; White
+    White --&amp;gt; Gray: DFS 진입
+    Gray --&amp;gt; Black: 자식 탐색 완료
+    Gray --&amp;gt; CycleDetected: GRAY 노드로의 간선 발견 (back-edge)
+    Black --&amp;gt; [*]
+    CycleDetected --&amp;gt; [*]: 예외 발생
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A → B → C → A&lt;/code&gt; 형태의 작은 사이클을 예로 들면, A에서 시작한 DFS가 다음과 같이 진행됩니다. 마지막 단계에서 C가 자기 인접 노드 A를 보는 순간 A는 이미 Gray이므로 곧바로 사이클로 판정됩니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart TB
+    subgraph s1 [&quot;Step 1: A 진입&quot;]
+        direction LR
+        a1((A)):::gray --&amp;gt; b1((B)):::white
+        b1 --&amp;gt; c1((C)):::white
+        c1 --&amp;gt; a1
+    end
+
+    subgraph s2 [&quot;Step 2: B 진입&quot;]
+        direction LR
+        a2((A)):::gray --&amp;gt; b2((B)):::gray
+        b2 --&amp;gt; c2((C)):::white
+        c2 --&amp;gt; a2
+    end
+
+    subgraph s3 [&quot;Step 3: C 진입 → back-edge!&quot;]
+        direction LR
+        a3((A)):::gray --&amp;gt; b3((B)):::gray
+        b3 --&amp;gt; c3((C)):::gray
+        c3 ==&amp;gt;|&quot;GRAY 발견 → cycle&quot;| a3
+    end
+
+    s1 ~~~ s2 ~~~ s3
+
+    classDef white fill:#ffffff,stroke:#374151,color:#111827
+    classDef gray fill:#9ca3af,stroke:#374151,color:#ffffff
+    classDef black fill:#1f2937,stroke:#000000,color:#ffffff
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;WHITE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GRAY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BLACK&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;has_cycle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;WHITE&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;dfs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;u&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;u&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GRAY&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;u&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;GRAY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;        &lt;span class=&quot;c1&quot;&gt;# back-edge → cycle
+&lt;/span&gt;                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;WHITE&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dfs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;True&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;u&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BLACK&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;any&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;color&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;WHITE&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;and&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dfs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;DFS 방식의 장점은 사이클을 발견했을 때 &lt;strong&gt;사이클을 구성하는 노드 경로&lt;/strong&gt; 자체를 그대로 보고할 수 있다는 점입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;b-kahns-algorithm-in-degree-위상정렬&quot;&gt;(B) Kahn’s Algorithm (in-degree 위상정렬)&lt;/h2&gt;
+
+&lt;h3 id=&quot;in-degree란&quot;&gt;in-degree란&lt;/h3&gt;
+
+&lt;p&gt;&lt;strong&gt;in-degree(진입 차수)&lt;/strong&gt; 는 한 노드로 &lt;strong&gt;들어오는&lt;/strong&gt; 간선의 개수입니다. 노드 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;v&lt;/code&gt;를 향하는 간선 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;* → v&lt;/code&gt;가 몇 개인지 세면 됩니다. 반대로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;v&lt;/code&gt;에서 나가는 간선의 개수는 out-degree(진출 차수)라고 부릅니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A → B&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A → C&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;B → D&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C → D&lt;/code&gt;라는 작은 DAG를 예로 들어보겠습니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart LR
+    A((&quot;A&amp;lt;br/&amp;gt;in=0&quot;)):::src --&amp;gt; B((&quot;B&amp;lt;br/&amp;gt;in=1&quot;)):::mid
+    A --&amp;gt; C((&quot;C&amp;lt;br/&amp;gt;in=1&quot;)):::mid
+    B --&amp;gt; D((&quot;D&amp;lt;br/&amp;gt;in=2&quot;)):::sink
+    C --&amp;gt; D
+
+    classDef src fill:#ecfccb,stroke:#365314,color:#111827
+    classDef mid fill:#ffffff,stroke:#374151,color:#111827
+    classDef sink fill:#fee2e2,stroke:#7f1d1d,color:#111827
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A&lt;/code&gt;: 들어오는 간선이 없으므로 0&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;B&lt;/code&gt;: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A → B&lt;/code&gt; 한 개라 1&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C&lt;/code&gt;: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A → C&lt;/code&gt; 한 개라 1&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;D&lt;/code&gt;: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;B → D&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C → D&lt;/code&gt; 두 개라 2&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;DAG의 시작점은 항상 &lt;strong&gt;in-degree가 0인 노드&lt;/strong&gt;입니다. 사이클이 있는 그래프에서는 사이클을 구성하는 모든 노드가 서로를 가리키기 때문에, 그 노드들 중 in-degree가 0인 것이 단 하나도 존재하지 않습니다. 이 성질을 그대로 알고리즘으로 옮긴 것이 Kahn’s입니다.&lt;/p&gt;
+
+&lt;h3 id=&quot;알고리즘-진행&quot;&gt;알고리즘 진행&lt;/h3&gt;
+
+&lt;p&gt;진입 차수가 0인 노드를 큐에서 하나씩 꺼내고, 그 노드와 연결된 간선을 제거하면서 다른 노드의 in-degree를 갱신합니다. 모든 노드를 큐에서 꺼내면 위상정렬에 성공한 것이고, 끝까지 꺼낼 수 없는 노드가 남으면 그 노드들이 사이클에 속한다는 뜻입니다.&lt;/p&gt;
+
+&lt;p&gt;위와 같은 DAG로 단계별 진행을 추적해보겠습니다. 각 노드 옆 괄호는 그 시점의 in-degree, 색깔은 노드 상태(흰색=대기, 회색=큐 안, 검정=처리 완료)를 의미합니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart TB
+    subgraph k1 [&quot;Step 1: 초기 — A의 in-degree만 0이라 큐에 들어감&quot;]
+        direction LR
+        a1([&quot;A (0)&quot;]):::gray --&amp;gt; b1([&quot;B (1)&quot;]):::white
+        a1 --&amp;gt; c1([&quot;C (1)&quot;]):::white
+        b1 --&amp;gt; d1([&quot;D (2)&quot;]):::white
+        c1 --&amp;gt; d1
+    end
+
+    subgraph k2 [&quot;Step 2: A 처리 → B, C in-degree 감소 후 큐 진입&quot;]
+        direction LR
+        a2([&quot;A (0)&quot;]):::black --&amp;gt; b2([&quot;B (0)&quot;]):::gray
+        a2 --&amp;gt; c2([&quot;C (0)&quot;]):::gray
+        b2 --&amp;gt; d2([&quot;D (2)&quot;]):::white
+        c2 --&amp;gt; d2
+    end
+
+    subgraph k3 [&quot;Step 3: B, C 처리 → D in-degree 0으로 큐 진입&quot;]
+        direction LR
+        a3((A)):::black --&amp;gt; b3((B)):::black
+        a3 --&amp;gt; c3((C)):::black
+        b3 --&amp;gt; d3([&quot;D (0)&quot;]):::gray
+        c3 --&amp;gt; d3
+    end
+
+    subgraph k4 [&quot;Step 4: D 처리 → 큐 빔, visited = 4 = |V| (사이클 없음)&quot;]
+        direction LR
+        a4((A)):::black --&amp;gt; b4((B)):::black
+        a4 --&amp;gt; c4((C)):::black
+        b4 --&amp;gt; d4((D)):::black
+        c4 --&amp;gt; d4
+    end
+
+    k1 ~~~ k2 ~~~ k3 ~~~ k4
+
+    classDef white fill:#ffffff,stroke:#374151,color:#111827
+    classDef gray fill:#9ca3af,stroke:#374151,color:#ffffff
+    classDef black fill:#1f2937,stroke:#000000,color:#ffffff
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;반대로 사이클이 있는 그래프(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A → B → C → A&lt;/code&gt;)에서는 모든 노드의 in-degree가 1 이상이라 &lt;strong&gt;초기 큐가 비어 있는 상태에서 시작&lt;/strong&gt;합니다. 큐에 아무것도 들어오지 못한 채 루프가 끝나고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;visited = 0 ≠ |V| = 3&lt;/code&gt;이 되어 사이클로 판정됩니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart LR
+    A([&quot;A (1)&quot;]):::white --&amp;gt; B([&quot;B (1)&quot;]):::white
+    B --&amp;gt; C([&quot;C (1)&quot;]):::white
+    C ==&amp;gt;|&quot;in-degree 0 노드 없음&quot;| A
+
+    classDef white fill:#ffffff,stroke:#374151,color:#111827
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;다만 이 예시는 &lt;strong&gt;알고리즘이 시작도 못 하고 끝나버리는&lt;/strong&gt; 극단적인 경우라, 칸 알고리즘이 실제로 어떻게 사이클을 “찾아내는지”를 보여주기엔 부족합니다. 좀 더 일반적인 케이스, 즉 &lt;strong&gt;그래프 일부는 정상 DAG이고 특정 영역에만 사이클이 있는&lt;/strong&gt; 상황에서는 알고리즘이 중간까지 정상적으로 진행되다가 멈추는 모습을 볼 수 있습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A → B → C → D → E&lt;/code&gt;라는 파이프라인 끝부분에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E → C&lt;/code&gt; 간선이 추가되어 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C → D → E → C&lt;/code&gt; 사이클이 생긴 그래프를 예로 들어보겠습니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart TB
+    subgraph c1 [&quot;Step 1: 초기 — A만 in-degree 0이라 큐에 들어감&quot;]
+        direction LR
+        a1([&quot;A (0)&quot;]):::gray --&amp;gt; b1([&quot;B (1)&quot;]):::white
+        b1 --&amp;gt; c1n([&quot;C (2)&quot;]):::white
+        c1n --&amp;gt; d1([&quot;D (1)&quot;]):::white
+        d1 --&amp;gt; e1([&quot;E (1)&quot;]):::white
+        e1 --&amp;gt; c1n
+    end
+
+    subgraph c2 [&quot;Step 2: A 처리 → B in-degree 0으로 큐 진입&quot;]
+        direction LR
+        a2([&quot;A (0)&quot;]):::black --&amp;gt; b2([&quot;B (0)&quot;]):::gray
+        b2 --&amp;gt; c2n([&quot;C (2)&quot;]):::white
+        c2n --&amp;gt; d2([&quot;D (1)&quot;]):::white
+        d2 --&amp;gt; e2([&quot;E (1)&quot;]):::white
+        e2 --&amp;gt; c2n
+    end
+
+    subgraph c3 [&quot;Step 3: B 처리 → C in-degree 1로 감소 (여전히 0 아님)&quot;]
+        direction LR
+        a3((A)):::black --&amp;gt; b3((B)):::black
+        b3 --&amp;gt; c3n([&quot;C (1)&quot;]):::white
+        c3n --&amp;gt; d3([&quot;D (1)&quot;]):::white
+        d3 --&amp;gt; e3([&quot;E (1)&quot;]):::white
+        e3 --&amp;gt; c3n
+    end
+
+    subgraph c4 [&quot;Step 4: 큐 빔 → visited = 2 ≠ |V| = 5 → 사이클 판정&quot;]
+        direction LR
+        a4((A)):::black --&amp;gt; b4((B)):::black
+        b4 --&amp;gt; c4n([&quot;C (1)&quot;]):::stuck
+        c4n --&amp;gt; d4([&quot;D (1)&quot;]):::stuck
+        d4 --&amp;gt; e4([&quot;E (1)&quot;]):::stuck
+        e4 --&amp;gt; c4n
+    end
+
+    c1 ~~~ c2 ~~~ c3 ~~~ c4
+
+    classDef white fill:#ffffff,stroke:#374151,color:#111827
+    classDef gray fill:#9ca3af,stroke:#374151,color:#ffffff
+    classDef black fill:#1f2937,stroke:#000000,color:#ffffff
+    classDef stuck fill:#fecaca,stroke:#7f1d1d,color:#7f1d1d
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;A&lt;/code&gt;와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;B&lt;/code&gt;는 &lt;strong&gt;정상적으로 위상정렬 순서대로 처리&lt;/strong&gt;되었습니다. 문제는 그다음입니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;B&lt;/code&gt;를 처리한 뒤 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C&lt;/code&gt;의 in-degree는 2에서 1로 줄어들지만, &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E&lt;/code&gt;가 아직 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C&lt;/code&gt;로의 간선을 들고 있기 때문에 0에는 도달하지 못합니다&lt;/strong&gt;. 동시에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;D&lt;/code&gt;는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C&lt;/code&gt;에 막혀, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;E&lt;/code&gt;는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;D&lt;/code&gt;에 막혀 영원히 큐에 들어오지 못합니다. 결국 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C, D, E&lt;/code&gt;는 서로의 사이클에 묶여 어느 누구도 in-degree 0이 될 수 없는 상태로 남고, 큐가 빈 시점에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;visited = 2&lt;/code&gt;만 카운트된 채 알고리즘이 종료됩니다.&lt;/p&gt;
+
+&lt;p&gt;위 그림에서 4단계의 빨간 노드(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;C, D, E&lt;/code&gt;)가 바로 &lt;strong&gt;사이클을 구성하면서 처리되지 못한 잔여 노드들&lt;/strong&gt;입니다. 즉, “위상정렬을 끝까지 마치지 못하고 남은 노드들 = 사이클에 속한 노드들”이라는 칸 알고리즘의 핵심 통찰을 그대로 보여줍니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;collections&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;deque&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;has_cycle_kahn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;indeg&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;u&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;u&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;indeg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+
+    &lt;span class=&quot;n&quot;&gt;queue&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;deque&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;indeg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;items&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;d&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;visited&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;queue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;u&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;queue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;popleft&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;visited&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;v&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;u&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;indeg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;indeg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;queue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;v&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;visited&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# 전부 처리 못했으면 cycle
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Kahn’s 방식의 장점은 사이클이 없는 정상 케이스에서 &lt;strong&gt;위상정렬 결과를 함께&lt;/strong&gt; 얻는다는 점입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;두-알고리즘-비교&quot;&gt;두 알고리즘 비교&lt;/h2&gt;
+
+&lt;p&gt;두 알고리즘 모두 시간복잡도는 \(O(V+E)\)로 동일하지만, &lt;strong&gt;요구하는 자료구조와 사이클 검출 시 얻는 부산물&lt;/strong&gt;이 다릅니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;항목&lt;/th&gt;
+      &lt;th&gt;DFS 3-color&lt;/th&gt;
+      &lt;th&gt;Kahn’s&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;필요한 자료구조&lt;/td&gt;
+      &lt;td&gt;인접 리스트(out-going edges)만&lt;/td&gt;
+      &lt;td&gt;인접 리스트 &lt;strong&gt;+ in-degree 카운터&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;추가 전처리&lt;/td&gt;
+      &lt;td&gt;색깔 초기화 \(O(V)\)&lt;/td&gt;
+      &lt;td&gt;in-degree 한 번 스캔 \(O(V+E)\)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;메모리&lt;/td&gt;
+      &lt;td&gt;\(O(V)\) (color + DFS 스택)&lt;/td&gt;
+      &lt;td&gt;\(O(V)\) (in-degree + queue)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;사이클이 있을 때&lt;/td&gt;
+      &lt;td&gt;back-edge 발견 즉시 종료&lt;/td&gt;
+      &lt;td&gt;큐가 비고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;visited &amp;lt; |V|&lt;/code&gt; 확인&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;정상 종료 시 부산물&lt;/td&gt;
+      &lt;td&gt;사이클 경로(또는 없음)&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;위상정렬 결과&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;자연스러운 그래프 표현&lt;/td&gt;
+      &lt;td&gt;“각 노드가 자기 자식만 안다”&lt;/td&gt;
+      &lt;td&gt;“전체 엣지 목록을 한 번에 본다”&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;이 차이가 사이클 검출만 따로 떼어 놓고 보면 작아 보이지만, &lt;strong&gt;그래프 자료구조 자체가 어떤 정보를 노출하느냐&lt;/strong&gt;와 직결됩니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;그래프가 “각 노드 객체가 자기 자식 ID 목록만 들고 있는” 형태로 흩어져 있다면, in-degree를 따로 누적하는 비용이 부담스럽습니다. 이런 경우엔 그 자료구조를 그대로 따라가는 DFS가 자연스럽습니다.&lt;/li&gt;
+  &lt;li&gt;반대로 그래프 라이브러리처럼 노드/엣지를 별도 인덱스로 들고 있고 in-degree 조회가 빠른 자료구조라면, Kahn’s는 큰 부담 없이 위상정렬 결과까지 덤으로 얻을 수 있습니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;뒤에서 살펴볼 Airflow와 dbt가 같은 사이클 검출 문제를 두고 다른 선택을 한 배경에는 정확히 이 자료구조 차이가 있습니다.&lt;/p&gt;
+
+&lt;p&gt;그렇다면 실제 오픈소스는 어떤 쪽을 선택했을까요.&lt;/p&gt;
+
+&lt;h1 id=&quot;airflow-자체-구현--iterative-dfs-3-color&quot;&gt;Airflow: 자체 구현 + Iterative DFS 3-color&lt;/h1&gt;
+
+&lt;p&gt;Airflow는 외부 그래프 라이브러리에 의존하지 않고 &lt;strong&gt;DAG 객체 안에 직접&lt;/strong&gt; 자료구조와 검증 로직을 두고 있습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;자료구조-task_dict&quot;&gt;자료구조: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;task_dict&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;airflow/models/dag.py&lt;/code&gt;의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;DAG&lt;/code&gt; 클래스는 task를 단순 딕셔너리로 보관합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DAG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;LoggingMixin&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;task_dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BaseOperator&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;각 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BaseOperator&lt;/code&gt;는 자기 자신의 직속 자식(downstream task) ID들을 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;get_direct_relative_ids()&lt;/code&gt;로 돌려주는 식으로 인접 관계를 노출합니다. 별도의 인접 리스트가 따로 있는 것이 아니라, &lt;strong&gt;각 task가 자기 이웃 정보를 들고 있는&lt;/strong&gt; 형태입니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;알고리즘-airflowutilsdag_cycle_testerpy의-check_cycle&quot;&gt;알고리즘: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;airflow/utils/dag_cycle_tester.py&lt;/code&gt;의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;check_cycle&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;핵심 함수는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;airflow/utils/dag_cycle_tester.py&lt;/code&gt;에 있는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;check_cycle(dag)&lt;/code&gt;입니다 (예전 이름은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;test_cycle&lt;/code&gt;이었습니다).&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;collections&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;deque&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;CYCLE_NEW&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;CYCLE_IN_PROGRESS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;CYCLE_DONE&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;check_cycle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;visited&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;task_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CYCLE_NEW&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;task_id&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;task_dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;path_stack&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;deque&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;                     &lt;span class=&quot;c1&quot;&gt;# ← DFS 호출 스택을 직접 관리
+&lt;/span&gt;    &lt;span class=&quot;n&quot;&gt;task_dict&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;task_dict&lt;/span&gt;
+
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;_check_adjacent_tasks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;task_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;adjacent_task&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;current_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_direct_relative_ids&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;visited&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;adjacent_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CYCLE_IN_PROGRESS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;AirflowDagCycleException&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;
+                    &lt;span class=&quot;sa&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Cycle detected in DAG. Faulty task: &lt;/span&gt;&lt;span class=&quot;si&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;task_id&lt;/span&gt;&lt;span class=&quot;si&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;&lt;/span&gt;
+                &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;visited&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;adjacent_task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CYCLE_NEW&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;adjacent_task&lt;/span&gt;         &lt;span class=&quot;c1&quot;&gt;# 아직 안 가본 자식 하나 반환
+&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;                          &lt;span class=&quot;c1&quot;&gt;# 모든 자식이 이미 처리됨
+&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dag_task_id&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dag&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;task_dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;keys&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;visited&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dag_task_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CYCLE_DONE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;continue&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;path_stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dag_task_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;# (1) 시작 노드 push
+&lt;/span&gt;        &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path_stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;current_task_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path_stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# (2) 스택 top = 현재 DFS 위치
+&lt;/span&gt;            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;visited&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_task_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CYCLE_NEW&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;visited&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_task_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CYCLE_IN_PROGRESS&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# WHITE → GRAY
+&lt;/span&gt;            &lt;span class=&quot;n&quot;&gt;task&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;task_dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_task_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;child_to_check&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;_check_adjacent_tasks&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_task_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;task&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+            &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;child_to_check&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;visited&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;current_task_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;CYCLE_DONE&lt;/span&gt;         &lt;span class=&quot;c1&quot;&gt;# GRAY → BLACK
+&lt;/span&gt;                &lt;span class=&quot;n&quot;&gt;path_stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;             &lt;span class=&quot;c1&quot;&gt;# (4) 자식 다 봤으니 pop (= return)
+&lt;/span&gt;            &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+                &lt;span class=&quot;n&quot;&gt;path_stack&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;child_to_check&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# (3) 자식으로 들어감 (= 재귀 호출)
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;deque가-어떤-역할을-하는가&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;deque&lt;/code&gt;가 어떤 역할을 하는가&lt;/h3&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;deque&lt;/code&gt;는 여기서 &lt;strong&gt;재귀 호출 스택을 직접 손으로 관리하는 자료구조&lt;/strong&gt;로 쓰입니다. 재귀 DFS에서 자연스럽게 일어나는 세 가지 동작 — &lt;strong&gt;들어가기 / 현재 위치 보기 / 빠져나오기&lt;/strong&gt; — 가 각각 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;append&lt;/code&gt; / &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;[-1]&lt;/code&gt; / &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;pop&lt;/code&gt; 으로 1:1 대응됩니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;재귀 DFS&lt;/th&gt;
+      &lt;th&gt;iterative + &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;deque&lt;/code&gt;&lt;/th&gt;
+      &lt;th&gt;의미&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;dfs(child)&lt;/code&gt; 호출&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path_stack.append(child)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;자식으로 한 단계 깊이 들어감&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;현재 함수의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;self&lt;/code&gt; 파라미터&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path_stack[-1]&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;지금 어떤 노드를 처리 중인가&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;함수 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;return&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path_stack.pop()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;자식 탐색 끝나서 한 단계 위로&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;호출 체인 자체&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path_stack&lt;/code&gt; 안의 task_id 목록&lt;/td&gt;
+      &lt;td&gt;“지금까지 내려온 경로” = GRAY 노드들&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;특히 마지막 줄이 핵심입니다. &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path_stack&lt;/code&gt; 안에 들어 있는 task들이 곧 현재 DFS 경로&lt;/strong&gt;이고, 이들이 모두 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CYCLE_IN_PROGRESS&lt;/code&gt;(=GRAY) 상태라는 점이 사이클 검출의 핵심입니다. 어떤 노드의 자식을 보러 갔다가 그 자식이 이미 GRAY라는 건 곧 &lt;strong&gt;그 자식이 이미 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;path_stack&lt;/code&gt;에 들어 있다 = 지금 내려온 경로 위에 있다 = back-edge&lt;/strong&gt;라는 뜻이고, 그래서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_check_adjacent_tasks&lt;/code&gt; 안에서 곧바로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AirflowDagCycleException&lt;/code&gt;을 던집니다.&lt;/p&gt;
+
+&lt;p&gt;이렇게 스택을 직접 다루는 방식의 장점은 &lt;strong&gt;Python 함수 호출 스택을 쓰지 않는다&lt;/strong&gt;는 점입니다. Python의 기본 재귀 한도(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;sys.getrecursionlimit() == 1000&lt;/code&gt;)를 넘는 깊은 DAG에서 재귀 DFS는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;RecursionError&lt;/code&gt;로 죽지만, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;deque&lt;/code&gt;는 힙 메모리만 허용한다면 수십만 노드도 처리할 수 있습니다. PR &lt;a href=&quot;https://github.com/apache/airflow/pull/6175&quot;&gt;#6175&lt;/a&gt;이 해결한 문제가 정확히 이것입니다.&lt;/p&gt;
+
+&lt;p&gt;사이클이 발견되면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AirflowDagCycleException(&quot;Cycle detected in DAG. Faulty task: {task_id}&quot;)&lt;/code&gt; 예외가 발생하며, DAG 파싱 단계에서 곧바로 실패하게 됩니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;dbt-networkx-digraph--nxfind_cycle&quot;&gt;dbt: NetworkX DiGraph + &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nx.find_cycle&lt;/code&gt;&lt;/h1&gt;
+
+&lt;p&gt;dbt는 정반대 방향의 선택을 했습니다. 그래프 자료구조를 직접 만드는 대신 &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;networkx&lt;/code&gt; 라이브러리에 위임&lt;/strong&gt;합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;자료구조-linkergraph-networkxdigraph&quot;&gt;자료구조: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Linker.graph&lt;/code&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;networkx.DiGraph&lt;/code&gt;)&lt;/h2&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core/dbt/compilation.py&lt;/code&gt;의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Linker&lt;/code&gt; 클래스 초기화 부분입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;networkx&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nx&lt;/span&gt;
+
+&lt;span class=&quot;k&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Linker&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;__init__&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&amp;gt;&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DiGraph&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;DiGraph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;**&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nx.DiGraph&lt;/code&gt;는 NetworkX가 제공하는 방향 그래프 자료구조로, 노드/엣지 추가, 인접 노드 조회, 위상정렬, 연결 컴포넌트 분석 같은 기능을 모두 포함하고 있습니다. dbt는 이 풍부한 API를 그대로 재활용합니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;알고리즘-linkerfind_cycles--nxfind_cycle&quot;&gt;알고리즘: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Linker.find_cycles&lt;/code&gt; → &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nx.find_cycle&lt;/code&gt;&lt;/h2&gt;
+
+&lt;p&gt;같은 파일의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;find_cycles&lt;/code&gt; 메서드는 NetworkX의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;find_cycle&lt;/code&gt;을 호출하는 것이 사실상 전부입니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;find_cycles&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;try&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;cycle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;find_cycle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;graph&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;except&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;NetworkXNoCycle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot; --&amp;gt; &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;c&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cycle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;흥미로운 점은 &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;NetworkXNoCycle&lt;/code&gt; 예외가 정상 케이스&lt;/strong&gt;라는 것입니다. NetworkX는 사이클이 발견되지 않을 때 예외를 던지고, 발견되면 사이클을 구성하는 엣지 리스트를 반환하는 식의 인터페이스를 채택하고 있습니다.&lt;/p&gt;
+
+&lt;p&gt;NetworkX 내부 구현을 들여다보면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;find_cycle&lt;/code&gt;도 결국 &lt;strong&gt;DFS 기반 back-edge 탐지&lt;/strong&gt;입니다. 즉 알고리즘 본질은 Airflow와 동일한데, dbt 입장에서는 그 구현을 직접 작성할 필요가 없는 셈이죠.&lt;/p&gt;
+
+&lt;p&gt;호출 측인 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;link_graph()&lt;/code&gt;에서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;find_cycles()&lt;/code&gt;의 반환값이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;None&lt;/code&gt;이 아니면 사이클 경로를 메시지에 담아 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CompilationError(&quot;Found a cycle: {path}&quot;)&lt;/code&gt; 예외를 발생시킵니다. dbt 사용자가 모델 의존을 잘못 정의했을 때 흔히 마주치는 그 메시지입니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;비교&quot;&gt;비교&lt;/h1&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;항목&lt;/th&gt;
+      &lt;th&gt;Airflow&lt;/th&gt;
+      &lt;th&gt;dbt&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;자료구조&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Dict[str, BaseOperator]&lt;/code&gt; (자체 구현)&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;networkx.DiGraph&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;인접 관계&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BaseOperator.get_direct_relative_ids()&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;NetworkX 내부&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;알고리즘&lt;/td&gt;
+      &lt;td&gt;3-color iterative DFS&lt;/td&gt;
+      &lt;td&gt;DFS 기반 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;nx.find_cycle&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;호출 함수&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;check_cycle(dag)&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Linker.find_cycles()&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;사이클 시 예외&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AirflowDagCycleException&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;CompilationError&lt;/code&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;재귀 회피&lt;/td&gt;
+      &lt;td&gt;명시적 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;deque&lt;/code&gt; 스택&lt;/td&gt;
+      &lt;td&gt;NetworkX 내부에서 처리&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;시간복잡도&lt;/td&gt;
+      &lt;td&gt;\(O(V+E)\)&lt;/td&gt;
+      &lt;td&gt;\(O(V+E)\)&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;h1 id=&quot;마무리&quot;&gt;마무리&lt;/h1&gt;
+
+&lt;p&gt;두 도구가 푸는 문제는 동일하고 알고리즘의 본질도 DFS로 같지만, 자료구조 선택은 정반대입니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;Airflow&lt;/strong&gt;는 스케줄러 프로세스가 수많은 DAG를 반복적으로 파싱·검증해야 하는 환경입니다. 외부 라이브러리 의존을 줄이고 메모리·임포트 비용을 통제하기 위해 자체 자료구조와 검증 코드를 유지하는 쪽이 합리적입니다. 거대 DAG에 대비한 반복 DFS 전환(PR #6175)도 그 연장선입니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;dbt&lt;/strong&gt;는 컴파일 단계에서 의존 그래프를 한 번 구축하고 검증하는 패턴입니다. 호출 빈도가 낮고, 위상정렬·서브그래프 추출 같은 풍부한 그래프 연산이 추가로 필요합니다. 이런 맥락에서는 NetworkX에 의존을 받아들이는 쪽이 코드량과 유지보수 부담을 모두 줄여줍니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;같은 알고리즘이라도 &lt;strong&gt;어떤 자료구조 위에 얹을지는 프로젝트의 실행 컨텍스트가 결정&lt;/strong&gt;한다는 점이, 두 코드베이스를 나란히 놓고 봤을 때 가장 흥미로운 부분이었습니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;참고&quot;&gt;참고&lt;/h1&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/apache/airflow/blob/main/airflow/utils/dag_cycle_tester.py&quot;&gt;apache/airflow — &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;airflow/utils/dag_cycle_tester.py&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/apache/airflow/pull/6175&quot;&gt;apache/airflow PR #6175 — Fix recursion in DAG cycle testing&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/dbt-labs/dbt-core/blob/main/core/dbt/compilation.py&quot;&gt;dbt-labs/dbt-core — &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;core/dbt/compilation.py&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://networkx.org/documentation/stable/reference/algorithms/generated/networkx.algorithms.cycles.find_cycle.html&quot;&gt;NetworkX — &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;find_cycle&lt;/code&gt; documentation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="algorithm" />
+      
+
+      
+        <summary type="html">Airflow와 dbt가 DAG의 비순환 여부를 어떤 자료구조와 알고리즘으로 검증하는지 알아봅니다.</summary>
+      
+
+      
+      
+    </entry>
   
     <entry>
       <title type="html">Airflow Triggerer 사용기</title>
@@ -2233,161 +2789,6 @@ dbt run -m model_A --vars &quot;{'date': '2024-06-03'}&quot;
 
       
         <summary type="html">dbt trino에서 파티션이 있는 모델을 병렬 실행하기 위한 매크로 수정 방법</summary>
-      
-
-      
-      
-    </entry>
-  
-    <entry>
-      <title type="html">Spring Dependency Injection, Component Scan</title>
-      <link href="https://gyuhoonk.github.io/depdendency-injection" rel="alternate" type="text/html" title="Spring Dependency Injection, Component Scan" />
-      <published>2024-06-01T22:30:00+09:00</published>
-      <updated>2024-06-01T22:30:00+09:00</updated>
-      <id>https://gyuhoonk.github.io/depdendency-injection</id>
-      <content type="html" xml:base="https://gyuhoonk.github.io/depdendency-injection">&lt;p&gt;Spring의 의존관계 주입 방법과 Component Scan에 대해서 알아봅니다&lt;/p&gt;
-
-&lt;h2 id=&quot;의존관계-자동-주입&quot;&gt;의존관계 자동 주입&lt;/h2&gt;
-&lt;ul&gt;
-  &lt;li&gt;AS-IS: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AppConfig.java&lt;/code&gt;에서 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@Bean&lt;/code&gt;에 의존하거나 XML의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;&amp;lt;bean&amp;gt;&lt;/code&gt;을 사용&lt;/li&gt;
-  &lt;li&gt;TO-BE: java 코드 작성과 동시에 의존 관계를 주입하고 싶다 (AppConfig, XML과 같이 의존관계를 따로 작성하고 싶지 않다)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;component&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@Component&lt;/code&gt;&lt;/h3&gt;
-&lt;ul&gt;
-  &lt;li&gt;Bean 이름은 클래스명을 사용하되 맨 앞 글자만 소문자로 바꿔서 사용한다&lt;/li&gt;
-  &lt;li&gt;annotation 사용 시에 Bean name을 지정해줄 수도 있다 (잘 안씀)&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@Component&lt;/code&gt; 이외에도 아래 annotation들을 추가하면 Bean으로 등록하고 의존관계를 자동으로 주입한다. 아래 annotation들은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Component&lt;/code&gt;가 이미 추가되어있다.&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;Controller: Spring MVC Controller로 인식&lt;/li&gt;
-  &lt;li&gt;Repository: 데이터 접근 계층으로 인식하고, 데이터 계층의 예외를 Spring 예외로 변환&lt;/li&gt;
-  &lt;li&gt;Configuration: Spring 설정 정보로 인식하고 Bean이 싱글톤을 유지하도록 추가처리&lt;/li&gt;
-  &lt;li&gt;Service: 특별한 처리는 없음, 핵심 비즈니스 로직을 기술함&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;참고로, java annotation은 상속 관계가 없기 때문에 위 4가지 annotation들은 java 문법 상으로는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Component&lt;/code&gt;와 관련이 없는 annotation이다. Spring 내부에서 위 annotation들이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Component&lt;/code&gt;의 속성을 상속받아 작성되었다.&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@Component&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderServiceImpl&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;implements&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;OrderService&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;private&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;final&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;autowired&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@Autowired&lt;/code&gt;&lt;/h3&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;스프링 컨테이너가 자동으로 해당 스프링 Bean을 찾아서 주입한다&lt;/li&gt;
-  &lt;li&gt;타입이 같은 Bean을 찾아서 주입한다고 보면 된다&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;    &lt;span class=&quot;nd&quot;&gt;@Autowired&lt;/span&gt;
-    &lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;OrderServiceImpl&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;MemberRepository&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@MainDiscountPolicy&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DiscountPolicy&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;memberRepository&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;memberRepository&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-        &lt;span class=&quot;k&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;discountPolicy&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;discountPolicy&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;;&lt;/span&gt;
-    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;component-scan&quot;&gt;Component Scan&lt;/h2&gt;
-
-&lt;h3 id=&quot;스캔-범위&quot;&gt;스캔 범위&lt;/h3&gt;
-&lt;p&gt;Spring은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;Component&lt;/code&gt;로 등록된 Bean을 자동으로 검색하고 추가한다. 그렇다면 Spring 프로젝트 전체를 스캔하는 것일까? 
-일반적으로는 맞다. 따로 지정하지 않으면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@SpringBootAplication&lt;/code&gt;으로부터 Component Scan을 시작하는데, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@SpringBootAplication&lt;/code&gt;는 Spring 프로젝트의 최상단에 위치하고 있기 때문이다.&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@SpringBootApplication&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;DemoApplication&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-
-	&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;static&lt;/span&gt; &lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;[]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-		&lt;span class=&quot;nc&quot;&gt;SpringApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;run&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;DemoApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;args&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;);&lt;/span&gt;
-	&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;참고로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SpringBootApplication&lt;/code&gt;은 아래와 같은 옵션으로 Component Scan을 실행한다.&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@ComponentScan&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;excludeFilters&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@Filter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FilterType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;CUSTOM&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;classes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;TypeExcludeFilter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;),&lt;/span&gt;
-		&lt;span class=&quot;nd&quot;&gt;@Filter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;FilterType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;CUSTOM&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;classes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AutoConfigurationExcludeFilter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;})&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@interface&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;SpringBootApplication&lt;/span&gt; 
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;스캔-범위-조정&quot;&gt;스캔 범위 조정&lt;/h3&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@ComponentScan&lt;/code&gt; 추가 시 아래와 파라미터들을 통해 스캔 범위를 조정할 수 있다.&lt;/p&gt;
-
-&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nd&quot;&gt;@Configuration&lt;/span&gt;
-&lt;span class=&quot;nd&quot;&gt;@ComponentScan&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;basePackages&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;hello.demo.member&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 해당 패키지부터만 @Component를 &lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;basePackageClasses&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AutoAppConfig&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 지정한 클래스 패키지를 탐색 &lt;/span&gt;
-        &lt;span class=&quot;n&quot;&gt;excludeFilters&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nd&quot;&gt;@ComponentScan&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;Filter&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;FilterType&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;ANNOTATION&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;classes&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Configuration&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;// 수동으로 작성된 AppConfig.java는 등록에서 제외함&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;kd&quot;&gt;public&lt;/span&gt; &lt;span class=&quot;kd&quot;&gt;class&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;AutoAppConfig&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;[참고] Filter 옵션&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;ANNOTATION: 기본값, annotation을 인식해서 동작함&lt;/li&gt;
-  &lt;li&gt;ASSIGNABLE_TYPE: 지정한 타입과 자식 타입을 인식해서 동작함&lt;/li&gt;
-  &lt;li&gt;ASPECTJ: AspectJ 패턴을 사용함&lt;/li&gt;
-  &lt;li&gt;REGEX: 정규표현식&lt;/li&gt;
-  &lt;li&gt;CUSTOM: &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TypeFilter&lt;/code&gt;라는 인터페이스를 구현해서  처리함&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;h3 id=&quot;권장하는-스캔-설정&quot;&gt;권장하는 스캔 설정&lt;/h3&gt;
-&lt;p&gt;위처럼 패키지 위치를 지정하지 않고, 설정 정보 클래스의 위치를 프로젝트 최상단에 두는 것을 권장한다.&lt;/p&gt;
-
-&lt;p&gt;예를 들어, 프로젝트 구조가 아래와 같다면&lt;/p&gt;
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;com.hello
-├── service
-└── repository
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;com.hello&lt;/code&gt;가 프로젝트의 시작 루트이므로 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;AppConfig&lt;/code&gt;와 같은 메인 설정 정보를 두고 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@ComponentScan&lt;/code&gt;annotation을 추가한다. 이렇게 설정하면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;com.hello&lt;/code&gt; 이하의 모든 Component가 자동으로 스캔된다.&lt;/p&gt;
-
-&lt;h2 id=&quot;중복-등록과--충돌&quot;&gt;중복 등록과  충돌&lt;/h2&gt;
-&lt;p&gt;ComponentScan에 의해 &lt;em&gt;자동&lt;/em&gt;으로 등록되는 Bean과 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;@Bean&lt;/code&gt;을 사용하여 &lt;em&gt;수동&lt;/em&gt;으로 등록된 Bean이 동일한 이름을 갖는다면 어떻게 될까?&lt;/p&gt;
-
-&lt;p&gt;일반적으로 중복 Bean name은 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;BeanDefinitionStoreException&lt;/code&gt;를 발생시키지만, 수동 등록 Bean과 자동 등록 Bean은 충돌 시 수동 등록 Bean이 우선권을 갖고 자동 등록 Bean을 override하도록 설정할 수 있다.&lt;/p&gt;
-
-&lt;p&gt;이를 위해서는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;application.properties&lt;/code&gt;에 아래 옵션을 추가해야한다&lt;/p&gt;
-
-&lt;div class=&quot;language-properties highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;py&quot;&gt;main.allow-bean-definition-overriding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;true&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;옵션을 추가하고나면, Bean name 충돌에 대해서 Spring이 아래처럼 처리하는 로그를 확인할 수 있다.&lt;/p&gt;
-
-&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;Overriding bean definition for bean 'memoryMemberRepository' with a different definition
-&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
-
-&lt;p&gt;일반적으로 이는 권장하지 않는 방법이며, 중복 Bean name을 사용하지 않는 것이 가장 좋다.&lt;/p&gt;
-
-&lt;p&gt;[참고]&lt;br /&gt;
-&lt;a href=&quot;https://www.inflearn.com/course/%EC%8A%A4%ED%94%84%EB%A7%81-%ED%95%B5%EC%8B%AC-%EC%9B%90%EB%A6%AC-%EA%B8%B0%EB%B3%B8%ED%8E%B8/dashboard&quot;&gt;[inflearn]스프링 핵심 원리 - 기본편&lt;/a&gt;&lt;/p&gt;</content>
-
-      
-      
-      
-      
-      
-
-      <author>
-          <name>GyuhoonK</name>
-        
-        
-      </author>
-
-      
-
-      
-        <category term="spring" />
-      
-
-      
-        <summary type="html">Spring의 의존관계 주입 방법과 Component Scan에 대해서 알아봅니다</summary>
       
 
       
