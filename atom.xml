@@ -8,6 +8,21 @@
     
       
       <item>
+        <title>트랜잭션과 ACID — MySQL InnoDB와 PostgreSQL은 어떻게 보장할까</title>
+        
+          <description>&lt;p&gt;MySQL InnoDB와 PostgreSQL이 ACID 네 속성을 어떤 로그·자료구조로 구현하는지 비교해봅니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Fri, 08 May 2026 22:30:00 +0900</pubDate>
+        <link>
+        https://gyuhoonk.github.io/transaction-acid</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/transaction-acid</guid>
+      </item>
+      
+    
+      
+      <item>
         <title>DAG 순환 참조 판별 알고리즘 — Airflow와 dbt는 어떻게 검증할까</title>
         
           <description>&lt;p&gt;Airflow와 dbt가 DAG의 비순환 여부를 어떤 자료구조와 알고리즘으로 검증하는지 알아봅니다.&lt;/p&gt;

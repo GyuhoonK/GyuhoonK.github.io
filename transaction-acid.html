@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>트랜잭션과 ACID — MySQL InnoDB와 PostgreSQL은 어떻게 보장할까</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    </script>
+<meta name="description" content="Data Engineering" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/transaction-acid" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="트랜잭션과 ACID — MySQL InnoDB와 PostgreSQL은 어떻게 보장할까" />
+    <meta property="og:description" content="MySQL InnoDB와 PostgreSQL이 ACID 네 속성을 어떤 로그·자료구조로 구현하는지 비교해봅니다. 왜 트랜잭션이 필요한가 단순한 두 UPDATE의 함정 A 계좌에서 B 계좌로 100원을 이체하는 가장 단순한 코드를 떠올려보겠습니다. UPDATE accounts SET balance = balance - 100 WHERE id = 'A'; UPDATE accounts SET balance = balance + 100 WHERE id =" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/transaction-acid" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/database/transaction-acid.svg" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2026-05-08T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2026-05-08T22:30:00+09:00" />
+    <meta property="article:tag" content="Database" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="트랜잭션과 ACID — MySQL InnoDB와 PostgreSQL은 어떻게 보장할까" />
+    <meta name="twitter:description" content="MySQL InnoDB와 PostgreSQL이 ACID 네 속성을 어떤 로그·자료구조로 구현하는지 비교해봅니다. 왜 트랜잭션이 필요한가 단순한 두 UPDATE의 함정 A 계좌에서 B 계좌로 100원을 이체하는 가장 단순한 코드를 떠올려보겠습니다. UPDATE accounts SET balance = balance - 100 WHERE id = 'A'; UPDATE accounts SET balance = balance + 100 WHERE id =" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/database/transaction-acid.svg" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Database" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "https://gyuhoonk.github.io/"
+    },
+    "url": "https://gyuhoonk.github.io/transaction-acid",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://gyuhoonk.github.io/assets/built/images/database/transaction-acid.svg",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://gyuhoonk.github.io/transaction-acid"
+    },
+    "description": "MySQL InnoDB와 PostgreSQL이 ACID 네 속성을 어떤 로그·자료구조로 구현하는지 비교해봅니다. 왜 트랜잭션이 필요한가 단순한 두 UPDATE의 함정 A 계좌에서 B 계좌로 100원을 이체하는 가장 단순한 코드를 떠올려보겠습니다. UPDATE accounts SET balance = balance - 100 WHERE id = 'A'; UPDATE accounts SET balance = balance + 100 WHERE id ="
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="트랜잭션과 ACID — MySQL InnoDB와 PostgreSQL은 어떻게 보장할까" href="/feed.xml" />
+ <script type="module">
+ import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+ mermaid.initialize({ startOnLoad: true });
+ await mermaid.run({
+     querySelector: '.language-mermaid',
+ });
+</script>
+    
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/kubernetes/">kubernetes</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-database post tag-database ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime=" 8 May 2026"> 8 May 2026</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/database/'>DATABASE</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">트랜잭션과 ACID — MySQL InnoDB와 PostgreSQL은 어떻게 보장할까</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/database/transaction-acid.svg)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>MySQL InnoDB와 PostgreSQL이 ACID 네 속성을 어떤 로그·자료구조로 구현하는지 비교해봅니다.</p>
+
+<h1 id="왜-트랜잭션이-필요한가">왜 트랜잭션이 필요한가</h1>
+
+<h2 id="단순한-두-update의-함정">단순한 두 UPDATE의 함정</h2>
+
+<p>A 계좌에서 B 계좌로 100원을 이체하는 가장 단순한 코드를 떠올려보겠습니다.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">UPDATE</span> <span class="n">accounts</span> <span class="k">SET</span> <span class="n">balance</span> <span class="o">=</span> <span class="n">balance</span> <span class="o">-</span> <span class="mi">100</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="s1">'A'</span><span class="p">;</span>
+<span class="k">UPDATE</span> <span class="n">accounts</span> <span class="k">SET</span> <span class="n">balance</span> <span class="o">=</span> <span class="n">balance</span> <span class="o">+</span> <span class="mi">100</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="s1">'B'</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>두 줄이지만 이 사이에는 무시할 수 없는 시간적 간격이 있습니다. 첫 번째 UPDATE가 디스크에 기록된 직후 서버가 비정상 종료되면 어떻게 될까요.</p>
+
+<pre><code class="language-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    participant App
+    participant DB
+    App-&gt;&gt;DB: UPDATE accounts SET balance = balance - 100 WHERE id = 'A'
+    DB--&gt;&gt;App: OK (A: 1000 → 900)
+    Note over App,DB: 💥 서버 crash
+    App--xDB: UPDATE accounts SET balance = balance + 100 WHERE id = 'B' (실행 안 됨)
+    Note over DB: A=900, B=원래 그대로 → 100원 증발
+</code></pre>
+
+<p>A의 잔고는 100원이 줄었는데 B의 잔고는 그대로입니다. 100원이 그냥 사라진 셈이죠. 데이터베이스 입장에서 이 두 UPDATE는 <strong>하나의 사건</strong>이어야 하는데, 단순 SQL 실행만으로는 그것을 보장할 수 없습니다.</p>
+
+<p>이 문제를 해결하기 위해 데이터베이스는 <strong>트랜잭션(transaction)</strong> 이라는 추상을 제공합니다. 트랜잭션은 여러 SQL 문을 하나의 논리적 단위로 묶고, 그 단위에 대해 네 가지 약속을 보장합니다.</p>
+
+<h2 id="트랜잭션이-보장해야-하는-네-가지-약속">트랜잭션이 보장해야 하는 네 가지 약속</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>속성</th>
+      <th>한 줄 정의</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>A</strong>tomicity</td>
+      <td>트랜잭션 안의 모든 작업이 전부 반영되거나, 하나도 반영되지 않거나</td>
+    </tr>
+    <tr>
+      <td><strong>C</strong>onsistency</td>
+      <td>트랜잭션이 끝난 시점에 DB 제약 조건은 항상 만족 상태</td>
+    </tr>
+    <tr>
+      <td><strong>I</strong>solation</td>
+      <td>동시에 실행되는 트랜잭션끼리 서로의 중간 상태를 보지 못함</td>
+    </tr>
+    <tr>
+      <td><strong>D</strong>urability</td>
+      <td>커밋된 결과는 장애가 나도 살아남음</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>이 네 글자를 이어 붙여 ACID라고 부릅니다. 이 글에서는 <strong>A·C·D</strong>를 본격적으로 다루고, <strong>I</strong>(격리성)는 동시성 이상 현상과 함께 다음 편으로 미룹니다.</p>
+
+<h1 id="트랜잭션의-두-시간대--begin-과-commit-사이">트랜잭션의 두 시간대 — <code class="language-plaintext highlighter-rouge">BEGIN</code> 과 <code class="language-plaintext highlighter-rouge">COMMIT</code> 사이</h1>
+
+<p>ACID 네 속성을 하나씩 보기 전에, 본문 곳곳에 등장할 표현 하나만 먼저 정리하겠습니다.</p>
+
+<p><code class="language-plaintext highlighter-rouge">BEGIN</code> 으로 시작해 <code class="language-plaintext highlighter-rouge">COMMIT</code> 으로 끝나는 트랜잭션 블록 안에서, DB 는 같은 row 에 대해 <strong>두 가지 다른 값을 동시에</strong> 들고 있습니다.</p>
+
+<ul>
+  <li><strong>(COMMIT 전) 잠정 값</strong> — 트랜잭션을 실행 중인 클라이언트(=같은 세션) 가 보는 값. UPDATE 직후 같은 세션에서 SELECT 하면 변경된 값이 그대로 보입니다.</li>
+  <li><strong>영구화된 값</strong> — 다른 클라이언트(=다른 세션) 가 보는 값. COMMIT 이 끝나기 전까지는 BEGIN 직전의 값 그대로입니다.</li>
+</ul>
+
+<p>같은 시점에 두 클라이언트가 같은 row 를 SELECT 했을 때 서로 다른 값을 본다는 뜻입니다.</p>
+
+<pre><code class="language-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    participant A as Client A (트랜잭션 실행자)
+    participant DB
+    participant B as Client B (다른 세션)
+
+    A-&gt;&gt;DB: BEGIN
+    A-&gt;&gt;DB: UPDATE accounts SET balance = balance - 100 WHERE id = 'A'
+    A-&gt;&gt;DB: SELECT balance FROM accounts WHERE id = 'A'
+    DB--&gt;&gt;A: 900   ← 자기 UPDATE 결과가 즉시 보임
+    B-&gt;&gt;DB: SELECT balance FROM accounts WHERE id = 'A'
+    DB--&gt;&gt;B: 1000  ← 아직 BEGIN 직전 값
+    A-&gt;&gt;DB: COMMIT
+    B-&gt;&gt;DB: SELECT balance FROM accounts WHERE id = 'A'
+    DB--&gt;&gt;B: 900   ← 이제야 새 값이 보임
+</code></pre>
+
+<p>Client A 는 자기 UPDATE 의 결과를 즉시 봅니다. 같은 시점의 Client B 는 BEGIN 직전 값을 봅니다. A 의 COMMIT 이 끝나는 순간 두 클라이언트가 보는 값이 비로소 일치합니다.</p>
+
+<p>이 글에서 다이어그램에 <code class="language-plaintext highlighter-rouge">(COMMIT 전)</code> 이라고 적힌 노트는 위 그림의 <strong>“A 가 본 잠정 값”</strong> 을 가리킵니다. 그 값이 결국 영구화될지(COMMIT) 사라질지(ROLLBACK·크래시) 가 곧 다음에 다룰 Atomicity 의 주제입니다.</p>
+
+<h1 id="acid-네-속성을-하나씩">ACID 네 속성을 하나씩</h1>
+
+<h2 id="a--atomicity-전부-아니면-전무">A — Atomicity: 전부 아니면 전무</h2>
+
+<p>Atomicity는 가장 직관적인 속성입니다. 트랜잭션 내의 모든 SQL 문은 <strong>all-or-nothing</strong>으로 처리되어야 합니다. 위 계좌이체를 트랜잭션으로 감싸면, 두 UPDATE 가 하나의 단위가 됩니다.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span><span class="p">;</span>
+  <span class="c1">-- 송금 query: A 계좌에서 100원 차감</span>
+  <span class="k">UPDATE</span> <span class="n">accounts</span> <span class="k">SET</span> <span class="n">balance</span> <span class="o">=</span> <span class="n">balance</span> <span class="o">-</span> <span class="mi">100</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="s1">'A'</span><span class="p">;</span>
+  <span class="c1">-- 수금 query: B 계좌에 100원 추가</span>
+  <span class="k">UPDATE</span> <span class="n">accounts</span> <span class="k">SET</span> <span class="n">balance</span> <span class="o">=</span> <span class="n">balance</span> <span class="o">+</span> <span class="mi">100</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="s1">'B'</span><span class="p">;</span>
+<span class="k">COMMIT</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>같은 두 query 라도 결과는 두 가지 중 하나로만 끝나야 합니다. <strong>둘 다 반영되거나, 둘 다 사라지거나</strong> — 한쪽만 적용된 중간 상태는 절대 영구화되지 않아야 합니다.</p>
+
+<h3 id="-정상-흐름--commit-성공">① 정상 흐름 — COMMIT 성공</h3>
+
+<p>송금·수금 query 가 모두 실행되고 COMMIT 까지 성공하면, 두 변경이 함께 영구화됩니다.</p>
+
+<pre><code class="language-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    participant App
+    participant DB
+    Note over DB: 시작 — A=1000, B=1000
+
+    App-&gt;&gt;DB: BEGIN
+    App-&gt;&gt;DB: 송금 query (A.balance -= 100)
+    Note over DB: (COMMIT 전) A=900, B=1000
+    App-&gt;&gt;DB: 수금 query (B.balance += 100)
+    Note over DB: (COMMIT 전) A=900, B=1100
+    App-&gt;&gt;DB: COMMIT
+    DB--&gt;&gt;App: OK
+    Note over DB: 영구화 — A=900, B=1100&lt;br/&gt;두 query 모두 반영
+</code></pre>
+
+<h3 id="-실패-흐름--오류--rollback--크래시">② 실패 흐름 — 오류 / ROLLBACK / 크래시</h3>
+
+<p>송금 query 만 실행된 채로 오류·ROLLBACK·크래시가 발생해도, <strong>이미 디스크에 흔적이 남았을 송금 query 의 변경까지 함께 되돌려져야</strong> 합니다.</p>
+
+<pre><code class="language-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    participant App
+    participant DB
+    Note over DB: 시작 — A=1000, B=1000
+
+    App-&gt;&gt;DB: BEGIN
+    App-&gt;&gt;DB: 송금 query (A.balance -= 100)
+    Note over DB: (COMMIT 전) A=900, B=1000
+    App--xDB: 💥 오류 / ROLLBACK / 크래시
+    Note over DB: 송금 query 의 변경을 로그로 되돌림
+    Note over DB: 영구화 — A=1000, B=1000&lt;br/&gt;두 query 모두 되돌림
+</code></pre>
+
+<p>두 흐름 모두 <strong>영구화된 결과는 두 가지뿐</strong>입니다. 시작 상태(A=1000/B=1000) 또는 완전 적용 상태(A=900/B=1100). 위험한 절반 상태(A=900/B=1000) 는 어떤 시점에도 영구화되지 않습니다. 이를 위해 DB 는 변경 내용을 <strong>로그</strong>에 기록해두고, 실패 시 그 로그를 이용해 변경을 되돌립니다 — 그 로그의 정체가 곧 뒤에서 비교할 InnoDB 의 Undo log 와 PostgreSQL 의 Heap 안 옛 row 버전입니다.</p>
+
+<h2 id="c--consistency-제약-조건은-누구의-책임인가">C — Consistency: 제약 조건은 누구의 책임인가</h2>
+
+<p>Consistency 는 ACID 중 가장 오해받는 속성입니다. 흔히 “트랜잭션이 DB 를 한 일관된 상태에서 다른 일관된 상태로 옮긴다” 라고 정의되는데, 여기서 <strong>“일관된 상태”</strong> 가 사실은 <strong>두 층의 합</strong>이라는 점이 잘 드러나지 않기 때문입니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>층</th>
+      <th>책임 주체</th>
+      <th>보장하는 것</th>
+      <th>예시</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>DB 제약</strong></td>
+      <td>DB 엔진</td>
+      <td>스키마에 선언된 규칙</td>
+      <td><code class="language-plaintext highlighter-rouge">CHECK (balance &gt;= 0)</code>, <code class="language-plaintext highlighter-rouge">NOT NULL</code>, <code class="language-plaintext highlighter-rouge">FOREIGN KEY</code>, <code class="language-plaintext highlighter-rouge">UNIQUE</code></td>
+    </tr>
+    <tr>
+      <td><strong>비즈니스 규칙</strong></td>
+      <td>애플리케이션</td>
+      <td>SQL 제약으로는 표현할 수 없는 도메인 규칙</td>
+      <td>“송금 차감액 = 수금 입금액”, “잔액 합계 = 거래 내역 합계”</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>DB 단위의 일관성을 한 문장으로 줄이면, <strong>“스키마에 선언된 모든 제약이 항상 만족되는 상태가 유지된다”</strong> 는 불변식입니다. 트랜잭션이 이 불변식을 깨려는 변경을 시도하면 DB 는 그 시점에 거부합니다 — 다른 제약은 멀쩡한데 <code class="language-plaintext highlighter-rouge">CHECK (balance &gt;= 0)</code> 하나만 위반해도 트랜잭션 전체가 실패합니다.</p>
+
+<p>송금·수금 예시로 풀어보면 두 층의 차이가 분명해집니다.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="n">accounts</span> <span class="p">(</span>
+    <span class="n">id</span>      <span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">,</span>
+    <span class="n">balance</span> <span class="nb">BIGINT</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+    <span class="k">CHECK</span> <span class="p">(</span><span class="n">balance</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span>              <span class="c1">-- ← DB 제약: 잔액은 음수가 될 수 없다</span>
+<span class="p">);</span>
+</code></pre></div></div>
+
+<p>DB 가 책임지는 부분은 “어떤 row 의 balance 도 0 미만이 되지 않는다” 까지입니다. 트랜잭션이 시도한 UPDATE 가 음수 잔액을 만들면 DB 는 <strong>그 자리에서</strong> 트랜잭션을 거부합니다.</p>
+
+<p>그러나 송금 query 가 차감한 금액과 수금 query 가 더한 금액이 <strong>같은 100원</strong> 이라는 사실은 DB 가 알 길이 없습니다. 다음 SQL 은 DB 입장에서 완벽히 합법입니다 — 어떤 CHECK 도 위반하지 않으니까요.</p>
+
+<div class="language-sql highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">BEGIN</span><span class="p">;</span>
+  <span class="k">UPDATE</span> <span class="n">accounts</span> <span class="k">SET</span> <span class="n">balance</span> <span class="o">=</span> <span class="n">balance</span> <span class="o">-</span> <span class="mi">100</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="s1">'A'</span><span class="p">;</span>   <span class="c1">-- 차감 100</span>
+  <span class="k">UPDATE</span> <span class="n">accounts</span> <span class="k">SET</span> <span class="n">balance</span> <span class="o">=</span> <span class="n">balance</span> <span class="o">+</span> <span class="mi">200</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="s1">'B'</span><span class="p">;</span>   <span class="c1">-- 입금 200 (!)</span>
+<span class="k">COMMIT</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>A 의 잔액이 0 이상이고 B 의 잔액이 0 이상이면 DB 는 “일관된 상태” 라고 판정합니다. 그러나 시스템 전체로 보면 <strong>100원이 어디선가 새로 생겼다</strong>는 비즈니스 관점의 위반이 일어났고, 이 층의 일관성은 오직 애플리케이션 코드(예: <code class="language-plaintext highlighter-rouge">transferAmount</code> 변수를 두 UPDATE 가 함께 사용하도록 강제하는 로직) 가 보장해야 합니다.</p>
+
+<p>ACID 의 C 가 A·I·D 와 결이 다른 이유가 여기에 있습니다. <strong>A·I·D 는 DB 엔진이 단독으로 보장하는 속성이지만, C 는 DB 와 애플리케이션의 공동 책임입니다.</strong></p>
+<h2 id="i--isolation-동시성은-다음-편에서">I — Isolation: 동시성은 다음 편에서</h2>
+
+<p>Isolation은 동시에 실행되는 여러 트랜잭션이 서로의 중간 상태를 보지 못하도록 하는 속성입니다. 이 속성이 깨질 때 일어나는 가장 단순한 사고가 <strong>Lost Update</strong>입니다.</p>
+
+<pre><code class="language-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    participant A as Session A
+    participant DB
+    participant B as Session B
+    A-&gt;&gt;DB: SELECT balance FROM accounts WHERE id='X'
+    DB--&gt;&gt;A: 100
+    B-&gt;&gt;DB: SELECT balance FROM accounts WHERE id='X'
+    DB--&gt;&gt;B: 100
+    A-&gt;&gt;DB: UPDATE ... SET balance = 100 + 10
+    B-&gt;&gt;DB: UPDATE ... SET balance = 100 + 20
+    Note over A,B: A의 +10이 B의 +20에 덮여 사라짐
+</code></pre>
+
+<p>A의 입금 10원이 흔적도 없이 사라졌습니다. 격리 수준(Isolation Level)은 이 같은 동시성 이상 현상을 어디까지 막을지를 정의하는 다이얼이고, MySQL과 PostgreSQL이 같은 다이얼 위에서 전혀 다른 메커니즘을 쓴다는 점이 흥미롭습니다. 이 부분은 다음 편에서 본격적으로 다루겠습니다.</p>
+
+<h2 id="d--durability-디스크에-닿았다는-것의-의미">D — Durability: 디스크에 닿았다는 것의 의미</h2>
+
+<p>Durability는 “COMMIT된 트랜잭션은 장애가 나도 살아 있어야 한다”는 약속입니다. 단순해 보이지만, 현대 OS·디스크 스택에서 “썼다”의 의미가 한 가지가 아니라는 점이 일을 복잡하게 만듭니다.</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    App[App&lt;br/&gt;process memory] --&gt;|fwrite| Cache[OS Page Cache&lt;br/&gt;커널 메모리]
+    Cache --&gt;|fsync| Disk[(Disk Platter&lt;br/&gt;비휘발성)]
+
+    classDef vol fill:#fee2e2,stroke:#7f1d1d,color:#7f1d1d
+    classDef nvm fill:#dcfce7,stroke:#166534,color:#14532d
+    class App,Cache vol
+    class Disk nvm
+</code></pre>
+
+<p><code class="language-plaintext highlighter-rouge">write()</code> 시스템 콜은 데이터를 <strong>OS 페이지 캐시</strong>까지만 옮깁니다. 커널 메모리에 있는 동안 정전이 나면 데이터는 사라집니다. 데이터를 비휘발성 디스크 플래터까지 밀어내려면 <code class="language-plaintext highlighter-rouge">fsync()</code>가 필요합니다.</p>
+
+<p>문제는 <code class="language-plaintext highlighter-rouge">fsync</code>가 비싸다는 것입니다. SSD에서도 수백 마이크로초, HDD에서는 수 밀리초 단위입니다. COMMIT마다 fsync를 부르면 전체 처리량이 그 비용에 묶입니다. 이 비싼 호출을 어떻게 다룰지가 곧 DB 엔진의 성격을 결정합니다.</p>
+
+<h1 id="atomicity와-durability를-떠받치는-로그-구조">Atomicity와 Durability를 떠받치는 로그 구조</h1>
+
+<h2 id="redo-log-vs-undo-log--역할-분리">Redo log vs Undo log — 역할 분리</h2>
+
+<p>A와 D를 동시에 보장하려면 변경에 대한 두 가지 정보가 필요합니다. <strong>변경 후의 모습</strong>(다시 적용하기 위해)과 <strong>변경 전의 모습</strong>(되돌리기 위해)입니다. 이 둘은 사실상 별개의 자료구조이고, 전통적으로 다음과 같이 구분해 부릅니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>로그</th>
+      <th>저장 내용</th>
+      <th>방향</th>
+      <th>쓰임</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Redo log</strong></td>
+      <td>변경 <strong>후</strong> 이미지</td>
+      <td>앞으로 재실행</td>
+      <td>크래시 복구 시 커밋된 변경 재적용</td>
+    </tr>
+    <tr>
+      <td><strong>Undo log</strong></td>
+      <td>변경 <strong>전</strong> 이미지</td>
+      <td>뒤로 되돌리기</td>
+      <td>ROLLBACK, MVCC 이전 버전 조회</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>이 분리가 실제 엔진에서 어떻게 다르게 구현되는지가 뒤에서 비교할 핵심 포인트입니다.</p>
+
+<h2 id="walwrite-ahead-logging의-원칙">WAL(Write-Ahead Logging)의 원칙</h2>
+
+<p>Atomicity와 Durability를 동시에 보장하는 표준 기법이 <strong>Write-Ahead Logging</strong>입니다. 원칙은 한 줄로 요약됩니다.</p>
+
+<blockquote>
+  <p>데이터 페이지를 디스크에 쓰기 <strong>전에</strong> 그 변경을 설명하는 로그를 먼저 디스크에 써라.</p>
+</blockquote>
+
+<p>이 순서가 왜 중요한지는 시퀀스로 보면 분명합니다.</p>
+
+<pre><code class="language-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    participant App
+    participant BP as Buffer Pool&lt;br/&gt;(데이터 페이지 캐시)
+    participant LB as WAL Buffer
+    participant LF as WAL File (disk)
+    participant DF as Data File (disk)
+    App-&gt;&gt;BP: ① UPDATE → 페이지 변경 (메모리)
+    BP-&gt;&gt;LB: ② 변경 로그 append
+    LB-&gt;&gt;LF: ③ COMMIT 시 fsync
+    Note over LF: 이 시점부터 Durability 보장
+    BP-&gt;&gt;DF: ④ 나중에 천천히 flush
+    Note over DF: 크래시 나도 ③의 로그로 복구 가능
+</code></pre>
+
+<p>핵심은 ③과 ④의 순서가 자유롭다는 것입니다. ③이 끝난 시점에 클라이언트에게 COMMIT 성공을 알리면 됩니다. ④는 백그라운드에서 느긋하게 진행되어도 무방합니다. 만약 ④ 도중 크래시가 나도, 다음 기동 시 ③의 로그를 읽어 ④를 다시 수행할 수 있기 때문입니다.</p>
+
+<h3 id="그런데-로그도-디스크-쓰기-아닌가">그런데 로그도 디스크 쓰기 아닌가</h3>
+
+<p>여기서 자연스러운 질문이 하나 생깁니다. <strong>“로그도 결국 fsync 로 디스크에 쓰는 건데, 그게 어떻게 데이터 페이지 쓰기보다 싸고 어떻게 Durability 를 보장한다는 건가?”</strong></p>
+
+<p>맞습니다, 로그 쓰기도 분명 디스크 쓰기입니다. 그러나 디스크에 쓰는 <strong>두 가지 대상의 성격이 완전히 다르다</strong> 는 것이 WAL 이 통하는 이유입니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>대상</th>
+      <th>쓰기 패턴</th>
+      <th>한 번 쓰는 크기</th>
+      <th>디스크 상 위치</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>WAL/Redo 로그</strong></td>
+      <td>append-only, 순차</td>
+      <td>수십~수백 바이트</td>
+      <td>단일 파일(들) 의 끝</td>
+    </tr>
+    <tr>
+      <td><strong>데이터 페이지</strong></td>
+      <td>random write</td>
+      <td>16 KB (InnoDB) / 8 KB (PG) 단위</td>
+      <td>테이블·인덱스 파일 곳곳</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>순차 쓰기는 SSD 에서도 random 쓰기보다 보통 수십 배 빠릅니다. 같은 트랜잭션의 결과를 디스크에 영구화하는 두 가지 방법을 비교하면 비용 차이가 큽니다.</p>
+
+<ul>
+  <li><strong>로그만 fsync</strong> → 한 파일의 끝에 작은 sequential write 한 번</li>
+  <li><strong>데이터 페이지를 직접 fsync</strong> → 흩어진 16KB 페이지 여러 개를 random 위치에 fsync (게다가 보통 한 트랜잭션이 여러 페이지를 건드림)</li>
+</ul>
+
+<p>WAL 은 그래서 <strong>“비싼 random write 는 미루고, 싼 sequential write 만 COMMIT 경로에 둔다”</strong> 는 전략입니다. 데이터 페이지도 결국 디스크에 가야 하지만, <strong>COMMIT 응답 지연에서 빠져나갈 수 있다</strong> 는 것이 핵심입니다.</p>
+
+<p>Durability 는 이렇게 보장됩니다. <strong>로그가 디스크에 닿은 시점에 트랜잭션의 변경 의도 자체가 영구화</strong> 됩니다. 데이터 페이지가 아직 디스크에 닿지 않았더라도, 크래시 후 재기동 시 로그를 처음부터 다시 적용(replay) 하면 메모리 상의 변경을 그대로 재현할 수 있기 때문입니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>로그       = 디스크에 적용할 "작업 지시서"
+데이터 페이지 = 그 지시를 받은 "결과물"
+</code></pre></div></div>
+
+<p>지시서가 디스크에 살아 있으면 결과물은 언제든 다시 만들 수 있습니다. 반대로 지시서 없이 결과물 일부만 디스크에 남아 있다면, 어떤 트랜잭션이 어디까지 진행됐는지 알 수 없어 복구 자체가 불가능합니다. 그래서 WAL 의 “<strong>먼저</strong> 로그를” 이라는 순서가 단순한 최적화가 아니라 <strong>Durability 의 출발점</strong> 입니다.</p>
+
+<h2 id="group-commit과-fsync-비용">Group commit과 fsync 비용</h2>
+
+<p>WAL의 다음 병목은 ③의 <code class="language-plaintext highlighter-rouge">fsync</code>입니다. 트랜잭션 하나가 끝날 때마다 fsync를 호출하면 처리량의 상한이 생깁니다.</p>
+
+\[throughput \le \frac{1}{fsync\_latency}\]
+
+<p>SSD의 fsync 지연을 200μs로 잡으면 단일 스레드 기준 초당 5000 트랜잭션이 한계입니다. 이 한계를 깨는 표준 기법이 <strong>Group commit</strong>입니다. 짧은 시간 동안 들어온 여러 트랜잭션의 로그를 한꺼번에 모아 단 한 번의 fsync로 디스크에 밀어 넣습니다. fsync 한 번이 N개 트랜잭션을 책임지므로, 처리량은 N배 가까이 늘어납니다.</p>
+
+<p>이제 두 엔진이 같은 WAL 원칙 위에서 어떻게 다른 선택을 했는지 봅시다.</p>
+
+<h1 id="mysql-innodb-redo-log--undo-log-이중-구조--서버-레벨-binlog">MySQL InnoDB: Redo log + Undo log 이중 구조 (+ 서버 레벨 binlog)</h1>
+
+<p>InnoDB 는 변경 후 이미지와 변경 전 이미지를 <strong>물리적으로 다른 두 자료구조</strong> 에 저장합니다. 핵심 코드는 <code class="language-plaintext highlighter-rouge">storage/innobase/log/log0log.cc</code>(Redo) 와 <code class="language-plaintext highlighter-rouge">storage/innobase/trx/trx0undo.cc</code>(Undo) 에 있습니다. 그리고 InnoDB 위에 얹힌 MySQL 서버 레벨에는 <strong>binlog</strong> 라는 또 하나의 로그가 함께 동작합니다. COMMIT 시퀀스를 이해하려면 세 로그가 모두 필요하니, 먼저 자료구조부터 정리합니다.</p>
+
+<h2 id="자료구조-ib_logfile-rollback-segment-binlog">자료구조: ib_logfile, rollback segment, binlog</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data directory/
+├── ib_logfile0          # [InnoDB 엔진] Redo log 1
+├── ib_logfile1          # [InnoDB 엔진] Redo log 2 (순환 사용)
+├── ibdata1              # [InnoDB 엔진] 시스템 테이블스페이스 (Undo 슬롯)
+├── undo_001, undo_002   # [InnoDB 엔진] 분리된 Undo 테이블스페이스
+└── mysql-bin.000001     # [MySQL 서버] Binary log (binlog)
+</code></pre></div></div>
+
+<ul>
+  <li><strong>Redo log</strong> (<code class="language-plaintext highlighter-rouge">ib_logfile*</code>) — InnoDB 엔진 레벨. 두 개 이상의 파일을 <strong>순환 버퍼</strong> 처럼 사용. 변경 사항의 LSN(Log Sequence Number) 순서로 append 만 일어나며, 오래된 영역은 체크포인트 이후 재활용됩니다. <strong>크래시 복구용</strong> 입니다.</li>
+  <li><strong>Undo log</strong> (rollback segment) — InnoDB 엔진 레벨. 트랜잭션별로 변경 <strong>전</strong> 이미지를 저장. ROLLBACK 뿐 아니라, 다른 트랜잭션이 “이 row 의 더 오래된 버전” 을 보고 싶을 때(MVCC consistent read) 도 이 Undo 를 거꾸로 따라가 이전 버전을 재구성합니다.</li>
+  <li><strong>Binary log</strong> (<code class="language-plaintext highlighter-rouge">mysql-bin.*</code>) — MySQL <strong>서버 레벨</strong>. 각 트랜잭션이 어떤 row 를 어떻게 바꿨는지(또는 어떤 statement 를 실행했는지) 를 <strong>커밋 단위로 append</strong> 합니다. 두 가지 용도로 쓰입니다.
+    <ul>
+      <li><strong>복제(replication)</strong>: 슬레이브가 마스터의 binlog 를 읽어 같은 순서로 변경을 재현 — binlog 가 곧 복제의 source of truth.</li>
+      <li><strong>Point-in-time recovery (PITR, 시점 복구)</strong>: “어제 새벽 2시 27분, DELETE 직전 상태로 돌려놓고 싶다” 같은 임의 시점 복구. 절차는 ① 가장 최근 풀 백업(예: 매일 새벽 3시 스냅샷) 복원 → ② 그 이후의 binlog 를 원하는 시점까지 replay. 크래시 복구(redo log) 가 “마지막 커밋 직후” 까지만 복원하는 것과 달리, PITR 은 <strong>임의로 더 앞 시점</strong> 으로 시간을 되감을 수 있습니다.</li>
+    </ul>
+
+    <p>Redo log 와 binlog 는 비슷해 보이지만 <strong>레이어가 다릅니다</strong>. Redo 는 InnoDB 엔진의 <strong>물리적 페이지 변경</strong> 을 기록하고 크래시 복구에 쓰입니다. binlog 는 MySQL 서버의 <strong>논리적 트랜잭션 결과</strong> 를 기록하고 복제·PITR 에 쓰입니다. 같은 트랜잭션의 결과가 두 로그에 각각 적히기 때문에, COMMIT 경로에서 두 로그의 상태를 <strong>반드시 일관되게</strong> 묶어야 합니다 — 이것이 다음 섹션의 2-Phase Commit 동기입니다.</p>
+  </li>
+</ul>
+
+<p>이 다층 구조가 InnoDB+MySQL 의 특징입니다. ROLLBACK 은 Undo 를 거꾸로 적용하는 작업이라 비용이 트랜잭션의 작업량에 비례하고, COMMIT 은 redo 와 binlog 의 일관성 보장 비용을 함께 떠안습니다.</p>
+
+<h2 id="commit-시퀀스-prepare--write--fsync--commit">COMMIT 시퀀스: prepare → write → fsync → commit</h2>
+
+<p>InnoDB 의 COMMIT 은 단순한 “로그 한 번 쓰기” 가 아닙니다. 위에서 본 binlog 와 InnoDB redo log 가 <strong>두 채널</strong> 로 존재하기 때문에, 두 로그의 상태가 어긋나면 슬레이브와 마스터가 다른 결과를 보게 됩니다. 이 일관성을 보장하기 위해 COMMIT 이 <strong>2-Phase Commit</strong> 으로 묶입니다.</p>
+
+<pre><code class="language-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    participant C as Client
+    participant BP as Buffer Pool
+    participant U as Undo log
+    participant R as Redo log
+    participant BL as Binary log
+    C-&gt;&gt;BP: UPDATE
+    BP-&gt;&gt;U: 변경 전 이미지 기록
+    BP-&gt;&gt;R: 변경 후 이미지 (Redo buffer)
+    C-&gt;&gt;R: COMMIT — Phase 1: prepare&lt;br/&gt;Redo에 PREPARE 마킹 후 fsync
+    C-&gt;&gt;BL: Phase 2 진입: binlog write + fsync
+    C-&gt;&gt;R: Redo에 COMMIT 마킹
+    R--&gt;&gt;C: ack
+</code></pre>
+
+<p>핵심은 두 번의 fsync입니다. <strong>Redo의 PREPARE fsync</strong> 후 <strong>binlog fsync</strong>가 끝나야 비로소 클라이언트에게 성공을 알립니다. 둘 사이에 크래시가 나면 복구 시 InnoDB는 binlog를 보고 PREPARE 상태의 트랜잭션을 commit할지 abort할지 결정합니다. 이 프로토콜이 있어야 복제 슬레이브가 마스터와 같은 변경 순서를 보장받을 수 있습니다.</p>
+
+<h2 id="innodb_flush_log_at_trx_commit-트레이드오프">innodb_flush_log_at_trx_commit 트레이드오프</h2>
+
+<p>이 두 번의 fsync 비용을 어디까지 감수할지는 파라미터로 조절됩니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>값</th>
+      <th>매 COMMIT 시 동작</th>
+      <th>Durability</th>
+      <th>처리량</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Redo buffer → file <code class="language-plaintext highlighter-rouge">write</code> + <code class="language-plaintext highlighter-rouge">fsync</code></td>
+      <td>완전 (기본값)</td>
+      <td>낮음</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Redo buffer → file <code class="language-plaintext highlighter-rouge">write</code>만 (fsync 없음)</td>
+      <td>OS 크래시 시 최대 1초 손실 가능</td>
+      <td>중간</td>
+    </tr>
+    <tr>
+      <td>0</td>
+      <td>Redo buffer는 1초마다 background flush</td>
+      <td>DB 크래시 시 최대 1초 손실 가능</td>
+      <td>높음</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>값 2는 “DB 프로세스만 죽고 OS는 멀쩡한” 흔한 시나리오에서 데이터를 잃지 않는 절충안입니다. 값 0은 데이터 손실을 감수하고 처리량을 우선시할 때 쓰입니다.</p>
+
+<h1 id="postgresql-단일-wal--heap-only-tuple">PostgreSQL: 단일 WAL + Heap-only Tuple</h1>
+
+<p>PostgreSQL은 정반대 방향의 선택을 했습니다. 별도의 Undo log를 두지 않습니다. 핵심 코드는 <code class="language-plaintext highlighter-rouge">src/backend/access/transam/xlog.c</code>(WAL)과 <code class="language-plaintext highlighter-rouge">src/backend/access/heap/heapam.c</code>(Heap)에 있습니다.</p>
+
+<h2 id="자료구조-pg_wal과-xid">자료구조: pg_wal과 XID</h2>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>data directory/
+├── pg_wal/              # WAL 세그먼트 파일 (16MB 단위)
+│   ├── 000000010000000000000001
+│   └── ...
+├── pg_xact/             # 트랜잭션 상태 (구 CLOG)
+│   ├── 0000             # XID별 2비트: IN_PROGRESS / COMMITTED / ABORTED
+│   └── ...
+└── base/                # 데이터 파일 (Heap)
+</code></pre></div></div>
+
+<ul>
+  <li><strong>WAL</strong>: 모든 변경에 대한 redo 정보를 한 곳에 모은 단일 로그. InnoDB의 Redo log와 같은 역할.</li>
+  <li><strong>CLOG (<code class="language-plaintext highlighter-rouge">pg_xact</code>)</strong>: 각 트랜잭션 ID(XID)의 최종 상태를 2비트로 기록. 이 파일이 PG에서 “트랜잭션이 커밋됐는지”를 가리는 단일 진실 공급원입니다.</li>
+  <li><strong>Heap</strong>: 한 row가 UPDATE될 때 기존 row를 덮어쓰지 않고, <strong>새 row 버전을 옆에 추가</strong>합니다. 각 row 버전에는 <code class="language-plaintext highlighter-rouge">t_xmin</code>(생성 XID)과 <code class="language-plaintext highlighter-rouge">t_xmax</code>(삭제 XID)가 붙습니다.</li>
+</ul>
+
+<p>별도의 Undo가 없는 비결이 바로 이 Heap 구조입니다. 이전 버전이 사라지지 않고 그대로 남아 있기 때문에, “되돌리기”는 단지 <strong>“이 트랜잭션의 결과를 무시하라”</strong> 는 표시 한 번이면 끝납니다.</p>
+
+<h2 id="commit-시퀀스-wal-flush--clog-갱신">COMMIT 시퀀스: WAL flush → CLOG 갱신</h2>
+
+<pre><code class="language-mermaid">%%{init: {'theme':'dark'}}%%
+sequenceDiagram
+    participant C as Client
+    participant H as Heap (메모리)
+    participant WB as WAL Buffer
+    participant WF as WAL File (disk)
+    participant CL as CLOG
+    C-&gt;&gt;H: UPDATE → 새 row 버전 추가&lt;br/&gt;t_xmin = 내 XID
+    H-&gt;&gt;WB: WAL 레코드 append
+    C-&gt;&gt;WF: COMMIT — WAL fsync
+    C-&gt;&gt;CL: 내 XID = COMMITTED 마킹
+    WF--&gt;&gt;C: ack
+</code></pre>
+
+<p>InnoDB와 비교하면 두 가지가 두드러집니다.</p>
+
+<p>첫째, fsync 대상이 <strong>WAL 한 곳</strong>입니다. binlog 같은 별도 채널이 없습니다. 복제는 WAL 자체를 그대로 슬레이브로 흘려보내는 방식입니다.</p>
+
+<p>둘째, <strong>ROLLBACK이 거의 무비용</strong>입니다. 트랜잭션 도중 작업한 row 버전들을 되돌리는 작업이 없습니다. CLOG에 “이 XID는 ABORTED” 한 줄만 적으면 끝이고, 다른 트랜잭션이 그 row 버전을 조회할 때 “ABORTED 트랜잭션의 결과는 보이지 않음”이라는 가시성 규칙으로 자연스럽게 걸러집니다.</p>
+
+<p>대신 청구서는 다른 곳에서 옵니다. ABORTED 트랜잭션이 남긴 row 버전, COMMIT됐지만 더 이상 어떤 트랜잭션도 보지 않는 옛 버전들은 디스크 공간을 차지한 채 남습니다. 이를 회수하는 별도 프로세스가 <strong>VACUUM</strong>입니다.</p>
+
+<h2 id="synchronous_commit-트레이드오프">synchronous_commit 트레이드오프</h2>
+
+<p><code class="language-plaintext highlighter-rouge">synchronous_commit</code> 은 InnoDB 의 <code class="language-plaintext highlighter-rouge">innodb_flush_log_at_trx_commit</code> 과 <strong>같은 역할</strong> 의 PG 파라미터입니다. 즉 <strong>“COMMIT 성공 ack 을 클라이언트에게 주기 전까지, WAL 이 어디까지 닿아야 하는가”</strong> 를 정하는 다이얼입니다. 다만 PG 는 복제 슬레이브 ack 까지 같은 파라미터로 통합 통제하기 때문에, InnoDB(0/1/2 세 값) 보다 값 폭이 더 넓습니다.</p>
+
+<p>표를 읽기 전에 두 용어만 짚어둡니다.</p>
+
+<ul>
+  <li><strong>스탠바이(standby)</strong>: PostgreSQL 의 <strong>복제본 서버</strong>. MySQL 의 슬레이브/리플리카에 해당합니다.</li>
+  <li><strong>WAL stream</strong>: primary 가 자기 WAL 을 그대로 standby 로 흘려보내는 PG 의 복제 방식. standby 는 받은 WAL 을 ① OS write → ② fsync → ③ 데이터 페이지에 적용 순서로 처리합니다.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Primary                                Standby
+  │ UPDATE foo SET x = 1
+  │ WAL append
+  │
+  ├── WAL stream ──►   ① OS write  (커널 페이지 캐시)
+                       ② fsync     (디스크)
+                       ③ apply     (데이터 페이지 갱신)
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">synchronous_commit</code> 의 <code class="language-plaintext highlighter-rouge">remote_*</code> 값은 <strong>primary 의 COMMIT ack 을 standby 의 어느 단계까지 진행됐을 때 줄지</strong> 를 정합니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>값</th>
+      <th>의미</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">on</code></td>
+      <td>로컬 WAL fsync 완료 후 ack (기본값)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">local</code></td>
+      <td>로컬 fsync만, standby ack 기다리지 않음 (동기 복제 무시)</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">remote_write</code></td>
+      <td>standby 가 WAL 을 ① OS write 까지 한 시점에 ack</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">remote_apply</code></td>
+      <td>standby 가 WAL 을 ③ 적용까지 한 시점에 ack</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">off</code></td>
+      <td>fsync 없이 즉시 ack (커밋 직후 크래시 시 손실 가능)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>InnoDB 의 <code class="language-plaintext highlighter-rouge">innodb_flush_log_at_trx_commit</code> 이 단일 노드 관점에서 redo log 가 디스크에 닿는 시점까지만 통제한다면 (복제 관련 보장은 <code class="language-plaintext highlighter-rouge">sync_binlog</code>, semi-sync replication 같은 별도 옵션으로 따로 다룸), PG 의 <code class="language-plaintext highlighter-rouge">synchronous_commit</code> 은 <strong>복제 토폴로지 전체에서 어디까지 WAL 이 닿아야 ack 을 줄지</strong> 를 한 파라미터로 정합니다. 두 엔진의 복제 설계 차이(InnoDB 는 binlog 별도 채널, PG 는 WAL 스트림 단일 채널) 가 그대로 파라미터 설계에 드러나는 지점입니다.</p>
+
+<h1 id="비교">비교</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>항목</th>
+      <th>InnoDB</th>
+      <th>PostgreSQL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>변경 전 이미지 저장</td>
+      <td>Undo log (rollback segment)</td>
+      <td>Heap의 이전 row 버전 (별도 undo 없음)</td>
+    </tr>
+    <tr>
+      <td>변경 후 이미지 저장</td>
+      <td>Redo log (<code class="language-plaintext highlighter-rouge">ib_logfile*</code>)</td>
+      <td>WAL (<code class="language-plaintext highlighter-rouge">pg_wal</code>)</td>
+    </tr>
+    <tr>
+      <td>트랜잭션 상태 추적</td>
+      <td>Undo log header + transaction system</td>
+      <td>CLOG (<code class="language-plaintext highlighter-rouge">pg_xact</code>) — XID별 2비트</td>
+    </tr>
+    <tr>
+      <td>ROLLBACK 비용</td>
+      <td>Undo 적용 (작업량 비례)</td>
+      <td>사실상 무비용 — CLOG에 ABORTED 마킹</td>
+    </tr>
+    <tr>
+      <td>COMMIT 시 fsync 대상</td>
+      <td>Redo log + (옵션) binlog</td>
+      <td>WAL 한 곳</td>
+    </tr>
+    <tr>
+      <td>Crash recovery</td>
+      <td>last checkpoint LSN의 Redo replay → Undo 적용</td>
+      <td>last checkpoint의 WAL replay</td>
+    </tr>
+    <tr>
+      <td>핵심 튜닝 파라미터</td>
+      <td><code class="language-plaintext highlighter-rouge">innodb_flush_log_at_trx_commit</code></td>
+      <td><code class="language-plaintext highlighter-rouge">synchronous_commit</code></td>
+    </tr>
+    <tr>
+      <td>죽은 row 회수</td>
+      <td>Undo는 트랜잭션 종료 시 정리, purge thread</td>
+      <td>VACUUM (별도 프로세스)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="마무리">마무리</h1>
+
+<p>두 엔진은 동일한 ACID 의미를 보장하지만, 그것을 떠받치는 자료구조 선택이 정반대입니다.</p>
+
+<ul>
+  <li><strong>InnoDB</strong>는 Redo와 Undo를 분리한 이중 채널 위에 서 있습니다. ROLLBACK은 Undo를 되감는 작업으로 명확히 정의되고, MVCC consistent read도 같은 Undo를 거슬러 올라가 이전 버전을 재구성합니다. 대신 binlog와의 2-Phase Commit이 더해져 COMMIT 경로는 길어집니다.</li>
+  <li><strong>PostgreSQL</strong>은 Heap에 모든 row 버전을 남기는 No-Undo 설계로, “이전 버전 보기”와 “ROLLBACK”을 자료구조 자체로 흡수합니다. COMMIT 경로는 짧지만, 그 대가로 VACUUM이라는 별도 회수 메커니즘을 운영해야 합니다.</li>
+</ul>
+
+<p>같은 알고리즘 문제를 두고 자료구조 선택이 달라졌던 <a href="/dag-cycle-detection/">DAG 사이클 검증</a>과 비슷하게, 같은 ACID 의미를 두고도 두 엔진이 다른 자료구조를 선택했습니다. 이 차이는 단순한 구현 디테일이 아니라, <strong>다음 편에서 다룰 격리 수준 구현의 출발점</strong>이 됩니다. InnoDB의 Undo는 곧 MVCC consistent read의 재료가 되고, PG의 Heap에 남은 row 버전들은 그대로 Snapshot Isolation의 토대가 되기 때문입니다.</p>
+
+<h1 id="참고">참고</h1>
+
+<ul>
+  <li><a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-redo-log.html">MySQL Reference Manual — InnoDB Redo Log</a></li>
+  <li><a href="https://dev.mysql.com/doc/refman/8.0/en/innodb-undo-logs.html">MySQL Reference Manual — InnoDB Undo Logs</a></li>
+  <li><a href="https://github.com/mysql/mysql-server/blob/trunk/storage/innobase/log/log0log.cc"><code class="language-plaintext highlighter-rouge">mysql/mysql-server</code> — <code class="language-plaintext highlighter-rouge">storage/innobase/log/log0log.cc</code></a></li>
+  <li><a href="https://www.postgresql.org/docs/current/wal.html">PostgreSQL Documentation — Reliability and the Write-Ahead Log</a></li>
+  <li><a href="https://www.postgresql.org/docs/current/runtime-config-wal.html#GUC-SYNCHRONOUS-COMMIT">PostgreSQL Documentation — <code class="language-plaintext highlighter-rouge">synchronous_commit</code></a></li>
+  <li><a href="https://github.com/postgres/postgres/blob/master/src/backend/access/transam/xlog.c"><code class="language-plaintext highlighter-rouge">postgres/postgres</code> — <code class="language-plaintext highlighter-rouge">src/backend/access/transam/xlog.c</code></a></li>
+  <li>Theo Härder, Andreas Reuter, “Principles of Transaction-Oriented Database Recovery” (1983)</li>
+  <li>Jim Gray, <em>Transaction Processing: Concepts and Techniques</em> (Morgan Kaufmann, 1992)</li>
+</ul>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            <!--  -->
+            <!-- utteranc setting -->
+            <script src="https://utteranc.es/client.js"
+                    repo="GyuhoonK/blog-comments"
+                    issue-term="pathname"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+                    <article class="read-next-card"
+                        
+                            style="background-image: url(/assets/built/images/spain-blog-cover.jpg)"
+                        
+                    >
+                        <header class="read-next-card-header">
+                            <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
+                            
+                                <h3 class="read-next-card-header-title"><a href="/tag/database/">Database</a></h3>
+                            
+                        </header>
+                        <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
+</div>
+                        <div class="read-next-card-content">
+                            <ul>
+                                
+                                
+                                  
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/mysql-index">MySQL Index 개념 정리</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/prepared-statement">prepared statement</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/oracle-connection">Oracle DB Connection String</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                            </ul>
+                        </div>
+                        <footer class="read-next-card-footer">
+                            <a href="/tag/database/">
+                                
+                                    See all 6 posts  →
+                                
+                            </a>
+                        </footer>
+                    </article>
+                <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+                </script>
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/dag-cycle-detection">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/algorithm/dag-cycle-detection.svg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/dag-cycle-detection">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Algorithm</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">DAG 순환 참조 판별 알고리즘 — Airflow와 dbt는 어떻게 검증할까</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Airflow와 dbt가 DAG의 비순환 여부를 어떤 자료구조와 알고리즘으로 검증하는지 알아봅니다.
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      10 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://gyuhoonk.github.io/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">트랜잭션과 ACID — MySQL InnoDB와 PostgreSQL은 어떻게 보장할까</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98%EA%B3%BC+ACID+%E2%80%94+MySQL+InnoDB%EC%99%80+PostgreSQL%EC%9D%80+%EC%96%B4%EB%96%BB%EA%B2%8C+%EB%B3%B4%EC%9E%A5%ED%95%A0%EA%B9%8C&amp;url=https://gyuhoonk.github.iotransaction-acid"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iotransaction-acid"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2026</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+    <!-- math LaTex-->
+    
+</body>
+</html>
