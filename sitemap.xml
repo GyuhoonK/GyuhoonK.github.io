@@ -2,6 +2,38 @@
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
     <url>
+      <loc>https://gyuhoonk.github.io/korean-two-letter-search-min-length</loc>
+      
+        <lastmod>2026-08-22T22:30:00+09:00</lastmod>
+      
+
+      
+        <changefreq>daily</changefreq>
+      
+
+      
+          <priority>0.5</priority>
+      
+
+    </url>
+  
+    <url>
+      <loc>https://gyuhoonk.github.io/airflow-half-open-socket</loc>
+      
+        <lastmod>2026-05-30T22:30:00+09:00</lastmod>
+      
+
+      
+        <changefreq>daily</changefreq>
+      
+
+      
+          <priority>0.5</priority>
+      
+
+    </url>
+  
+    <url>
       <loc>https://gyuhoonk.github.io/transaction-acid</loc>
       
         <lastmod>2026-05-08T22:30:00+09:00</lastmod>

@@ -5,8 +5,34 @@
     <description>Data Engineering</description>
     <link>https://gyuhoonk.github.io</link>
     <atom:link href="https://gyuhoonk.github.io/feed.xml" rel="self" type="application/rss+xml" />
-	<lastBuildDate>Fri, 08 May 2026 22:30:00 +0900</lastBuildDate>
+	<lastBuildDate>Sat, 22 Aug 2026 22:30:00 +0900</lastBuildDate>
 	
+	<item>
+		<title>한글 2글자 검색이 0건이 되는 이유 - min_length 필터와 nori</title>
+        
+        
+            <description>&lt;p&gt;운영 중인 데이터 카탈로그(DataHub)에서 “결제”, “방문” 같은 &lt;strong&gt;2글자 한글 키워드&lt;/strong&gt;로 검색하면 결과가 0건이고, 3글자부터는 정상 동작하는 현상을 추적한 기록입니다. 원인은 검색엔진(OpenSearch)의 결함이 아니라, 애플리케이션이 인덱스에 심어놓은 &lt;strong&gt;token filter 하나&lt;/strong&gt;였습니다. 역색인과 analyzer의 기본 동작부터 시작해서, 원인을 실측으로 확정하고, 세 번의 시도 끝에 해결하기까지의 과정을 정리합니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 22 Aug 2026 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/korean-two-letter-search-min-length</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/korean-two-letter-search-min-length</guid>
+      </item>
+    
+	<item>
+		<title>Half-Open Socket으로 인한 Airflow Stuck Task 디버깅</title>
+        
+        
+            <description>&lt;p&gt;Airflow 운영 중 task가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;queued&lt;/code&gt; 상태에서 약 20분간 멈춰있다가 자동 실패 처리되고, 좀비 Pod가 클러스터에 잔존하는 현상을 디버깅한 기록입니다. 표면적 현상만 보면 어디 한 곳이 명확하게 죽은 것 같지 않은데도 task가 계속 stuck되어 원인 추적이 오래 걸렸습니다.&lt;/p&gt;
+
+</description>
+        
+        <pubDate>Sat, 30 May 2026 22:30:00 +0900</pubDate>
+        <link>https://gyuhoonk.github.io/airflow-half-open-socket</link>
+        <guid isPermaLink="true">https://gyuhoonk.github.io/airflow-half-open-socket</guid>
+      </item>
+    
 	<item>
 		<title>트랜잭션과 ACID — MySQL InnoDB와 PostgreSQL은 어떻게 보장할까</title>
         
@@ -111,32 +137,6 @@
         <pubDate>Wed, 01 Oct 2025 22:30:00 +0900</pubDate>
         <link>https://gyuhoonk.github.io/pod-operator-400</link>
         <guid isPermaLink="true">https://gyuhoonk.github.io/pod-operator-400</guid>
-      </item>
-    
-	<item>
-		<title>ConfigMap과 Secret의 차이점</title>
-        
-        
-            <description>&lt;h1 id=&quot;kubernetes-configmap과-secret의-차이점&quot;&gt;Kubernetes: ConfigMap과 Secret의 차이점&lt;/h1&gt;
-
-</description>
-        
-        <pubDate>Sat, 15 Mar 2025 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/configmap-secret</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/configmap-secret</guid>
-      </item>
-    
-	<item>
-		<title>Variables &amp; Dag Parsing</title>
-        
-        
-            <description>&lt;p&gt;Variables 사용 방법을 알아보고, Dag Parsing에서 그 이유를 살펴봅니다.&lt;/p&gt;
-
-</description>
-        
-        <pubDate>Fri, 08 Nov 2024 22:30:00 +0900</pubDate>
-        <link>https://gyuhoonk.github.io/variables</link>
-        <guid isPermaLink="true">https://gyuhoonk.github.io/variables</guid>
       </item>
     
   </channel>

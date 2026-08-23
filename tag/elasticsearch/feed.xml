@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom" >
+  <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
+  <link href="https://gyuhoonk.github.io/tag/elasticsearch/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2026-08-23T17:27:38+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/elasticsearch/feed.xml</id>
+
+  
+  
+  
+
+  
+    <title type="html">Gyuhoon Kim | </title>
+  
+
+  
+    <subtitle>Data Engineering</subtitle>
+  
+
+  
+
+  
+    
+      
+    
+  
+
+  
+  
+
+  
+    <entry>
+      <title type="html">한글 2글자 검색이 0건이 되는 이유 - min_length 필터와 nori</title>
+      <link href="https://gyuhoonk.github.io/korean-two-letter-search-min-length" rel="alternate" type="text/html" title="한글 2글자 검색이 0건이 되는 이유 - min_length 필터와 nori" />
+      <published>2026-08-22T22:30:00+09:00</published>
+      <updated>2026-08-22T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/korean-two-letter-search-min-length</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/korean-two-letter-search-min-length">&lt;p&gt;운영 중인 데이터 카탈로그(DataHub)에서 “결제”, “방문” 같은 &lt;strong&gt;2글자 한글 키워드&lt;/strong&gt;로 검색하면 결과가 0건이고, 3글자부터는 정상 동작하는 현상을 추적한 기록입니다. 원인은 검색엔진(OpenSearch)의 결함이 아니라, 애플리케이션이 인덱스에 심어놓은 &lt;strong&gt;token filter 하나&lt;/strong&gt;였습니다. 역색인과 analyzer의 기본 동작부터 시작해서, 원인을 실측으로 확정하고, 세 번의 시도 끝에 해결하기까지의 과정을 정리합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;문제-상황&quot;&gt;문제 상황&lt;/h1&gt;
+
+&lt;p&gt;증상은 단순하고 명확했습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;검색어 &quot;결제&quot;           → 0건
+검색어 &quot;방문&quot;           → 0건
+검색어 &quot;유저&quot;, &quot;정산&quot;   → 0건
+검색어 &quot;결제자&quot; (3글자) → 수백 건 정상 매칭
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;특징을 정리하면 이렇습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;2글자 한글 키워드는 데이터셋명·컬럼명·설명(description) 어디를 겨냥해도 전부 0건입니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;3글자부터는 정상&lt;/strong&gt;입니다. “결제”는 0건인데 “결제자”는 수백 건이 나옵니다.&lt;/li&gt;
+  &lt;li&gt;심지어 description에 독립된 단어로 “결제”가 그대로 적혀 있는 문서조차 “결제”로 검색되지 않습니다. 데이터가 없어서가 아니라, &lt;strong&gt;데이터가 있는데도 못 찾는&lt;/strong&gt; 상황입니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;“3글자부터 정상”이라는 경계가 지나치게 깔끔해서, 어딘가에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3&lt;/code&gt;이라는 숫자가 하드코딩되어 있으리라는 심증부터 생깁니다. 이 숫자를 찾으러 가기 전에, 검색엔진이 텍스트를 어떻게 다루는지부터 짚고 시작하겠습니다. 원인이 정확히 이 기초 위에 있기 때문입니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;기초-역색인과-analyzer&quot;&gt;기초: 역색인과 analyzer&lt;/h1&gt;
+
+&lt;h2 id=&quot;역색인--토큰이-없으면-존재하지-않는-것과-같다&quot;&gt;역색인 — 토큰이 없으면 존재하지 않는 것과 같다&lt;/h2&gt;
+
+&lt;p&gt;Elasticsearch/OpenSearch는 검색할 때마다 문서 원문을 훑는 방식(grep)이 아닙니다. 색인 시점에 문서의 텍스트를 &lt;strong&gt;토큰(token)&lt;/strong&gt; 단위로 쪼갠 뒤, “이 토큰이 어느 문서에 있는가”를 담은 역방향 사전, 즉 &lt;strong&gt;역색인(inverted index)&lt;/strong&gt; 을 만들어 둡니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart LR
+    classDef doc fill:#dbeafe,stroke:#1d4ed8
+    classDef idx fill:#dcfce7,stroke:#15803d
+
+    D1[&quot;doc1&amp;lt;br/&amp;gt;'주문 결제 내역 테이블'&quot;]:::doc
+    D2[&quot;doc2&amp;lt;br/&amp;gt;'B2C 결제자 table'&quot;]:::doc
+
+    subgraph inv[&quot;역색인 (토큰 → 문서 목록)&quot;]
+        T1[&quot;'결제자' → doc2&quot;]:::idx
+        T2[&quot;'b2c' → doc2&quot;]:::idx
+        T3[&quot;'tabl' → doc2&quot;]:::idx
+    end
+
+    D1 --&amp;gt; inv
+    D2 --&amp;gt; inv
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;검색은 이 사전에서 &lt;strong&gt;토큰을 key로 lookup&lt;/strong&gt;하는 것입니다. 그래서 대원칙이 하나 생깁니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;사전에 토큰이 등재되어 있지 않으면, 그 단어는 존재하지 않는 것과 같다.&lt;/strong&gt;
+원문에 “결제”라는 글자가 아무리 많아도, 토큰 “결제”가 사전에 없으면 0건이다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;analyzer--토큰을-만드는-3단-파이프라인&quot;&gt;analyzer — 토큰을 만드는 3단 파이프라인&lt;/h2&gt;
+
+&lt;p&gt;텍스트를 토큰으로 바꾸는 장치가 &lt;strong&gt;analyzer&lt;/strong&gt;이고, 세 단계로 구성됩니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart TB
+    classDef stage fill:#fef3c7,stroke:#a16207
+    classDef danger fill:#fee2e2,stroke:#b91c1c
+
+    IN[&quot;원문 텍스트&quot;]
+    CF[&quot;char filter&amp;lt;br/&amp;gt;문자 단위 전처리 (HTML 제거 등)&quot;]:::stage
+    TK[&quot;tokenizer&amp;lt;br/&amp;gt;텍스트를 토큰으로 분할&amp;lt;br/&amp;gt;whitespace / pattern / nori_tokenizer ...&quot;]:::stage
+    TF[&quot;token filter (여러 개 체인)&amp;lt;br/&amp;gt;토큰을 변형·추가·삭제&amp;lt;br/&amp;gt;lowercase, stop, length ...&quot;]:::danger
+    OUT[&quot;최종 토큰들 → 역색인 등재&quot;]
+
+    IN --&amp;gt; CF --&amp;gt; TK --&amp;gt; TF --&amp;gt; OUT
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;핵심은 token filter가 토큰을 &lt;strong&gt;삭제할 수도 있다&lt;/strong&gt;는 점입니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;length&lt;/code&gt; filter에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min: 3&lt;/code&gt;을 주면 3글자 미만 토큰은 이 단계에서 조용히 사라집니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;analyzer는-두-번-적용된다&quot;&gt;analyzer는 “두 번” 적용된다&lt;/h2&gt;
+
+&lt;p&gt;analyzer는 색인할 때 한 번만 도는 것이 아닙니다. &lt;strong&gt;검색어에도 적용됩니다.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart LR
+    classDef write fill:#dbeafe,stroke:#1d4ed8
+    classDef read fill:#fce7f3,stroke:#be185d
+
+    subgraph W[&quot;색인 시점 (write path)&quot;]
+        WD[&quot;문서 'B2C 결제자 table'&quot;]:::write
+        WA[&quot;index analyzer&quot;]:::write
+        WT[&quot;[b2c, 결제자, tabl]&quot;]:::write
+        WD --&amp;gt; WA --&amp;gt; WT
+    end
+
+    subgraph R[&quot;검색 시점 (read path)&quot;]
+        RD[&quot;검색어 '결제자'&quot;]:::read
+        RA[&quot;search analyzer&quot;]:::read
+        RT[&quot;[결제자]&quot;]:::read
+        RD --&amp;gt; RA --&amp;gt; RT
+    end
+
+    WT &amp;lt;--&amp;gt;|&quot;토큰 == 토큰 매칭&quot;| RT
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;양쪽에서 만들어진 &lt;strong&gt;토큰끼리 일치&lt;/strong&gt;해야 검색이 성립합니다. 따라서 토큰을 지우는 필터가 양쪽 체인에 모두 들어 있으면 피해가 두 배가 됩니다 — 색인에도 없고, 질의 토큰도 없습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;multi-field--같은-원문을-여러-방식으로-색인&quot;&gt;multi-field — 같은 원문을 여러 방식으로 색인&lt;/h2&gt;
+
+&lt;p&gt;하나의 필드를 서로 다른 analyzer로 여러 벌 색인해 두고 검색 목적에 따라 골라 쓰는 것이 관례이고, DataHub도 그렇게 합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt; description (원문 1개)
+ ├── description             keyword (원문 통짜, 정확 일치·정렬용)
+ ├── description.delimited   ← word_delimited analyzer (일반 검색용) ★ 문제의 필드
+ ├── description.ngram       ← search_as_you_type (자동완성용)
+ └── description.wordGrams2/3/4 ← 2~4단어 shingle (구 단위 가중치용)
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;같은 원문이라도 &lt;strong&gt;subfield마다 등재된 토큰이 다릅니다.&lt;/strong&gt; 이 사실이 뒤에서 중요한 단서가 됩니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;원인-추적&quot;&gt;원인 추적&lt;/h1&gt;
+
+&lt;h2 id=&quot;첫-번째-추정은-틀렸다-min_gram이-아니다&quot;&gt;첫 번째 추정은 틀렸다: min_gram이 아니다&lt;/h2&gt;
+
+&lt;p&gt;처음에는 “n-gram의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min_gram=3&lt;/code&gt; 때문에 2글자가 잘리는 것”으로 추정했습니다. 그럴듯한 가설이지만, 소스를 열어보니 사실이 아니었습니다. DataHub의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.ngram&lt;/code&gt; subfield는 고전적인 n-gram tokenizer가 아니라 &lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;search_as_you_type&lt;/code&gt; 타입&lt;/strong&gt;이라서, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min_gram&lt;/code&gt;이라는 설정 자체가 존재하지 않습니다. 게다가 이 필드는 자동완성 경로에서만 질의되고 일반 검색에서는 조회 대상도 아닙니다.&lt;/p&gt;
+
+&lt;p&gt;가설이 기각됐으니 다시 코드로 돌아갑니다. 인덱스의 analyzer 정의는 helm values 같은 배포 설정이 아니라 &lt;strong&gt;Java 코드에 하드코딩&lt;/strong&gt;되어 있습니다 (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;metadata-io&lt;/code&gt;의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SettingsBuilder.java&lt;/code&gt;). 거기서 문제의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;3&lt;/code&gt;을 찾았습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-java highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;filters&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;MIN_LENGTH&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nc&quot;&gt;ImmutableMap&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&amp;lt;&lt;/span&gt;&lt;span class=&quot;nc&quot;&gt;String&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;nc&quot;&gt;Object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;builder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;TYPE&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;length&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;min&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;3&quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;na&quot;&gt;build&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;());&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min_length&lt;/code&gt;라는 이름의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;length&lt;/code&gt; token filter&lt;/strong&gt;입니다. 그리고 이 필터는 색인용·검색용 analyzer 체인 &lt;strong&gt;양쪽의 마지막&lt;/strong&gt;에 들어 있습니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;        word_delimited (색인용) / query_word_delimited (검색용)
+        ────────────────────────────────────────────────────
+tokenizer:      pattern &quot;[(),./:]&quot;   ← 공백으로는 안 쪼갬
+token filters:  asciifolding
+                word_delimiter_graph  ← 여기서 공백·특수문자 기준 서브워드 분리
+                trim
+                lowercase
+                stop
+                snowball
+                unique
+                min_length {type: length, min: 3}   ★ 3글자 미만 토큰 삭제
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;앞 단계에서 어렵게 분리해 낸 서브워드라도, 2글자면 체인의 마지막에서 버려집니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;_analyze로-실측-재현&quot;&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_analyze&lt;/code&gt;로 실측 재현&lt;/h2&gt;
+
+&lt;p&gt;가설이 아니라 사실로 만들기 위해 실제 인덱스에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_analyze&lt;/code&gt; API를 실행했습니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;analyzer&lt;/th&gt;
+      &lt;th&gt;입력&lt;/th&gt;
+      &lt;th&gt;결과&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query_word_delimited&lt;/code&gt; (검색용)&lt;/td&gt;
+      &lt;td&gt;결제&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;토큰 0개&lt;/strong&gt; — min_length가 삭제&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;query_word_delimited&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;결제자&lt;/td&gt;
+      &lt;td&gt;[결제자] 생존&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;word_delimited&lt;/code&gt; (색인용)&lt;/td&gt;
+      &lt;td&gt;주문 결제 내역&lt;/td&gt;
+      &lt;td&gt;통짜 원본 1개만 생존 — 서브워드 주문/결제/내역이 전부 2글자라 전량 삭제&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;word_delimited&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;B2C 결제자 table&lt;/td&gt;
+      &lt;td&gt;[b2c, 결제자, tabl] 정상 분리·생존&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;partial&lt;/code&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;.ngram&lt;/code&gt;용, min_length 없음)&lt;/td&gt;
+      &lt;td&gt;결제&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;토큰 생존&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;이로써 2글자 한글이 겪는 일이 확정됩니다. &lt;strong&gt;색인 시점과 검색 시점의 이중 차단&lt;/strong&gt;입니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart TB
+    classDef write fill:#dbeafe,stroke:#1d4ed8
+    classDef read fill:#fce7f3,stroke:#be185d
+    classDef cut fill:#fee2e2,stroke:#b91c1c
+    classDef res fill:#fef3c7,stroke:#a16207
+
+    subgraph W[&quot;색인 시점&quot;]
+        D[&quot;문서 '...주문 결제 내역...'&quot;]:::write
+        IA[&quot;word_delimited&quot;]:::write
+        IC[&quot;min_length(3) ✂&amp;lt;br/&amp;gt;2글자 서브워드 전멸&quot;]:::cut
+        II[&quot;역색인(.delimited)에&amp;lt;br/&amp;gt;'결제' 토큰 없음&quot;]:::write
+        D --&amp;gt; IA --&amp;gt; IC --&amp;gt; II
+    end
+
+    subgraph R[&quot;검색 시점&quot;]
+        Q[&quot;검색어 '결제'&quot;]:::read
+        QA[&quot;query_word_delimited&quot;]:::read
+        QC[&quot;min_length(3) ✂&quot;]:::cut
+        QT[&quot;질의 토큰 0개&quot;]:::read
+        Q --&amp;gt; QA --&amp;gt; QC --&amp;gt; QT
+    end
+
+    II --&amp;gt; Z[&quot;매칭할 토큰이 양쪽 모두 없음 → 0건&quot;]:::res
+    QT --&amp;gt; Z
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;질의 토큰이 0개면 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;simple_query_string&lt;/code&gt;도 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;match_phrase_prefix&lt;/code&gt;도 &lt;strong&gt;비교할 대상 자체가 없어&lt;/strong&gt; 무조건 0건입니다. “3글자부터 정상”인 이유가 정확히 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min: 3&lt;/code&gt; 경계였고, 3글자 검색어(“결제자”)는 필터를 통과한 토큰이 색인된 긴 토큰의 접두 매칭에 성공하기 때문에 동작했던 것입니다.&lt;/p&gt;
+
+&lt;p&gt;한 가지 더 짚을 점은, 이것이 2글자 “검색어” 문제 이전에 &lt;strong&gt;색인 품질 자체의 문제&lt;/strong&gt;라는 사실입니다. 한국어 문서의 2음절 핵심 명사(결제·유저·정산·방문·주문·내역…)가 통째로 역색인에서 빠져 있었습니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;왜-영어-검색은-멀쩡했나&quot;&gt;왜 영어 검색은 멀쩡했나&lt;/h1&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min: 3&lt;/code&gt;은 검색 품질을 해치려고 넣은 값이 아닙니다. &lt;strong&gt;영어를 전제로 한 노이즈 제거 설계&lt;/strong&gt;입니다. 영어에서 1~2글자 토큰은 대부분 관사·전치사(a, of, in, at)라서 지워도 검색 품질이 오히려 좋아집니다.&lt;/p&gt;
+
+&lt;p&gt;그러나 한국어는 &lt;strong&gt;2음절이 핵심 명사의 기본 길이&lt;/strong&gt;입니다. 같은 규칙이 영어에서는 청소부 역할을 하고 한국어에서는 의미어를 대량으로 지웁니다. 실제로 upstream에는 중국어·일본어 사용자들의 동일한 리포트가 수년에 걸쳐 올라와 있었습니다(뒤에서 다시 등장합니다). 영어권 프로젝트의 무해한 기본값이 CJK 환경에서 병리가 되는 전형적인 사례입니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;해결-여정&quot;&gt;해결 여정&lt;/h1&gt;
+
+&lt;p&gt;원인이 한 지점(&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min_length&lt;/code&gt;의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min=3&lt;/code&gt;)으로 확정됐으니 고치면 됩니다. 그런데 “어떻게 고치는가”에서 세 번의 시도가 필요했습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;시도-1--인덱스-settings-override-주입-조용히-무시됨&quot;&gt;시도 1 — 인덱스 settings override 주입: 조용히 무시됨&lt;/h2&gt;
+
+&lt;p&gt;DataHub에는 배포 설정으로 인덱스 settings를 override하는 메커니즘이 있습니다. 코드 수정 없이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;analysis.filter.min_length.min: &quot;2&quot;&lt;/code&gt;를 주입할 수 있다면 가장 싸게 끝나는 경로라서 먼저 검증했습니다.&lt;/p&gt;
+
+&lt;p&gt;결과는 &lt;strong&gt;무반응&lt;/strong&gt;이었습니다. 환경변수 주입까지는 정상인데, 인덱스를 관리하는 job이 “변경 없음”으로 판정하고 아무것도 하지 않았습니다. 코드를 따라가 보니 이유가 있었습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;인덱스 갱신 job의 &lt;strong&gt;diff 감지 로직은 코드가 만든 nested &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;analysis&lt;/code&gt; 트리(min=3)와 현재 인덱스만 비교&lt;/strong&gt;합니다. flat dotted key로 들어온 override는 비교 대상 자체가 아닙니다.&lt;/li&gt;
+  &lt;li&gt;즉 override는 &lt;strong&gt;신규 인덱스를 만들 때만&lt;/strong&gt; 전달될 뿐, &lt;strong&gt;이미 존재하는 인덱스에는 조용히 무시&lt;/strong&gt;됩니다. 에러도 없고 로그로 구분하기도 어렵습니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;“설정을 넣었는데 적용이 안 되면, 적용 여부를 판정하는 코드부터 읽어야 한다”는 교훈을 남기고 기각.&lt;/p&gt;
+
+&lt;h2 id=&quot;시도-2--nori-tokenizer-단독-적용-한글-검색이-오히려-전멸&quot;&gt;시도 2 — nori tokenizer 단독 적용: 한글 검색이 오히려 전멸&lt;/h2&gt;
+
+&lt;p&gt;한국어 검색 품질의 근본 개선을 위해 형태소 분석기 &lt;a href=&quot;https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-nori.html&quot;&gt;nori&lt;/a&gt;를 적용했습니다. DataHub는 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ELASTICSEARCH_MAIN_TOKENIZER&lt;/code&gt; 환경변수로 tokenizer를 교체할 수 있어서 fork 수정 없이 적용 가능했고, 재색인도 자동으로 정상 수행됐습니다.&lt;/p&gt;
+
+&lt;p&gt;그런데 검증에서 예상 밖의 결과가 나옵니다. &lt;strong&gt;잘 되던 3글자 검색까지 0건으로 회귀&lt;/strong&gt;했습니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart LR
+    classDef tok fill:#dbeafe,stroke:#1d4ed8
+    classDef cut fill:#fee2e2,stroke:#b91c1c
+    classDef res fill:#fef3c7,stroke:#a16207
+
+    Q[&quot;검색어 '결제자'&quot;] --&amp;gt; N[&quot;nori_tokenizer&amp;lt;br/&amp;gt;형태소 분해&quot;]:::tok
+    N --&amp;gt; T[&quot;[결제(2자), 자(1자)]&quot;]:::tok
+    T --&amp;gt; M[&quot;min_length(3) ✂&amp;lt;br/&amp;gt;전부 3글자 미만&quot;]:::cut
+    M --&amp;gt; Z[&quot;토큰 0개 → 0건&amp;lt;br/&amp;gt;(기존엔 '결제자' 통토큰으로 매칭됐음)&quot;]:::res
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;원리를 보면 당연한 결과입니다. 기존 tokenizer는 “결제자”를 3글자 통토큰으로 남겨서 min_length를 통과했습니다. 그런데 nori는 형태소 단위로 &lt;strong&gt;완전 분해&lt;/strong&gt;합니다 — “결제자”는 [결제, 자]가 되고, 둘 다 3글자 미만이라 min_length가 전량 삭제합니다. 색인 쪽도 마찬가지여서, 한글 문장이 형태소로 잘게 쪼개진 뒤 대부분 지워져 &lt;strong&gt;한글 색인이 사실상 비어버립니다.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;tokenizer는 filter 체인과 세트로 봐야 합니다.&lt;/strong&gt; tokenizer를 바꾸면 뒤따르는 filter들의 입력 분포가 통째로 바뀝니다. nori와 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min_length(3)&lt;/code&gt;의 조합은 “더 좋은 토큰화 + 기존 노이즈 필터”가 아니라 “한글 토큰 전멸기”였습니다. 이런 중간 상태를 운영에 방치하면 개선이 아니라 장애입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;결국 nori를 살리려면 min_length 완화가 &lt;strong&gt;선택이 아니라 전제 조건&lt;/strong&gt;임이 확정됐습니다.&lt;/p&gt;
+
+&lt;h2 id=&quot;시도-3--upstream을-먼저-확인하니-이미-해결돼-있었다&quot;&gt;시도 3 — upstream을 먼저 확인하니, 이미 해결돼 있었다&lt;/h2&gt;
+
+&lt;p&gt;min_length를 2로 낮추는 것 자체는 fork에서 1줄 수정이면 됩니다. 하지만 fork를 임의 수정하기 전에 upstream을 조사했고, 여기서 반전이 나옵니다. &lt;strong&gt;동일한 문제를 해결한 PR이 이미 merge되어 있었습니다.&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/datahub-project/datahub/pull/13499&quot;&gt;datahub-project/datahub#13499&lt;/a&gt; — “feat(config): add configurable search filter min length”&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;ELASTICSEARCH_MIN_SEARCH_FILTER_LENGTH&lt;/code&gt; 환경변수로 min_length를 설정할 수 있게 하고, 기본값은 3으로 유지 (v1.2.0+ 포함)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;이 PR에 도달하기까지의 upstream 이력도 흥미롭습니다. 우리가 겪은 것과 같은 문제를 다른 언어권 사용자들이 이미 여러 번 리포트했습니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;시점&lt;/th&gt;
+      &lt;th&gt;upstream 활동&lt;/th&gt;
+      &lt;th&gt;결과&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;이슈 #7573&lt;/td&gt;
+      &lt;td&gt;중국어 2글자 검색 불가 리포트&lt;/td&gt;
+      &lt;td&gt;stale close&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;이슈 #11721&lt;/td&gt;
+      &lt;td&gt;한·중·일 2글자 검색 불가 리포트&lt;/td&gt;
+      &lt;td&gt;—&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;PR #11722&lt;/td&gt;
+      &lt;td&gt;하드코딩 3→2 변경 제안&lt;/td&gt;
+      &lt;td&gt;메인테이너가 “설정화 + 기본값 유지” 방침 요구, 미머지&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;PR #12969&lt;/td&gt;
+      &lt;td&gt;설정화 1차 시도&lt;/td&gt;
+      &lt;td&gt;미머지&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;&lt;strong&gt;PR #13499&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;환경변수 설정화 + 기본값 3 유지&lt;/strong&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;merge&lt;/strong&gt; ✓&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;운영 중인 버전은 이 PR 이전(v1.1.0 기반)이라 해당 기능이 없었고, &lt;strong&gt;PR #13499를 무수정 backport&lt;/strong&gt;하는 방식을 택했습니다. &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;git apply --check&lt;/code&gt;로 확인하니 충돌 0으로 클린하게 적용됐습니다. 임의로 fork 1줄을 고치는 대신 upstream 원형을 그대로 가져온 이유는 명확합니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;이후 버전 업그레이드 시 &lt;strong&gt;충돌 없이 자연 수렴&lt;/strong&gt;합니다 (upstream에 이미 있는 코드이므로).&lt;/li&gt;
+  &lt;li&gt;메인테이너가 리뷰·승인한 설계(“기본값은 유지하고 설정으로 열기”)를 그대로 따릅니다.&lt;/li&gt;
+  &lt;li&gt;기본값이 3이라 backport 자체는 무해하고, 환경변수로 2를 주입할 때만 효과가 발생합니다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;최종 구성은 &lt;strong&gt;nori + min_length=2 병행&lt;/strong&gt;입니다. min=2를 유지하는 것에도 의미가 있는데, nori가 만들어내는 1글자 형태소(조사 “자”, “를” 등)는 계속 걸러져서 노이즈 방지 역할을 합니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart LR
+    classDef tok fill:#dbeafe,stroke:#1d4ed8
+    classDef ok fill:#dcfce7,stroke:#15803d
+    classDef cut fill:#fee2e2,stroke:#b91c1c
+
+    Q[&quot;'방문자수집계'&quot;] --&amp;gt; N[&quot;nori_tokenizer&quot;]:::tok
+    N --&amp;gt; T[&quot;[방문(2), 자(1), 수집(2), 계(1)]&quot;]:::tok
+    T --&amp;gt; M[&quot;min_length(2)&amp;lt;br/&amp;gt;1글자만 제거&quot;]:::cut
+    M --&amp;gt; R[&quot;[방문, 수집] 생존&amp;lt;br/&amp;gt;→ '방문'으로 복합어 중간까지 검색됨&quot;]:::ok
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h1 id=&quot;검증&quot;&gt;검증&lt;/h1&gt;
+
+&lt;p&gt;이미지 배포 + 환경변수 반영 후 자동 재색인 1회를 거쳐, 원인 규명에 썼던 것과 같은 방법으로 before/after를 실측했습니다.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;analyzer 레벨&lt;/strong&gt; (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_analyze&lt;/code&gt;):&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&quot;결제&quot;            → before: []                after: [결제]
+&quot;방문자수집계&quot;     → before: [방문자수집계]     after: [방문, 수집]
+&quot;주문 결제 내역&quot;   → before: 통짜 1토큰         after: 서브워드 전부 생존
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;strong&gt;검색 레벨&lt;/strong&gt; (검색 API):&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;검색어&lt;/th&gt;
+      &lt;th&gt;before&lt;/th&gt;
+      &lt;th&gt;after&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;결제 (2글자)&lt;/td&gt;
+      &lt;td&gt;0건&lt;/td&gt;
+      &lt;td&gt;수백 건&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;방문 (2글자)&lt;/td&gt;
+      &lt;td&gt;0건&lt;/td&gt;
+      &lt;td&gt;수백 건&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;유저 (2글자)&lt;/td&gt;
+      &lt;td&gt;0건&lt;/td&gt;
+      &lt;td&gt;수백 건&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;정산 (2글자)&lt;/td&gt;
+      &lt;td&gt;0건&lt;/td&gt;
+      &lt;td&gt;수백 건&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;결제자 (3글자, 회귀 대조군)&lt;/td&gt;
+      &lt;td&gt;수백 건 → nori 단독 중간 상태에서 0건&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;복구 + 확대&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;“결제자” 검색이 “결제”와 같은 건수로 수렴한 것은 nori 형태소 분해([결제, 자] → [결제])의 의도된 동작입니다. 정확 일치만 되던 검색이 &lt;strong&gt;복합어 중간 매칭까지&lt;/strong&gt; 커버하게 되어, 예를 들어 “일별방문자집계” 같은 이름의 데이터셋이 “방문”으로 검색됩니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;정리&quot;&gt;정리&lt;/h1&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;역색인에 토큰이 없으면 그 단어는 존재하지 않는 것과 같습니다.&lt;/strong&gt; 원문에 데이터가 있는데 검색이 안 된다면, 가장 먼저 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;_analyze&lt;/code&gt;로 토큰이 실제로 만들어지는지 확인해야 합니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;analyzer는 색인·검색 양쪽에 적용되므로, 토큰을 지우는 filter의 피해는 두 배입니다.&lt;/strong&gt; 색인에도 없고 질의 토큰도 없어서, 어떤 쿼리 튜닝으로도 우회할 수 없습니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;tokenizer 교체는 filter 체인과 반드시 함께 검토해야 합니다.&lt;/strong&gt; nori 단독 적용은 개선이 아니라 한글 검색 전멸이라는 회귀를 만들었습니다. 중간 상태를 운영에 방치하지 않는 것도 중요합니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;영어권 프로젝트의 기본값은 CJK에서 병리가 될 수 있습니다.&lt;/strong&gt; &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;min: 3&lt;/code&gt;은 영어에서는 노이즈 필터, 한국어에서는 핵심 명사 삭제기입니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;fork를 수정하기 전에 upstream을 먼저 조사해야 합니다.&lt;/strong&gt; 같은 문제를 겪은 사람은 대부분 이미 있고, 이번엔 merge된 해결 PR까지 있었습니다. upstream 원형의 backport는 임의 수정보다 업그레이드 수렴·설계 정합성 면에서 훨씬 저렴합니다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;증상은 “2글자 검색이 안 돼요” 한 줄이었지만, 그 아래에는 역색인의 대원칙, analyzer의 이중 적용, tokenizer와 filter의 결합, 그리고 upstream 생태계의 이력이 겹겹이 놓여 있었습니다. 검색이 “안 되는” 문제는 대부분 쿼리가 아니라 &lt;strong&gt;토큰이 만들어지는 지점&lt;/strong&gt;에서 시작한다는 것이 이번 디버깅의 가장 큰 교훈입니다.&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="elasticsearch" />
+      
+
+      
+        <summary type="html">운영 중인 데이터 카탈로그(DataHub)에서 “결제”, “방문” 같은 2글자 한글 키워드로 검색하면 결과가 0건이고, 3글자부터는 정상 동작하는 현상을 추적한 기록입니다. 원인은 검색엔진(OpenSearch)의 결함이 아니라, 애플리케이션이 인덱스에 심어놓은 token filter 하나였습니다. 역색인과 analyzer의 기본 동작부터 시작해서, 원인을 실측으로 확정하고, 세 번의 시도 끝에 해결하기까지의 과정을 정리합니다.</summary>
+      
+
+      
+      
+    </entry>
+  
+</feed>

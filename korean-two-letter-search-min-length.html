@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>한글 2글자 검색이 0건이 되는 이유 - min_length 필터와 nori</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    </script>
+<meta name="description" content="Data Engineering" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/korean-two-letter-search-min-length" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="한글 2글자 검색이 0건이 되는 이유 - min_length 필터와 nori" />
+    <meta property="og:description" content="운영 중인 데이터 카탈로그(DataHub)에서 “결제”, “방문” 같은 2글자 한글 키워드로 검색하면 결과가 0건이고, 3글자부터는 정상 동작하는 현상을 추적한 기록입니다. 원인은 검색엔진(OpenSearch)의 결함이 아니라, 애플리케이션이 인덱스에 심어놓은 token filter 하나였습니다. 역색인과 analyzer의 기본 동작부터 시작해서, 원인을 실측으로 확정하고, 세 번의 시도 끝에 해결하기까지의 과정을 정리합니다. 문제 상황 증상은 단순하고 명확했습니다. 검색어" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/korean-two-letter-search-min-length" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/elasticsearch/korean-two-letter-search.svg" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2026-08-22T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2026-08-22T22:30:00+09:00" />
+    <meta property="article:tag" content="Elasticsearch" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="한글 2글자 검색이 0건이 되는 이유 - min_length 필터와 nori" />
+    <meta name="twitter:description" content="운영 중인 데이터 카탈로그(DataHub)에서 “결제”, “방문” 같은 2글자 한글 키워드로 검색하면 결과가 0건이고, 3글자부터는 정상 동작하는 현상을 추적한 기록입니다. 원인은 검색엔진(OpenSearch)의 결함이 아니라, 애플리케이션이 인덱스에 심어놓은 token filter 하나였습니다. 역색인과 analyzer의 기본 동작부터 시작해서, 원인을 실측으로 확정하고, 세 번의 시도 끝에 해결하기까지의 과정을 정리합니다. 문제 상황 증상은 단순하고 명확했습니다. 검색어" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/elasticsearch/korean-two-letter-search.svg" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Elasticsearch" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "https://gyuhoonk.github.io/"
+    },
+    "url": "https://gyuhoonk.github.io/korean-two-letter-search-min-length",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://gyuhoonk.github.io/assets/built/images/elasticsearch/korean-two-letter-search.svg",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://gyuhoonk.github.io/korean-two-letter-search-min-length"
+    },
+    "description": "운영 중인 데이터 카탈로그(DataHub)에서 “결제”, “방문” 같은 2글자 한글 키워드로 검색하면 결과가 0건이고, 3글자부터는 정상 동작하는 현상을 추적한 기록입니다. 원인은 검색엔진(OpenSearch)의 결함이 아니라, 애플리케이션이 인덱스에 심어놓은 token filter 하나였습니다. 역색인과 analyzer의 기본 동작부터 시작해서, 원인을 실측으로 확정하고, 세 번의 시도 끝에 해결하기까지의 과정을 정리합니다. 문제 상황 증상은 단순하고 명확했습니다. 검색어"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="한글 2글자 검색이 0건이 되는 이유 - min_length 필터와 nori" href="/feed.xml" />
+ <script type="module">
+ import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+ mermaid.initialize({ startOnLoad: true });
+ await mermaid.run({
+     querySelector: '.language-mermaid',
+ });
+</script>
+    
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/kubernetes/">kubernetes</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-elasticsearch post tag-elasticsearch ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime="22 August 2026">22 August 2026</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/elasticsearch/'>ELASTICSEARCH</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">한글 2글자 검색이 0건이 되는 이유 - min_length 필터와 nori</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/elasticsearch/korean-two-letter-search.svg)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>운영 중인 데이터 카탈로그(DataHub)에서 “결제”, “방문” 같은 <strong>2글자 한글 키워드</strong>로 검색하면 결과가 0건이고, 3글자부터는 정상 동작하는 현상을 추적한 기록입니다. 원인은 검색엔진(OpenSearch)의 결함이 아니라, 애플리케이션이 인덱스에 심어놓은 <strong>token filter 하나</strong>였습니다. 역색인과 analyzer의 기본 동작부터 시작해서, 원인을 실측으로 확정하고, 세 번의 시도 끝에 해결하기까지의 과정을 정리합니다.</p>
+
+<h1 id="문제-상황">문제 상황</h1>
+
+<p>증상은 단순하고 명확했습니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>검색어 "결제"           → 0건
+검색어 "방문"           → 0건
+검색어 "유저", "정산"   → 0건
+검색어 "결제자" (3글자) → 수백 건 정상 매칭
+</code></pre></div></div>
+
+<p>특징을 정리하면 이렇습니다.</p>
+
+<ul>
+  <li>2글자 한글 키워드는 데이터셋명·컬럼명·설명(description) 어디를 겨냥해도 전부 0건입니다.</li>
+  <li><strong>3글자부터는 정상</strong>입니다. “결제”는 0건인데 “결제자”는 수백 건이 나옵니다.</li>
+  <li>심지어 description에 독립된 단어로 “결제”가 그대로 적혀 있는 문서조차 “결제”로 검색되지 않습니다. 데이터가 없어서가 아니라, <strong>데이터가 있는데도 못 찾는</strong> 상황입니다.</li>
+</ul>
+
+<p>“3글자부터 정상”이라는 경계가 지나치게 깔끔해서, 어딘가에 <code class="language-plaintext highlighter-rouge">3</code>이라는 숫자가 하드코딩되어 있으리라는 심증부터 생깁니다. 이 숫자를 찾으러 가기 전에, 검색엔진이 텍스트를 어떻게 다루는지부터 짚고 시작하겠습니다. 원인이 정확히 이 기초 위에 있기 때문입니다.</p>
+
+<h1 id="기초-역색인과-analyzer">기초: 역색인과 analyzer</h1>
+
+<h2 id="역색인--토큰이-없으면-존재하지-않는-것과-같다">역색인 — 토큰이 없으면 존재하지 않는 것과 같다</h2>
+
+<p>Elasticsearch/OpenSearch는 검색할 때마다 문서 원문을 훑는 방식(grep)이 아닙니다. 색인 시점에 문서의 텍스트를 <strong>토큰(token)</strong> 단위로 쪼갠 뒤, “이 토큰이 어느 문서에 있는가”를 담은 역방향 사전, 즉 <strong>역색인(inverted index)</strong> 을 만들어 둡니다.</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    classDef doc fill:#dbeafe,stroke:#1d4ed8
+    classDef idx fill:#dcfce7,stroke:#15803d
+
+    D1["doc1&lt;br/&gt;'주문 결제 내역 테이블'"]:::doc
+    D2["doc2&lt;br/&gt;'B2C 결제자 table'"]:::doc
+
+    subgraph inv["역색인 (토큰 → 문서 목록)"]
+        T1["'결제자' → doc2"]:::idx
+        T2["'b2c' → doc2"]:::idx
+        T3["'tabl' → doc2"]:::idx
+    end
+
+    D1 --&gt; inv
+    D2 --&gt; inv
+</code></pre>
+
+<p>검색은 이 사전에서 <strong>토큰을 key로 lookup</strong>하는 것입니다. 그래서 대원칙이 하나 생깁니다.</p>
+
+<blockquote>
+  <p><strong>사전에 토큰이 등재되어 있지 않으면, 그 단어는 존재하지 않는 것과 같다.</strong>
+원문에 “결제”라는 글자가 아무리 많아도, 토큰 “결제”가 사전에 없으면 0건이다.</p>
+</blockquote>
+
+<h2 id="analyzer--토큰을-만드는-3단-파이프라인">analyzer — 토큰을 만드는 3단 파이프라인</h2>
+
+<p>텍스트를 토큰으로 바꾸는 장치가 <strong>analyzer</strong>이고, 세 단계로 구성됩니다.</p>
+
+<pre><code class="language-mermaid">flowchart TB
+    classDef stage fill:#fef3c7,stroke:#a16207
+    classDef danger fill:#fee2e2,stroke:#b91c1c
+
+    IN["원문 텍스트"]
+    CF["char filter&lt;br/&gt;문자 단위 전처리 (HTML 제거 등)"]:::stage
+    TK["tokenizer&lt;br/&gt;텍스트를 토큰으로 분할&lt;br/&gt;whitespace / pattern / nori_tokenizer ..."]:::stage
+    TF["token filter (여러 개 체인)&lt;br/&gt;토큰을 변형·추가·삭제&lt;br/&gt;lowercase, stop, length ..."]:::danger
+    OUT["최종 토큰들 → 역색인 등재"]
+
+    IN --&gt; CF --&gt; TK --&gt; TF --&gt; OUT
+</code></pre>
+
+<p>핵심은 token filter가 토큰을 <strong>삭제할 수도 있다</strong>는 점입니다. <code class="language-plaintext highlighter-rouge">length</code> filter에 <code class="language-plaintext highlighter-rouge">min: 3</code>을 주면 3글자 미만 토큰은 이 단계에서 조용히 사라집니다.</p>
+
+<h2 id="analyzer는-두-번-적용된다">analyzer는 “두 번” 적용된다</h2>
+
+<p>analyzer는 색인할 때 한 번만 도는 것이 아닙니다. <strong>검색어에도 적용됩니다.</strong></p>
+
+<pre><code class="language-mermaid">flowchart LR
+    classDef write fill:#dbeafe,stroke:#1d4ed8
+    classDef read fill:#fce7f3,stroke:#be185d
+
+    subgraph W["색인 시점 (write path)"]
+        WD["문서 'B2C 결제자 table'"]:::write
+        WA["index analyzer"]:::write
+        WT["[b2c, 결제자, tabl]"]:::write
+        WD --&gt; WA --&gt; WT
+    end
+
+    subgraph R["검색 시점 (read path)"]
+        RD["검색어 '결제자'"]:::read
+        RA["search analyzer"]:::read
+        RT["[결제자]"]:::read
+        RD --&gt; RA --&gt; RT
+    end
+
+    WT &lt;--&gt;|"토큰 == 토큰 매칭"| RT
+</code></pre>
+
+<p>양쪽에서 만들어진 <strong>토큰끼리 일치</strong>해야 검색이 성립합니다. 따라서 토큰을 지우는 필터가 양쪽 체인에 모두 들어 있으면 피해가 두 배가 됩니다 — 색인에도 없고, 질의 토큰도 없습니다.</p>
+
+<h2 id="multi-field--같은-원문을-여러-방식으로-색인">multi-field — 같은 원문을 여러 방식으로 색인</h2>
+
+<p>하나의 필드를 서로 다른 analyzer로 여러 벌 색인해 두고 검색 목적에 따라 골라 쓰는 것이 관례이고, DataHub도 그렇게 합니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code> description (원문 1개)
+ ├── description             keyword (원문 통짜, 정확 일치·정렬용)
+ ├── description.delimited   ← word_delimited analyzer (일반 검색용) ★ 문제의 필드
+ ├── description.ngram       ← search_as_you_type (자동완성용)
+ └── description.wordGrams2/3/4 ← 2~4단어 shingle (구 단위 가중치용)
+</code></pre></div></div>
+
+<p>같은 원문이라도 <strong>subfield마다 등재된 토큰이 다릅니다.</strong> 이 사실이 뒤에서 중요한 단서가 됩니다.</p>
+
+<h1 id="원인-추적">원인 추적</h1>
+
+<h2 id="첫-번째-추정은-틀렸다-min_gram이-아니다">첫 번째 추정은 틀렸다: min_gram이 아니다</h2>
+
+<p>처음에는 “n-gram의 <code class="language-plaintext highlighter-rouge">min_gram=3</code> 때문에 2글자가 잘리는 것”으로 추정했습니다. 그럴듯한 가설이지만, 소스를 열어보니 사실이 아니었습니다. DataHub의 <code class="language-plaintext highlighter-rouge">.ngram</code> subfield는 고전적인 n-gram tokenizer가 아니라 <strong><code class="language-plaintext highlighter-rouge">search_as_you_type</code> 타입</strong>이라서, <code class="language-plaintext highlighter-rouge">min_gram</code>이라는 설정 자체가 존재하지 않습니다. 게다가 이 필드는 자동완성 경로에서만 질의되고 일반 검색에서는 조회 대상도 아닙니다.</p>
+
+<p>가설이 기각됐으니 다시 코드로 돌아갑니다. 인덱스의 analyzer 정의는 helm values 같은 배포 설정이 아니라 <strong>Java 코드에 하드코딩</strong>되어 있습니다 (<code class="language-plaintext highlighter-rouge">metadata-io</code>의 <code class="language-plaintext highlighter-rouge">SettingsBuilder.java</code>). 거기서 문제의 <code class="language-plaintext highlighter-rouge">3</code>을 찾았습니다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">filters</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="no">MIN_LENGTH</span><span class="o">,</span>
+    <span class="nc">ImmutableMap</span><span class="o">.&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span><span class="n">builder</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="no">TYPE</span><span class="o">,</span> <span class="s">"length"</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"min"</span><span class="o">,</span> <span class="s">"3"</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">build</span><span class="o">());</span>
+</code></pre></div></div>
+
+<p><strong><code class="language-plaintext highlighter-rouge">min_length</code>라는 이름의 <code class="language-plaintext highlighter-rouge">length</code> token filter</strong>입니다. 그리고 이 필터는 색인용·검색용 analyzer 체인 <strong>양쪽의 마지막</strong>에 들어 있습니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        word_delimited (색인용) / query_word_delimited (검색용)
+        ────────────────────────────────────────────────────
+tokenizer:      pattern "[(),./:]"   ← 공백으로는 안 쪼갬
+token filters:  asciifolding
+                word_delimiter_graph  ← 여기서 공백·특수문자 기준 서브워드 분리
+                trim
+                lowercase
+                stop
+                snowball
+                unique
+                min_length {type: length, min: 3}   ★ 3글자 미만 토큰 삭제
+</code></pre></div></div>
+
+<p>앞 단계에서 어렵게 분리해 낸 서브워드라도, 2글자면 체인의 마지막에서 버려집니다.</p>
+
+<h2 id="_analyze로-실측-재현"><code class="language-plaintext highlighter-rouge">_analyze</code>로 실측 재현</h2>
+
+<p>가설이 아니라 사실로 만들기 위해 실제 인덱스에 <code class="language-plaintext highlighter-rouge">_analyze</code> API를 실행했습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>analyzer</th>
+      <th>입력</th>
+      <th>결과</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">query_word_delimited</code> (검색용)</td>
+      <td>결제</td>
+      <td><strong>토큰 0개</strong> — min_length가 삭제</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">query_word_delimited</code></td>
+      <td>결제자</td>
+      <td>[결제자] 생존</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">word_delimited</code> (색인용)</td>
+      <td>주문 결제 내역</td>
+      <td>통짜 원본 1개만 생존 — 서브워드 주문/결제/내역이 전부 2글자라 전량 삭제</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">word_delimited</code></td>
+      <td>B2C 결제자 table</td>
+      <td>[b2c, 결제자, tabl] 정상 분리·생존</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">partial</code> (<code class="language-plaintext highlighter-rouge">.ngram</code>용, min_length 없음)</td>
+      <td>결제</td>
+      <td><strong>토큰 생존</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>이로써 2글자 한글이 겪는 일이 확정됩니다. <strong>색인 시점과 검색 시점의 이중 차단</strong>입니다.</p>
+
+<pre><code class="language-mermaid">flowchart TB
+    classDef write fill:#dbeafe,stroke:#1d4ed8
+    classDef read fill:#fce7f3,stroke:#be185d
+    classDef cut fill:#fee2e2,stroke:#b91c1c
+    classDef res fill:#fef3c7,stroke:#a16207
+
+    subgraph W["색인 시점"]
+        D["문서 '...주문 결제 내역...'"]:::write
+        IA["word_delimited"]:::write
+        IC["min_length(3) ✂&lt;br/&gt;2글자 서브워드 전멸"]:::cut
+        II["역색인(.delimited)에&lt;br/&gt;'결제' 토큰 없음"]:::write
+        D --&gt; IA --&gt; IC --&gt; II
+    end
+
+    subgraph R["검색 시점"]
+        Q["검색어 '결제'"]:::read
+        QA["query_word_delimited"]:::read
+        QC["min_length(3) ✂"]:::cut
+        QT["질의 토큰 0개"]:::read
+        Q --&gt; QA --&gt; QC --&gt; QT
+    end
+
+    II --&gt; Z["매칭할 토큰이 양쪽 모두 없음 → 0건"]:::res
+    QT --&gt; Z
+</code></pre>
+
+<p>질의 토큰이 0개면 <code class="language-plaintext highlighter-rouge">simple_query_string</code>도 <code class="language-plaintext highlighter-rouge">match_phrase_prefix</code>도 <strong>비교할 대상 자체가 없어</strong> 무조건 0건입니다. “3글자부터 정상”인 이유가 정확히 <code class="language-plaintext highlighter-rouge">min: 3</code> 경계였고, 3글자 검색어(“결제자”)는 필터를 통과한 토큰이 색인된 긴 토큰의 접두 매칭에 성공하기 때문에 동작했던 것입니다.</p>
+
+<p>한 가지 더 짚을 점은, 이것이 2글자 “검색어” 문제 이전에 <strong>색인 품질 자체의 문제</strong>라는 사실입니다. 한국어 문서의 2음절 핵심 명사(결제·유저·정산·방문·주문·내역…)가 통째로 역색인에서 빠져 있었습니다.</p>
+
+<h1 id="왜-영어-검색은-멀쩡했나">왜 영어 검색은 멀쩡했나</h1>
+
+<p><code class="language-plaintext highlighter-rouge">min: 3</code>은 검색 품질을 해치려고 넣은 값이 아닙니다. <strong>영어를 전제로 한 노이즈 제거 설계</strong>입니다. 영어에서 1~2글자 토큰은 대부분 관사·전치사(a, of, in, at)라서 지워도 검색 품질이 오히려 좋아집니다.</p>
+
+<p>그러나 한국어는 <strong>2음절이 핵심 명사의 기본 길이</strong>입니다. 같은 규칙이 영어에서는 청소부 역할을 하고 한국어에서는 의미어를 대량으로 지웁니다. 실제로 upstream에는 중국어·일본어 사용자들의 동일한 리포트가 수년에 걸쳐 올라와 있었습니다(뒤에서 다시 등장합니다). 영어권 프로젝트의 무해한 기본값이 CJK 환경에서 병리가 되는 전형적인 사례입니다.</p>
+
+<h1 id="해결-여정">해결 여정</h1>
+
+<p>원인이 한 지점(<code class="language-plaintext highlighter-rouge">min_length</code>의 <code class="language-plaintext highlighter-rouge">min=3</code>)으로 확정됐으니 고치면 됩니다. 그런데 “어떻게 고치는가”에서 세 번의 시도가 필요했습니다.</p>
+
+<h2 id="시도-1--인덱스-settings-override-주입-조용히-무시됨">시도 1 — 인덱스 settings override 주입: 조용히 무시됨</h2>
+
+<p>DataHub에는 배포 설정으로 인덱스 settings를 override하는 메커니즘이 있습니다. 코드 수정 없이 <code class="language-plaintext highlighter-rouge">analysis.filter.min_length.min: "2"</code>를 주입할 수 있다면 가장 싸게 끝나는 경로라서 먼저 검증했습니다.</p>
+
+<p>결과는 <strong>무반응</strong>이었습니다. 환경변수 주입까지는 정상인데, 인덱스를 관리하는 job이 “변경 없음”으로 판정하고 아무것도 하지 않았습니다. 코드를 따라가 보니 이유가 있었습니다.</p>
+
+<ul>
+  <li>인덱스 갱신 job의 <strong>diff 감지 로직은 코드가 만든 nested <code class="language-plaintext highlighter-rouge">analysis</code> 트리(min=3)와 현재 인덱스만 비교</strong>합니다. flat dotted key로 들어온 override는 비교 대상 자체가 아닙니다.</li>
+  <li>즉 override는 <strong>신규 인덱스를 만들 때만</strong> 전달될 뿐, <strong>이미 존재하는 인덱스에는 조용히 무시</strong>됩니다. 에러도 없고 로그로 구분하기도 어렵습니다.</li>
+</ul>
+
+<p>“설정을 넣었는데 적용이 안 되면, 적용 여부를 판정하는 코드부터 읽어야 한다”는 교훈을 남기고 기각.</p>
+
+<h2 id="시도-2--nori-tokenizer-단독-적용-한글-검색이-오히려-전멸">시도 2 — nori tokenizer 단독 적용: 한글 검색이 오히려 전멸</h2>
+
+<p>한국어 검색 품질의 근본 개선을 위해 형태소 분석기 <a href="https://www.elastic.co/guide/en/elasticsearch/plugins/current/analysis-nori.html">nori</a>를 적용했습니다. DataHub는 <code class="language-plaintext highlighter-rouge">ELASTICSEARCH_MAIN_TOKENIZER</code> 환경변수로 tokenizer를 교체할 수 있어서 fork 수정 없이 적용 가능했고, 재색인도 자동으로 정상 수행됐습니다.</p>
+
+<p>그런데 검증에서 예상 밖의 결과가 나옵니다. <strong>잘 되던 3글자 검색까지 0건으로 회귀</strong>했습니다.</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    classDef tok fill:#dbeafe,stroke:#1d4ed8
+    classDef cut fill:#fee2e2,stroke:#b91c1c
+    classDef res fill:#fef3c7,stroke:#a16207
+
+    Q["검색어 '결제자'"] --&gt; N["nori_tokenizer&lt;br/&gt;형태소 분해"]:::tok
+    N --&gt; T["[결제(2자), 자(1자)]"]:::tok
+    T --&gt; M["min_length(3) ✂&lt;br/&gt;전부 3글자 미만"]:::cut
+    M --&gt; Z["토큰 0개 → 0건&lt;br/&gt;(기존엔 '결제자' 통토큰으로 매칭됐음)"]:::res
+</code></pre>
+
+<p>원리를 보면 당연한 결과입니다. 기존 tokenizer는 “결제자”를 3글자 통토큰으로 남겨서 min_length를 통과했습니다. 그런데 nori는 형태소 단위로 <strong>완전 분해</strong>합니다 — “결제자”는 [결제, 자]가 되고, 둘 다 3글자 미만이라 min_length가 전량 삭제합니다. 색인 쪽도 마찬가지여서, 한글 문장이 형태소로 잘게 쪼개진 뒤 대부분 지워져 <strong>한글 색인이 사실상 비어버립니다.</strong></p>
+
+<blockquote>
+  <p><strong>tokenizer는 filter 체인과 세트로 봐야 합니다.</strong> tokenizer를 바꾸면 뒤따르는 filter들의 입력 분포가 통째로 바뀝니다. nori와 <code class="language-plaintext highlighter-rouge">min_length(3)</code>의 조합은 “더 좋은 토큰화 + 기존 노이즈 필터”가 아니라 “한글 토큰 전멸기”였습니다. 이런 중간 상태를 운영에 방치하면 개선이 아니라 장애입니다.</p>
+</blockquote>
+
+<p>결국 nori를 살리려면 min_length 완화가 <strong>선택이 아니라 전제 조건</strong>임이 확정됐습니다.</p>
+
+<h2 id="시도-3--upstream을-먼저-확인하니-이미-해결돼-있었다">시도 3 — upstream을 먼저 확인하니, 이미 해결돼 있었다</h2>
+
+<p>min_length를 2로 낮추는 것 자체는 fork에서 1줄 수정이면 됩니다. 하지만 fork를 임의 수정하기 전에 upstream을 조사했고, 여기서 반전이 나옵니다. <strong>동일한 문제를 해결한 PR이 이미 merge되어 있었습니다.</strong></p>
+
+<ul>
+  <li><a href="https://github.com/datahub-project/datahub/pull/13499">datahub-project/datahub#13499</a> — “feat(config): add configurable search filter min length”</li>
+  <li><code class="language-plaintext highlighter-rouge">ELASTICSEARCH_MIN_SEARCH_FILTER_LENGTH</code> 환경변수로 min_length를 설정할 수 있게 하고, 기본값은 3으로 유지 (v1.2.0+ 포함)</li>
+</ul>
+
+<p>이 PR에 도달하기까지의 upstream 이력도 흥미롭습니다. 우리가 겪은 것과 같은 문제를 다른 언어권 사용자들이 이미 여러 번 리포트했습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>시점</th>
+      <th>upstream 활동</th>
+      <th>결과</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>이슈 #7573</td>
+      <td>중국어 2글자 검색 불가 리포트</td>
+      <td>stale close</td>
+    </tr>
+    <tr>
+      <td>이슈 #11721</td>
+      <td>한·중·일 2글자 검색 불가 리포트</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>PR #11722</td>
+      <td>하드코딩 3→2 변경 제안</td>
+      <td>메인테이너가 “설정화 + 기본값 유지” 방침 요구, 미머지</td>
+    </tr>
+    <tr>
+      <td>PR #12969</td>
+      <td>설정화 1차 시도</td>
+      <td>미머지</td>
+    </tr>
+    <tr>
+      <td><strong>PR #13499</strong></td>
+      <td><strong>환경변수 설정화 + 기본값 3 유지</strong></td>
+      <td><strong>merge</strong> ✓</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>운영 중인 버전은 이 PR 이전(v1.1.0 기반)이라 해당 기능이 없었고, <strong>PR #13499를 무수정 backport</strong>하는 방식을 택했습니다. <code class="language-plaintext highlighter-rouge">git apply --check</code>로 확인하니 충돌 0으로 클린하게 적용됐습니다. 임의로 fork 1줄을 고치는 대신 upstream 원형을 그대로 가져온 이유는 명확합니다.</p>
+
+<ol>
+  <li>이후 버전 업그레이드 시 <strong>충돌 없이 자연 수렴</strong>합니다 (upstream에 이미 있는 코드이므로).</li>
+  <li>메인테이너가 리뷰·승인한 설계(“기본값은 유지하고 설정으로 열기”)를 그대로 따릅니다.</li>
+  <li>기본값이 3이라 backport 자체는 무해하고, 환경변수로 2를 주입할 때만 효과가 발생합니다.</li>
+</ol>
+
+<p>최종 구성은 <strong>nori + min_length=2 병행</strong>입니다. min=2를 유지하는 것에도 의미가 있는데, nori가 만들어내는 1글자 형태소(조사 “자”, “를” 등)는 계속 걸러져서 노이즈 방지 역할을 합니다.</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    classDef tok fill:#dbeafe,stroke:#1d4ed8
+    classDef ok fill:#dcfce7,stroke:#15803d
+    classDef cut fill:#fee2e2,stroke:#b91c1c
+
+    Q["'방문자수집계'"] --&gt; N["nori_tokenizer"]:::tok
+    N --&gt; T["[방문(2), 자(1), 수집(2), 계(1)]"]:::tok
+    T --&gt; M["min_length(2)&lt;br/&gt;1글자만 제거"]:::cut
+    M --&gt; R["[방문, 수집] 생존&lt;br/&gt;→ '방문'으로 복합어 중간까지 검색됨"]:::ok
+</code></pre>
+
+<h1 id="검증">검증</h1>
+
+<p>이미지 배포 + 환경변수 반영 후 자동 재색인 1회를 거쳐, 원인 규명에 썼던 것과 같은 방법으로 before/after를 실측했습니다.</p>
+
+<p><strong>analyzer 레벨</strong> (<code class="language-plaintext highlighter-rouge">_analyze</code>):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>"결제"            → before: []                after: [결제]
+"방문자수집계"     → before: [방문자수집계]     after: [방문, 수집]
+"주문 결제 내역"   → before: 통짜 1토큰         after: 서브워드 전부 생존
+</code></pre></div></div>
+
+<p><strong>검색 레벨</strong> (검색 API):</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>검색어</th>
+      <th>before</th>
+      <th>after</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>결제 (2글자)</td>
+      <td>0건</td>
+      <td>수백 건</td>
+    </tr>
+    <tr>
+      <td>방문 (2글자)</td>
+      <td>0건</td>
+      <td>수백 건</td>
+    </tr>
+    <tr>
+      <td>유저 (2글자)</td>
+      <td>0건</td>
+      <td>수백 건</td>
+    </tr>
+    <tr>
+      <td>정산 (2글자)</td>
+      <td>0건</td>
+      <td>수백 건</td>
+    </tr>
+    <tr>
+      <td>결제자 (3글자, 회귀 대조군)</td>
+      <td>수백 건 → nori 단독 중간 상태에서 0건</td>
+      <td><strong>복구 + 확대</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>“결제자” 검색이 “결제”와 같은 건수로 수렴한 것은 nori 형태소 분해([결제, 자] → [결제])의 의도된 동작입니다. 정확 일치만 되던 검색이 <strong>복합어 중간 매칭까지</strong> 커버하게 되어, 예를 들어 “일별방문자집계” 같은 이름의 데이터셋이 “방문”으로 검색됩니다.</p>
+
+<h1 id="정리">정리</h1>
+
+<ol>
+  <li><strong>역색인에 토큰이 없으면 그 단어는 존재하지 않는 것과 같습니다.</strong> 원문에 데이터가 있는데 검색이 안 된다면, 가장 먼저 <code class="language-plaintext highlighter-rouge">_analyze</code>로 토큰이 실제로 만들어지는지 확인해야 합니다.</li>
+  <li><strong>analyzer는 색인·검색 양쪽에 적용되므로, 토큰을 지우는 filter의 피해는 두 배입니다.</strong> 색인에도 없고 질의 토큰도 없어서, 어떤 쿼리 튜닝으로도 우회할 수 없습니다.</li>
+  <li><strong>tokenizer 교체는 filter 체인과 반드시 함께 검토해야 합니다.</strong> nori 단독 적용은 개선이 아니라 한글 검색 전멸이라는 회귀를 만들었습니다. 중간 상태를 운영에 방치하지 않는 것도 중요합니다.</li>
+  <li><strong>영어권 프로젝트의 기본값은 CJK에서 병리가 될 수 있습니다.</strong> <code class="language-plaintext highlighter-rouge">min: 3</code>은 영어에서는 노이즈 필터, 한국어에서는 핵심 명사 삭제기입니다.</li>
+  <li><strong>fork를 수정하기 전에 upstream을 먼저 조사해야 합니다.</strong> 같은 문제를 겪은 사람은 대부분 이미 있고, 이번엔 merge된 해결 PR까지 있었습니다. upstream 원형의 backport는 임의 수정보다 업그레이드 수렴·설계 정합성 면에서 훨씬 저렴합니다.</li>
+</ol>
+
+<p>증상은 “2글자 검색이 안 돼요” 한 줄이었지만, 그 아래에는 역색인의 대원칙, analyzer의 이중 적용, tokenizer와 filter의 결합, 그리고 upstream 생태계의 이력이 겹겹이 놓여 있었습니다. 검색이 “안 되는” 문제는 대부분 쿼리가 아니라 <strong>토큰이 만들어지는 지점</strong>에서 시작한다는 것이 이번 디버깅의 가장 큰 교훈입니다.</p>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            <!--  -->
+            <!-- utteranc setting -->
+            <script src="https://utteranc.es/client.js"
+                    repo="GyuhoonK/blog-comments"
+                    issue-term="pathname"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/airflow-half-open-socket">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/airflow/airflow.png)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/airflow-half-open-socket">
+                <header class="post-card-header">
+                    
+                        
+                            
+                               <span class="post-card-tags">Airflow</span>
+                            
+                        
+                            
+                               <span class="post-card-tags">Celery</span>
+                            
+                        
+                            
+                               <span class="post-card-tags">Rabbitmq</span>
+                            
+                        
+                            
+                                <span class="post-card-tags">Tcp</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Half-Open Socket으로 인한 Airflow Stuck Task 디버깅</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Airflow 운영 중 task가 queued 상태에서 약 20분간 멈춰있다가 자동 실패 처리되고, 좀비 Pod가 클러스터에 잔존하는 현상을 디버깅한 기록입니다. 표면적 현상만 보면 어디 한 곳이 명확하게 죽은 것 같지 않은데도 task가 계속 stuck되어</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      8 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://gyuhoonk.github.io/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">한글 2글자 검색이 0건이 되는 이유 - min_length 필터와 nori</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=%ED%95%9C%EA%B8%80+2%EA%B8%80%EC%9E%90+%EA%B2%80%EC%83%89%EC%9D%B4+0%EA%B1%B4%EC%9D%B4+%EB%90%98%EB%8A%94+%EC%9D%B4%EC%9C%A0+-+min_length+%ED%95%84%ED%84%B0%EC%99%80+nori&amp;url=https://gyuhoonk.github.iokorean-two-letter-search-min-length"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.iokorean-two-letter-search-min-length"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2026</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+    <!-- math LaTex-->
+    
+</body>
+</html>

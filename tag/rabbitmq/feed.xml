@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom" >
+  <generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator>
+  <link href="https://gyuhoonk.github.io/tag/rabbitmq/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="https://gyuhoonk.github.io/" rel="alternate" type="text/html" />
+  <updated>2026-08-23T17:27:38+09:00</updated>
+  <id>https://gyuhoonk.github.io/tag/rabbitmq/feed.xml</id>
+
+  
+  
+  
+
+  
+    <title type="html">Gyuhoon Kim | </title>
+  
+
+  
+    <subtitle>Data Engineering</subtitle>
+  
+
+  
+
+  
+    
+      
+    
+  
+
+  
+  
+
+  
+    <entry>
+      <title type="html">Half-Open Socket으로 인한 Airflow Stuck Task 디버깅</title>
+      <link href="https://gyuhoonk.github.io/airflow-half-open-socket" rel="alternate" type="text/html" title="Half-Open Socket으로 인한 Airflow Stuck Task 디버깅" />
+      <published>2026-05-30T22:30:00+09:00</published>
+      <updated>2026-05-30T22:30:00+09:00</updated>
+      <id>https://gyuhoonk.github.io/airflow-half-open-socket</id>
+      <content type="html" xml:base="https://gyuhoonk.github.io/airflow-half-open-socket">&lt;p&gt;Airflow 운영 중 task가 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;queued&lt;/code&gt; 상태에서 약 20분간 멈춰있다가 자동 실패 처리되고, 좀비 Pod가 클러스터에 잔존하는 현상을 디버깅한 기록입니다. 표면적 현상만 보면 어디 한 곳이 명확하게 죽은 것 같지 않은데도 task가 계속 stuck되어 원인 추적이 오래 걸렸습니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;문제-상황&quot;&gt;문제 상황&lt;/h1&gt;
+
+&lt;p&gt;CeleryExecutor + RabbitMQ 조합으로 Airflow를 운영 중이었고, KubernetesPodOperator(이하 KPO)를 주로 사용하고 있었습니다. 어느 날부터 다음과 같은 패턴이 간헐적으로 관찰되기 시작합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;03:52:21  task try=1 running   ← KPO가 Pod를 만들고 base container까지 정상 종료
+04:14:34  task try=1 FAILED    ← 약 21분 후 자동 fail
+04:24:43  task try=2 running   ← scheduler가 자동 retry
+04:25:56  task try=2 success   ← 재시도는 정상 성공
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;특징을 정리하면 이렇습니다.&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;clear_number=0&lt;/code&gt;, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;user_actions=0&lt;/code&gt; → 사용자가 UI에서 Clear/Mark Success를 누른 적이 없습니다.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;external_trigger=1&lt;/code&gt; 이지만 외부 매니저 DAG의 일반 trigger 한 번뿐, cascade clear도 아닙니다.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;max_tries=1&lt;/code&gt; 이지만 try=2가 발생합니다. 이는 scheduler의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;cleanup_stuck_queued_tasks&lt;/code&gt;가 호출한 자동 retry path였습니다.&lt;/li&gt;
+  &lt;li&gt;try=1에서 만든 Pod의 base container는 정상적으로 exit 0을 반환했지만, KPO 입장에서는 Pod의 상태 변화 신호를 받지 못해 좀비 Pod로 남아 있습니다.&lt;/li&gt;
+  &lt;li&gt;stuck 지속 시간을 30일치 모아 정량 분석하니 mean &lt;strong&gt;1283.9s&lt;/strong&gt; (median 1288.4s), 80% 이상이 [1100s, 1400s] 구간에 분포 → &lt;strong&gt;deterministic timeout&lt;/strong&gt;임이 명확합니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;이 1283.9s는 정확히 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;task_queued_timeout=1200s + check_interval 1~2 cycle(120s)&lt;/code&gt;와 일치합니다. 즉 다른 어떤 layer도 dead detection을 하지 못하고, 가장 늦은 fallback인 scheduler의 stuck task cleanup만이 발화하고 있다는 뜻입니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;등장-인물과-통신-경로&quot;&gt;등장 인물과 통신 경로&lt;/h1&gt;
+
+&lt;p&gt;원인을 추적하기 위해 먼저 시스템에 누가 있는지 정리합니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart LR
+    classDef ctrl fill:#dbeafe,stroke:#1d4ed8
+    classDef msg fill:#fef3c7,stroke:#a16207
+    classDef work fill:#fce7f3,stroke:#be185d
+    classDef exec fill:#dcfce7,stroke:#15803d
+
+    S[&quot;Scheduler&amp;lt;br/&amp;gt;(Airflow scheduler)&quot;]:::ctrl
+    B[&quot;Broker&amp;lt;br/&amp;gt;(RabbitMQ)&quot;]:::msg
+    W[&quot;Worker&amp;lt;br/&amp;gt;(Celery worker)&quot;]:::work
+    P[&quot;Pod&amp;lt;br/&amp;gt;(K8s)&quot;]:::exec
+
+    S --&amp;gt;|&quot;publish task&quot;| B
+    B --&amp;gt;|&quot;deliver task&quot;| W
+    W --&amp;gt;|&quot;create pod&quot;| P
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;여기서 한 가지 중요한 사실은, Worker가 broker하고만 통신하는 게 아니라는 점입니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart LR
+    classDef worker fill:#fef3c7,stroke:#a16207,color:#78350f
+    classDef broker fill:#dcfce7,stroke:#15803d,color:#14532d
+    classDef db fill:#dbeafe,stroke:#1e40af,color:#1e3a8a
+
+    W[&quot;Worker&amp;lt;br/&amp;gt;(MainProcess + ForkPool)&quot;]:::worker
+    B[&quot;Broker&amp;lt;br/&amp;gt;(RabbitMQ)&quot;]:::broker
+    DB[&quot;metaDB&amp;lt;br/&amp;gt;(MySQL)&quot;]:::db
+
+    B --&amp;gt;|&quot;① task 메시지 deliver&quot;| W
+    W --&amp;gt;|&quot;② ACK frame (task 완료 후)&quot;| B
+    W &amp;lt;--&amp;gt;|&quot;③ heartbeat frame (120s 주기, 양방향)&quot;| B
+    W --&amp;gt;|&quot;④ celery_taskmeta INSERT (task 결과)&quot;| DB
+    W --&amp;gt;|&quot;⑤ task_instance UPDATE (실행 상태)&quot;| DB
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;채널&lt;/th&gt;
+      &lt;th&gt;방향&lt;/th&gt;
+      &lt;th&gt;broker 경유&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;① task deliver&lt;/td&gt;
+      &lt;td&gt;Broker → Worker&lt;/td&gt;
+      &lt;td&gt;O&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;② ACK&lt;/td&gt;
+      &lt;td&gt;Worker → Broker&lt;/td&gt;
+      &lt;td&gt;O&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;③ heartbeat frame&lt;/td&gt;
+      &lt;td&gt;양방향 (예: 120s 주기)&lt;/td&gt;
+      &lt;td&gt;O&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;④ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;celery_taskmeta&lt;/code&gt; INSERT&lt;/td&gt;
+      &lt;td&gt;Worker → DB&lt;/td&gt;
+      &lt;td&gt;X (DB 직접)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;⑤ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;task_instance&lt;/code&gt; UPDATE&lt;/td&gt;
+      &lt;td&gt;Worker(task) → DB&lt;/td&gt;
+      &lt;td&gt;X (DB 직접)&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;scheduler는 task 상태 판단을 broker가 아닌 &lt;strong&gt;DB(metaDB)&lt;/strong&gt; 만 보고 합니다. 따라서 broker-worker 간 메시지 전달이 silent하게 끊겨도, scheduler는 한참 뒤 (&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;task_queued_timeout&lt;/code&gt;이 만료될 때) 비로소 이상을 감지할 수 있습니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;half-open-socket&quot;&gt;Half-Open Socket&lt;/h1&gt;
+
+&lt;p&gt;위 현상의 원인은 broker와 worker 사이의 TCP connection이 &lt;strong&gt;half-open&lt;/strong&gt; 상태가 되었기 때문이었습니다.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Half-Open Socket&lt;/strong&gt;: TCP connection의 양쪽 종단 중 한쪽은 비정상 종료/단절되었는데, 다른 한쪽은 여전히 정상으로 인식하고 있는 상태.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;이게 가능한 이유는 TCP의 신뢰성 보장이 &lt;strong&gt;데이터를 send할 때만&lt;/strong&gt; 동작하기 때문입니다. send가 없으면 상대방이 죽었어도 알 길이 없습니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;sequenceDiagram
+    participant A as Worker
+    participant B as Broker
+
+    Note over A,B: 시나리오 1 — Worker가 send를 한다면
+    A-&amp;gt;&amp;gt;B: 데이터 send
+    B--&amp;gt;&amp;gt;A: ACK
+    Note over A: Worker는 ACK로 broker alive 확인
+
+    Note over A,B: 시나리오 2 — Worker는 recv 대기만
+    Note over A: Worker는 그냥 기다림 (recv block)
+    B-xB: Broker쪽 socket이 죽음 (NAT timeout 등)
+    Note over B: FIN/RST도 못 보냄
+    Note over A: Worker는 영원히 기다림&amp;lt;br/&amp;gt;(send가 없어 ACK도 없고 알 길이 없음)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Celery worker는 task를 처리하지 않는 idle 구간 동안 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;recv()&lt;/code&gt;로 broker의 deliver를 기다립니다. 이 구간에서 worker는 broker에 데이터를 거의 보내지 않습니다(heartbeat는 별도 channel/timer로 발송됨). 그래서 특정 channel의 packet이 silent하게 drop되어도 worker application은 그 사실을 즉시 알 수 없습니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;5개의-감시자-그러나-모두-무력화&quot;&gt;5개의 감시자, 그러나 모두 무력화&lt;/h1&gt;
+
+&lt;p&gt;“TCP가 그렇다 쳐도, 우리에겐 여러 단계의 dead detection 메커니즘이 있지 않나?”하는 의문이 생깁니다. 실제로 Celery + RabbitMQ + Linux 조합에는 다음과 같은 timeout/heartbeat 메커니즘들이 있습니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart TB
+    classDef weak fill:#fee2e2,stroke:#b91c1c
+    classDef mid fill:#fef3c7,stroke:#a16207
+    classDef strong fill:#dcfce7,stroke:#15803d
+    classDef trigger fill:#fce7f3,stroke:#be185d
+
+    subgraph app[&quot;Application layer (py-amqp)&quot;]
+        AA[&quot;read_timeout = None&amp;lt;br/&amp;gt;= recv() 무한 block&quot;]:::weak
+        AB[&quot;broker_heartbeat = 120s&amp;lt;br/&amp;gt;(양방향 약속)&quot;]:::mid
+        AC[&quot;SO_KEEPALIVE = 1&quot;]:::strong
+    end
+
+    subgraph os[&quot;OS Kernel layer&quot;]
+        OA[&quot;tcp_keepalive total = 1185s&amp;lt;br/&amp;gt;(SO_KEEPALIVE 켜져있어야 fire)&quot;]:::mid
+        OD[&quot;tcp_retries2 = 15 → ≈924s&amp;lt;br/&amp;gt;(unacked SENT data가 있어야 fire)&quot;]:::strong
+    end
+
+    subgraph broker[&quot;Broker (RabbitMQ &amp;lt; 3.8.15)&quot;]
+        BA[&quot;AMQP heartbeat = 120s&quot;]:::mid
+        BB[&quot;consumer_timeout (없음)&quot;]:::weak
+    end
+
+    subgraph sched[&quot;Airflow Scheduler&quot;]
+        SA[&quot;task_queued_timeout = 1200s&quot;]:::trigger
+        SB[&quot;check_interval = 120s&quot;]:::trigger
+    end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;그런데 위에서 본 정량 데이터(stuck duration ≈ 1283s)는 이 중 &lt;strong&gt;scheduler의 1200s task_queued_timeout만이 fire되었음&lt;/strong&gt;을 의미합니다. 나머지는 왜 동작하지 않았을까요? 각각 발화 조건이 만족되지 않습니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;Layer&lt;/th&gt;
+      &lt;th&gt;발화 안 한 이유&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;py-amqp &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read_timeout&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;기본값 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;None&lt;/code&gt;&lt;/strong&gt;. SO_RCVTIMEO 자체가 설정 안 되어 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;recv()&lt;/code&gt;가 무한 block. timeout이라는 개념 자체가 없음.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;AMQP heartbeat (120s)&lt;/td&gt;
+      &lt;td&gt;py-amqp의 Hub event loop가 다른 channel event로 정상 깨어나며 heartbeat timer callback을 정상 발화. broker는 client를 alive로 봄.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;TCP keepalive (1185s)&lt;/td&gt;
+      &lt;td&gt;SO_KEEPALIVE는 켜져 있고 probe도 발사하지만, broker의 OS가 정상 ACK 응답을 함. keepalive 입장에선 connection 정상.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;TCP &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;tcp_retries2&lt;/code&gt; (924s)&lt;/td&gt;
+      &lt;td&gt;이 timer는 &lt;strong&gt;unacked SENT data&lt;/strong&gt;에 대해서만 의미가 있음. worker가 idle하게 recv만 하는 동안 send가 없으므로 발화 조건 미충족.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;RMQ &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;consumer_timeout&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;사용 중이던 broker 버전에는 아예 존재하지 않는 기능 (3.8.15+에서 추가). broker self-heal 불가.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;Airflow &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;task_queued_timeout&lt;/code&gt;&lt;/td&gt;
+      &lt;td&gt;유일하게 발화. metaDB의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;queued_dttm&lt;/code&gt; 컬럼만 비교하므로 네트워크 상태와 무관.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;핵심은 &lt;strong&gt;“send가 없으면 OS layer는 아무것도 못 한다”&lt;/strong&gt; 입니다. consumer가 idle하게 recv만 대기하는 동안은 OS 입장에서 진행 중인 통신이 없는 것과 같기 때문에, tcp_retries2도 keepalive의 dead 판정도 작동하지 않습니다. 그리고 application layer에서 깨워줄 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read_timeout&lt;/code&gt;도 비활성화되어 있으니, half-open이 발생한 채로 무한히 sleep합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;py-amqp의-read_timeoutnone&quot;&gt;py-amqp의 read_timeout=None&lt;/h1&gt;
+
+&lt;p&gt;py-amqp는 Celery가 RabbitMQ와 통신할 때 사용하는 AMQP 라이브러리입니다. 코드를 따라가면 connection 생성 시 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read_timeout&lt;/code&gt; 인자가 기본 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;None&lt;/code&gt;으로 들어가고, 이 값이 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;None&lt;/code&gt;인 경우 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SO_RCVTIMEO&lt;/code&gt; socket option이 설정되지 않습니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;sequenceDiagram
+    autonumber
+    participant App as Worker py-amqp
+    participant OS as Worker OS kernel
+    participant B as Broker
+
+    App-&amp;gt;&amp;gt;OS: socket.recv() 호출 + (read_timeout=None)
+    Note over OS: SO_RCVTIMEO 미설정 → 무한 대기
+    Note over App: sleep
+    B-xOS: 메시지를 보내려 하지만 packet drop
+    Note over OS: socket buffer에 데이터 안 들어옴
+    Note over App: 영원히 sleep&amp;lt;br/&amp;gt;scheduler가 1200s 후 fail 처리할 때까지
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;만약 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read_timeout&lt;/code&gt;이 예를 들어 60초로 설정되어 있다면 어떨까요?&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;sequenceDiagram
+    autonumber
+    participant App as Worker py-amqp
+    participant OS as Worker OS kernel
+    participant B as Broker
+
+    App-&amp;gt;&amp;gt;OS: socket.recv() 호출 + (read_timeout=60)
+    Note over OS: SO_RCVTIMEO=60 설정
+    B-xOS: packet drop
+    Note over OS: 60s 동안 buffer empty
+    OS-&amp;gt;&amp;gt;App: wake up + EAGAIN
+    App-&amp;gt;&amp;gt;App: heartbeat_check() / connection state 재검증
+    App-&amp;gt;&amp;gt;App: half-open 감지 → 재연결
+    Note over App,B: broker가 unacked 메시지 redeliver
+    Note over App: 1분 안에 자동 복구
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;recv()&lt;/code&gt;가 60초마다 EAGAIN으로 깨어나면 py-amqp는 connection 상태를 재검증할 기회를 얻습니다. 이때 heartbeat가 실제로 왔는지 확인하고, 비정상 상태가 감지되면 connection을 닫고 재연결합니다. 그러면 broker는 unacked 메시지를 다른 정상 consumer에게 redeliver하게 되고, 1분 안에 자연스럽게 복구됩니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;두-timeout의-stack-관계&quot;&gt;두 timeout의 stack 관계&lt;/h1&gt;
+
+&lt;p&gt;여기서 한 가지 헷갈리는 부분을 정리할 필요가 있습니다. “AMQP heartbeat이 어차피 120s마다 주고받는데, read_timeout이 따로 필요한가?”&lt;/p&gt;
+
+&lt;p&gt;답은 &lt;strong&gt;read_timeout이 없으면 heartbeat 체크도 무력화된다&lt;/strong&gt;는 것입니다. heartbeat frame도 결국 TCP packet이고, application이 그것을 보려면 OS가 application을 깨워야 합니다. application이 영원히 sleep 중이면 heartbeat frame이 socket buffer에 도착해도 처리할 코드가 실행되지 않습니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;flowchart LR
+    classDef l1 fill:#dbeafe,stroke:#1e40af
+    classDef l2 fill:#fef3c7,stroke:#a16207
+
+    T2[&quot;read_timeout (OS 시계)&amp;lt;br/&amp;gt;application을 깨우는 알람&quot;]:::l1
+    Wake[&quot;application 깨어남&quot;]
+    T3[&quot;heartbeat check (AMQP 시계)&amp;lt;br/&amp;gt;heartbeat 수신 여부 검증&quot;]:::l2
+
+    T2 --&amp;gt;|&quot;X초마다 깨움&quot;| Wake
+    Wake --&amp;gt;|&quot;깨어나야 체크 가능&quot;| T3
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;관계&lt;/th&gt;
+      &lt;th&gt;내용&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;heartbeat 체크는 read_timeout 위에 stack&lt;/td&gt;
+      &lt;td&gt;heartbeat frame도 socket으로만 옴. read_timeout이 깨워야 heartbeat 검증 코드가 실행됨.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;read_timeout이 None이면 heartbeat 무력&lt;/td&gt;
+      &lt;td&gt;application이 영원히 sleep → heartbeat 검증 코드 실행 안 됨 → broker 죽어도 모름.&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;read_timeout만으로는 부족&lt;/td&gt;
+      &lt;td&gt;“데이터 안 옴”만 알지 “broker 죽음”까지 판정 못 함. heartbeat 검증 로직과 결합되어야 의미를 가짐.&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;흔히 “AMQP heartbeat이 있으니 dead detection은 broker가 알아서 해주겠지”라고 생각하기 쉽지만, 위 stack 구조 때문에 application의 read_timeout이 끊어주는 깨움 신호가 없으면 heartbeat 체크 자체가 동작하지 않습니다.&lt;/p&gt;
+
+&lt;p&gt;또한, heartbeat은 보통 단일 connection 단위로 동작하고, Hub event loop의 timer는 다른 channel event로도 깨어날 수 있습니다. 즉 &lt;strong&gt;“문제가 생긴 채널은 silent drop인데, heartbeat은 다른 채널을 타고 정상 송수신되어 broker 입장에서는 client alive로 보이는 상황”&lt;/strong&gt; 이 가능합니다. 이때 broker는 의심할 이유가 없으니 절대 먼저 끊지 않습니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;해결책&quot;&gt;해결책&lt;/h1&gt;
+
+&lt;p&gt;가장 적은 변경으로 가장 넓은 케이스를 cover하는 방법은 &lt;strong&gt;application layer에서 직접 감지&lt;/strong&gt;하도록 만드는 것입니다. Celery의 broker transport options를 통해 socket timeout을 명시적으로 설정합니다.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nv&quot;&gt;AIRFLOW__CELERY_BROKER_TRANSPORT_OPTIONS__SOCKET_TIMEOUT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;60
+&lt;span class=&quot;nv&quot;&gt;AIRFLOW__CELERY_BROKER_TRANSPORT_OPTIONS__SOCKET_CONNECT_TIMEOUT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;10
+&lt;span class=&quot;nv&quot;&gt;AIRFLOW__SCHEDULER__TASK_QUEUED_TIMEOUT&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1200
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SOCKET_TIMEOUT=60&lt;/code&gt;: py-amqp의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read_timeout&lt;/code&gt; 기본값을 변경. recv()가 60초마다 EAGAIN으로 깨어나 connection을 재검증.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;SOCKET_CONNECT_TIMEOUT=10&lt;/code&gt;: 초기 connection 단계의 무한 hang 방지.&lt;/li&gt;
+  &lt;li&gt;&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;TASK_QUEUED_TIMEOUT=1200&lt;/code&gt;: scheduler stuck task fallback. 최후의 방어선으로 유지.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;위 설정을 한쪽 환경에만 먼저 적용하고 30일 운영 데이터를 다른 환경(설정 미적용)과 A/B 비교해 봤습니다.&lt;/p&gt;
+
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th&gt;환경&lt;/th&gt;
+      &lt;th&gt;SOCKET_TIMEOUT&lt;/th&gt;
+      &lt;th&gt;30일 task 처리량&lt;/th&gt;
+      &lt;th&gt;REVOKED &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;celery_taskmeta&lt;/code&gt;&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+  &lt;tbody&gt;
+    &lt;tr&gt;
+      &lt;td&gt;미적용&lt;/td&gt;
+      &lt;td&gt;None (default)&lt;/td&gt;
+      &lt;td&gt;≈ 1.5M&lt;/td&gt;
+      &lt;td&gt;23건 (≈ 0.00153%)&lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+      &lt;td&gt;적용&lt;/td&gt;
+      &lt;td&gt;60s&lt;/td&gt;
+      &lt;td&gt;≈ 200K&lt;/td&gt;
+      &lt;td&gt;&lt;strong&gt;0건&lt;/strong&gt;&lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;미적용 환경 발생률을 그대로 적용해 보면 200K 처리량에서 통계상 약 3건이 발생해야 하지만 실제로는 0건이었습니다. 30일 운영으로 정량 확정된 효과입니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;다른-fix-후보들&quot;&gt;다른 fix 후보들&lt;/h1&gt;
+
+&lt;p&gt;위 application layer 설정 외에도 이론적으로 가능한 fix들이 있습니다.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&quot;language-mermaid&quot;&gt;graph TD
+    classDef fix fill:#dcfce7,stroke:#15803d
+    classDef cur fill:#fee2e2,stroke:#b91c1c
+
+    H[&quot;Half-Open Socket 발생&amp;lt;br/&amp;gt;(NAT timeout / 네트워크 glitch)&quot;]:::cur
+
+    F1[&quot;read_timeout 설정&amp;lt;br/&amp;gt;(application layer)&quot;]:::fix
+    F2[&quot;RMQ 3.8.15+ 업그레이드&amp;lt;br/&amp;gt;(consumer_timeout 추가)&quot;]:::fix
+    F3[&quot;TCP_USER_TIMEOUT 명시 설정&amp;lt;br/&amp;gt;(kernel layer)&quot;]:::fix
+    F4[&quot;broker_heartbeat 짧게 (예: 30s)&quot;]:::fix
+
+    H --&amp;gt; F1
+    H --&amp;gt; F2
+    H --&amp;gt; F3
+    H --&amp;gt; F4
+
+    F1 --&amp;gt;|&quot;가장 넓은 cover&quot;| OK[&quot;좀비 안 생김&quot;]
+    F2 --&amp;gt;|&quot;broker side self-heal&quot;| OK
+    F3 --&amp;gt;|&quot;send가 있어야 fire&quot;| Partial[&quot;부분 효과&quot;]
+    F4 --&amp;gt;|&quot;Hub timer 정상 시 무력&quot;| Partial
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;RMQ 3.8.15+ 업그레이드&lt;/strong&gt;: broker에 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;consumer_timeout&lt;/code&gt;이 추가되어, broker가 일정 시간 ack 받지 못한 consumer를 끊고 메시지를 redeliver합니다. broker side self-heal이라는 점에서 가장 깔끔하지만 broker upgrade 비용이 큽니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;TCP_USER_TIMEOUT&lt;/strong&gt;: kernel layer에서 unacked SENT data의 누적 시간을 직접 제한. 강력하지만 idle consumer처럼 send가 없는 케이스에선 부분적 효과만 있습니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;broker_heartbeat을 짧게&lt;/strong&gt;: 빠른 dead detection이 가능해 보이지만, 위에서 본 것처럼 Hub timer가 정상 작동하는 상황에서는 broker가 client를 alive로 봐서 무력화됩니다.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;application layer의 read_timeout 설정이 가장 적은 변경으로 가장 넓은 범위의 half-open 케이스를 cover합니다.&lt;/p&gt;
+
+&lt;h1 id=&quot;정리&quot;&gt;정리&lt;/h1&gt;
+
+&lt;p&gt;이 디버깅에서 배운 것을 정리하면 다음과 같습니다.&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;&lt;strong&gt;TCP는 send할 때만 신뢰성을 보장한다&lt;/strong&gt;. recv만 하는 idle consumer에 대해서는 dead detection이 자동으로 일어나지 않습니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;여러 layer의 timeout이 있어도, 발화 조건을 만족하지 못하면 모두 무력하다&lt;/strong&gt;. 특히 application layer의 read_timeout이 없으면 heartbeat 검증조차 실행되지 않습니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;library의 기본값을 의심해야 한다&lt;/strong&gt;. py-amqp의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;read_timeout=None&lt;/code&gt;은 정상 환경에서는 아무 문제가 없지만, 네트워크 glitch가 발생한 순간 가장 약한 고리가 됩니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;stuck duration의 분포가 결정적 timeout과 일치한다면, 원인은 거의 확정된다&lt;/strong&gt;. mean 1283.9s = scheduler의 1200s + check_interval 1~2 cycle. 이 시간 일치는 다른 어떤 layer도 발화하지 않고 scheduler fallback만 작동했음을 말해줍니다.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;DB 기반 scheduler는 broker 상태와 독립적이다&lt;/strong&gt;. broker와 worker의 통신이 silent하게 끊겨도 scheduler는 metaDB의 &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;queued_dttm&lt;/code&gt;만 비교해 fail 처리할 수 있고, 결국 이 fallback이 시스템을 살립니다. 다만 발화가 늦어 좀비 Pod가 잔존합니다.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;운영 환경의 안정성은 자주 발화하지 않는 timeout일수록 더 주의 깊게 살펴봐야 한다는 교훈을 남긴 디버깅이었습니다.&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>GyuhoonK</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="airflow" />
+      
+        <category term="celery" />
+      
+        <category term="rabbitmq" />
+      
+        <category term="tcp" />
+      
+
+      
+        <summary type="html">Airflow 운영 중 task가 queued 상태에서 약 20분간 멈춰있다가 자동 실패 처리되고, 좀비 Pod가 클러스터에 잔존하는 현상을 디버깅한 기록입니다. 표면적 현상만 보면 어디 한 곳이 명확하게 죽은 것 같지 않은데도 task가 계속 stuck되어 원인 추적이 오래 걸렸습니다.</summary>
+      
+
+      
+      
+    </entry>
+  
+</feed>

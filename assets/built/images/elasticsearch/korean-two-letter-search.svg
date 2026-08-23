@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 800" preserveAspectRatio="xMidYMid meet" font-family="'Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f9fafb"/>
+      <stop offset="100%" stop-color="#eef2f7"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#374151"/>
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="800" fill="url(#bg)"/>
+
+  <!-- 제목 -->
+  <text x="800" y="92" text-anchor="middle" font-size="46" font-weight="700" fill="#111827">한글 2글자 검색이 0건이 되는 이유</text>
+  <text x="800" y="142" text-anchor="middle" font-size="26" fill="#6b7280">min_length token filter (min=3) 의 이중 차단</text>
+
+  <!-- 원문 문서 -->
+  <g>
+    <rect x="90" y="300" width="320" height="180" rx="14" fill="#dbeafe" stroke="#1d4ed8" stroke-width="2.5"/>
+    <text x="250" y="345" text-anchor="middle" font-size="24" font-weight="700" fill="#1e3a8a">문서 원문</text>
+    <text x="250" y="395" text-anchor="middle" font-size="28" fill="#1e3a8a">"주문 결제 내역"</text>
+    <text x="250" y="445" text-anchor="middle" font-size="20" fill="#3b5bd0">tokenizer 분리 결과 ↓</text>
+  </g>
+
+  <!-- 토큰들 -->
+  <g font-size="26" font-weight="600">
+    <rect x="500" y="270" width="130" height="56" rx="10" fill="#fef3c7" stroke="#a16207" stroke-width="2"/>
+    <text x="565" y="307" text-anchor="middle" fill="#78350f">주문</text>
+    <rect x="500" y="362" width="130" height="56" rx="10" fill="#fef3c7" stroke="#a16207" stroke-width="2"/>
+    <text x="565" y="399" text-anchor="middle" fill="#78350f">결제</text>
+    <rect x="500" y="454" width="130" height="56" rx="10" fill="#fef3c7" stroke="#a16207" stroke-width="2"/>
+    <text x="565" y="491" text-anchor="middle" fill="#78350f">내역</text>
+  </g>
+  <line x1="410" y1="390" x2="492" y2="390" stroke="#374151" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- min_length 게이트 -->
+  <g>
+    <rect x="720" y="240" width="300" height="300" rx="14" fill="#fee2e2" stroke="#b91c1c" stroke-width="3"/>
+    <text x="870" y="290" text-anchor="middle" font-size="26" font-weight="700" fill="#7f1d1d">min_length filter</text>
+    <text x="870" y="330" text-anchor="middle" font-size="24" font-family="monospace" fill="#991b1b">{ type: length,</text>
+    <text x="870" y="362" text-anchor="middle" font-size="24" font-family="monospace" fill="#991b1b">min: 3 }</text>
+    <text x="870" y="420" text-anchor="middle" font-size="22" fill="#991b1b">3글자 미만 토큰 삭제</text>
+    <text x="870" y="470" text-anchor="middle" font-size="34" fill="#b91c1c">✂ ✂ ✂</text>
+  </g>
+  <line x1="640" y1="390" x2="712" y2="390" stroke="#b91c1c" stroke-width="3" marker-end="url(#arrow-red)"/>
+
+  <!-- 역색인 -->
+  <g>
+    <rect x="1120" y="240" width="390" height="300" rx="14" fill="#dcfce7" stroke="#15803d" stroke-width="2.5"/>
+    <text x="1315" y="288" text-anchor="middle" font-size="26" font-weight="700" fill="#14532d">역색인 (inverted index)</text>
+    <g font-size="25">
+      <text x="1160" y="345" fill="#9ca3af" text-decoration="line-through">주문</text>
+      <text x="1160" y="393" fill="#9ca3af" text-decoration="line-through">결제</text>
+      <text x="1160" y="441" fill="#9ca3af" text-decoration="line-through">내역</text>
+      <text x="1290" y="345" fill="#b91c1c" font-size="22">등재 안 됨 (2글자)</text>
+      <text x="1290" y="393" fill="#b91c1c" font-size="22">등재 안 됨 (2글자)</text>
+      <text x="1290" y="441" fill="#b91c1c" font-size="22">등재 안 됨 (2글자)</text>
+      <text x="1160" y="497" fill="#14532d">주문 결제 내역</text>
+      <text x="1380" y="497" fill="#15803d" font-size="22">통짜만 생존</text>
+    </g>
+  </g>
+  <line x1="1020" y1="390" x2="1112" y2="390" stroke="#374151" stroke-width="3" marker-end="url(#arrow)"/>
+
+  <!-- 하단: 검색 결과 -->
+  <g>
+    <rect x="400" y="620" width="800" height="90" rx="14" fill="#ffffff" stroke="#9ca3af" stroke-width="2"/>
+    <text x="800" y="668" text-anchor="middle" font-size="28" fill="#111827">검색어 <tspan font-weight="700">"결제"</tspan> → 질의 토큰도 같은 필터로 삭제 → <tspan font-weight="700" fill="#b91c1c">0건</tspan></text>
+    <text x="800" y="700" text-anchor="middle" font-size="20" fill="#6b7280">색인에도 없고, 질의 토큰도 없다 — 이중 차단</text>
+  </g>
+</svg>

@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>Half-Open Socket으로 인한 Airflow Stuck Task 디버깅</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+    <style>.hljs { background: none; }</style>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    </script>
+<meta name="description" content="Data Engineering" />
+    <link rel="shortcut icon" href="https://gyuhoonk.github.io/assets/built/images/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://gyuhoonk.github.io/airflow-half-open-socket" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Gyuhoon Kim" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Half-Open Socket으로 인한 Airflow Stuck Task 디버깅" />
+    <meta property="og:description" content="Airflow 운영 중 task가 queued 상태에서 약 20분간 멈춰있다가 자동 실패 처리되고, 좀비 Pod가 클러스터에 잔존하는 현상을 디버깅한 기록입니다. 표면적 현상만 보면 어디 한 곳이 명확하게 죽은 것 같지 않은데도 task가 계속 stuck되어 원인 추적이 오래 걸렸습니다. 문제 상황 CeleryExecutor + RabbitMQ 조합으로 Airflow를 운영 중이었고, KubernetesPodOperator(이하 KPO)를 주로 사용하고" />
+    <meta property="og:url" content="https://gyuhoonk.github.io/airflow-half-open-socket" />
+    <meta property="og:image" content="https://gyuhoonk.github.io/assets/built/images/airflow/airflow.png" />
+    <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="2026-05-30T22:30:00+09:00" />
+    <meta property="article:modified_time" content="2026-05-30T22:30:00+09:00" />
+    <meta property="article:tag" content="Airflow" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Half-Open Socket으로 인한 Airflow Stuck Task 디버깅" />
+    <meta name="twitter:description" content="Airflow 운영 중 task가 queued 상태에서 약 20분간 멈춰있다가 자동 실패 처리되고, 좀비 Pod가 클러스터에 잔존하는 현상을 디버깅한 기록입니다. 표면적 현상만 보면 어디 한 곳이 명확하게 죽은 것 같지 않은데도 task가 계속 stuck되어 원인 추적이 오래 걸렸습니다. 문제 상황 CeleryExecutor + RabbitMQ 조합으로 Airflow를 운영 중이었고, KubernetesPodOperator(이하 KPO)를 주로 사용하고" />
+    <meta name="twitter:url" content="https://gyuhoonk.github.io/" />
+    <meta name="twitter:image" content="https://gyuhoonk.github.io/assets/built/images/airflow/airflow.png" />
+    <meta name="twitter:label1" content="Written by" />
+    <meta name="twitter:data1" content="Gyuhoon Kim" />
+    <meta name="twitter:label2" content="Filed under" />
+    <meta name="twitter:data2" content="Airflow" />
+    <meta name="twitter:site" content="@" />
+    <meta name="twitter:creator" content="@" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Gyuhoon Kim",
+        "logo": "https://gyuhoonk.github.io/"
+    },
+    "url": "https://gyuhoonk.github.io/airflow-half-open-socket",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://gyuhoonk.github.io/assets/built/images/airflow/airflow.png",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://gyuhoonk.github.io/airflow-half-open-socket"
+    },
+    "description": "Airflow 운영 중 task가 queued 상태에서 약 20분간 멈춰있다가 자동 실패 처리되고, 좀비 Pod가 클러스터에 잔존하는 현상을 디버깅한 기록입니다. 표면적 현상만 보면 어디 한 곳이 명확하게 죽은 것 같지 않은데도 task가 계속 stuck되어 원인 추적이 오래 걸렸습니다. 문제 상황 CeleryExecutor + RabbitMQ 조합으로 Airflow를 운영 중이었고, KubernetesPodOperator(이하 KPO)를 주로 사용하고"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title="Half-Open Socket으로 인한 Airflow Stuck Task 디버깅" href="/feed.xml" />
+ <script type="module">
+ import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+ mermaid.initialize({ startOnLoad: true });
+ await mermaid.run({
+     querySelector: '.language-mermaid',
+ });
+</script>
+    
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="https://gyuhoonk.github.io/">Gyuhoon Kim</a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem">
+        <a href="/about/">About</a>
+    </li>
+    <li class="nav-python" role="menuitem">
+        <a href="/tag/python/">python</a>
+    </li>
+    <li class="nav-scala" role="menuitem">
+        <a href="/tag/scala/">scala</a>
+    </li>
+    <li class="nav-hadoop" role="menuitem">
+        <a href="/tag/hadoop/">hadoop</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/database/">database</a>
+    </li>
+    <li class="nav-database" role="menuitem">
+        <a href="/tag/kubernetes/">kubernetes</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/archive.html">All Posts</a>
+    </li>
+    <li class="nav-archive" role="menuitem">
+        <a href="/author_archive.html">Tag</a>
+    </li>
+</ul>
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+            <a class="subscribe-button" href="#subscribe">Subscribe</a>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-airflow tag-celery tag-rabbitmq tag-tcp post tag-airflow ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime="30 May 2026">30 May 2026</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/airflow/'>AIRFLOW</a>,
+                            
+                        
+                            
+                               <a href='/tag/celery/'>CELERY</a>,
+                            
+                        
+                            
+                               <a href='/tag/rabbitmq/'>RABBITMQ</a>,
+                            
+                        
+                            
+                               <a href='/tag/tcp/'>TCP</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">Half-Open Socket으로 인한 Airflow Stuck Task 디버깅</h1>
+            </header>
+
+            <!-- 
+            <figure class="post-full-image" style="background-image: url(/assets/built/images/airflow/airflow.png)">
+            </figure>
+             -->
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>Airflow 운영 중 task가 <code class="language-plaintext highlighter-rouge">queued</code> 상태에서 약 20분간 멈춰있다가 자동 실패 처리되고, 좀비 Pod가 클러스터에 잔존하는 현상을 디버깅한 기록입니다. 표면적 현상만 보면 어디 한 곳이 명확하게 죽은 것 같지 않은데도 task가 계속 stuck되어 원인 추적이 오래 걸렸습니다.</p>
+
+<h1 id="문제-상황">문제 상황</h1>
+
+<p>CeleryExecutor + RabbitMQ 조합으로 Airflow를 운영 중이었고, KubernetesPodOperator(이하 KPO)를 주로 사용하고 있었습니다. 어느 날부터 다음과 같은 패턴이 간헐적으로 관찰되기 시작합니다.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>03:52:21  task try=1 running   ← KPO가 Pod를 만들고 base container까지 정상 종료
+04:14:34  task try=1 FAILED    ← 약 21분 후 자동 fail
+04:24:43  task try=2 running   ← scheduler가 자동 retry
+04:25:56  task try=2 success   ← 재시도는 정상 성공
+</code></pre></div></div>
+
+<p>특징을 정리하면 이렇습니다.</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">clear_number=0</code>, <code class="language-plaintext highlighter-rouge">user_actions=0</code> → 사용자가 UI에서 Clear/Mark Success를 누른 적이 없습니다.</li>
+  <li><code class="language-plaintext highlighter-rouge">external_trigger=1</code> 이지만 외부 매니저 DAG의 일반 trigger 한 번뿐, cascade clear도 아닙니다.</li>
+  <li><code class="language-plaintext highlighter-rouge">max_tries=1</code> 이지만 try=2가 발생합니다. 이는 scheduler의 <code class="language-plaintext highlighter-rouge">cleanup_stuck_queued_tasks</code>가 호출한 자동 retry path였습니다.</li>
+  <li>try=1에서 만든 Pod의 base container는 정상적으로 exit 0을 반환했지만, KPO 입장에서는 Pod의 상태 변화 신호를 받지 못해 좀비 Pod로 남아 있습니다.</li>
+  <li>stuck 지속 시간을 30일치 모아 정량 분석하니 mean <strong>1283.9s</strong> (median 1288.4s), 80% 이상이 [1100s, 1400s] 구간에 분포 → <strong>deterministic timeout</strong>임이 명확합니다.</li>
+</ul>
+
+<p>이 1283.9s는 정확히 <code class="language-plaintext highlighter-rouge">task_queued_timeout=1200s + check_interval 1~2 cycle(120s)</code>와 일치합니다. 즉 다른 어떤 layer도 dead detection을 하지 못하고, 가장 늦은 fallback인 scheduler의 stuck task cleanup만이 발화하고 있다는 뜻입니다.</p>
+
+<h1 id="등장-인물과-통신-경로">등장 인물과 통신 경로</h1>
+
+<p>원인을 추적하기 위해 먼저 시스템에 누가 있는지 정리합니다.</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    classDef ctrl fill:#dbeafe,stroke:#1d4ed8
+    classDef msg fill:#fef3c7,stroke:#a16207
+    classDef work fill:#fce7f3,stroke:#be185d
+    classDef exec fill:#dcfce7,stroke:#15803d
+
+    S["Scheduler&lt;br/&gt;(Airflow scheduler)"]:::ctrl
+    B["Broker&lt;br/&gt;(RabbitMQ)"]:::msg
+    W["Worker&lt;br/&gt;(Celery worker)"]:::work
+    P["Pod&lt;br/&gt;(K8s)"]:::exec
+
+    S --&gt;|"publish task"| B
+    B --&gt;|"deliver task"| W
+    W --&gt;|"create pod"| P
+</code></pre>
+
+<p>여기서 한 가지 중요한 사실은, Worker가 broker하고만 통신하는 게 아니라는 점입니다.</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    classDef worker fill:#fef3c7,stroke:#a16207,color:#78350f
+    classDef broker fill:#dcfce7,stroke:#15803d,color:#14532d
+    classDef db fill:#dbeafe,stroke:#1e40af,color:#1e3a8a
+
+    W["Worker&lt;br/&gt;(MainProcess + ForkPool)"]:::worker
+    B["Broker&lt;br/&gt;(RabbitMQ)"]:::broker
+    DB["metaDB&lt;br/&gt;(MySQL)"]:::db
+
+    B --&gt;|"① task 메시지 deliver"| W
+    W --&gt;|"② ACK frame (task 완료 후)"| B
+    W &lt;--&gt;|"③ heartbeat frame (120s 주기, 양방향)"| B
+    W --&gt;|"④ celery_taskmeta INSERT (task 결과)"| DB
+    W --&gt;|"⑤ task_instance UPDATE (실행 상태)"| DB
+</code></pre>
+
+<table>
+  <thead>
+    <tr>
+      <th>채널</th>
+      <th>방향</th>
+      <th>broker 경유</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>① task deliver</td>
+      <td>Broker → Worker</td>
+      <td>O</td>
+    </tr>
+    <tr>
+      <td>② ACK</td>
+      <td>Worker → Broker</td>
+      <td>O</td>
+    </tr>
+    <tr>
+      <td>③ heartbeat frame</td>
+      <td>양방향 (예: 120s 주기)</td>
+      <td>O</td>
+    </tr>
+    <tr>
+      <td>④ <code class="language-plaintext highlighter-rouge">celery_taskmeta</code> INSERT</td>
+      <td>Worker → DB</td>
+      <td>X (DB 직접)</td>
+    </tr>
+    <tr>
+      <td>⑤ <code class="language-plaintext highlighter-rouge">task_instance</code> UPDATE</td>
+      <td>Worker(task) → DB</td>
+      <td>X (DB 직접)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>scheduler는 task 상태 판단을 broker가 아닌 <strong>DB(metaDB)</strong> 만 보고 합니다. 따라서 broker-worker 간 메시지 전달이 silent하게 끊겨도, scheduler는 한참 뒤 (<code class="language-plaintext highlighter-rouge">task_queued_timeout</code>이 만료될 때) 비로소 이상을 감지할 수 있습니다.</p>
+
+<h1 id="half-open-socket">Half-Open Socket</h1>
+
+<p>위 현상의 원인은 broker와 worker 사이의 TCP connection이 <strong>half-open</strong> 상태가 되었기 때문이었습니다.</p>
+
+<blockquote>
+  <p><strong>Half-Open Socket</strong>: TCP connection의 양쪽 종단 중 한쪽은 비정상 종료/단절되었는데, 다른 한쪽은 여전히 정상으로 인식하고 있는 상태.</p>
+</blockquote>
+
+<p>이게 가능한 이유는 TCP의 신뢰성 보장이 <strong>데이터를 send할 때만</strong> 동작하기 때문입니다. send가 없으면 상대방이 죽었어도 알 길이 없습니다.</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    participant A as Worker
+    participant B as Broker
+
+    Note over A,B: 시나리오 1 — Worker가 send를 한다면
+    A-&gt;&gt;B: 데이터 send
+    B--&gt;&gt;A: ACK
+    Note over A: Worker는 ACK로 broker alive 확인
+
+    Note over A,B: 시나리오 2 — Worker는 recv 대기만
+    Note over A: Worker는 그냥 기다림 (recv block)
+    B-xB: Broker쪽 socket이 죽음 (NAT timeout 등)
+    Note over B: FIN/RST도 못 보냄
+    Note over A: Worker는 영원히 기다림&lt;br/&gt;(send가 없어 ACK도 없고 알 길이 없음)
+</code></pre>
+
+<p>Celery worker는 task를 처리하지 않는 idle 구간 동안 <code class="language-plaintext highlighter-rouge">recv()</code>로 broker의 deliver를 기다립니다. 이 구간에서 worker는 broker에 데이터를 거의 보내지 않습니다(heartbeat는 별도 channel/timer로 발송됨). 그래서 특정 channel의 packet이 silent하게 drop되어도 worker application은 그 사실을 즉시 알 수 없습니다.</p>
+
+<h1 id="5개의-감시자-그러나-모두-무력화">5개의 감시자, 그러나 모두 무력화</h1>
+
+<p>“TCP가 그렇다 쳐도, 우리에겐 여러 단계의 dead detection 메커니즘이 있지 않나?”하는 의문이 생깁니다. 실제로 Celery + RabbitMQ + Linux 조합에는 다음과 같은 timeout/heartbeat 메커니즘들이 있습니다.</p>
+
+<pre><code class="language-mermaid">flowchart TB
+    classDef weak fill:#fee2e2,stroke:#b91c1c
+    classDef mid fill:#fef3c7,stroke:#a16207
+    classDef strong fill:#dcfce7,stroke:#15803d
+    classDef trigger fill:#fce7f3,stroke:#be185d
+
+    subgraph app["Application layer (py-amqp)"]
+        AA["read_timeout = None&lt;br/&gt;= recv() 무한 block"]:::weak
+        AB["broker_heartbeat = 120s&lt;br/&gt;(양방향 약속)"]:::mid
+        AC["SO_KEEPALIVE = 1"]:::strong
+    end
+
+    subgraph os["OS Kernel layer"]
+        OA["tcp_keepalive total = 1185s&lt;br/&gt;(SO_KEEPALIVE 켜져있어야 fire)"]:::mid
+        OD["tcp_retries2 = 15 → ≈924s&lt;br/&gt;(unacked SENT data가 있어야 fire)"]:::strong
+    end
+
+    subgraph broker["Broker (RabbitMQ &lt; 3.8.15)"]
+        BA["AMQP heartbeat = 120s"]:::mid
+        BB["consumer_timeout (없음)"]:::weak
+    end
+
+    subgraph sched["Airflow Scheduler"]
+        SA["task_queued_timeout = 1200s"]:::trigger
+        SB["check_interval = 120s"]:::trigger
+    end
+</code></pre>
+
+<p>그런데 위에서 본 정량 데이터(stuck duration ≈ 1283s)는 이 중 <strong>scheduler의 1200s task_queued_timeout만이 fire되었음</strong>을 의미합니다. 나머지는 왜 동작하지 않았을까요? 각각 발화 조건이 만족되지 않습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Layer</th>
+      <th>발화 안 한 이유</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>py-amqp <code class="language-plaintext highlighter-rouge">read_timeout</code></td>
+      <td><strong>기본값 <code class="language-plaintext highlighter-rouge">None</code></strong>. SO_RCVTIMEO 자체가 설정 안 되어 <code class="language-plaintext highlighter-rouge">recv()</code>가 무한 block. timeout이라는 개념 자체가 없음.</td>
+    </tr>
+    <tr>
+      <td>AMQP heartbeat (120s)</td>
+      <td>py-amqp의 Hub event loop가 다른 channel event로 정상 깨어나며 heartbeat timer callback을 정상 발화. broker는 client를 alive로 봄.</td>
+    </tr>
+    <tr>
+      <td>TCP keepalive (1185s)</td>
+      <td>SO_KEEPALIVE는 켜져 있고 probe도 발사하지만, broker의 OS가 정상 ACK 응답을 함. keepalive 입장에선 connection 정상.</td>
+    </tr>
+    <tr>
+      <td>TCP <code class="language-plaintext highlighter-rouge">tcp_retries2</code> (924s)</td>
+      <td>이 timer는 <strong>unacked SENT data</strong>에 대해서만 의미가 있음. worker가 idle하게 recv만 하는 동안 send가 없으므로 발화 조건 미충족.</td>
+    </tr>
+    <tr>
+      <td>RMQ <code class="language-plaintext highlighter-rouge">consumer_timeout</code></td>
+      <td>사용 중이던 broker 버전에는 아예 존재하지 않는 기능 (3.8.15+에서 추가). broker self-heal 불가.</td>
+    </tr>
+    <tr>
+      <td>Airflow <code class="language-plaintext highlighter-rouge">task_queued_timeout</code></td>
+      <td>유일하게 발화. metaDB의 <code class="language-plaintext highlighter-rouge">queued_dttm</code> 컬럼만 비교하므로 네트워크 상태와 무관.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>핵심은 <strong>“send가 없으면 OS layer는 아무것도 못 한다”</strong> 입니다. consumer가 idle하게 recv만 대기하는 동안은 OS 입장에서 진행 중인 통신이 없는 것과 같기 때문에, tcp_retries2도 keepalive의 dead 판정도 작동하지 않습니다. 그리고 application layer에서 깨워줄 <code class="language-plaintext highlighter-rouge">read_timeout</code>도 비활성화되어 있으니, half-open이 발생한 채로 무한히 sleep합니다.</p>
+
+<h1 id="py-amqp의-read_timeoutnone">py-amqp의 read_timeout=None</h1>
+
+<p>py-amqp는 Celery가 RabbitMQ와 통신할 때 사용하는 AMQP 라이브러리입니다. 코드를 따라가면 connection 생성 시 <code class="language-plaintext highlighter-rouge">read_timeout</code> 인자가 기본 <code class="language-plaintext highlighter-rouge">None</code>으로 들어가고, 이 값이 <code class="language-plaintext highlighter-rouge">None</code>인 경우 <code class="language-plaintext highlighter-rouge">SO_RCVTIMEO</code> socket option이 설정되지 않습니다.</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    autonumber
+    participant App as Worker py-amqp
+    participant OS as Worker OS kernel
+    participant B as Broker
+
+    App-&gt;&gt;OS: socket.recv() 호출 + (read_timeout=None)
+    Note over OS: SO_RCVTIMEO 미설정 → 무한 대기
+    Note over App: sleep
+    B-xOS: 메시지를 보내려 하지만 packet drop
+    Note over OS: socket buffer에 데이터 안 들어옴
+    Note over App: 영원히 sleep&lt;br/&gt;scheduler가 1200s 후 fail 처리할 때까지
+</code></pre>
+
+<p>만약 <code class="language-plaintext highlighter-rouge">read_timeout</code>이 예를 들어 60초로 설정되어 있다면 어떨까요?</p>
+
+<pre><code class="language-mermaid">sequenceDiagram
+    autonumber
+    participant App as Worker py-amqp
+    participant OS as Worker OS kernel
+    participant B as Broker
+
+    App-&gt;&gt;OS: socket.recv() 호출 + (read_timeout=60)
+    Note over OS: SO_RCVTIMEO=60 설정
+    B-xOS: packet drop
+    Note over OS: 60s 동안 buffer empty
+    OS-&gt;&gt;App: wake up + EAGAIN
+    App-&gt;&gt;App: heartbeat_check() / connection state 재검증
+    App-&gt;&gt;App: half-open 감지 → 재연결
+    Note over App,B: broker가 unacked 메시지 redeliver
+    Note over App: 1분 안에 자동 복구
+</code></pre>
+
+<p><code class="language-plaintext highlighter-rouge">recv()</code>가 60초마다 EAGAIN으로 깨어나면 py-amqp는 connection 상태를 재검증할 기회를 얻습니다. 이때 heartbeat가 실제로 왔는지 확인하고, 비정상 상태가 감지되면 connection을 닫고 재연결합니다. 그러면 broker는 unacked 메시지를 다른 정상 consumer에게 redeliver하게 되고, 1분 안에 자연스럽게 복구됩니다.</p>
+
+<h1 id="두-timeout의-stack-관계">두 timeout의 stack 관계</h1>
+
+<p>여기서 한 가지 헷갈리는 부분을 정리할 필요가 있습니다. “AMQP heartbeat이 어차피 120s마다 주고받는데, read_timeout이 따로 필요한가?”</p>
+
+<p>답은 <strong>read_timeout이 없으면 heartbeat 체크도 무력화된다</strong>는 것입니다. heartbeat frame도 결국 TCP packet이고, application이 그것을 보려면 OS가 application을 깨워야 합니다. application이 영원히 sleep 중이면 heartbeat frame이 socket buffer에 도착해도 처리할 코드가 실행되지 않습니다.</p>
+
+<pre><code class="language-mermaid">flowchart LR
+    classDef l1 fill:#dbeafe,stroke:#1e40af
+    classDef l2 fill:#fef3c7,stroke:#a16207
+
+    T2["read_timeout (OS 시계)&lt;br/&gt;application을 깨우는 알람"]:::l1
+    Wake["application 깨어남"]
+    T3["heartbeat check (AMQP 시계)&lt;br/&gt;heartbeat 수신 여부 검증"]:::l2
+
+    T2 --&gt;|"X초마다 깨움"| Wake
+    Wake --&gt;|"깨어나야 체크 가능"| T3
+</code></pre>
+
+<table>
+  <thead>
+    <tr>
+      <th>관계</th>
+      <th>내용</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>heartbeat 체크는 read_timeout 위에 stack</td>
+      <td>heartbeat frame도 socket으로만 옴. read_timeout이 깨워야 heartbeat 검증 코드가 실행됨.</td>
+    </tr>
+    <tr>
+      <td>read_timeout이 None이면 heartbeat 무력</td>
+      <td>application이 영원히 sleep → heartbeat 검증 코드 실행 안 됨 → broker 죽어도 모름.</td>
+    </tr>
+    <tr>
+      <td>read_timeout만으로는 부족</td>
+      <td>“데이터 안 옴”만 알지 “broker 죽음”까지 판정 못 함. heartbeat 검증 로직과 결합되어야 의미를 가짐.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>흔히 “AMQP heartbeat이 있으니 dead detection은 broker가 알아서 해주겠지”라고 생각하기 쉽지만, 위 stack 구조 때문에 application의 read_timeout이 끊어주는 깨움 신호가 없으면 heartbeat 체크 자체가 동작하지 않습니다.</p>
+
+<p>또한, heartbeat은 보통 단일 connection 단위로 동작하고, Hub event loop의 timer는 다른 channel event로도 깨어날 수 있습니다. 즉 <strong>“문제가 생긴 채널은 silent drop인데, heartbeat은 다른 채널을 타고 정상 송수신되어 broker 입장에서는 client alive로 보이는 상황”</strong> 이 가능합니다. 이때 broker는 의심할 이유가 없으니 절대 먼저 끊지 않습니다.</p>
+
+<h1 id="해결책">해결책</h1>
+
+<p>가장 적은 변경으로 가장 넓은 케이스를 cover하는 방법은 <strong>application layer에서 직접 감지</strong>하도록 만드는 것입니다. Celery의 broker transport options를 통해 socket timeout을 명시적으로 설정합니다.</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">AIRFLOW__CELERY_BROKER_TRANSPORT_OPTIONS__SOCKET_TIMEOUT</span><span class="o">=</span>60
+<span class="nv">AIRFLOW__CELERY_BROKER_TRANSPORT_OPTIONS__SOCKET_CONNECT_TIMEOUT</span><span class="o">=</span>10
+<span class="nv">AIRFLOW__SCHEDULER__TASK_QUEUED_TIMEOUT</span><span class="o">=</span>1200
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">SOCKET_TIMEOUT=60</code>: py-amqp의 <code class="language-plaintext highlighter-rouge">read_timeout</code> 기본값을 변경. recv()가 60초마다 EAGAIN으로 깨어나 connection을 재검증.</li>
+  <li><code class="language-plaintext highlighter-rouge">SOCKET_CONNECT_TIMEOUT=10</code>: 초기 connection 단계의 무한 hang 방지.</li>
+  <li><code class="language-plaintext highlighter-rouge">TASK_QUEUED_TIMEOUT=1200</code>: scheduler stuck task fallback. 최후의 방어선으로 유지.</li>
+</ul>
+
+<p>위 설정을 한쪽 환경에만 먼저 적용하고 30일 운영 데이터를 다른 환경(설정 미적용)과 A/B 비교해 봤습니다.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>환경</th>
+      <th>SOCKET_TIMEOUT</th>
+      <th>30일 task 처리량</th>
+      <th>REVOKED <code class="language-plaintext highlighter-rouge">celery_taskmeta</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>미적용</td>
+      <td>None (default)</td>
+      <td>≈ 1.5M</td>
+      <td>23건 (≈ 0.00153%)</td>
+    </tr>
+    <tr>
+      <td>적용</td>
+      <td>60s</td>
+      <td>≈ 200K</td>
+      <td><strong>0건</strong></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>미적용 환경 발생률을 그대로 적용해 보면 200K 처리량에서 통계상 약 3건이 발생해야 하지만 실제로는 0건이었습니다. 30일 운영으로 정량 확정된 효과입니다.</p>
+
+<h1 id="다른-fix-후보들">다른 fix 후보들</h1>
+
+<p>위 application layer 설정 외에도 이론적으로 가능한 fix들이 있습니다.</p>
+
+<pre><code class="language-mermaid">graph TD
+    classDef fix fill:#dcfce7,stroke:#15803d
+    classDef cur fill:#fee2e2,stroke:#b91c1c
+
+    H["Half-Open Socket 발생&lt;br/&gt;(NAT timeout / 네트워크 glitch)"]:::cur
+
+    F1["read_timeout 설정&lt;br/&gt;(application layer)"]:::fix
+    F2["RMQ 3.8.15+ 업그레이드&lt;br/&gt;(consumer_timeout 추가)"]:::fix
+    F3["TCP_USER_TIMEOUT 명시 설정&lt;br/&gt;(kernel layer)"]:::fix
+    F4["broker_heartbeat 짧게 (예: 30s)"]:::fix
+
+    H --&gt; F1
+    H --&gt; F2
+    H --&gt; F3
+    H --&gt; F4
+
+    F1 --&gt;|"가장 넓은 cover"| OK["좀비 안 생김"]
+    F2 --&gt;|"broker side self-heal"| OK
+    F3 --&gt;|"send가 있어야 fire"| Partial["부분 효과"]
+    F4 --&gt;|"Hub timer 정상 시 무력"| Partial
+</code></pre>
+
+<ul>
+  <li><strong>RMQ 3.8.15+ 업그레이드</strong>: broker에 <code class="language-plaintext highlighter-rouge">consumer_timeout</code>이 추가되어, broker가 일정 시간 ack 받지 못한 consumer를 끊고 메시지를 redeliver합니다. broker side self-heal이라는 점에서 가장 깔끔하지만 broker upgrade 비용이 큽니다.</li>
+  <li><strong>TCP_USER_TIMEOUT</strong>: kernel layer에서 unacked SENT data의 누적 시간을 직접 제한. 강력하지만 idle consumer처럼 send가 없는 케이스에선 부분적 효과만 있습니다.</li>
+  <li><strong>broker_heartbeat을 짧게</strong>: 빠른 dead detection이 가능해 보이지만, 위에서 본 것처럼 Hub timer가 정상 작동하는 상황에서는 broker가 client를 alive로 봐서 무력화됩니다.</li>
+</ul>
+
+<p>application layer의 read_timeout 설정이 가장 적은 변경으로 가장 넓은 범위의 half-open 케이스를 cover합니다.</p>
+
+<h1 id="정리">정리</h1>
+
+<p>이 디버깅에서 배운 것을 정리하면 다음과 같습니다.</p>
+
+<ol>
+  <li><strong>TCP는 send할 때만 신뢰성을 보장한다</strong>. recv만 하는 idle consumer에 대해서는 dead detection이 자동으로 일어나지 않습니다.</li>
+  <li><strong>여러 layer의 timeout이 있어도, 발화 조건을 만족하지 못하면 모두 무력하다</strong>. 특히 application layer의 read_timeout이 없으면 heartbeat 검증조차 실행되지 않습니다.</li>
+  <li><strong>library의 기본값을 의심해야 한다</strong>. py-amqp의 <code class="language-plaintext highlighter-rouge">read_timeout=None</code>은 정상 환경에서는 아무 문제가 없지만, 네트워크 glitch가 발생한 순간 가장 약한 고리가 됩니다.</li>
+  <li><strong>stuck duration의 분포가 결정적 timeout과 일치한다면, 원인은 거의 확정된다</strong>. mean 1283.9s = scheduler의 1200s + check_interval 1~2 cycle. 이 시간 일치는 다른 어떤 layer도 발화하지 않고 scheduler fallback만 작동했음을 말해줍니다.</li>
+  <li><strong>DB 기반 scheduler는 broker 상태와 독립적이다</strong>. broker와 worker의 통신이 silent하게 끊겨도 scheduler는 metaDB의 <code class="language-plaintext highlighter-rouge">queued_dttm</code>만 비교해 fail 처리할 수 있고, 결국 이 fallback이 시스템을 살립니다. 다만 발화가 늦어 좀비 Pod가 잔존합니다.</li>
+</ol>
+
+<p>운영 환경의 안정성은 자주 발화하지 않는 timeout일수록 더 주의 깊게 살펴봐야 한다는 교훈을 남긴 디버깅이었습니다.</p>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            <!-- 
+                <section class="subscribe-form">
+                    <h3 class="subscribe-form-title">Subscribe to Gyuhoon Kim</h3>
+                    <p>Get the latest posts delivered right to your inbox</p>
+                    <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+                </section>
+             -->
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/GyuhoonK">GyuhoonK</a></h4>
+                                
+                                    <p>Read <a href="/author/GyuhoonK">more posts</a> by this author.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/GyuhoonK">Read More</a>
+                        </div>
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            <!--  -->
+            <!-- utteranc setting -->
+            <script src="https://utteranc.es/client.js"
+                    repo="GyuhoonK/blog-comments"
+                    issue-term="pathname"
+                    theme="github-light"
+                    crossorigin="anonymous"
+                    async>
+            </script>
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+                    <article class="read-next-card"
+                        
+                            style="background-image: url(/assets/built/images/spain-blog-cover.jpg)"
+                        
+                    >
+                        <header class="read-next-card-header">
+                            <small class="read-next-card-header-sitetitle">&mdash; Gyuhoon Kim &mdash;</small>
+                            
+                                <h3 class="read-next-card-header-title"><a href="/tag/airflow/">Airflow</a></h3>
+                            
+                        </header>
+                        <div class="read-next-divider"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 14.5s2 3 5 3 5.5-2.463 5.5-5.5S21 6.5 18 6.5c-5 0-7 11-12 11C2.962 17.5.5 15.037.5 12S3 6.5 6 6.5s4.5 3.5 4.5 3.5"/></svg>
+</div>
+                        <div class="read-next-card-content">
+                            <ul>
+                                
+                                
+                                  
+                                
+                                  
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/airflow-triggerer">Airflow Triggerer 사용기</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/pod-operator-400">KubernetesPodOperator에서 ApiException(400)가 발생하는 원인</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                            <li><a href="/variables">Variables & Dag Parsing</a></li>
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                    
+                                        
+                                        
+                                    
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                                  
+                                
+                            </ul>
+                        </div>
+                        <footer class="read-next-card-footer">
+                            <a href="/tag/airflow/">
+                                
+                                    See all 4 posts  →
+                                
+                            </a>
+                        </footer>
+                    </article>
+                <script type="text/javascript"
+                src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+                </script>
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/korean-two-letter-search-min-length">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/elasticsearch/korean-two-letter-search.svg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/korean-two-letter-search-min-length">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Elasticsearch</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">한글 2글자 검색이 0건이 되는 이유 - min_length 필터와 nori</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>운영 중인 데이터 카탈로그(DataHub)에서 “결제”, “방문” 같은 2글자 한글 키워드로 검색하면 결과가 0건이고, 3글자부터는 정상 동작하는 현상을 추적한 기록입니다. 원인은 검색엔진(OpenSearch)의 결함이 아니라, 애플리케이션이 인덱스에 심어놓은 token filter 하나였습니다. 역색인과 analyzer의 기본 동작부터</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      9 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/transaction-acid">
+                <div class="post-card-image" style="background-image: url(/assets/built/images/database/transaction-acid.svg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/transaction-acid">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Database</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">트랜잭션과 ACID — MySQL InnoDB와 PostgreSQL은 어떻게 보장할까</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>MySQL InnoDB와 PostgreSQL이 ACID 네 속성을 어떤 로그·자료구조로 구현하는지 비교해봅니다.
+
+</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/built/images/GyuhoonK.jpg" alt="GyuhoonK" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/GyuhoonK/">GyuhoonK</a>
+                        </span>
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      16 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://gyuhoonk.github.io/">
+            
+            <span>Gyuhoon Kim</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">Half-Open Socket으로 인한 Airflow Stuck Task 디버깅</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=Half-Open+Socket%EC%9C%BC%EB%A1%9C+%EC%9D%B8%ED%95%9C+Airflow+Stuck+Task+%EB%94%94%EB%B2%84%EA%B9%85&amp;url=https://gyuhoonk.github.ioairflow-half-open-socket"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://gyuhoonk.github.ioairflow-half-open-socket"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <section class="copyright"><a href="https://gyuhoonk.github.io/">Gyuhoon Kim</a> &copy; 2026</section>
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    
+                    
+                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+        <div id="subscribe" class="subscribe-overlay">
+            <a class="subscribe-overlay-close" href="#"></a>
+            <div class="subscribe-overlay-content">
+                
+                <h1 class="subscribe-overlay-title">Subscribe to Gyuhoon Kim</h1>
+                <p class="subscribe-overlay-description">Stay up to date! Get all the latest &amp; greatest posts delivered straight to your inbox</p>
+                <form method="post" action="/subscribe/" class="">
+    <input class="confirm" type="hidden" name="confirm"  /><input class="location" type="hidden" name="location"  /><input class="referrer" type="hidden" name="referrer"  />
+
+    <div class="form-group">
+        <input class="subscribe-email" type="email" name="email"  placeholder="youremail@example.com" />
+    </div>
+    <button class="" type="submit" disabled><span>Subscribe</span></button>
+    <script type="text/javascript">(function(g,h,o,s,t){h[o]('.location')[s]=h[o]('.location')[s] || g.location.href;h[o]('.referrer')[s]=h[o]('.referrer')[s] || h.referrer;})(window,document,'querySelector','value');</script>
+</form>
+
+            </div>
+        </div>
+    
+
+    <!-- highlight.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
+    <script>$(document).ready(function() {
+      $('pre code').each(function(i, block) {
+        hljs.highlightBlock(block);
+      });
+    });</script>
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!-- Google Analytics Tracking code -->
+ <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-xxxxxxxx-x', 'auto');
+  ga('send', 'pageview');
+
+ </script>
+
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+<script type="text/javascript" async
+	src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	extensions: ["tex2jax.js"],
+	jax: ["input/TeX", "output/HTML-CSS"],
+	tex2jax: {
+		inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+		displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+		processEscapes: true
+	},
+	"HTML-CSS": { availableFonts: ["TeX"] }
+});
+</script>
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+    <!-- math LaTex-->
+    
+</body>
+</html>
